@@ -159,7 +159,9 @@ function $MenuBar(menus){
 				});
 				
 				$menu_popup.on("keydown", function(e){
-					console.log(String.fromCharCode(e.keyCode), _hotkey(item.item));
+					// TODO: finish implementing this
+					// * make it work when menu opened with mouse
+					// * make it focus the item
 					if(e.ctrlKey || e.shiftKey || e.altKey){
 						return;
 					}
