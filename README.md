@@ -6,7 +6,8 @@ Specifically, Windows 98 - for now at least; it could be expanded in the future
 
 <!-- Check out 98 and jspaint (and sound-recorder and notepad and minesweeper) and maybe mos and maybe pbp2d... -->
 
-**Important**: This project is pre-alpha and not quality yet.
+**Important**: This project is pre-alpha and not really "quality" yet.
+
 
 ## Features
 
@@ -17,6 +18,15 @@ Specifically, Windows 98 - for now at least; it could be expanded in the future
 - Button styles (Note: currently breaking accessibility by removing `outline` focus styles!)
 
 - Scrollbar styles, webkit-specific (in the future there could be a custom scrollbar based on a nonintrusive scrollbar library, or styles *supporting* a library, used directly)
+
+
+## Demo
+
+See [a demo online here](http://1j01.github.io/os-gui/demo/)
+
+### See also
+
+- [98](https://github.com/1j01/98)
 
 
 ## Requirements
@@ -46,6 +56,7 @@ In `<head>` or `<body>`:
 <script src="os-gui/$Window.js"></script>
 ```
 
+
 ## API
 
 The API is not versioned using semver yet, but it should be once a version 1.0 is released.
@@ -55,6 +66,8 @@ The API is not versioned using semver yet, but it should be once a version 1.0 i
 Button styles are applied to `button` elements.
 Globally.
 And to reset it, you have to get rid of the psuedo element `::after` as well.
+
+You can have the depressed (held down) style stay using `.selected`
 
 The non-pressed state is also applied to `.button-like-border`; in the future this may be called `.outset-border` or similar.
 
@@ -207,9 +220,6 @@ Can be used to prevent closing a window (with `event.preventDefault()`, or just 
 
 - API to create context menus (using the same code as for menu popups from the menu bar)
 
-## See also
-
-- [98](https://github.com/1j01/98)
 
 ## License
 
