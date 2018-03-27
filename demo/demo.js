@@ -58,6 +58,14 @@ $(()=> {
 	var $window = new $Window({title: "Testing 123"});
 	$window.$content.append($("#window-example-content"));
 
+	$window.$Button("Open Another Window", ()=> {
+		var $new_window = new $Window({title: "Testing Testing 123"});
+		$new_window.$content.html("Hey look, a window!");
+	});
+	$window.on("close", (event)=> {
+		event.preventDefault();
+	});
+	
 	// $window.appendTo("#window-example");
 	// $window.css({
 	// 	position: "relative",
@@ -69,13 +77,5 @@ $(()=> {
 	$window.offset({
 		left: $("#window-example").offset().left,
 		top: $("#window-example").offset().top
-	});
-
-	$window.$Button("Open Another Window", ()=> {
-		var $window = new $Window({title: "Testing Testing 123"});
-		$window.$content.html("Hey look, a window!");
-	});
-	$window.on("close", (event)=> {
-		event.preventDefault();
 	});
 });
