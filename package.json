@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "repository": {
     "type": "git",
-    "url": "http://github.com/1j01/os-gui.git"
+    "url": "https://github.com/1j01/os-gui.git"
   },
   "bugs": {
-    "url": "http://github.com/1j01/os-gui/issues"
+    "url": "https://github.com/1j01/os-gui/issues"
   },
   "license": "MIT",
   "keywords": [

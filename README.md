@@ -22,7 +22,7 @@ Specifically, Windows 98 - for now at least; it could be expanded in the future
 
 ## Demo
 
-See [a demo online here](http://1j01.github.io/os-gui/demo/)
+See [a demo online here](https://1j01.github.io/os-gui/demo/)
 
 ### See also
 
