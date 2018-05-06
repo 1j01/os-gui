@@ -17,7 +17,7 @@ Specifically, Windows 98 - for now at least; it could be expanded in the future
 
 - Button styles (Note: currently breaking accessibility by removing `outline` focus styles!)
 
-- Scrollbar styles, webkit-specific (in the future there could be a custom scrollbar based on a nonintrusive scrollbar library, or styles *supporting* a library, used directly)
+- Scrollbar styles, webkit-specific (in the future there could be a custom scrollbar based on a nonintrusive scrollbar library, or styles *supporting* a library, where you're expected to use the library directly)
 
 
 ## Demo
@@ -63,8 +63,7 @@ The API is not versioned using semver yet, but it should be once a version 1.0 i
 
 ### Button styles
 
-Button styles are applied to `button` elements.
-Globally.
+Button styles are applied to `button` elements globally.
 And to reset it, you have to get rid of the psuedo element `::after` as well.
 
 You can have the depressed (held down) style stay using `.selected`
@@ -73,7 +72,7 @@ The non-pressed state is also applied to `.button-like-border`; in the future th
 
 ### Scrollbar styles
 
-Scrollbar styles are applied globally, but they have a `-webkit-` prefix, so they'll only work in "webkit-based" browsers, generally, like Chrome and Safari.
+Scrollbar styles are applied globally, but they have a `-webkit-` prefix, so they'll only work in "webkit-based" browsers, generally, like Chrome, Safari, and Opera.
 
 Can be overriden with `::-webkit-scrollbar` and related selectors (but not easily reset to the browser default, unless `-webkit-appearance: scrollbar` works)
 
@@ -94,7 +93,7 @@ Returns a jQuery object, which you should then append to the DOM where you want 
 #### Event: `info`
 
 Can be used to implement a status bar.
-A description is provided when rolling over menu items that specify a `description`, via a jQuery "extra parameter", accessed via e.g.:
+A description is provided when rolling over menu items that specify a `description`, via an extra parameter to the event handler. For example:
 
 ```js
 $menubar.on("info", (event, description)=> {
@@ -104,16 +103,19 @@ $menubar.on("info", (event, description)=> {
 
 #### Event: `default-info`
 
-Should be used to reset a status bar, if present (to blank or a default message).
+Should be used to reset a status bar, if present, to blank or a default message.
 
 ```js
 $menubar.on("default-info", ()=> {
 	$status.text("");
 	// or
 	$status.text("For Help, click Help Topics on the Help Menu.");
+	// like in MS Paint (and JS Paint)
 	// or perhaps even
 	$status.html("For Help, <a href='docs'>click here</a>");
-	// Note that a link could work for the default text but not for menu item descriptions, because it's a transient message
+	// Note that a link could only work for the default text;
+	// for menu item descriptions the message in the status bar is transient;
+	// you wouldn't be able to get to it to click on it.
 });
 ```
 
@@ -144,6 +146,27 @@ Creates a window component that can be dragged around and such, brought to the f
 `options.title`: Shortcut to set the window title initially.
 
 `options.icon`: Sets the icon of the window, assuming a global `TITLEBAR_ICON_SIZE` (which should generally be 16) and a global `$Icon` function which takes an icon identifier and size and returns an `img` (or other image-like element).
+
+```js
+// var DESKTOP_ICON_SIZE = 32;
+// var TASKBAR_ICON_SIZE = 16;
+var TITLEBAR_ICON_SIZE = 16; // required global (if using options.icon)
+
+function getIconPath(name, size){
+	return "/images/icons/" + name + "-" + size + "x" + size + ".png";
+}
+
+function $Icon(name, size){ // required global (if using options.icon)
+	var $img = $("<img class='icon'/>");
+	$img.attr({
+		draggable: false,
+		src: getIconPath(name, size),
+		width: size,
+		height: size,
+	});
+	return $img;
+}
+```
 
 \*Iframes require special handling. There's an `$IframeWindow` helper in [98](https://github.com/1j01/98), but a better approach would use composition rather than inheritance.
 (You could want multiple iframes in a window, or just an iframe with other content around it, maybe an iframe that sometimes exists or not!)
