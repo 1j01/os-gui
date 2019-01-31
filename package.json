@@ -1,42 +1,42 @@
 {
-  "name": "os-gui",
-  "description": "Retro OS GUI for the web",
-  "version": "0.0.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/1j01/os-gui.git"
-  },
-  "bugs": {
-    "url": "https://github.com/1j01/os-gui/issues"
-  },
-  "license": "MIT",
-  "keywords": [
-    "os",
-    "operating-system",
-    "gui",
-    "ui",
-    "ui-components",
-    "toolkit",
-    "retro",
-    "classic",
-    "vaporwave",
-    "98",
-    "95",
-    "windows",
-    "window",
-    "windowing",
-    "menubar",
-    "menubars",
-    "menus",
-    "menu",
-    "context-menu",
-    "context-menus",
-    "browser",
-	"web-based",
-	"css",
-	"styles",
-	"stylesheet",
-	"js",
-	"javascript"
-  ]
+	"name": "os-gui",
+	"description": "Retro OS GUI for the web",
+	"version": "0.0.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/1j01/os-gui.git"
+	},
+	"bugs": {
+		"url": "https://github.com/1j01/os-gui/issues"
+	},
+	"license": "MIT",
+	"keywords": [
+		"os",
+		"operating-system",
+		"gui",
+		"ui",
+		"ui-components",
+		"toolkit",
+		"retro",
+		"classic",
+		"vaporwave",
+		"98",
+		"95",
+		"windows",
+		"window",
+		"windowing",
+		"menubar",
+		"menubars",
+		"menus",
+		"menu",
+		"context-menu",
+		"context-menus",
+		"browser",
+		"web-based",
+		"css",
+		"styles",
+		"stylesheet",
+		"js",
+		"javascript"
+	]
 }
