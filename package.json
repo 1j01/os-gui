@@ -43,16 +43,13 @@
 		"javascript"
 	],
 	"scripts": {
-		"watch": "gulp watch",
+		"watch": "postcss src --output build --watch",
 		"live-server": "live-server --open=demo/"
 	},
 	"devDependencies": {
 		"autoprefixer": "9.4.7",
-		"gulp": "4.0.0",
-		"gulp-plumber": "1.2.1",
-		"gulp-postcss": "8.0.0",
-		"gulp-sourcemaps": "2.6.4",
 		"live-server": "1.2.1",
+		"postcss-cli": "6.1.1",
 		"precss": "4.0.0"
 	}
 }
