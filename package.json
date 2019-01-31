@@ -52,7 +52,6 @@
 		"gulp-plumber": "1.2.1",
 		"gulp-postcss": "8.0.0",
 		"gulp-sourcemaps": "2.6.4",
-		"gulp-watch": "5.0.1",
 		"live-server": "1.2.1",
 		"precss": "4.0.0"
 	}

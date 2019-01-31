@@ -247,3 +247,11 @@ Can be used to prevent closing a window (with `event.preventDefault()`, or just 
 ## License
 
 Licensed under the [MIT License](https://opensource.org/licenses/MIT), see [LICENSE](LICENSE) for details.
+
+## Development
+
+`npm run live-server` to open a development server, and concurrently (in a separate terminal),
+
+`npm run watch` to watch source files and recompile on changes.
+
+Close the server to install/update dependencies (or you'll run into EPERM issues).

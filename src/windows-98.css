@@ -1,36 +1,4 @@
-:root {
-	--ButtonAlternateFace: rgb(192, 192, 192);
-	--ButtonDkShadow: rgb(64, 64, 64);
-	--ButtonFace: rgb(212, 208, 200);
-	--ButtonHilight: rgb(255, 255, 255);
-	--ButtonLight: rgb(212, 208, 200);
-	--ButtonShadow: rgb(128, 128, 128);
-	--ButtonText: rgb(0, 0, 0);
-	--ActiveBorder: rgb(212, 208, 200);
-	--AppWorkspace: rgb(128, 128, 128);
-	--Background: rgb(58, 110, 165);
-	--InactiveBorder: rgb(212, 208, 200);
-	--Scrollbar: rgb(212, 208, 200);
-	--Window: rgb(255, 255, 255);
-	--WindowFrame: rgb(0, 0, 0);
-	--WindowText: rgb(0, 0, 0);
-	--ActiveTitle: rgb(10, 36, 106);
-	--GradientActiveTitle: rgb(166, 202, 240);
-	--GradientInactiveTitle: rgb(192, 192, 192);
-	--InactiveTitle: rgb(128, 128, 128);
-	--InactiveTitleText: rgb(212, 208, 200);
-	--TitleText: rgb(255, 255, 255);
-	--Menu: rgb(212, 208, 200);
-	--MenuBar: rgb(192, 192, 192);
-	--MenuHilight: rgb(0, 0, 128);
-	--MenuText: rgb(0, 0, 0);
-	--GrayText: rgb(128, 128, 128);
-	--Hilight: rgb(10, 36, 106);
-	--HilightText: rgb(255, 255, 255);
-	--HotTrackingColor: rgb(0, 0, 128);
-	--InfoText: rgb(0, 0, 0);
-	--InfoWindow: rgb(255, 255, 225);
-}
+@import "default-colors.css";
 
 button {
 	border: 2px outset var(--ButtonFace);
