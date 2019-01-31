@@ -43,12 +43,14 @@
 		"javascript"
 	],
 	"scripts": {
-		"watch": "postcss src --output build --watch",
+		"prewatch": "mkdirp build",
+		"watch": "postcss src/**/*.css --base src --dir build --map --watch --use precss --use autoprefixer",
 		"live-server": "live-server --open=demo/"
 	},
 	"devDependencies": {
 		"autoprefixer": "9.4.7",
 		"live-server": "1.2.1",
+		"mkdirp": "0.5.1",
 		"postcss-cli": "6.1.1",
 		"precss": "4.0.0"
 	}

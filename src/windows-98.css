@@ -1,12 +1,18 @@
-@import "default-colors.css";
-
 button {
-	border: 2px outset var(--ButtonFace);
 	background: var(--ButtonFace);
+	border: 2px outset var(--ButtonFace);
 }
-@supports selector(a::after) {
-	button {
+button:active {
+	border: 2px inset var(--ButtonFace);
+}
+/* @supports selector(a::after) { ... } doesn't work */
+@supports (--supports: supports) {
+	button,
+	button:active {
 		border: none;
+		border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
+		border-style: solid;
+		border-width: 1px 1px;
 	}
 	button::after {
 		outline: 1px solid black;
