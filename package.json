@@ -1,7 +1,7 @@
 {
 	"name": "os-gui",
-	"description": "Retro OS GUI for the web",
-	"version": "0.0.0",
+	"description": "Retro OS styles & components for the web",
+	"version": "0.1.0",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/1j01/os-gui.git"
@@ -16,6 +16,8 @@
 		"gui",
 		"ui",
 		"ui-components",
+		"components",
+		"ui-toolkit",
 		"toolkit",
 		"retro",
 		"classic",
@@ -36,7 +38,21 @@
 		"css",
 		"styles",
 		"stylesheet",
+		"theme",
 		"js",
 		"javascript"
-	]
+	],
+	"scripts": {
+		"watch": "gulp watch",
+		"live-server": "live-server --open=demo/"
+	},
+	"devDependencies": {
+		"autoprefixer": "9.4.7",
+		"gulp": "4.0.0",
+		"gulp-postcss": "8.0.0",
+		"gulp-sourcemaps": "2.6.4",
+		"gulp-watch": "5.0.1",
+		"live-server": "1.2.1",
+		"precss": "4.0.0"
+	}
 }

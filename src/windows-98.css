@@ -1,0 +1,12 @@
+
+button {
+	border: 2px outset white;
+}
+@supports selector(a::after) {
+	button {
+		border: none;
+	}
+	button::after {
+		outline: 1px solid black;
+	}
+}
