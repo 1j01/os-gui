@@ -19,41 +19,31 @@
 	border-width: 1px;
 	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
 }
-
-button {
+%inset-deep {
+	@extend %inset-shallow; /* as fallback */
 	position: relative; /* for pseudo element(s) */
-	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */
-	background: var(--ButtonFace);
-	@extend %inset-shallow;
 }
-button:active {
-	@extend %outset-shallow;
+%outset-deep {
+	@extend %outset-shallow; /* as fallback */
+	position: relative; /* for pseudo element(s) */
 }
-/* TODO! (this doesn't work without child ELEMENT) */
-/* also, this is more complicated; see Paint; the tool buttons translate when being pushed and when depressed, and these add together */
-/*button:active > * {
-	position: relative;
-	left: 1px;
-	top: 1px;
-}
-*/
 /* @supports selector(a::after) { ... } doesn't work */
 @supports (--supports: supports) {
-	button,
-	button:active {
+	%inset-deep,
+	%outset-deep {
 		border: none;
 	}
-	button {
+	%outset-deep {
 		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
 		border-style: solid;
 		border-width: 1px 1px;
 	}
-	button:active {
+	%inset-deep {
 		border-color: var(--ButtonShadow);
 		border-style: solid;
 		border-width: 1px 1px;
 	}
-	button::after {
+	%outset-deep::after {
 		content: "";
 		display: block;
 		position: absolute;
@@ -61,18 +51,35 @@ button:active {
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
-		/*border-right: 1px solid var(--ButtonDkShadow);
-		border-bottom: 1px solid var(--ButtonDkShadow);*/
-		border-color: var(--ButtonHilight) black black var(--ButtonHilight);
+		border-color: var(--ButtonHilight) black black var(--ButtonHilight); /* var for black?? */
 		border-style: solid;
 		border-width: 1px 1px;
 	}
-	button:active::after {
+	%inset-deep::after {
 		border-color: black; /* ?? */
 		border-style: solid;
 		border-width: 1px 1px;
 	}
 }
+button {
+	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */
+	background: var(--ButtonFace);
+	@extend %outset-deep;
+}
+button:active {
+	@extend %inset-deep;
+}
+
+/* TODO: offset content on press! */
+/* (this would need a child ELEMENT, wouldn't work with text nodes as direct descendants:) */
+/*button:active > * {
+	position: relative;
+	left: 1px;
+	top: 1px;
+}
+*/
+/* also, this is more complicated; see Paint; the tool buttons translate when being pushed and when depressed, and these add together */
+
 button:focus::before {
 	content: "";
 	display: block;
@@ -82,8 +89,8 @@ button:focus::before {
 	right: 2px;
 	bottom: 2px;
 	border: 1px dotted var(--ButtonDkShadow); /* ?? */
-	/*border-radius: 2px; maybe haha? probably not! */
-	/* TODO: exactnesses */
+	/* TODO: get exact inset dimensions, and have corners without dots ideally */
+	/* (could use outline instead of ::before at this point) */
 }
 button.lightweight:not(:hover):not(:focus) {
 	border-color: transparent;
@@ -129,4 +136,9 @@ button.show-active-state-style {
 }
 .window-content {
 	background: var(--ButtonFace); /* ?? speculation */
+}
+
+/* TODO: better API! better names */
+.button-like-border {
+	@extend %outset-deep;
 }
