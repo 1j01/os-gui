@@ -1,3 +1,15 @@
+:root {
+	--checkerboard-pattern: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC);
+}
+
+%checkerboard {
+	background: var(--checkerboard-pattern) repeat;
+}
+%font {
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 12px;
+}
+
 button {
 	background: var(--ButtonFace);
 	border: 2px outset var(--ButtonFace);
@@ -18,8 +30,7 @@ button:active {
 /* @supports selector(a::after) { ... } doesn't work */
 @supports (--supports: supports) {
 	button,
-	button:active,
-	button.selected {
+	button:active {
 		border: none;
 	}
 	button {
@@ -44,8 +55,35 @@ button:active {
 		border-bottom: 1px solid var(--ButtonDkShadow);
 	}
 }
+button:focus::before {
+	content: "";
+	display: block;
+	position: absolute;
+	left: 2px;
+	top: 2px;
+	right: 2px;
+	bottom: 2px;
+	border: 1px dotted var(--ButtonDkShadow); /* ?? */
+	/*border-radius: 2px; maybe haha? probably not! */
+	/* TODO: exactnesses */
+}
+button.lightweight:not(:hover):not(:focus) {
+	border-color: transparent;
+}
+button.lightweight::after {
+	display: none;
+}
+button[disabled] {
+	color: --var(GrayText);
+	text-shadow: 1px 1px 0px white; /* TODO: what var for color? */
+}
+/* TODO: [checked]? */
 button.selected {
 	@extend button:active;
+	@extend %checkerboard;
+}
+button.show-focus-ring {
+	@extend button:focus;
 }
 
 /* TODO: inactive styles */
@@ -54,8 +92,7 @@ button.selected {
 	background: linear-gradient(to right, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%);
 	
 	color: var(--TitleText);
-	font-family: 'Segoe UI', sans-serif;
-	font-size: 12px;
+	@extend %font;
 }
 .window {
 	background: var(--Window);
