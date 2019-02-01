@@ -82,8 +82,11 @@ button.selected {
 	@extend button:active;
 	@extend %checkerboard;
 }
-button.show-focus-ring {
+button.show-focus-state-style {
 	@extend button:focus;
+}
+button.show-active-state-style {
+	@extend button:active;
 }
 
 /* TODO: inactive styles */
