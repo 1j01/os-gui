@@ -5,10 +5,6 @@
 .window-title {
 	cursor: default;
 	user-select: none;
-	-o-user-select: none;
-	-ms-user-select: none;
-	-moz-user-select: none;
-	-webkit-user-select: none;
 }
 .window-titlebar .icon {
 	vertical-align: bottom;
@@ -19,13 +15,13 @@
 }
 .desktop-icon {
 	display: inline-block;
-	vertical-align: bottom; /* with inline-block, always */
+	vertical-align: bottom; /* with inline-block, always specify */
 	margin: 5px;
 	text-align: center;
 }
 .desktop-icon .icon-wrapper {
 	display: inline-block;
-	vertical-align: bottom; /* with inline-block, always */
+	vertical-align: bottom; /* with inline-block, always specify */
 	position: relative;
 }
 .desktop-icon .title {
@@ -100,6 +96,7 @@
 	padding: 3px 5px;
 }
 
-::before, ::after {
+::before,
+::after {
 	pointer-events: none;
 }

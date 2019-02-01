@@ -18,7 +18,8 @@ button:active {
 /* @supports selector(a::after) { ... } doesn't work */
 @supports (--supports: supports) {
 	button,
-	button:active {
+	button:active,
+	button.selected {
 		border: none;
 	}
 	button {
@@ -42,6 +43,9 @@ button:active {
 		border-right: 1px solid var(--ButtonDkShadow);
 		border-bottom: 1px solid var(--ButtonDkShadow);
 	}
+}
+button.selected {
+	@extend button:active;
 }
 
 /* TODO: inactive styles */
