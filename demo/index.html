@@ -76,13 +76,13 @@
 				<button>Basic button</button>
 			</p>
 			<p>
-				<button class="show-focus-state-style">Showing focus state</button> - not useful outside of this demo - don't use this class!
-			</p>
-			<p>
-				<button class="show-active-state-style">Showing active state</button> - not useful outside of this demo - don't use this class!
-			</p>
-			<p>
 				<button disabled>Disabled button</button>
+			</p>
+			<p>
+				<button class="show-focus-state-style" style="pointer-events: none" tabIndex="-1">Showing :focus state</button> (not useful outside of this demo)
+			</p>
+			<p>
+				<button class="show-active-state-style" style="pointer-events: none" tabIndex="-1">Showing :active state</button> (not useful outside of this demo)
 			</p>
 			<p>
 				<button class="default" title="">Default button</button>
@@ -91,7 +91,8 @@
 				The real default, <em>OK</em>, will apply, not <em>Apply</em> (when you hit Enter).
 			</p>
 			<p>
-				<button class="selected">Selected button</button> - state for toggle buttons, like the tool buttons in Paint.
+				<!-- TODO: "Toggle button" instead, and have it toggle -->
+				<button class="selected">Selected button</button> - state for toggle buttons, like the buttons for switching tools in Paint.
 			</p>
 			<!-- TODO: <p>
 				<label>
