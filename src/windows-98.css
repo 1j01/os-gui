@@ -53,7 +53,12 @@ button:active {
 		bottom: -2px;
 		/*border-right: 1px solid var(--ButtonDkShadow);
 		border-bottom: 1px solid var(--ButtonDkShadow);*/
-		border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
+		border-color: var(--ButtonHilight) black black var(--ButtonHilight);
+		border-style: solid;
+		border-width: 1px 1px;
+	}
+	button:active::after {
+		border-color: black; /* ?? */
 		border-style: solid;
 		border-width: 1px 1px;
 	}
