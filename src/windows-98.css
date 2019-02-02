@@ -47,16 +47,18 @@
 		content: "";
 		display: block;
 		position: absolute;
+		pointer-events: none;
 		left: -2px;
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
-		border-color: var(--ButtonHilight) black black var(--ButtonHilight); /* var for black?? */
+		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
 	}
 	%inset-deep::after {
-		border-color: black; /* ?? */
+		@extend %outset-deep::after;
+		border-color: var(--ButtonDkShadow);
 		border-style: solid;
 		border-width: 1px 1px;
 	}
@@ -133,12 +135,88 @@ button.show-active-state-style {
 	background: var(--Window);
 	/*color: var(--WindowText);*/
 	/*border: 1px solid var(--WindowFrame);*/
+	@extend %outset-deep;
+	background: var(--ButtonFace); /* should this be part of %outset-deep? probably! */
+	/* TODO: use window-specific theme colors; also different types of windows */
+	/* padding: 2px; */
 }
-.window-content {
-	background: var(--ButtonFace); /* ?? speculation */
+.window > * {
+	/* margin: 1px; */
+}
+.window-title {
+	padding-left: 2px;
+}
+.window-button {
+	margin: 2px;
 }
 
 /* TODO: better API! better names */
 .button-like-border {
 	@extend %outset-deep;
+}
+
+
+::selection {
+	background-color: var(--Hilight);
+	color: var(--HilightText);
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-button {
+	width: 16px;
+	height: 16px;
+}
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-button {
+	background: var(--ButtonFace);
+	border-top: 1px solid var(--ButtonFace);
+	border-left: 1px solid var(--ButtonFace);
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
+}
+::-webkit-scrollbar-button:hover:active {
+	border: 1px solid var(--ButtonShadow);
+	box-shadow: none;
+}
+::-webkit-scrollbar-corner {
+	background: var(--ButtonFace);
+}
+::-webkit-scrollbar-button {
+	background-position: center;
+	background-repeat: no-repeat;
+}
+::-webkit-scrollbar-button {
+	background-image: url("images/arrows.png");
+}
+::-webkit-scrollbar-button:horizontal:decrement:disabled {
+	background-position: calc(-24px + 1px) 1px; /* left */
+}
+::-webkit-scrollbar-button:horizontal:increment:disabled {
+	background-position: calc(-36px + 1px) 1px; /* right */
+}
+::-webkit-scrollbar-button:vertical:decrement:disabled {
+	background-position: calc(-12px + 1px) 1px; /* up */
+}
+::-webkit-scrollbar-button:vertical:increment:disabled {
+	background-position: calc(-0px + 1px) 1px; /* down */
+}
+::-webkit-scrollbar-button:horizontal:decrement {
+	background-position: calc(-24px + 1px) calc(-12px + 1px); /* left */
+}
+::-webkit-scrollbar-button:horizontal:increment {
+	background-position: calc(-36px + 1px) calc(-12px + 1px); /* right */
+}
+::-webkit-scrollbar-button:vertical:decrement {
+	background-position: calc(-12px + 1px) calc(-12px + 1px); /* up */
+}
+::-webkit-scrollbar-button:vertical:increment {
+	background-position: calc(-0px + 1px) calc(-12px + 1px); /* down */
+}
+::-webkit-scrollbar {
+	@extend %checkerboard;
+}
+::-webkit-scrollbar-track-piece:active {
+	background: black; /* variable?? */
 }

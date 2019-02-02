@@ -44,7 +44,7 @@
 	],
 	"scripts": {
 		"prewatch": "mkdirp build",
-		"watch": "postcss src/**/*.css --base src --dir build --map --watch --use precss --use autoprefixer",
+		"watch": "postcss src/**/*.css --base src --dir build --map --watch --use precss --use autoprefixer --use postcss-inline-image",
 		"live-server": "live-server --open=demo/"
 	},
 	"devDependencies": {
@@ -52,6 +52,7 @@
 		"live-server": "1.2.1",
 		"mkdirp": "0.5.1",
 		"postcss-cli": "6.1.1",
+		"postcss-inline-image": "0.1.1",
 		"precss": "4.0.0"
 	}
 }
