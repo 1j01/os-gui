@@ -90,9 +90,6 @@ button.selected {
 	border-right: 1px solid #7b7b7b;
 	border-bottom: 1px solid #7b7b7b;
 }
-.window > * {
-	margin: 1px;
-}
 .window-titlebar {
 	background: #000080; /* fallback to standard color */
 	background: -moz-linear-gradient(left, #000080 0%, #1084d0 100%); /* FF3.6+ */
