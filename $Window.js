@@ -1,10 +1,3 @@
-// TODO: E\("([a-z]+)"\) -> "<$1>" or get rid of jQuery as a dependency
-function E(t){
-	return document.createElement(t);
-}
-
-// TODO: remove!
-var $G = $(window);
 
 $Window.Z_INDEX = 5;
 
@@ -13,8 +6,11 @@ function $Window(options){
 	
 	var $w = $(E("div")).addClass("window").appendTo("body");
 	$w.$titlebar = $(E("div")).addClass("window-titlebar").appendTo($w);
-	$w.$title = $(E("span")).addClass("window-title").appendTo($w.$titlebar);
-	$w.$x = $(E("button")).addClass("window-close-button window-button button").appendTo($w.$titlebar);
+	$w.$title_area = $(E("div")).addClass("window-title-area").appendTo($w.$titlebar);
+	$w.$title = $(E("span")).addClass("window-title").appendTo($w.$title_area);
+	$w.$minimize = $(E("button")).addClass("window-minimize-button window-button").appendTo($w.$titlebar);
+	$w.$maximize = $(E("button")).addClass("window-maximize-button window-button").appendTo($w.$titlebar);
+	$w.$x = $(E("button")).addClass("window-close-button window-button").appendTo($w.$titlebar);
 	$w.$content = $(E("div")).addClass("window-content").appendTo($w);
 	
 	var $component = options.$component;
@@ -25,14 +21,149 @@ function $Window(options){
 	if($component){
 		$w.addClass("component-window");
 	}
-	
+
+	const $eventTarget = $({});
+	const makeSimpleListenable = (name)=> {
+		return (callback)=> {
+			const fn = ()=> {
+				callback();
+			};
+			$eventTarget.on(name, fn);
+			const dispose = ()=> {
+				$eventTarget.off(name, fn);
+			};
+			return dispose;
+		};
+	};
+	$w.onFocus = makeSimpleListenable("focus");
+	$w.onBlur = makeSimpleListenable("blur");
+	$w.onClosed = makeSimpleListenable("closed");
+
+	$w.focus = ()=> {
+		if (window.focusedWindow === $w) {
+			return;
+		}
+		window.focusedWindow && focusedWindow.blur();
+		$w.bringToFront();
+		$w.addClass("focused");
+		window.focusedWindow = $w;
+		$eventTarget.triggerHandler("focus");
+	};
+	$w.blur = ()=> {
+		if (window.focusedWindow !== $w) {
+			return;
+		}
+		$w.removeClass("focused");
+		// TODO: document.activeElement && document.activeElement.blur()?
+		$eventTarget.triggerHandler("blur");
+
+		window.focusedWindow = null;
+	};
+
+	$w.on("focusin pointerdown", function(e){
+		$w.focus();
+	});
+	$G.on("pointerdown", (e)=> {
+		if (
+			e.target.closest(".window") !== $w[0] &&
+			!e.target.closest(".taskbar")
+		) {
+			$w.blur();
+		}
+	});
+
 	$w.attr("touch-action", "none");
 	
 	$w.$x.on("click", function(){
 		$w.close();
 	});
-	$w.$x.on("mousedown selectstart", function(e){
+
+	$w.minimize = function() {
+		if ($w.is(":visible")) {
+			const $task = this.task.$task;
+			const before_rect = $w.$titlebar[0].getBoundingClientRect();
+			const after_rect = $task[0].getBoundingClientRect();
+			$w.animateTitlebar(before_rect, after_rect, ()=> {
+				$w.hide();
+				$w.blur();
+			});
+		}
+	};
+	$w.unminimize = function() {
+		if ($w.is(":hidden")) {
+			const $task = this.task.$task;
+			const before_rect = $task[0].getBoundingClientRect();
+			$w.show();
+			const after_rect = $w.$titlebar[0].getBoundingClientRect();
+			$w.hide();
+			$w.animateTitlebar(before_rect, after_rect, ()=> {
+				$w.show();
+				$w.bringToFront();
+				$w.focus();
+			});
+		}
+	};
+
+	let before_maximize;
+	$w.$maximize.on("click", function(){
+
+		const instantly_maximize = ()=> {
+			before_maximize = {
+				left: $w.css("left"),
+				top: $w.css("top"),
+				width: $w.css("width"),
+				height: $w.css("height"),
+			};
+			
+			$w.addClass("maximized");
+			$w.css({
+				top: 0,
+				left: 0,
+				width: "100vw",
+				height: `calc(100vh - ${$(".taskbar").height() + 1}px)`,
+			});
+		};
+		const instantly_unmaximize = ()=> {
+			$w.removeClass("maximized");
+			$w.css({width: "", height: ""});
+			if (before_maximize) {
+				$w.css({
+					left: before_maximize.left,
+					top: before_maximize.top,
+					width: before_maximize.width,
+					height: before_maximize.height,
+				});
+			}
+		};
+
+		const before_rect = $w.$titlebar[0].getBoundingClientRect();
+		let after_rect;
+		$w.css("transform", "");
+		if ($w.hasClass("maximized")) {
+			instantly_unmaximize();
+			after_rect = $w.$titlebar[0].getBoundingClientRect();
+			instantly_maximize();
+		} else {
+			instantly_maximize();
+			after_rect = $w.$titlebar[0].getBoundingClientRect();
+			instantly_unmaximize();
+		}
+		$w.animateTitlebar(before_rect, after_rect, ()=> {
+			if ($w.hasClass("maximized")) {
+				instantly_unmaximize();
+			} else {
+				instantly_maximize();
+			}
+		});
+	});
+	$w.$minimize.on("click", function(){
+		$w.minimize();
+	});
+	$w.$title_area.on("mousedown selectstart", ".window-button", function(e){
 		e.preventDefault();
+	});
+	$w.$title_area.on("dblclick", ()=> {
+		$w.$maximize.triggerHandler("click");
 	});
 	
 	$w.css({
@@ -52,7 +183,7 @@ function $Window(options){
 		if(e.ctrlKey || e.altKey || e.shiftKey){
 			return;
 		}
-		var $buttons = $w.$content.find("button.button");
+		var $buttons = $w.$content.find("button");
 		var $focused = $(document.activeElement);
 		var focused_index = $buttons.index($focused);
 		// console.log(e.keyCode);
@@ -111,8 +242,8 @@ function $Window(options){
 	
 	$w.applyBounds = function(){
 		$w.css({
-			left: Math.max(0, Math.min(innerWidth - $w.width(), $w[0].getBoundingClientRect().left)),
-			top: Math.max(0, Math.min(innerHeight - $w.height(), $w[0].getBoundingClientRect().top)),
+			left: Math.max(0, Math.min(innerWidth - $w.width(), $w.position().left)),
+			top: Math.max(0, Math.min(innerHeight - $w.height(), $w.position().top)),
 		});
 	};
 	
@@ -142,8 +273,11 @@ function $Window(options){
 		if($(e.target).is("button")){
 			return;
 		}
-		drag_offset_x = e.clientX - $w[0].getBoundingClientRect().left;
-		drag_offset_y = e.clientY - $w[0].getBoundingClientRect().top;
+		if ($w.hasClass("maximized")) {
+			return;
+		}
+		drag_offset_x = e.clientX - $w.position().left;
+		drag_offset_y = e.clientY - $w.position().top;
 		$G.on("pointermove", drag);
 	});
 	$G.on("pointerup", function(e){
@@ -158,7 +292,6 @@ function $Window(options){
 	$w.$Button = function(text, handler){
 		var $b = $(E("button"))
 			.appendTo($w.$content)
-			.addClass("dialogue-button")
 			.text(text)
 			.on("click", function(){
 				if(handler){
@@ -169,24 +302,82 @@ function $Window(options){
 		return $b;
 	};
 	$w.title = function(title){
-		if(title){ // TODO: !== undefined
+		if(title !== undefined){
 			$w.$title.text(title);
+			if ($w.task) {
+				$w.task.updateTitle();
+			}
 			return $w;
 		}else{
 			return $w.$title.text();
 		}
 	};
-	$w.close = function(){
-		var e = $.Event("close");
-		$w.trigger(e);
-		if(e.isDefaultPrevented()){
-			return;
+	$w.getTitle = function() {
+		return $w.title();
+	};
+	$w.getIconName = function() {
+		return $w.icon_name;
+	};
+	$w.setIconByID = function(icon_name){
+		// $w.$icon.attr("src", getIconPath(icon_name));
+		var old_$icon = $w.$icon;
+		$w.$icon = $Icon(icon_name, TITLEBAR_ICON_SIZE);
+		old_$icon.replaceWith($w.$icon);
+		$w.icon_name = icon_name;
+		$w.task.updateIcon();
+		return $w;
+	};
+	$w.animateTitlebar = function(from, to, callback=()=>{}) {
+		const $eye_leader = $w.$titlebar.clone(true);
+		$eye_leader.find("button").remove();
+		$eye_leader.appendTo("body");
+		const durationMS = 200; // TODO: how long?
+		const duration = `${durationMS}ms`;
+		$eye_leader.css({
+			transition: `left ${duration} linear, top ${duration} linear, width ${duration} linear, height ${duration} linear`,
+			position: "absolute",
+			zIndex: 10000000,
+			pointerEvents: "none",
+			left: from.left,
+			top: from.top,
+			width: from.width,
+			height: from.height,
+		});
+		setTimeout(()=> {
+			$eye_leader.css({
+				left: to.left,
+				top: to.top,
+				width: to.width,
+				height: to.height,
+			});
+		}, 5);
+		const tid = setTimeout(()=> {
+			$eye_leader.remove();
+			callback();
+		}, durationMS * 1.2);
+		$eye_leader.on("transitionend animationcancel", ()=> {
+			$eye_leader.remove();
+			clearTimeout(tid);
+			callback();
+		});
+	};
+	$w.close = function(force){
+		if(!force){
+			var e = $.Event("close");
+			$w.trigger(e);
+			if(e.isDefaultPrevented()){
+				return;
+			}
 		}
 		if($component){
 			$component.detach();
 		}
 		$w.remove();
 		$w.closed = true;
+		$eventTarget.triggerHandler("closed");
+		// $w.trigger("closed");
+		// TODO: change usages of "close" to "closed" where appropriate
+		// and probably rename the "close" event
 	};
 	$w.closed = false;
 	
@@ -197,6 +388,8 @@ function $Window(options){
 	if(!$component){
 		$w.center();
 	}
+	
+	mustHaveMethods($w, windowInterfaceMethods);
 	
 	return $w;
 }
@@ -219,15 +412,12 @@ function $FormWindow(title){
 			action();
 		});
 		
-		// this should really not be needed @TODO
-		$b.addClass("button dialogue-button");
-		
 		$b.on("pointerdown", function(){
 			$b.focus();
 		});
 		
 		return $b;
 	};
-	
+
 	return $w;
 };
