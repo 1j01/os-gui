@@ -48,10 +48,10 @@
 		"live-server": "live-server --open=demo/"
 	},
 	"devDependencies": {
-		"autoprefixer": "9.4.7",
+		"autoprefixer": "9.7.4",
 		"live-server": "1.2.1",
-		"mkdirp": "0.5.1",
-		"postcss-cli": "6.1.1",
+		"mkdirp": "1.0.3",
+		"postcss-cli": "7.1.0",
 		"postcss-inline-image": "0.1.1",
 		"precss": "4.0.0"
 	}
