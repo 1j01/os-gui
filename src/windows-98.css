@@ -123,13 +123,19 @@ button.show-active-state-style {
 	@extend button:active;
 }
 
-/* TODO: inactive styles */
 .window-titlebar {
 	background: var(--ActiveTitle);
 	background: linear-gradient(to right, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%);
 	
 	color: var(--TitleText);
 	@extend %font;
+	font-weight: bold;
+}
+.window:not(.focused) .window-titlebar {
+	background: darkgray;
+	background: linear-gradient(to right, var(--InactiveTitle) 0%, var(--GradientInactiveTitle) 100%);
+
+	color: var(--InactiveTitleText);
 }
 .window {
 	background: var(--Window);
