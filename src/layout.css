@@ -6,6 +6,7 @@
 	cursor: default;
 	user-select: none;
 }
+
 .window-titlebar .icon {
 	vertical-align: bottom;
 }
@@ -70,22 +71,6 @@
 .menu-item-checkbox-area,
 .menu-item-submenu-area {
 	text-align: center;
-}
-
-.window-title {
-	display: inline-block !important;
-	margin: 0;
-	padding: 0;
-}
-.window-close-button {
-	display: inline-block !important;
-	float: right;
-	width: 13px;
-	height: 11px;
-}
-.window-close-button:before {
-	content: '×';
-	position: relative;
 }
 
 .window-content .button-group {

@@ -4,6 +4,7 @@
 }
 %checkerboard {
 	background: var(--checkerboard-pattern) repeat;
+	image-rendering: pixelated;
 }
 %font {
 	font-family: 'Segoe UI', sans-serif;
@@ -124,6 +125,10 @@ button.show-active-state-style {
 }
 
 .window-titlebar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
 	background: var(--ActiveTitle);
 	background: linear-gradient(to right, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%);
 	
@@ -149,12 +154,74 @@ button.show-active-state-style {
 .window > * {
 	/* margin: 1px; */
 }
+.window-button {
+	margin: 2px 0;
+}
+.window-close-button {
+	margin-left: 2px;
+}
+.window-title-area {
+	position: relative;
+	flex: 1;
+	height: 16px; /* 100% doesn't work */
+}
 .window-title {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	display: inline-block !important;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	padding-left: 2px;
 }
-.window-button {
-	margin: 2px;
+.window-close-button {
+	/* display: block !important; */
+	/* float: right; */
+	/* width: 13px;
+	height: 11px; */
 }
+.window-close-button,
+.window-maximize-button,
+.window-minimize-button {
+	background-image: url("images/titlebar-buttons.png");
+	image-rendering: pixelated;
+	display: block;
+	width: 16px;
+	height: 14px;
+	padding: 0;
+}
+
+.window-close-button {
+	background-position: calc(-3 * 13px);
+}
+.window-maximize-button {
+	background-position: calc(-1 * 13px);
+}
+.maximized .window-maximize-button {
+	background-position: calc(-2 * 13px);
+}
+.window-minimize-button {
+	background-position: calc(-0 * 13px);
+}
+
+.window-close-button:hover:active {
+	background-position: calc(-3 * 13px + 1px) 2px;
+}
+.window-maximize-button:hover:active {
+	background-position: calc(-1 * 13px + 1px) 2px;
+}
+.maximized .window-maximize-button:hover:active {
+	background-position: calc(-2 * 13px + 1px) 2px;
+}
+.window-minimize-button:hover:active {
+	background-position: calc(-0 * 13px + 1px) 2px;
+}
+
 
 /* TODO: better API! better names */
 .button-like-border {
@@ -195,6 +262,7 @@ button.show-active-state-style {
 }
 ::-webkit-scrollbar-button {
 	background-image: url("images/arrows.png");
+	image-rendering: pixelated;
 }
 ::-webkit-scrollbar-button:horizontal:decrement:disabled {
 	background-position: calc(-24px + 1px) 1px; /* left */
