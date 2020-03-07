@@ -108,7 +108,7 @@ button.lightweight:active {
 	@extend %outset-shallow;
 }
 button[disabled] {
-	color: --var(GrayText);
+	color: var(--GrayText);
 	text-shadow: 1px 1px 0px white; /* TODO: what var for color? */
 }
 /* TODO: [checked]? */
