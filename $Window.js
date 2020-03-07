@@ -1,3 +1,11 @@
+// TODO: E\("([a-z]+)"\) -> "<$1>" or get rid of jQuery as a dependency
+function E(t){
+	return document.createElement(t);
+}
+
+// TODO: remove!
+var $G = $(window);
+
 
 $Window.Z_INDEX = 5;
 
@@ -389,7 +397,7 @@ function $Window(options){
 		$w.center();
 	}
 	
-	mustHaveMethods($w, windowInterfaceMethods);
+	// mustHaveMethods($w, windowInterfaceMethods);
 	
 	return $w;
 }

@@ -7,7 +7,7 @@ var menus = {
 				alert("\"Open Sesame!\"");
 			}
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "&Brexit",
 			action: ()=> {
