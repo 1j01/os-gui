@@ -228,8 +228,7 @@ button.show-hover-active-state-style {
 
 .menus *,
 .menu-popup * {
-	font-family: 'Segoe UI', sans-serif;
-	font-size: 12px;
+	@extend %font;
 }
 .menu-container {
 	margin-bottom: 1px;
@@ -238,38 +237,40 @@ button.show-hover-active-state-style {
 	padding: 2px 5px;
 	position: relative;
 	outline: 0;
+	/* @extend button.lightweight; */
 }
 .menu-button:hover {
-	box-shadow: 1px 1px 0 white inset, -1px -1px 0 #707070 inset;
+	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
 .menu-button:active,
 .menu-button.active {
-	box-shadow: 1px 1px 0 #707070 inset, -1px -1px 0 white inset;
+	box-shadow: 1px 1px 0 var(--ButtonShadow) inset, -1px -1px 0 white inset;
 	top: 1px;
 	left: 1px;
 }
 .menu-popup:not(.something-else) { /* CSS specifity hack */
 	display: block;
 	padding: 2px;
-	background: #c0c0c0;
-	border-top: 1px solid #c0c0c0;
-	border-left: 1px solid #c0c0c0;
+	/* @extend %outset-medium; 1px highlight, 2px shadow */
+	background: var(--ButtonFace);
+	border-top: 1px solid var(--ButtonFace);
+	border-left: 1px solid var(--ButtonFace);
 	border-right: 1px solid #000;
 	border-bottom: 1px solid #000;
-	box-shadow: 1px 1px 0 white inset, -1px -1px 0 #707070 inset;
+	box-shadow: 1px 1px 0 white inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
 .menu-item {
 	padding: 1px 3px;
 	margin: 2px;
 }
 .menu-item[disabled] {
-	color: #808080;
+	color: var(--GrayText);
 	text-shadow: 0.8px 0.8px 0px #fff;
 }
 .menu-item:focus,
 .menu-item.active {
-	background: #007;
-	color: #fff;
+	background: var(--Hilight);
+	color: var(--HilightText);
 	text-shadow: none;
 	outline: 0;
 }
