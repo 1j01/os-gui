@@ -115,16 +115,10 @@ button[disabled] {
 	color: var(--GrayText);
 	text-shadow: 1px 1px 0px white; /* TODO: what var for color? */
 }
-/* TODO: [checked]? */
+/* TODO: [checked]? .pressed? .depressed? .down? .held? what should it be called? */
 button:not(.lightweight).selected {
 	@extend %inset-deep;
 	@extend %checkerboard;
-}
-button.show-focus-state-style {
-	@extend button:not(.lightweight):focus;
-}
-button.show-hover-active-state-style {
-	@extend button:not(.lightweight):hover:active;
 }
 
 .window-titlebar {
