@@ -297,3 +297,9 @@ button.show-hover-active-state-style {
 ::-webkit-scrollbar-track-piece:active {
 	background: black; /* variable?? */
 }
+
+/* turn off double buttons */
+::-webkit-scrollbar-button:start:increment,
+::-webkit-scrollbar-button:end:decrement {
+	display: none;
+}
