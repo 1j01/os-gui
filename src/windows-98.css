@@ -37,12 +37,12 @@
 	%outset-deep {
 		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
 		border-style: solid;
-		border-width: 1px 1px;
+		border-width: 2px 2px;
 	}
 	%inset-deep {
 		border-color: var(--ButtonShadow);
 		border-style: solid;
-		border-width: 1px 1px;
+		border-width: 2px 2px;
 	}
 	%outset-deep::after {
 		content: "";
@@ -69,7 +69,7 @@ button {
 	background: var(--ButtonFace);
 	@extend %outset-deep;
 }
-button:active {
+button:hover:active {
 	@extend %inset-deep;
 }
 
@@ -159,6 +159,7 @@ button.show-active-state-style {
 }
 .window-close-button {
 	margin-left: 2px;
+	margin-right: 2px;
 }
 .window-title-area {
 	position: relative;
@@ -197,29 +198,29 @@ button.show-active-state-style {
 }
 
 .window-close-button {
-	background-position: calc(-3 * 13px);
+	background-position: calc(-3 * 13px - 1px) 0px;
 }
 .window-maximize-button {
-	background-position: calc(-1 * 13px);
+	background-position: calc(-1 * 13px - 1px) 0px;
 }
 .maximized .window-maximize-button {
-	background-position: calc(-2 * 13px);
+	background-position: calc(-2 * 13px - 1px) 0px;
 }
 .window-minimize-button {
-	background-position: calc(-0 * 13px);
+	background-position: calc(-0 * 13px - 1px) 0px;
 }
 
 .window-close-button:hover:active {
-	background-position: calc(-3 * 13px + 1px) 2px;
+	background-position: calc(-3 * 13px - 0px) 1px;
 }
 .window-maximize-button:hover:active {
-	background-position: calc(-1 * 13px + 1px) 2px;
+	background-position: calc(-1 * 13px - 0px) 1px;
 }
 .maximized .window-maximize-button:hover:active {
-	background-position: calc(-2 * 13px + 1px) 2px;
+	background-position: calc(-2 * 13px - 0px) 1px;
 }
 .window-minimize-button:hover:active {
-	background-position: calc(-0 * 13px + 1px) 2px;
+	background-position: calc(-0 * 13px - 0px) 1px;
 }
 
 
