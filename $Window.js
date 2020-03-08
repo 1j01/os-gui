@@ -117,6 +117,7 @@ function $Window(options){
 
 		const instantly_maximize = ()=> {
 			before_maximize = {
+				position: $w.css("position"),
 				left: $w.css("left"),
 				top: $w.css("top"),
 				width: $w.css("width"),
@@ -129,6 +130,7 @@ function $Window(options){
 			const scrollbar_height = window.innerHeight - $(window).height();
 			const taskbar_height = $taskbar.length ? $taskbar.height() + 1 : 0;
 			$w.css({
+				position: "fixed",
 				top: 0,
 				left: 0,
 				width: `calc(100vw - ${scrollbar_width}px)`,
@@ -140,6 +142,7 @@ function $Window(options){
 			$w.css({width: "", height: ""});
 			if (before_maximize) {
 				$w.css({
+					position: before_maximize.position,
 					left: before_maximize.left,
 					top: before_maximize.top,
 					width: before_maximize.width,
@@ -347,7 +350,7 @@ function $Window(options){
 		const duration = `${durationMS}ms`;
 		$eye_leader.css({
 			transition: `left ${duration} linear, top ${duration} linear, width ${duration} linear, height ${duration} linear`,
-			position: "absolute",
+			position: "fixed",
 			zIndex: 10000000,
 			pointerEvents: "none",
 			left: from.left,
