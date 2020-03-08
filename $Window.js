@@ -124,11 +124,12 @@ function $Window(options){
 			};
 			
 			$w.addClass("maximized");
+			const $taskbar = $(".taskbar");
 			$w.css({
 				top: 0,
 				left: 0,
 				width: "100vw",
-				height: `calc(100vh - ${$(".taskbar").height() + 1}px)`,
+				height: `calc(100vh - ${$taskbar.length ? $taskbar.height() + 1 : 0}px)`,
 			});
 		};
 		const instantly_unmaximize = ()=> {
