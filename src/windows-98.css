@@ -114,14 +114,14 @@ button[disabled] {
 }
 /* TODO: [checked]? */
 button.selected {
-	@extend button:active;
+	@extend button:hover:active;
 	@extend %checkerboard;
 }
 button.show-focus-state-style {
 	@extend button:focus;
 }
-button.show-active-state-style {
-	@extend button:active;
+button.show-hover-active-state-style {
+	@extend button:hover:active;
 }
 
 .window-titlebar {
