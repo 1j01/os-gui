@@ -146,10 +146,12 @@ button.show-active-state-style {
 	background: var(--Window);
 	/*color: var(--WindowText);*/
 	/*border: 1px solid var(--WindowFrame);*/
-	@extend %outset-deep;
 	background: var(--ButtonFace); /* should this be part of %outset-deep? probably! */
 	/* TODO: use window-specific theme colors; also different types of windows */
 	/* padding: 2px; */
+}
+.window:not(.maximized) {
+	@extend %outset-deep;
 }
 .window > * {
 	/* margin: 1px; */
