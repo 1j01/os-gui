@@ -42,16 +42,17 @@ This library currently requires [jQuery](https://jquery.com/), or, almost certai
 The library is not yet provided as a bundle or package.
 
 You have to include `$MenuBar.js` or `$Window.js` specifically, as required,
-along with stylesheets for layout and a theme, `layout.css` and `theme/windows-98.css`
+along with stylesheets for layout and a theme and a color scheme.
 
 You can download the repo contents as a ZIP file in the "Clone or download" dropdown on GitHub.
 
-You need to follow the development instructions and use the compiled CSS files, not the source.
+You need to follow the development instructions, and use the *compiled CSS files*, not the source.
 
 In `<head>`:
 ```html
 <link href="os-gui/layout.css" rel="stylesheet" type="text/css">
-<link href="os-gui/theme/windows-98.css" rel="stylesheet" type="text/css">
+<link href="os-gui/windows-98.css" rel="stylesheet" type="text/css">
+<link href="os-gui/default-colors.css" rel="stylesheet" type="text/css">
 ```
 
 In `<head>` or `<body>`:
