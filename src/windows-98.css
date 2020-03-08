@@ -249,11 +249,12 @@ button:not(.lightweight).selected {
 	display: block;
 	padding: 2px;
 	/* @extend %outset-medium; 1px highlight, 2px shadow */
-	background: var(--ButtonFace);
+	background: var(--Menu);
+	color: var(--MenuText);
 	border-top: 1px solid var(--ButtonFace);
 	border-left: 1px solid var(--ButtonFace);
-	border-right: 1px solid #000;
-	border-bottom: 1px solid #000;
+	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid var(--ButtonDkShadow);
 	box-shadow: 1px 1px 0 white inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
 .menu-item {
@@ -307,8 +308,8 @@ button:not(.lightweight).selected {
 	background: var(--ButtonFace);
 	border-top: 1px solid var(--ButtonFace);
 	border-left: 1px solid var(--ButtonFace);
-	border-right: 1px solid #000;
-	border-bottom: 1px solid #000;
+	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid var(--ButtonDkShadow);
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
 ::-webkit-scrollbar-button:hover:active {
