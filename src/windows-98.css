@@ -65,11 +65,13 @@
 	}
 }
 button {
-	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */
 	background: var(--ButtonFace);
+}
+button:not(.lightweight) {
+	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */
 	@extend %outset-deep;
 }
-button:hover:active {
+button:not(.lightweight):hover:active {
 	@extend %inset-deep;
 }
 
@@ -83,7 +85,7 @@ button:hover:active {
 */
 /* also, this is more complicated; see Paint; the tool buttons translate when being pushed and when depressed, and these add together */
 
-button:focus::before {
+button:not(.lightweight):focus::before {
 	content: "";
 	display: block;
 	position: absolute;
@@ -95,33 +97,34 @@ button:focus::before {
 	/* TODO: get exact inset dimensions, and have corners without dots ideally */
 	/* (could use outline instead of ::before at this point) */
 }
-button.lightweight:not(:hover):not(:focus) {
+button.lightweight {
+	outline: none; /* these buttons are not usually keyboard accessible, or the focus it shown just by inset (menu buttons) */
+
+	border-style: solid;
+	border-width: 1px;
 	border-color: transparent;
-}
-button.lightweight::after {
-	display: none;
 }
 button.lightweight:hover,
 button.lightweight:focus {
-	@extend %inset-shallow;
-}
-button.lightweight:active {
 	@extend %outset-shallow;
+}
+button.lightweight:hover:active {
+	@extend %inset-shallow;
 }
 button[disabled] {
 	color: var(--GrayText);
 	text-shadow: 1px 1px 0px white; /* TODO: what var for color? */
 }
 /* TODO: [checked]? */
-button.selected {
-	@extend button:hover:active;
+button:not(.lightweight).selected {
+	@extend %inset-deep;
 	@extend %checkerboard;
 }
 button.show-focus-state-style {
-	@extend button:focus;
+	@extend button:not(.lightweight):focus;
 }
 button.show-hover-active-state-style {
-	@extend button:hover:active;
+	@extend button:not(.lightweight):hover:active;
 }
 
 .window-titlebar {
