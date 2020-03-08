@@ -13,12 +13,12 @@
 %inset-shallow {
 	border-style: solid;
 	border-width: 1px;
-	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
+	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
 }
 %outset-shallow {
 	border-style: solid;
 	border-width: 1px;
-	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
 }
 %inset-deep {
 	@extend %inset-shallow; /* as fallback */
