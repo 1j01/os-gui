@@ -78,4 +78,8 @@ $(()=> {
 		left: $("#window-example").offset().left,
 		top: $("#window-example").offset().top
 	});
+
+	$("#demo-toggle-button").on("click", (e)=> {
+		$(e.target).toggleClass("selected");
+	});
 });
