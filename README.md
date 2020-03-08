@@ -26,7 +26,10 @@ See [a demo online here](https://1j01.github.io/os-gui/demo/)
 
 ### See also
 
-- [98](https://github.com/1j01/98)
+- [98.js](https://github.com/1j01/98), my web desktop
+- [padraigfl/packard-belle](https://github.com/padraigfl/packard-belle/)
+- [arturbien/React95](https://github.com/arturbien/React95)
+- [React95/React95](https://github.com/React95/React95)
 
 
 ## Requirements
@@ -36,12 +39,14 @@ This library currently requires [jQuery](https://jquery.com/), or, almost certai
 
 ## Setup
 
-The library is not yet provided as a bundle.
+The library is not yet provided as a bundle or package.
 
 You have to include `$MenuBar.js` or `$Window.js` specifically, as required,
 along with stylesheets for layout and a theme, `layout.css` and `theme/windows-98.css`
 
 You can download the repo contents as a ZIP file in the "Clone or download" dropdown on GitHub.
+
+You need to follow the development instructions and use the compiled CSS files, not the source.
 
 In `<head>`:
 ```html
@@ -80,7 +85,7 @@ Can be overriden with `::-webkit-scrollbar` and related selectors (but not easil
 
 Selection styles are applied globally.
 
-Can be overriden with `::selection` (but not easily reset to the browser default)
+Can be overriden with `::selection` (but not easily reset to the browser default... unless with `unset` - but that's not very clean; there should be a better way to scope where the selection styles apply, like maybe a `.os-gui` class)
 
 ### `$MenuBar(menus)`
 
@@ -115,13 +120,13 @@ $menubar.on("default-info", ()=> {
 	$status.html("For Help, <a href='docs'>click here</a>");
 	// Note that a link could only work for the default text;
 	// for menu item descriptions the message in the status bar is transient;
-	// you wouldn't be able to get to it to click on it.
+	// you wouldn't be able to reach it while its shown to click on it.
 });
 ```
 
 ### Menu item specification
 
-Menu item specifications are either `$MenuBar.DIVIDER`, a constant indicating a horizontal rule, or an object with the following properties:
+Menu item specifications are either `MENU_DIVIDER` - a constant indicating a horizontal rule, or an object with the following properties:
 
 * `item`: a label for the item
 * `shortcut` (optional): a keyboard shortcut for the item, like "Ctrl+A"; this is not functionally implemented, you'll need to listen for the shortcut yourself!
@@ -135,7 +140,7 @@ Property `toggle` should be a function that toggles the state of the option, how
 
 ### Menu hotkeys
 
-In menu and menu item names, you can place `&` before letters to indicate menu-level-scoped hotkeys (which should be unique to that level of the menu, i.e. the bar or  the contents of a menu or submenu).
+In menu and menu item names, you can place `&` before letters to indicate menu-level-scoped hotkeys (which should be unique to that level of the menu, i.e. the menubar or the contents of a particular submenu).
 
 But these are **not functionally implemented!**
 
@@ -221,27 +226,7 @@ Whether the window has been closed.
 
 #### Event: `close`
 
-Can be used to prevent closing a window (with `event.preventDefault()`, or just to know when it closed.
-
-
-## Roadmap
-
-- Publish a 0.x version to npm
-
-- Use classes instead of weird psuedo-class functions that return jQuery objects with added methods
-
-- Use a bundler
-
-- Rewrite styles with a CSS preprocessor
-	- Probably use SVG `background-image`s rather than crazy `box-shadow` + psuedo-element borders
-	- Use CSS variables
-	- (I'm probably gonna want to use [PostCSS](http://postcss.org/))
-
-- Accept Windows theme files at runtime, using CSS variables to apply them
-
-- Have menus pop up to the right/left or downwards/upwards based on if there's available space or not
-
-- API to create context menus (using the same code as for menu popups from the menu bar)
+Can be used to prevent closing a window (with `event.preventDefault()`), or just to know when it closed.
 
 
 ## License
@@ -250,8 +235,15 @@ Licensed under the [MIT License](https://opensource.org/licenses/MIT), see [LICE
 
 ## Development
 
-`npm run live-server` to open a development server, and concurrently (in a separate terminal),
+Install [Node.js](https://nodejs.org/) if you don't already have it.
 
-`npm run watch` to watch source files and recompile on changes.
+Initially and when pulling changes from git, run `npm i` to install dependencies.
 
-Close the server to install/update dependencies (or you'll run into EPERM issues).
+Run `npm run live-server` to open a development server.
+
+In a separate terminal, run `npm run watch` to watch source files and recompile on changes.
+
+Close the server & watch script when updating dependencies or installing new ones (or you'll run into EPERM issues).
+
+The styles are written with PostCSS, for mixins and other transforms.  
+Recommended: install a PostCSS language plugin for your editor, like [PostCSS Language Support](https://marketplace.visualstudio.com/items?itemName=csstools.postcss) for VS Code.
