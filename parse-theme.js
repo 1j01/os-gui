@@ -32,7 +32,12 @@ function parseThemeFileString(themeIni) {
 	var theme = parseINIString(themeIni);
 	var colors = theme["Control Panel\\Colors"];
 	for (var k in colors) {
-		colors[k] = `rgb(${colors[k].split(" ").join(", ")})`;
+		// for .themepack file support, just ignore bad keys that were parsed
+		if (k.match(/\W/)) {
+			delete colors[k];
+		} else {
+			colors[k] = `rgb(${colors[k].split(" ").join(", ")})`;
+		}
 	}
 
 	var canvas = document.createElement("canvas");
