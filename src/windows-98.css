@@ -223,6 +223,9 @@ button:not(.lightweight).selected {
 }
 
 
+.menus {
+	background: var(--ButtonFace);
+}
 .menus *,
 .menu-popup * {
 	@extend %font;
