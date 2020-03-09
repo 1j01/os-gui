@@ -355,7 +355,13 @@ button:not(.lightweight).selected {
 	@extend %checkerboard;
 }
 ::-webkit-scrollbar-track-piece:active {
-	background: black; /* variable?? */
+	@extend %checkerboard;
+	background-color: white;
+	background-blend-mode: difference;
+	/* background-attachment: fixed; breaks the checkered background in chrome */
+}
+::-webkit-scrollbar-track-piece:increment {
+	background-position: bottom;
 }
 
 /* turn off double buttons */
