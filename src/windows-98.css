@@ -224,7 +224,7 @@ button:not(.lightweight).selected {
 
 
 .menus {
-	background: var(--ButtonFace);
+	background: var(--Menu);
 }
 .menus *,
 .menu-popup * {
@@ -238,6 +238,7 @@ button:not(.lightweight).selected {
 	position: relative;
 	outline: 0;
 	/* @extend button.lightweight; */
+	background: var(--Menu);
 }
 .menu-button:hover {
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;

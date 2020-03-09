@@ -24,6 +24,7 @@
 		"vaporwave",
 		"98",
 		"95",
+		"90s",
 		"windows",
 		"window",
 		"windowing",
@@ -38,9 +39,7 @@
 		"css",
 		"styles",
 		"stylesheet",
-		"theme",
-		"js",
-		"javascript"
+		"theme"
 	],
 	"scripts": {
 		"prewatch": "mkdirp build",
