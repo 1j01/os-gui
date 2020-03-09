@@ -245,10 +245,10 @@ button:not(.lightweight).selected {
 	top: 1px;
 	left: 1px;
 }
-.menu-popup:not(.something-else) { /* CSS specifity hack */
+.menu-popup {
 	display: block;
 	padding: 2px;
-	/* @extend %outset-medium; 1px highlight, 2px shadow */
+	/* @extend %outset-deep; */
 	background: var(--Menu);
 	color: var(--MenuText);
 	border-top: 1px solid var(--ButtonFace);
