@@ -89,4 +89,36 @@ $(()=> {
 	// $("#demo-toggle-button").on("click", (e)=> {
 	// 	$(e.target).toggleClass("selected");
 	// });
+
+	function loadThemeFile(file) {
+		var reader = new FileReader();
+		reader.onload = ()=> {
+			var fileText = reader.result;
+
+			var cssProperties = parseThemeFileString(fileText);
+			applyCSSProperties(cssProperties);
+			console.log(makeThemeCSSFile(cssProperties));
+		};
+		reader.readAsText(file);
+	}
+
+	$("html").on("dragover", function(event) {
+		event.preventDefault();  
+		event.stopPropagation();
+	});
+	$("html").on("dragleave", function(event) {
+		event.preventDefault();  
+		event.stopPropagation();
+	});
+	$("html").on("drop", function(event) {
+		event.preventDefault();  
+		event.stopPropagation();
+		var files = [...event.originalEvent.dataTransfer.files];
+		for (var file of files) {
+			if (file.name.match(/\.theme(pack)?$/i)) {
+				loadThemeFile(file);
+			}
+		}
+	});
+	
 });
