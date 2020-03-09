@@ -354,7 +354,7 @@ button:not(.lightweight).selected {
 ::-webkit-scrollbar {
 	@extend %checkerboard;
 }
-::-webkit-scrollbar-track-piece:active {
+::-webkit-scrollbar-track-piece:hover:active {
 	@extend %checkerboard;
 	background-color: white;
 	background-blend-mode: difference;
