@@ -1,4 +1,5 @@
 :root {
+	--checker: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC");
 	--ActiveBorder: rgb(192, 192, 192);
 	--ActiveTitle: rgb(0, 0, 128);
 	--AppWorkspace: rgb(128, 128, 128);

@@ -1,0 +1,27 @@
+
+[Control Panel\Colors]
+ActiveTitle=0 0 128
+Background=0 128 128
+Hilight=0 0 128
+HilightText=255 255 255
+TitleText=255 255 255
+Window=255 255 255
+WindowText=0 0 0
+Scrollbar=192 192 192
+InactiveTitle=128 128 128
+Menu=192 192 192
+WindowFrame=0 0 0
+MenuText=0 0 0
+ActiveBorder=192 192 192
+InactiveBorder=192 192 192
+AppWorkspace=128 128 128
+ButtonFace=192 192 192
+ButtonShadow=128 128 128
+GrayText=128 128 128
+ButtonText=0 0 0
+InactiveTitleText=192 192 192
+ButtonHilight=255 255 255
+ButtonDkShadow=0 0 0
+ButtonLight=192 192 192
+InfoText=0 0 0
+InfoWindow=255 255 225

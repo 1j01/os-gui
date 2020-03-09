@@ -1,9 +1,5 @@
-:root {
-	/* TODO: dynamic checkerboard pattern with linear gradients? or perhaps a translucent image may be appropriate */
-	--checkerboard-pattern: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC);
-}
 %checkerboard {
-	background: var(--checkerboard-pattern) repeat;
+	background: var(--checker) repeat;
 	image-rendering: pixelated;
 }
 %font {

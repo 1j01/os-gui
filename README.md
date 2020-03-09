@@ -52,7 +52,7 @@ In `<head>`:
 ```html
 <link href="os-gui/layout.css" rel="stylesheet" type="text/css">
 <link href="os-gui/windows-98.css" rel="stylesheet" type="text/css">
-<link href="os-gui/default-colors.css" rel="stylesheet" type="text/css">
+<link href="os-gui/windows-default.css" rel="stylesheet" type="text/css">
 ```
 
 In `<head>` or `<body>`:
