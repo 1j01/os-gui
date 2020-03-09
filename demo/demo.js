@@ -5,7 +5,8 @@ var menus = {
 			item: "&Open",
 			action: ()=> {
 				alert("\"Open Sesame!\"");
-			}
+			},
+			shortcut: "Ctrl+O",
 		},
 		MENU_DIVIDER,
 		{
@@ -46,7 +47,13 @@ var menus = {
 			item: "Copy",
 			action: ()=> {
 				alert("\"Over and out!\"")
-			}
+			},
+			shortcut: "Ctrl+C",
+		},
+		{
+			item: "Paste",
+			enabled: false,
+			shortcut: "Ctrl+V",
 		},
 	]
 };
