@@ -67,14 +67,19 @@ In `<head>` or `<body>`:
 
 The API is not versioned using semver yet, but it should be once a version 1.0 is released.
 
+### Panel & Inset Styles
+
+- `.inset-deep` creates a 2px inset border
+- `.outset-deep` creates a 2px inset border (like a button or window or menu popup)
+- `.inset-shallow` creates a 1px inset border
+- `.outset-shallow` creates a 1px outset border
+
 ### Button styles
 
 Button styles are applied to `button` elements globally.
 And to reset it, you have to get rid of the psuedo element `::after` as well.
 
 You can have the depressed (held down) style stay using `.selected`
-
-The non-pressed state is also applied to `.button-like-border`; in the future this may be called `.outset-border` or similar.
 
 ### Scrollbar styles
 

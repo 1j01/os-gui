@@ -6,15 +6,21 @@
 	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
 }
+%button-face {
+	background: var(--ButtonFace);
+	color: var(--ButtonText);
+}
 %inset-shallow {
 	border-style: solid;
 	border-width: 1px;
 	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	@extend %button-face;
 }
 %outset-shallow {
 	border-style: solid;
 	border-width: 1px;
 	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
+	@extend %button-face;
 }
 %inset-deep {
 	@extend %inset-shallow; /* as fallback */
@@ -60,9 +66,22 @@
 		border-width: 1px 1px;
 	}
 }
+
+.inset-deep {
+	@extend %inset-deep;
+}
+.outset-deep {
+	@extend %outset-deep;
+}
+.inset-shallow {
+	@extend %inset-shallow;
+}
+.outset-shallow {
+	@extend %outset-shallow;
+}
+
 button {
-	background: var(--ButtonFace);
-	color: var(--ButtonText);
+	@extend %button-face;
 }
 button:not(.lightweight) {
 	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */
@@ -138,10 +157,12 @@ button:not(.lightweight).selected {
 	color: var(--InactiveTitleText);
 }
 .window {
-	background: var(--Window);
+	/* Needed for when maximized, otherwise would be provided by %outset-deep */
+	background: var(--ButtonFace);
+
+	/* background: var(--Window); */
 	/*color: var(--WindowText);*/
 	/*border: 1px solid var(--WindowFrame);*/
-	background: var(--ButtonFace); /* should this be part of %outset-deep? probably! */
 	/* TODO: use window-specific theme colors; also different types of windows */
 	/* padding: 2px; */
 }
@@ -285,12 +306,6 @@ button:not(.lightweight).selected {
 }
 .menu-hotkey {
 	text-decoration: underline;
-}
-
-
-/* TODO: better API! better names */
-.button-like-border {
-	@extend %outset-deep;
 }
 
 
