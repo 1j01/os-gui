@@ -13,12 +13,17 @@ Specifically, Windows 98 - for now at least; it could be expanded in the future
 
 - Menu bars, with support for checkbox items, disabled states, and at least partial support for submenus
 
-- Windows which you can drag around
+- Windows which you can drag around and maximize
 
-- Button styles (Note: currently breaking accessibility by removing `outline` focus styles!)
+- Flying titlebar animation that guides your eyes
+
+- Button styles, including lightweight buttons and disabled buttons
 
 - Scrollbar styles, webkit-specific (in the future there could be a custom scrollbar based on a nonintrusive scrollbar library, or styles *supporting* a library, where you're expected to use the library directly)
+  - Procedurally rendered arrows, allowing for different scrollbar sizes
+  - Inversion effect when clicking on scrollbar track
 
+- Themeable with Windows `.theme` & `.themepack` files at runtime
 
 ## Demo
 
