@@ -360,20 +360,20 @@ button:not(.lightweight).selected {
 .scrollbar-button.horizontal.decrement.disabled,
 ::-webkit-scrollbar-button:horizontal:decrement:disabled {
 	background-position: /* left arrow */
-		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
-		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
+		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
 }
 .scrollbar-button.horizontal.increment.disabled,
 ::-webkit-scrollbar-button:horizontal:increment:disabled {
 	background-position: /* right arrow */
-		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
-		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
+		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
 }
 .scrollbar-button.vertical.decrement.disabled,
 ::-webkit-scrollbar-button:vertical:decrement:disabled {
 	background-position: /* up arrow */
-		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
-		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
+		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
 }
 .scrollbar-button.vertical.increment.disabled,
 ::-webkit-scrollbar-button:vertical:increment:disabled {
@@ -384,15 +384,15 @@ button:not(.lightweight).selected {
 
 .scrollbar-button.horizontal.decrement,
 ::-webkit-scrollbar-button:horizontal:decrement {
-	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px; /* left */
+	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px; /* left */
 }
 .scrollbar-button.horizontal.increment,
 ::-webkit-scrollbar-button:horizontal:increment {
-	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px; /* right */
+	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px; /* right */
 }
 .scrollbar-button.vertical.decrement,
 ::-webkit-scrollbar-button:vertical:decrement {
-	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px; /* up */
+	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px; /* up */
 }
 .scrollbar-button.vertical.increment,
 ::-webkit-scrollbar-button:vertical:increment {

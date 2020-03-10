@@ -72,14 +72,24 @@ function parseThemeFileString(themeIni) {
 	var scrollbar_button_inner_size = scrollbar_size - 4;
 	canvas.width = scrollbar_button_inner_size * 4;
 	canvas.height = scrollbar_button_inner_size;
-	for (let i = 0; i < 4; i += 1) {
-		ctx.save();
-		ctx.translate(i * scrollbar_button_inner_size, 0);
-		ctx.translate(scrollbar_button_inner_size/2, scrollbar_button_inner_size/2);
-		ctx.rotate(i * Math.PI / 2);
-		ctx.translate(-scrollbar_button_inner_size/2, -scrollbar_button_inner_size/2);
-		ctx.drawImage(arrow_canvas, ~~(scrollbar_button_inner_size/2-arrow_width/2), ~~(scrollbar_button_inner_size/2-arrow_size/2)); // TODO: might not be the right centering
-		ctx.restore();
+	let i = 0;
+	for (let horizontal = 0; horizontal < 2; horizontal += 1) {
+		for (let decrement = 0; decrement < 2; decrement += 1) {
+			ctx.save();
+			ctx.translate(i * scrollbar_button_inner_size, 0);
+			ctx.translate(scrollbar_button_inner_size/2, scrollbar_button_inner_size/2);
+			// ctx.rotate(i * Math.PI / 2);
+			if (horizontal) {
+				ctx.rotate(-Math.PI / 2);
+			}
+			if (decrement) {
+				ctx.scale(1, -1);
+			}
+			ctx.translate(-scrollbar_button_inner_size/2, -scrollbar_button_inner_size/2);
+			ctx.drawImage(arrow_canvas, ~~(scrollbar_button_inner_size/2-arrow_width/2), ~~(scrollbar_button_inner_size/2-arrow_size/2));
+			ctx.restore();
+			i += 1;
+		}
 	}
 
 	ctx.save();
