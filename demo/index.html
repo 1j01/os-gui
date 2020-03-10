@@ -21,10 +21,10 @@
 			body {
 				font-family: sans-serif;
 				/*background-color: var(--Background);*/
-				/*background-color: var(--InfoWindow);*/
-				/*color: var(--InfoText);*/
-				background-color: var(--ButtonFace);
-				color: var(--ButtonText);
+				background-color: var(--InfoWindow);
+				color: var(--InfoText);
+				/* background-color: var(--ButtonFace);
+				color: var(--ButtonText); */
 			}
 			main,
 			footer {
@@ -51,6 +51,12 @@
 			.window-content {
 				padding: 1em;
 			}
+			#buttons-demo td {
+				padding: 0.5em;
+			}
+			#buttons-demo {
+				border-collapse: collapse;
+			}
 		</style>
 		<script src="lib/jquery-3.3.1.js"></script>
 		<script src="../$MenuBar.js"></script>
@@ -71,35 +77,57 @@
 				</div>
 			</p>
 			<h2>Buttons</h2>
-			<p>
-				<button>Basic button</button>
-			</p>
-			<p>
-				<button disabled>Disabled button</button>
-			</p>
-			<!-- <p>
-				<button class="default" title="">Default button</button>
-				- default or tabbed-to action; basically, what will be triggered if you hit Enter.
-				This style is also shown when a focused button becomes disabled... and you can even get it <a href="https://i.imgur.com/WICAL98.png">where it shows two buttons with the so-called "default" style</a> (neither disabled!).
-				The real default, <em>OK</em>, will apply, not <em>Apply</em> (when you hit Enter).
-			</p> -->
-			<!-- <p>
-				<button class="selected" id="demo-toggle-button">Toggle button</button> - like the buttons for switching tools in Paint.
-			</p> -->
-			<!-- TODO: <p>
-				<label>
-					<input type="checkbox">
-					<span class="button">Toggle button</span>
-				</label>
-				- a styled checkbox.
-			</p> -->
-			<p>
-				<button class="lightweight" tabIndex="-1">Lightweight button</button> - Less visual weight by not showing border until hover; used for menu and toolbar buttons. Generally not in the tab order.
-			</p>
+			<table id="buttons-demo">
+				<col style="background: var(--ButtonFace); color: var(--ButtonText);"></col>
+				<col style="background: var(--InfoWindow); color: var(--InfoText);"></col>
+				<tr>
+					<td><button>Basic button</button></td>
+				</tr>
+				<tr>
+					<td><button disabled>Disabled button</button></td>
+				</tr>
+				<!-- <tr>
+					<td>
+						<button class="default" title="">Default button</button>
+					</td>
+					<td>
+						Default or tabbed-to action; basically, what will be triggered if you hit Enter.
+						This style is also shown when a focused button becomes disabled... and you can even get it <a href="https://i.imgur.com/WICAL98.png">where it shows two buttons with the so-called "default" style</a> (neither disabled!).
+						The real default, <em>OK</em>, will apply, not <em>Apply</em> (when you hit Enter).
+					</td>
+				</tr> -->
+				<!-- <tr>
+					<td>
+						<button class="selected" id="demo-toggle-button">Toggle button</button>
+					</td>
+					<td>
+						Like the buttons for switching tools in Paint.
+					</td>
+				</tr> -->
+				<!-- TODO: <tr>
+					<td>
+						<label>
+							<input type="checkbox">
+							<span class="button">Toggle button</span>
+						</label>
+					</td>
+					<td>
+						A styled checkbox.
+					</td>
+				</tr> -->
+				<tr>
+					<td>
+						<button class="lightweight" tabIndex="-1">Lightweight button</button>
+					</td>
+					<td>
+						No border until hover. Used for menu and toolbar buttons. Generally not in the tab order.
+					</td>
+				</tr>
+			</table>
 			<h2>Outset Border</h2>
-			<p>
+			<tr>
 				<div id="a-panel-or-something" class="button-like-border">Here's perhaps a panel, styled with <code>class="button-like-border"</code></div>
-			</p>
+			</tr>
 		</main>
 		<footer>
 			Open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
