@@ -101,8 +101,9 @@ button.lightweight {
 	border-width: 1px;
 	border-color: transparent;
 }
-button.lightweight:hover,
-button.lightweight:focus {
+/* TODO: recommend preventing focus on click for lightweight buttons */
+button.lightweight:hover /*,
+button.lightweight:focus */ {
 	@extend %outset-shallow;
 }
 button.lightweight:hover:active {
