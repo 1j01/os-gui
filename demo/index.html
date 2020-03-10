@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<title>OS GUI</title>
@@ -8,8 +8,6 @@
 		<link href="../build/windows-default.css" rel="stylesheet" type="text/css">
 		<!-- <link href="../build/peggys-pastels.css" rel="stylesheet" type="text/css"> -->
 		<meta name="viewport" content="width=device-width, user-scalable=no">
-	</head>
-	<body>
 		<style>
 			html,
 			body {
@@ -62,6 +60,8 @@
 				overflow: scroll;
 			}
 		</style>
+	</head>
+	<body>
 		<script src="lib/jquery-3.3.1.js"></script>
 		<script src="../$MenuBar.js"></script>
 		<script src="../$Window.js"></script>
@@ -70,7 +70,7 @@
 		<main>
 			<h1>os-gui.js</h1>
 			<h2>Scrollbar Buttons</h2>
-			<p>
+			<div class="scrollbar-buttons-demo">
 				<div class="scrollbar-button decrement horizontal" style="display: inline-block;"></div><div class="scrollbar-button increment horizontal" style="display: inline-block;"></div>
 				<div class="scrollbar-button decrement vertical"></div>
 				<div class="scrollbar-button increment vertical"></div>
@@ -78,27 +78,29 @@
 				<div class="scrollbar-button decrement horizontal disabled" style="display: inline-block;"></div><div class="scrollbar-button increment horizontal disabled" style="display: inline-block;"></div>
 				<div class="scrollbar-button decrement vertical disabled"></div>
 				<div class="scrollbar-button increment vertical disabled"></div>
-			</p>
+			</div>
 			<h2>MenuBar</h2>
-			<p>
+			<div>
 				<div id="menubar-example"></div>
-			</p>
+			</div>
 			<h2>Window</h2>
-			<p>
+			<div>
 				<div id="window-example"></div>
 				<div id="window-example-content">
 					<p>Hello World!</p>
 				</div>
-			</p>
+			</div>
 			<h2>Buttons</h2>
 			<table id="buttons-demo">
-				<col style="background: var(--ButtonFace); color: var(--ButtonText);"></col>
-				<col style="background: var(--InfoWindow); color: var(--InfoText);"></col>
+				<col style="background: var(--ButtonFace); color: var(--ButtonText);"/>
+				<col style="background: var(--InfoWindow); color: var(--InfoText);"/>
 				<tr>
 					<td><button>Basic button</button></td>
+					<td></td>
 				</tr>
 				<tr>
 					<td><button disabled>Disabled button</button></td>
+					<td></td>
 				</tr>
 				<!-- <tr>
 					<td>
@@ -141,12 +143,11 @@
 					<td>
 						<button class="lightweight" disabled tabIndex="-1">Lightweight disabled</button>
 					</td>
+					<td></td>
 				</tr>
 			</table>
 			<h2>Outset Border</h2>
-			<tr>
-				<div id="a-panel-or-something" class="outset-deep">Here's perhaps a panel, styled with <code>class="outset-deep"</code></div>
-			</tr>
+			<div id="a-panel-or-something" class="outset-deep">Here's perhaps a panel, styled with <code>class="outset-deep"</code></div>
 		</main>
 		<footer>
 			Open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
