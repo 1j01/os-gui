@@ -121,11 +121,11 @@ button.lightweight {
 	border-color: transparent;
 }
 /* TODO: recommend preventing focus on click for lightweight buttons */
-button.lightweight:hover /*,
+button.lightweight:not([disabled]):hover /*,
 button.lightweight:focus */ {
 	@extend %outset-shallow;
 }
-button.lightweight:hover:active {
+button.lightweight:not([disabled]):hover:active {
 	@extend %inset-shallow;
 }
 button[disabled] {
