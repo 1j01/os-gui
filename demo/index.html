@@ -55,9 +55,19 @@
 			#buttons-demo {
 				border-collapse: collapse;
 			}
-			.scrollbar-buttons-demo {
+			.scrollbar-demo {
 				display: inline-block;
 				padding: 15px;
+			}
+			.scrollbar-demo .scrollbar-track.vertical,
+			.scrollbar-demo .scrollbar.vertical {
+				width: var(--scrollbar-size);
+			}
+			.scrollbar-demo .scrollbar-track.vertical {
+				height: 50px;
+			}
+			.scrollbar-demo .scrollbar-thumb.vertical {
+				height: 20px;
 			}
 
 			body {
@@ -73,9 +83,9 @@
 		<script src="demo.js"></script>
 		<main>
 			<h1>os-gui.js</h1>
-			<h2>Scrollbar Buttons</h2>
+			<h2>Scrollbars</h2>
 			<div>
-				<div class="scrollbar-buttons-demo">
+				<div class="scrollbar-demo">
 					<div class="scrollbar-button decrement horizontal" style="display: inline-block;"></div><div class="scrollbar-button increment horizontal" style="display: inline-block;"></div>
 					<div class="scrollbar-button decrement vertical"></div>
 					<div class="scrollbar-button increment vertical"></div>
@@ -83,6 +93,16 @@
 					<div class="scrollbar-button decrement horizontal disabled" style="display: inline-block;"></div><div class="scrollbar-button increment horizontal disabled" style="display: inline-block;"></div>
 					<div class="scrollbar-button decrement vertical disabled"></div>
 					<div class="scrollbar-button increment vertical disabled"></div>
+					<br>
+					<div class="scrollbar vertical">
+						<div class="scrollbar-button decrement vertical disabled"></div>
+						<div class="scrollbar-track vertical">
+							<div class="scrollbar-track-piece decrement vertical"></div>
+							<div class="scrollbar-thumb vertical"></div>
+							<div class="scrollbar-track-piece increment vertical"></div>
+						</div>
+						<div class="scrollbar-button increment vertical disabled"></div>
+					</div>
 				</div>
 			</div>
 			<h2>MenuBar</h2>

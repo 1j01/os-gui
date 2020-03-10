@@ -317,16 +317,22 @@ button:not(.lightweight).selected {
 	color: var(--HilightText);
 }
 
-::-webkit-scrollbar,
-::-webkit-scrollbar-thumb,
-::-webkit-scrollbar-button {
-	width: var(--scrollbar-size);
-	height: var(--scrollbar-size);
+.scrollbar {
+	@extend %checkerboard;
 }
-::-webkit-scrollbar-thumb {
+.scrollbar-thumb {
 	@extend %outset-deep-2;
 }
-::-webkit-scrollbar-corner {
+.scrollbar-track-piece:hover:active {
+	@extend %checkerboard;
+	background-color: white;
+	background-blend-mode: difference;
+	/* background-attachment: fixed; breaks the checkered background in chrome */
+}
+.scrollbar-track-piece.increment {
+	background-position: bottom;
+}
+.scrollbar-corner {
 	background-color: var(--ButtonFace);
 }
 
@@ -380,6 +386,23 @@ button:not(.lightweight).selected {
 	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px; /* down */
 }
 
+::-webkit-scrollbar,
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-button {
+	width: var(--scrollbar-size);
+	height: var(--scrollbar-size);
+}
+
+::-webkit-scrollbar {
+	@extend .scrollbar;
+}
+::-webkit-scrollbar-thumb {
+	@extend .scrollbar-thumb;
+}
+::-webkit-scrollbar-corner {
+	@extend .scrollbar-corner;
+}
+
 ::-webkit-scrollbar-button {
 	@extend .scrollbar-button;
 }
@@ -416,17 +439,11 @@ button:not(.lightweight).selected {
 	@extend .scrollbar-button.vertical.increment;
 }
 
-::-webkit-scrollbar {
-	@extend %checkerboard;
-}
-::-webkit-scrollbar-track-piece:hover:active {
-	@extend %checkerboard;
-	background-color: white;
-	background-blend-mode: difference;
-	/* background-attachment: fixed; breaks the checkered background in chrome */
+::-webkit-scrollbar-track-piece {
+	@extend .scrollbar-track-piece;
 }
 ::-webkit-scrollbar-track-piece:increment {
-	background-position: bottom;
+	@extend .scrollbar-track-piece.increment;
 }
 
 /* turn off double buttons */
