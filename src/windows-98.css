@@ -62,6 +62,7 @@
 }
 button {
 	background: var(--ButtonFace);
+	color: var(--ButtonText);
 }
 button:not(.lightweight) {
 	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */
