@@ -151,4 +151,14 @@ InfoText=0 0 0
 InfoWindow=255 255 225
 
 `));*/
+	var $scrollbar_buttons = $(".scrollbar-buttons-demo");
+	$scrollbar_buttons.after(
+		$scrollbar_buttons.clone().css("--scrollbar-size", "20px"),
+		$scrollbar_buttons.clone().css("--scrollbar-size", "40px"),
+	);
+	$(".scrollbar-buttons-demo").each((index, element)=> {
+		applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), element);
+	});
+
+	$(".window").css({top: $("#window-example").position().top});
 });

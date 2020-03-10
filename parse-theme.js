@@ -44,7 +44,10 @@ function renderThemeGraphics(cssProperties) {
 	var checker = `url("${canvas.toDataURL()}")`;
 
 	// var scrollbar_size = 16;
-	var scrollbar_size = 13;
+	var scrollbar_size = parseInt(getProp("--scrollbar-size"));
+	if (!isFinite(scrollbar_size)) {
+		scrollbar_size = 13;
+	}
 	var scrollbar_button_inner_size = scrollbar_size - 4;
 	// var arrow_size = 4;
 	var arrow_size = 3;
@@ -136,9 +139,9 @@ function parseThemeFileString(themeIni) {
 	return cssProperties;
 }
 
-function applyCSSProperties(cssProperties) {
+function applyCSSProperties(cssProperties, element=document.documentElement) {
 	for (var k in cssProperties) {
-		document.documentElement.style.setProperty(k, cssProperties[k]);
+		element.style.setProperty(k, cssProperties[k]);
 	}
 }
 
