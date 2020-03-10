@@ -55,10 +55,15 @@ function parseThemeFileString(themeIni) {
 	ctx.fillRect(1, 1, 1, 1);
 	var checker = `url("${canvas.toDataURL()}")`;
 
+	// var scrollbar_size = 16;
+	var scrollbar_size = 13;
+	var scrollbar_button_inner_size = scrollbar_size - 4;
+	// var arrow_size = 4;
+	var arrow_size = 3;
+	var arrow_width = arrow_size * 2 - 1;
+
 	var arrow_canvas = document.createElement("canvas");
 	var arrow_ctx = arrow_canvas.getContext("2d");
-	var arrow_size = 4;
-	var arrow_width = arrow_size * 2 - 1;
 	arrow_canvas.width = arrow_width;
 	arrow_canvas.height = arrow_size;
 	arrow_ctx.fillStyle = "white";
@@ -68,8 +73,6 @@ function parseThemeFileString(themeIni) {
 		}
 	}
 
-	var scrollbar_size = 16;
-	var scrollbar_button_inner_size = scrollbar_size - 4;
 	canvas.width = scrollbar_button_inner_size * 4;
 	canvas.height = scrollbar_button_inner_size;
 	let i = 0;
