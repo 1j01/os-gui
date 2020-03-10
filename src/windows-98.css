@@ -317,56 +317,86 @@ button:not(.lightweight).selected {
 ::-webkit-scrollbar,
 ::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-button {
-	width: 16px;
-	height: 16px;
+	width: var(--scrollbar-size);
+	height: var(--scrollbar-size);
 }
 ::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-button {
-	background: var(--ButtonFace);
+	background-color: var(--ButtonFace);
 	border-top: 1px solid var(--ButtonFace);
 	border-left: 1px solid var(--ButtonFace);
 	border-right: 1px solid var(--ButtonDkShadow);
 	border-bottom: 1px solid var(--ButtonDkShadow);
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
-::-webkit-scrollbar-button:hover:active {
+.scrollbar-button:not(.disabled):hover:active,
+/* hack to avoid extend applying here */
+:not(.scrollbar-button)::-webkit-scrollbar-button:hover:active {
 	border: 1px solid var(--ButtonShadow);
 	box-shadow: none;
 }
 ::-webkit-scrollbar-corner {
-	background: var(--ButtonFace);
+	background-color: var(--ButtonFace);
 }
 ::-webkit-scrollbar-button {
 	background-position: center;
 	background-repeat: no-repeat;
 }
 ::-webkit-scrollbar-button {
-	background-image: url("images/arrows.png");
+	background-image: var(--scrollbar-arrows-ButtonText);
 	image-rendering: pixelated;
 }
+.scrollbar-button {
+	@extend ::-webkit-scrollbar-button;
+	width: var(--scrollbar-size);
+	height: var(--scrollbar-size);
+	box-sizing: border-box;
+}
+.scrollbar-button.disabled,
+::-webkit-scrollbar-button:disabled {
+	background-image: var(--scrollbar-arrows-GrayText), var(--scrollbar-arrows-ButtonHilight);
+}
+
+.scrollbar-button.horizontal.decrement.disabled,
 ::-webkit-scrollbar-button:horizontal:decrement:disabled {
-	background-position: calc(-24px + 1px) 1px; /* left */
+	background-position: /* left arrow */
+		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
 }
+.scrollbar-button.horizontal.increment.disabled,
 ::-webkit-scrollbar-button:horizontal:increment:disabled {
-	background-position: calc(-36px + 1px) 1px; /* right */
+	background-position: /* right arrow */
+		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
 }
+.scrollbar-button.vertical.decrement.disabled,
 ::-webkit-scrollbar-button:vertical:decrement:disabled {
-	background-position: calc(-12px + 1px) 1px; /* up */
+	background-position: /* up arrow */
+		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
 }
+.scrollbar-button.vertical.increment.disabled,
 ::-webkit-scrollbar-button:vertical:increment:disabled {
-	background-position: calc(-0px + 1px) 1px; /* down */
+	background-position: /* down arrow */
+		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
 }
+
+.scrollbar-button.horizontal.decrement,
 ::-webkit-scrollbar-button:horizontal:decrement {
-	background-position: calc(-24px + 1px) calc(-12px + 1px); /* left */
+	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px; /* left */
 }
+.scrollbar-button.horizontal.increment,
 ::-webkit-scrollbar-button:horizontal:increment {
-	background-position: calc(-36px + 1px) calc(-12px + 1px); /* right */
+	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px; /* right */
 }
+.scrollbar-button.vertical.decrement,
 ::-webkit-scrollbar-button:vertical:decrement {
-	background-position: calc(-12px + 1px) calc(-12px + 1px); /* up */
+	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px; /* up */
 }
+.scrollbar-button.vertical.increment,
 ::-webkit-scrollbar-button:vertical:increment {
-	background-position: calc(-0px + 1px) calc(-12px + 1px); /* down */
+	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px; /* down */
 }
 ::-webkit-scrollbar {
 	@extend %checkerboard;
