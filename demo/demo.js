@@ -121,7 +121,7 @@ $(()=> {
 		}
 	});
 	
-	applyCSSProperties(parseThemeFileString(`
+	/*applyCSSProperties(parseThemeFileString(`
 
 [Control Panel\\Colors]
 ActiveTitle=0 0 128
@@ -150,5 +150,5 @@ ButtonLight=192 192 192
 InfoText=0 0 0
 InfoWindow=255 255 225
 
-`));
+`));*/
 });
