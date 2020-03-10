@@ -43,14 +43,17 @@ function renderThemeGraphics(cssProperties) {
 	ctx.fillRect(1, 1, 1, 1);
 	var checker = `url("${canvas.toDataURL()}")`;
 
-	// var scrollbar_size = 16;
 	var scrollbar_size = parseInt(getProp("--scrollbar-size"));
 	if (!isFinite(scrollbar_size)) {
 		scrollbar_size = 13;
 	}
 	var scrollbar_button_inner_size = scrollbar_size - 4;
-	// var arrow_size = 4;
-	var arrow_size = 3;
+	
+	// I don't know the exact formula, so approximate and special-case it for now
+	// (It may very well *be* special cased, tho)
+	var arrow_size = Math.floor(0.3 * scrollbar_size);
+	if (scrollbar_size < 16 && scrollbar_size > 13) arrow_size -= 1;
+
 	var arrow_width = arrow_size * 2 - 1;
 
 	var arrow_canvas = document.createElement("canvas");

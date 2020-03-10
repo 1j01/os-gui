@@ -153,8 +153,10 @@ InfoWindow=255 255 225
 `));*/
 	var $scrollbar_buttons = $(".scrollbar-buttons-demo");
 	$scrollbar_buttons.after(
-		$scrollbar_buttons.clone().css("--scrollbar-size", "20px"),
-		$scrollbar_buttons.clone().css("--scrollbar-size", "40px"),
+		$scrollbar_buttons.clone().css("--scrollbar-size", "15px"),
+		$scrollbar_buttons.clone().css("--scrollbar-size", "16px"),
+		$scrollbar_buttons.clone().css("--scrollbar-size", "30px"),
+		$scrollbar_buttons.clone().css("--scrollbar-size", "50px"),
 	);
 	$(".scrollbar-buttons-demo").each((index, element)=> {
 		applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), element);
