@@ -113,7 +113,40 @@ function renderThemeGraphics(cssProperties) {
 	};
 }
 
+// Parse NonClientMetrics
+// https://docs.microsoft.com/en-us/windows/win32/controls/themesfileformat-overview?redirectedfrom=MSDN#metrics-section
+// https://docs.microsoft.com/en-us/windows/win32/winprog/windows-data-types
+
+// using https://github.com/toji/js-struct
+
+// var NonClientMetricsStruct = Struct.create(
+//     Struct.uint32("cbSize"),
+//     Struct.int32("iBorderWidth"),
+//     Struct.int32("iScrollWidth"),
+//     Struct.int32("iScrollHeight"),
+//     Struct.int32("iCaptionWidth"),
+//     Struct.int32("iCaptionHeight"),
+// 	// after that, it may be W or A
+// //   LOGFONTW lfCaptionFont;
+// //   int      iSmCaptionWidth;
+// //   int      iSmCaptionHeight;
+// //   LOGFONTW lfSmCaptionFont;
+// //   int      iMenuWidth;
+// //   int      iMenuHeight;
+// //   LOGFONTW lfMenuFont;
+// //   LOGFONTW lfStatusFont;
+// //   LOGFONTW lfMessageFont;
+// //   int      iPaddedBorderWidth;
+// );
+
+// var NonClientMetrics_buffer = new Uint8Array(NonClientMetrics_string.split(" ").map((str)=> parseInt(str))).buffer;
+
+// NonClientMetricsStruct.readStructs(NonClientMetrics_buffer, 0, 1)[0];
+
 function parseThemeFileString(themeIni) {
+	// .theme is a renamed .ini text file
+	// .themepack is a renamed .cab file, and parsing it as .ini seems to work well enough for the most part, as the .ini data appears in plain,
+	// but it may not if compression is enabled for the .cab file
 	var theme = parseINIString(themeIni);
 	var colors = theme["Control Panel\\Colors"];
 	if (!colors) {
