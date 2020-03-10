@@ -28,29 +28,17 @@ function parseINIString(data){
 	return value;
 }
 
-function parseThemeFileString(themeIni) {
-	var theme = parseINIString(themeIni);
-	var colors = theme["Control Panel\\Colors"];
-	if (!colors) {
-		alert("Invalid theme file, no [Control Panel\\Colors] section");
-		console.log(theme);
-	}
-	for (var k in colors) {
-		// for .themepack file support, just ignore bad keys that were parsed
-		if (k.match(/\W/)) {
-			delete colors[k];
-		} else {
-			colors[k] = `rgb(${colors[k].split(" ").join(", ")})`;
-		}
-	}
+// takes a CSSStyleDeclaration or simple object of CSS properties
+function renderThemeGraphics(cssProperties) {
+	var getProp = (propName)=> cssProperties.getPropertyValue ? cssProperties.getPropertyValue(propName) : cssProperties[propName];
 
 	var canvas = document.createElement("canvas");
 	canvas.width = canvas.height = 2;
 	var ctx = canvas.getContext("2d");
-	ctx.fillStyle = colors.ButtonFace;
+	ctx.fillStyle = getProp("--ButtonFace");
 	ctx.fillRect(0, 1, 1, 1);
 	ctx.fillRect(1, 0, 1, 1);
-	ctx.fillStyle = colors.ButtonHilight;
+	ctx.fillStyle = getProp("--ButtonHilight");
 	ctx.fillRect(0, 0, 1, 1);
 	ctx.fillRect(1, 1, 1, 1);
 	var checker = `url("${canvas.toDataURL()}")`;
@@ -97,13 +85,13 @@ function parseThemeFileString(themeIni) {
 
 	ctx.save();
 	ctx.globalCompositeOperation = "source-in";
-	ctx.fillStyle = colors.ButtonText;
+	ctx.fillStyle = getProp("--ButtonText");
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	var scrollbar_arrows_ButtonText = `url("${canvas.toDataURL()}")`;
-	ctx.fillStyle = colors.GrayText;
+	ctx.fillStyle = getProp("--GrayText");
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	var scrollbar_arrows_GrayText = `url("${canvas.toDataURL()}")`;
-	ctx.fillStyle = colors.ButtonHilight;
+	ctx.fillStyle = getProp("--ButtonHilight");
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	var scrollbar_arrows_ButtonHilight = `url("${canvas.toDataURL()}")`;
 	// ctx.fillStyle = "red";
@@ -112,7 +100,7 @@ function parseThemeFileString(themeIni) {
 	// $("h1").append(arrow_canvas).append(canvas);
 	ctx.restore();
 
-	var cssProperties = {
+	return {
 		"--checker": checker,
 		"--scrollbar-arrows-ButtonText": scrollbar_arrows_ButtonText,
 		"--scrollbar-arrows-GrayText": scrollbar_arrows_GrayText,
@@ -120,9 +108,30 @@ function parseThemeFileString(themeIni) {
 		"--scrollbar-size": `${scrollbar_size}px`,
 		"--scrollbar-button-inner-size": `${scrollbar_button_inner_size}px`,
 	};
+}
+
+function parseThemeFileString(themeIni) {
+	var theme = parseINIString(themeIni);
+	var colors = theme["Control Panel\\Colors"];
+	if (!colors) {
+		alert("Invalid theme file, no [Control Panel\\Colors] section");
+		console.log(theme);
+	}
+	for (var k in colors) {
+		// for .themepack file support, just ignore bad keys that were parsed
+		if (k.match(/\W/)) {
+			delete colors[k];
+		} else {
+			colors[k] = `rgb(${colors[k].split(" ").join(", ")})`;
+		}
+	}
+
+	var cssProperties = {};
 	for (var k in colors) {
 		cssProperties[`--${k}`] = colors[k];
 	}
+
+	cssProperties = Object.assign(renderThemeGraphics(cssProperties), cssProperties);
 
 	return cssProperties;
 }
