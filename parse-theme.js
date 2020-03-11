@@ -106,13 +106,11 @@ function renderThemeGraphics(cssProperties) {
 	// $("h1").append(arrow_canvas).append(canvas);
 	ctx.restore();
 
-	function border_image(svg_contents) {
+	function border_image(border_size, svg_contents) {
 		var base_size = 8;
-		var border_size_top_left = 2;
-		var border_size_bottom_right = 3;
+		var border_size = border_size;
 		var scale = 32;
-		var slice_size_top_left = border_size_top_left * scale;
-		var slice_size_bottom_right = border_size_bottom_right * scale;
+		var slice_size = border_size * scale;
 		var view_size = base_size * scale;
 		// transform causes janky buggy garbage
 		// var svg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="${view_size}px" height="${view_size}px" viewBox="0 0 ${view_size} ${view_size}">
@@ -124,32 +122,28 @@ function renderThemeGraphics(cssProperties) {
 			${svg_contents.replace(/(d|x|y|width|height|stroke-width)="[^"]*"/g, (attr)=> attr.replace(/\d+/g, (n)=> n * scale))}
 		</svg>`;
 		var url = `data:image/svg+xml,${encodeURIComponent(svg)}`;
-		// order: top | right | bottom | left
-		var slice = `${slice_size_top_left} ${slice_size_bottom_right} ${slice_size_bottom_right} ${slice_size_top_left}`;
-		// order: top | right | bottom | left
-		var border_sizes = `${border_size_top_left}px ${border_size_bottom_right}px ${border_size_bottom_right}px ${border_size_top_left}px`;
-		return `url("${url}") ${slice} / ${border_sizes}`;
+		return `url("${url}") ${slice_size} / ${border_size}px`;
 	}
 
-	var button_active_border_image = border_image(`
+	var button_active_border_image = border_image(2, `
 		<path d="M0 0h8v8h-8v-8z" fill="${getProp("--ButtonDkShadow")}"/>
 		<path d="M1 1h6v6h-6v-6z" fill="${getProp("--ButtonShadow")}"/>
 		<path d="M2 2h4v4h-4v-4z" fill="${getProp("--ButtonFace")}"/>
 	`);
-	var button_default_active_border_image = border_image(`
+	var button_default_active_border_image = border_image(2, `
 		<path d="M0 0h8v8h-8v-8z" fill="${getProp("--ButtonDkShadow")}"/>
 		<path d="M1 1h6v6h-6v-6z" fill="${getProp("--ButtonShadow")}"/>
 		<path d="M2 2h4v4h-4v-4z" fill="${getProp("--ButtonFace")}"/>
 		<rect x="0" y="0" width="8" height="8" stroke-width="2" stroke="${getProp("--WindowFrame")}" fill="none"/>
 	`);
-	var button_normal_border_image = border_image(`
+	var button_normal_border_image = border_image(2, `
 		<path d="M0 0h7v1h-6v6h-1v-7z" fill="${getProp("--ButtonHilight")}"/>
 		<path d="M7 0h1v8h-8v-1h7v-7z" fill="${getProp("--ButtonDkShadow")}"/>
 		<path d="M1 1h5v1h-4v4h-1v-5z" fill="${getProp("--ButtonLight")}"/>
 		<path d="M6 1h1v6h-6v-1h5v-5z" fill="${getProp("--ButtonShadow")}"/>
 		<path d="M2 2h4v4h-4v-4z" fill="${getProp("--ButtonFace")}"/>
 	`);
-	var button_default_border_image = border_image(`
+	var button_default_border_image = border_image(3, `
 		<path d="M0 0h8v8h-8v-8z" fill="${getProp("--ButtonDkShadow")}"/>
 		<path d="M1 1h5v1h-4v4h-1v-5z" fill="${getProp("--ButtonHilight")}"/>
 		<path d="M2 2h3v1h-2v2h-1v-3z" fill="${getProp("--ButtonLight")}"/>
