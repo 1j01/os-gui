@@ -106,8 +106,37 @@ function renderThemeGraphics(cssProperties) {
 	// $("h1").append(arrow_canvas).append(canvas);
 	ctx.restore();
 
+	function svg(contents) {
+		return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="8px" height="8px" viewBox="0 0 8 8">
+			${contents}
+		</svg>`;
+	}
+
+	var button_active_9slice = svg(`
+		<path d="M0 0h8v8h-8v-8z" fill="${getProp("--ButtonDkShadow")}"/>
+		<path d="M1 1h6v6h-6v-6z" fill="${getProp("--ButtonShadow")}"/>
+		<path d="M2 2h4v4h-4v-4z" fill="${getProp("--ButtonFace")}"/>
+	`);
+	var button_normal_9slice = svg(`
+		<path d="M0 0h7v1h-6v6h-1v-7z" fill="${getProp("--ButtonHilight")}"/>
+		<path d="M7 0h1v8h-8v-1h7v-7z" fill="${getProp("--ButtonDkShadow")}"/>
+		<path d="M1 1h5v1h-4v4h-1v-5z" fill="${getProp("--ButtonHilight") /* should this be a different color? slightly less hilit? */}"/>
+		<path d="M6 1h1v6h-6v-1h5v-5z" fill="${getProp("--ButtonShadow")}"/>
+		<path d="M2 2h4v4h-4v-4z" fill="${getProp("--ButtonFace")}"/>
+	`);
+	var button_default_9slice = svg(`
+		<path d="M0 0h8v8h-8v-8z" fill="${getProp("--ButtonDkShadow")}"/>
+		<path d="M1 1h5v1h-4v4h-1v-5z" fill="${getProp("--ButtonHilight")}"/>
+		<path d="M2 2h3v1h-2v2h-1v-3z" fill="${getProp("--ButtonHilight") /* should this be a different color? slightly less hilit? */}"/>
+		<path d="M5 2h1v4h-4v-1h3v-3z" fill="${getProp("--ButtonShadow")}"/>
+		<path d="M3 3h2v2h-2v-2z" fill="${getProp("--ButtonFace")}"/>
+	`);
+
 	return {
 		"--checker": checker,
+		"--button-active-9slice": button_active_9slice,
+		"--button-normal-9slice": button_normal_9slice,
+		"--button-default-9slice": button_default_9slice,
 		"--scrollbar-arrows-ButtonText": scrollbar_arrows_ButtonText,
 		"--scrollbar-arrows-GrayText": scrollbar_arrows_GrayText,
 		"--scrollbar-arrows-ButtonHilight": scrollbar_arrows_ButtonHilight,
