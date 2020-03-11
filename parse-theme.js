@@ -108,9 +108,11 @@ function renderThemeGraphics(cssProperties) {
 
 	function border_image(svg_contents) {
 		var base_size = 8;
-		var border_size = 3;
+		var border_size_top_left = 2;
+		var border_size_bottom_right = 3;
 		var scale = 32;
-		var slice_size = border_size * scale;
+		var slice_size_top_left = border_size_top_left * scale;
+		var slice_size_bottom_right = border_size_bottom_right * scale;
 		var view_size = base_size * scale;
 		// transform causes janky buggy garbage
 		// var svg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="${view_size}px" height="${view_size}px" viewBox="0 0 ${view_size} ${view_size}">
@@ -122,7 +124,11 @@ function renderThemeGraphics(cssProperties) {
 			${svg_contents.replace(/d="[^"]*"/g, (d)=> d.replace(/\d+/g, (n)=> n * scale))}
 		</svg>`;
 		var url = `data:image/svg+xml,${encodeURIComponent(svg)}`;
-		return `url("${url}") ${slice_size} / ${border_size}px`;
+		// order: top | right | bottom | left
+		var slice = `${slice_size_top_left} ${slice_size_bottom_right} ${slice_size_bottom_right} ${slice_size_top_left}`;
+		// order: top | right | bottom | left
+		var border_sizes = `${border_size_top_left}px ${border_size_bottom_right}px ${border_size_bottom_right}px ${border_size_top_left}px`;
+		return `url("${url}") ${slice} / ${border_sizes}`;
 	}
 
 	var button_active_border_image = border_image(`
