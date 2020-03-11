@@ -1,4 +1,5 @@
-build/
+# including build/ for demo for now, much simpler than setting up a deploy to gh-pages with built files included
+# build/
 
 # Logs
 logs

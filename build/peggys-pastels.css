@@ -1,0 +1,43 @@
+/* https://www.deviantart.com/tpenguinltg/art/Peggy-s-Pastels-505540096 */
+/* This is a generated file. */
+:root {
+	--checker: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P89eDJ/18PnzEwfjl46j+bvBQDAHJ8Cj5el2f8AAAAAElFTkSuQmCC");
+	--scrollbar-arrows-ButtonText: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
+	--scrollbar-arrows-GrayText: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDrrnmvBfafcCosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/ANEWQAoG78U6AAAAAElFTkSuQmCC");
+	--scrollbar-arrows-ButtonHilight: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr14Ml/NgUZosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AIJVQAqPLmKjAAAAAElFTkSuQmCC");
+	--scrollbar-size: 13px;
+	--scrollbar-button-inner-size: 9px;
+	--Scrollbar: rgb(250, 224, 228);
+	--Background: rgb(162, 219, 210);
+	--ActiveTitle: rgb(0, 191, 188);
+	--InactiveTitle: rgb(0, 187, 169);
+	--Menu: rgb(244, 193, 202);
+	--Window: rgb(244, 255, 255);
+	--WindowFrame: rgb(0, 0, 0);
+	--MenuText: rgb(0, 0, 0);
+	--WindowText: rgb(0, 0, 0);
+	--TitleText: rgb(255, 255, 255);
+	--ActiveBorder: rgb(244, 193, 202);
+	--InactiveBorder: rgb(244, 193, 202);
+	--AppWorkspace: rgb(255, 184, 182);
+	--Hilight: rgb(162, 219, 210);
+	--HilightText: rgb(0, 0, 0);
+	--ButtonFace: rgb(244, 193, 202);
+	--ButtonShadow: rgb(222, 69, 96);
+	--GrayText: rgb(222, 69, 96);
+	--ButtonText: rgb(0, 0, 0);
+	--InactiveTitleText: rgb(0, 85, 77);
+	--ButtonHilight: rgb(250, 224, 228);
+	--ButtonDkShadow: rgb(64, 64, 64);
+	--ButtonLight: rgb(247, 219, 215);
+	--InfoText: rgb(0, 0, 0);
+	--InfoWindow: rgb(204, 255, 255);
+	--ButtonAlternateFace: rgb(181, 181, 181);
+	--HotTrackingColor: rgb(0, 128, 128);
+	--GradientActiveTitle: rgb(202, 156, 185);
+	--GradientInactiveTitle: rgb(236, 145, 162);
+	--MenuHilight: rgb(162, 219, 210);
+	--MenuBar: rgb(244, 193, 202);
+}
+
+/*# sourceMappingURL=peggys-pastels.css.map */

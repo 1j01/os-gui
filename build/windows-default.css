@@ -1,0 +1,42 @@
+:root {
+	/* These resources are generated. */
+	--checker: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC");
+	--scrollbar-arrows-ButtonText: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
+	--scrollbar-arrows-GrayText: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDmpoaPjf0NBAlNnoauGaQBLooYXLUEIWwswi5Chs6lB8gewofI6BOZwWajCCFZ/viQ1FqoUQtRI4oShFtgdnGqKWYyg1h6icQKklpOgHAM9mQArEvm5+AAAAAElFTkSuQmCC");
+	--scrollbar-arrows-ButtonHilight: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr///9/RkZGosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AKXFQAqyTJ6DAAAAAElFTkSuQmCC");
+	--scrollbar-size: 13px;
+	--scrollbar-button-inner-size: 9px;
+
+	/* Colors */
+	--ActiveBorder: rgb(192, 192, 192);
+	--ActiveTitle: rgb(0, 0, 128);
+	--AppWorkspace: rgb(128, 128, 128);
+	--Background: rgb(0, 128, 128);
+	--ButtonAlternateFace: rgb(180, 180, 180);
+	--ButtonDkShadow: rgb(0, 0, 0);
+	--ButtonFace: rgb(192, 192, 192);
+	--ButtonHilight: rgb(255, 255, 255);
+	--ButtonLight: rgb(223, 223, 223);
+	--ButtonShadow: rgb(128, 128, 128);
+	--ButtonText: rgb(0, 0, 0);
+	--GradientActiveTitle: rgb(16, 132, 208);
+	--GradientInactiveTitle: rgb(181, 181, 181);
+	--GrayText: rgb(128, 128, 128);
+	--Hilight: rgb(0, 0, 128);
+	--HilightText: rgb(255, 255, 255);
+	--HotTrackingColor: rgb(0, 0, 255);
+	--InactiveBorder: rgb(192, 192, 192);
+	--InactiveTitle: rgb(128, 128, 128);
+	--InactiveTitleText: rgb(192, 192, 192);
+	--InfoText: rgb(0, 0, 0);
+	--InfoWindow: rgb(255, 255, 225);
+	--Menu: rgb(192, 192, 192);
+	--MenuText: rgb(0, 0, 0);
+	--Scrollbar: rgb(192, 192, 192);
+	--TitleText: rgb(255, 255, 255);
+	--Window: rgb(255, 255, 255);
+	--WindowFrame: rgb(0, 0, 0);
+	--WindowText: rgb(0, 0, 0);
+}
+
+/*# sourceMappingURL=windows-default.css.map */

@@ -1,0 +1,933 @@
+/* @supports selector(a::after) { ... } doesn't work */
+@supports (--supports: supports) {
+}
+@supports (--supports: supports) and (--supports: supports) {
+}
+@supports (--supports: supports) {
+}
+
+.inset-deep {
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgb(222, 69, 96) rgb(250, 224, 228) rgb(250, 224, 228) rgb(222, 69, 96);
+	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);/* as fallback */
+	position: relative;/* for pseudo element(s) */
+}
+
+@supports (--supports: supports) {
+	.inset-deep {
+		border: none;
+	}
+}
+
+@supports (--supports: supports) {
+	.inset-deep {
+		border-color: rgb(222, 69, 96);
+		border-color: var(--ButtonShadow);
+		border-style: solid;
+		border-width: 2px 2px;
+	}
+}
+
+@supports (--supports: supports) and (--supports: supports) {
+	.inset-deep::after {
+		content: "";
+		display: block;
+		position: absolute;
+		pointer-events: none;
+		left: -2px;
+		top: -2px;
+		right: -2px;
+		bottom: -2px;
+		border-color: rgb(250, 224, 228) rgb(64, 64, 64) rgb(64, 64, 64) rgb(250, 224, 228);
+		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+		border-style: solid;
+		border-width: 1px 1px;
+	}
+}
+
+@supports (--supports: supports) {
+	.inset-deep::after {
+		border-color: rgb(64, 64, 64);
+		border-color: var(--ButtonDkShadow);
+		border-style: solid;
+		border-width: 1px 1px;
+	}
+}
+.outset-deep {
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgb(250, 224, 228) rgb(222, 69, 96) rgb(222, 69, 96) rgb(250, 224, 228);
+	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);/* as fallback */
+	position: relative;/* for pseudo element(s) */
+}
+@supports (--supports: supports) {
+	.outset-deep {
+		border: none;
+	}
+}
+@supports (--supports: supports) {
+	.outset-deep {
+		border-color: rgb(247, 219, 215) rgb(222, 69, 96) rgb(222, 69, 96) rgb(247, 219, 215);
+		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
+		border-style: solid;
+		border-width: 2px 2px;
+	}
+}
+@supports (--supports: supports) {
+	.outset-deep::after {
+		content: "";
+		display: block;
+		position: absolute;
+		pointer-events: none;
+		left: -2px;
+		top: -2px;
+		right: -2px;
+		bottom: -2px;
+		border-color: rgb(250, 224, 228) rgb(64, 64, 64) rgb(64, 64, 64) rgb(250, 224, 228);
+		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+		border-style: solid;
+		border-width: 1px 1px;
+	}
+}
+.inset-shallow {
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgb(222, 69, 96) rgb(250, 224, 228) rgb(250, 224, 228) rgb(222, 69, 96);
+	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);
+}
+.outset-shallow {
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgb(250, 224, 228) rgb(222, 69, 96) rgb(222, 69, 96) rgb(250, 224, 228);
+	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);
+}
+
+button {
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);
+}
+button:not(.lightweight) {
+	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */ border-style: solid; border-width: 1px; border-color: rgb(250, 224, 228) rgb(222, 69, 96) rgb(222, 69, 96) rgb(250, 224, 228); border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight); background-color: rgb(244, 193, 202); background-color: var(--ButtonFace); color: rgb(0, 0, 0); color: var(--ButtonText); /* as fallback */ position: relative; /* for pseudo element(s) */
+}
+@supports (--supports: supports) {
+	button:not(.lightweight) {
+		border: none;
+	}
+}
+@supports (--supports: supports) {
+	button:not(.lightweight) {
+		border-color: rgb(247, 219, 215) rgb(222, 69, 96) rgb(222, 69, 96) rgb(247, 219, 215);
+		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
+		border-style: solid;
+		border-width: 2px 2px;
+	}
+}
+@supports (--supports: supports) {
+	button:not(.lightweight)::after {
+		content: "";
+		display: block;
+		position: absolute;
+		pointer-events: none;
+		left: -2px;
+		top: -2px;
+		right: -2px;
+		bottom: -2px;
+		border-color: rgb(250, 224, 228) rgb(64, 64, 64) rgb(64, 64, 64) rgb(250, 224, 228);
+		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+		border-style: solid;
+		border-width: 1px 1px;
+	}
+}
+button:not(.lightweight):hover:active {
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgb(222, 69, 96) rgb(250, 224, 228) rgb(250, 224, 228) rgb(222, 69, 96);
+	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);/* as fallback */
+	position: relative;/* for pseudo element(s) */
+}
+@supports (--supports: supports) {
+	button:not(.lightweight):hover:active {
+		border: none;
+	}
+}
+@supports (--supports: supports) {
+	button:not(.lightweight):hover:active {
+		border-color: rgb(222, 69, 96);
+		border-color: var(--ButtonShadow);
+		border-style: solid;
+		border-width: 2px 2px;
+	}
+}
+@supports (--supports: supports) and (--supports: supports) {
+	button:not(.lightweight):hover:active::after {
+		content: "";
+		display: block;
+		position: absolute;
+		pointer-events: none;
+		left: -2px;
+		top: -2px;
+		right: -2px;
+		bottom: -2px;
+		border-color: rgb(250, 224, 228) rgb(64, 64, 64) rgb(64, 64, 64) rgb(250, 224, 228);
+		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+		border-style: solid;
+		border-width: 1px 1px;
+	}
+}
+@supports (--supports: supports) {
+	button:not(.lightweight):hover:active::after {
+		border-color: rgb(64, 64, 64);
+		border-color: var(--ButtonDkShadow);
+		border-style: solid;
+		border-width: 1px 1px;
+	}
+}
+
+/* TODO: offset content on press! */
+/* (this would need a child ELEMENT, wouldn't work with text nodes as direct descendants:) */
+/*button:active > * {
+	position: relative;
+	left: 1px;
+	top: 1px;
+}
+*/
+/* also, this is more complicated; see Paint; the tool buttons translate when being pushed and when depressed, and these add together */
+
+button:not(.lightweight):focus::before {
+	content: "";
+	display: block;
+	position: absolute;
+	left: 2px;
+	top: 2px;
+	right: 2px;
+	bottom: 2px;
+	border: 1px dotted rgb(64, 64, 64);
+	border: 1px dotted var(--ButtonDkShadow); /* ?? */
+	/* TODO: get exact inset dimensions, and have corners without dots ideally */
+	/* (could use outline instead of ::before at this point) */
+}
+button.lightweight {
+	outline: none; /* these buttons are not usually keyboard accessible, or the focus it shown just by inset (menu buttons) */
+
+	border-style: solid;
+	border-width: 1px;
+	border-color: transparent;
+}
+/* TODO: recommend preventing focus on click for lightweight buttons */
+button.lightweight:not([disabled]):hover {
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgb(250, 224, 228) rgb(222, 69, 96) rgb(222, 69, 96) rgb(250, 224, 228);
+	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);
+}
+button.lightweight:not([disabled]):hover:active {
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgb(222, 69, 96) rgb(250, 224, 228) rgb(250, 224, 228) rgb(222, 69, 96);
+	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);
+}
+button[disabled] {
+	color: rgb(222, 69, 96);
+	color: var(--GrayText);
+	text-shadow: 1px 1px 0px white; /* TODO: what var for color? */
+}
+/* TODO: [checked]? .pressed? .depressed? .down? .held? what should it be called? */
+button:not(.lightweight).selected {
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgb(222, 69, 96) rgb(250, 224, 228) rgb(250, 224, 228) rgb(222, 69, 96);
+	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);/* as fallback */
+	position: relative;/* for pseudo element(s) */
+}
+@supports (--supports: supports) {
+	button:not(.lightweight).selected {
+		border: none;
+	}
+}
+@supports (--supports: supports) {
+	button:not(.lightweight).selected {
+		border-color: rgb(222, 69, 96);
+		border-color: var(--ButtonShadow);
+		border-style: solid;
+		border-width: 2px 2px;
+	}
+}
+@supports (--supports: supports) and (--supports: supports) {
+	button:not(.lightweight).selected::after {
+		content: "";
+		display: block;
+		position: absolute;
+		pointer-events: none;
+		left: -2px;
+		top: -2px;
+		right: -2px;
+		bottom: -2px;
+		border-color: rgb(250, 224, 228) rgb(64, 64, 64) rgb(64, 64, 64) rgb(250, 224, 228);
+		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+		border-style: solid;
+		border-width: 1px 1px;
+	}
+}
+@supports (--supports: supports) {
+	button:not(.lightweight).selected::after {
+		border-color: rgb(64, 64, 64);
+		border-color: var(--ButtonDkShadow);
+		border-style: solid;
+		border-width: 1px 1px;
+	}
+}
+button:not(.lightweight).selected {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P89eDJ/18PnzEwfjl46j+bvBQDAHJ8Cj5el2f8AAAAAElFTkSuQmCC") repeat;
+	background: var(--checker) repeat;
+	-ms-interpolation-mode: nearest-neighbor;
+	    image-rendering: -moz-crisp-edges;
+	    image-rendering: pixelated;
+}
+
+.window-titlebar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+	background: rgb(0, 191, 188);
+
+	background: var(--ActiveTitle);
+	background: linear-gradient(to right, rgb(0, 191, 188) 0%, rgb(202, 156, 185) 100%);
+	background: linear-gradient(to right, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%);
+	
+	color: rgb(255, 255, 255);
+	
+	color: var(--TitleText);
+	
+	font-family: 'Segoe UI', sans-serif;
+	
+	font-size: 12px;
+	
+	font-weight: bold;
+}
+.window:not(.focused) .window-titlebar {
+	background: darkgray;
+	background: linear-gradient(to right, rgb(0, 187, 169) 0%, rgb(236, 145, 162) 100%);
+	background: linear-gradient(to right, var(--InactiveTitle) 0%, var(--GradientInactiveTitle) 100%);
+
+	color: rgb(0, 85, 77);
+
+	color: var(--InactiveTitleText);
+}
+.window {
+	/* Needed for when maximized, otherwise would be provided by %outset-deep */
+	background: rgb(244, 193, 202);
+	background: var(--ButtonFace);
+
+	/* background: var(--Window); */
+	/*color: var(--WindowText);*/
+	/*border: 1px solid var(--WindowFrame);*/
+	/* TODO: use window-specific theme colors; also different types of windows */
+	/* padding: 2px; */
+}
+.window:not(.maximized) {
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgb(250, 224, 228) rgb(222, 69, 96) rgb(222, 69, 96) rgb(250, 224, 228);
+	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);/* as fallback */
+	position: relative;/* for pseudo element(s) */
+}
+@supports (--supports: supports) {
+	.window:not(.maximized) {
+		border: none;
+	}
+}
+@supports (--supports: supports) {
+	.window:not(.maximized) {
+		border-color: rgb(247, 219, 215) rgb(222, 69, 96) rgb(222, 69, 96) rgb(247, 219, 215);
+		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
+		border-style: solid;
+		border-width: 2px 2px;
+	}
+}
+@supports (--supports: supports) {
+	.window:not(.maximized)::after {
+		content: "";
+		display: block;
+		position: absolute;
+		pointer-events: none;
+		left: -2px;
+		top: -2px;
+		right: -2px;
+		bottom: -2px;
+		border-color: rgb(250, 224, 228) rgb(64, 64, 64) rgb(64, 64, 64) rgb(250, 224, 228);
+		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+		border-style: solid;
+		border-width: 1px 1px;
+	}
+}
+.window > * {
+	/* margin: 1px; */
+}
+.window-button {
+	margin: 2px 0;
+}
+.window-close-button {
+	margin-left: 2px;
+	margin-right: 2px;
+}
+.window-title-area {
+	position: relative;
+	flex: 1;
+	height: 16px; /* 100% doesn't work */
+}
+.window-title {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	display: inline-block !important;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	padding-left: 2px;
+}
+.window-close-button {
+	/* display: block !important; */
+	/* float: right; */
+	/* width: 13px;
+	height: 11px; */
+}
+.window-close-button,
+.window-maximize-button,
+.window-minimize-button {
+	background-image: url("../src/images/titlebar-buttons.png");
+	-ms-interpolation-mode: nearest-neighbor;
+	    image-rendering: -moz-crisp-edges;
+	    image-rendering: pixelated;
+	display: block;
+	width: 16px;
+	height: 14px;
+	padding: 0;
+}
+
+.window-close-button {
+	background-position: calc(-3 * 13px - 1px) 0px;
+}
+.window-maximize-button {
+	background-position: calc(-1 * 13px - 1px) 0px;
+}
+.maximized .window-maximize-button {
+	background-position: calc(-2 * 13px - 1px) 0px;
+}
+.window-minimize-button {
+	background-position: calc(-0 * 13px - 1px) 0px;
+}
+
+.window-close-button:hover:active {
+	background-position: calc(-3 * 13px - 0px) 1px;
+}
+.window-maximize-button:hover:active {
+	background-position: calc(-1 * 13px - 0px) 1px;
+}
+.maximized .window-maximize-button:hover:active {
+	background-position: calc(-2 * 13px - 0px) 1px;
+}
+.window-minimize-button:hover:active {
+	background-position: calc(-0 * 13px - 0px) 1px;
+}
+
+
+.menus {
+	background: rgb(244, 193, 202);
+	background: var(--Menu);
+}
+.menus *, .menu-popup * {
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 12px;
+}
+.menu-container {
+	margin-bottom: 1px;
+}
+.menu-button {
+	padding: 2px 5px;
+	position: relative;
+	outline: 0;
+	/* @extend button.lightweight; */
+	background: rgb(244, 193, 202);
+	background: var(--Menu);
+}
+.menu-button:hover {
+	box-shadow: 1px 1px 0 rgb(250, 224, 228) inset, -1px -1px 0 rgb(222, 69, 96) inset;
+	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
+}
+.menu-button:active,
+.menu-button.active {
+	box-shadow: 1px 1px 0 rgb(222, 69, 96) inset, -1px -1px 0 white inset;
+	box-shadow: 1px 1px 0 var(--ButtonShadow) inset, -1px -1px 0 white inset;
+	top: 1px;
+	left: 1px;
+}
+.menu-popup {
+	display: block;
+	padding: 2px;
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	border-top: 1px solid rgb(244, 193, 202);
+	border-top: 1px solid var(--ButtonFace);
+	border-left: 1px solid rgb(244, 193, 202);
+	border-left: 1px solid var(--ButtonFace);
+	border-right: 1px solid rgb(64, 64, 64);
+	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid rgb(64, 64, 64);
+	border-bottom: 1px solid var(--ButtonDkShadow);
+	box-shadow: 1px 1px 0 rgb(250, 224, 228) inset, -1px -1px 0 rgb(222, 69, 96) inset;
+	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
+	background: rgb(244, 193, 202);
+	background: var(--Menu);
+	color: rgb(0, 0, 0);
+	color: var(--MenuText);
+}
+.menu-item {
+	padding: 1px 3px;
+	margin: 2px;
+}
+.menu-item[disabled] {
+	color: rgb(222, 69, 96);
+	color: var(--GrayText);
+	text-shadow: 0.8px 0.8px 0px #fff;
+}
+.menu-item:focus,
+.menu-item.active {
+	background: rgb(162, 219, 210);
+	background: var(--Hilight);
+	color: rgb(0, 0, 0);
+	color: var(--HilightText);
+	text-shadow: none;
+	outline: 0;
+}
+.menu-item .menu-item-shortcut {
+	padding-left: 10px;
+}
+.menu-hr {
+	border: 0;
+	border-top: 1px solid #808080;
+	border-bottom: 1px solid #ffffff;
+	margin: 0px 2px;
+}
+.menu-hotkey {
+	text-decoration: underline;
+}
+
+
+::-moz-selection {
+	background-color: rgb(162, 219, 210);
+	background-color: var(--Hilight);
+	color: rgb(0, 0, 0);
+	color: var(--HilightText);
+}
+
+
+::selection {
+	background-color: rgb(162, 219, 210);
+	background-color: var(--Hilight);
+	color: rgb(0, 0, 0);
+	color: var(--HilightText);
+}
+
+.scrollbar {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P89eDJ/18PnzEwfjl46j+bvBQDAHJ8Cj5el2f8AAAAAElFTkSuQmCC") repeat;
+	background: var(--checker) repeat;
+	-ms-interpolation-mode: nearest-neighbor;
+	    image-rendering: -moz-crisp-edges;
+	    image-rendering: pixelated;
+}
+.scrollbar-thumb {
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	border-top: 1px solid rgb(244, 193, 202);
+	border-top: 1px solid var(--ButtonFace);
+	border-left: 1px solid rgb(244, 193, 202);
+	border-left: 1px solid var(--ButtonFace);
+	border-right: 1px solid rgb(64, 64, 64);
+	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid rgb(64, 64, 64);
+	border-bottom: 1px solid var(--ButtonDkShadow);
+	box-shadow: 1px 1px 0 rgb(250, 224, 228) inset, -1px -1px 0 rgb(222, 69, 96) inset;
+	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
+}
+.scrollbar-track-piece:hover:active {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P89eDJ/18PnzEwfjl46j+bvBQDAHJ8Cj5el2f8AAAAAElFTkSuQmCC") repeat;
+	background: var(--checker) repeat;
+	-ms-interpolation-mode: nearest-neighbor;
+	    image-rendering: -moz-crisp-edges;
+	    image-rendering: pixelated;
+	background-color: white;
+	background-blend-mode: difference;/* background-attachment: fixed; breaks the checkered background in chrome */
+}
+.scrollbar-track-piece.increment {
+	background-position: bottom;
+}
+.scrollbar-corner {
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+}
+
+.scrollbar-button {
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	border-top: 1px solid rgb(244, 193, 202);
+	border-top: 1px solid var(--ButtonFace);
+	border-left: 1px solid rgb(244, 193, 202);
+	border-left: 1px solid var(--ButtonFace);
+	border-right: 1px solid rgb(64, 64, 64);
+	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid rgb(64, 64, 64);
+	border-bottom: 1px solid var(--ButtonDkShadow);
+	box-shadow: 1px 1px 0 rgb(250, 224, 228) inset, -1px -1px 0 rgb(222, 69, 96) inset;
+	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
+	background-image: var(--scrollbar-arrows-ButtonText);
+	-ms-interpolation-mode: nearest-neighbor;
+	    image-rendering: -moz-crisp-edges;
+	    image-rendering: pixelated;
+	width: 13px;
+	width: var(--scrollbar-size);
+	height: 13px;
+	height: var(--scrollbar-size);
+	box-sizing: border-box;
+}
+.scrollbar-button:not(.disabled):hover:active {
+	border: 1px solid rgb(222, 69, 96);
+	border: 1px solid var(--ButtonShadow);
+	box-shadow: none;
+}
+.scrollbar-button.disabled {
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDrrnmvBfafcCosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/ANEWQAoG78U6AAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr14Ml/NgUZosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AIJVQAqPLmKjAAAAAElFTkSuQmCC");
+	background-image: var(--scrollbar-arrows-GrayText), var(--scrollbar-arrows-ButtonHilight);
+}
+
+.scrollbar-button.horizontal.decrement.disabled {
+	background-position: /* left arrow */
+		calc(9px * -3 + 1px) 1px,
+		calc(9px * -3 + 2px) 2px;
+	background-position: /* left arrow */
+		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
+}
+.scrollbar-button.horizontal.increment.disabled {
+	background-position: /* right arrow */
+		calc(9px * -2 + 1px) 1px,
+		calc(9px * -2 + 2px) 2px;
+	background-position: /* right arrow */
+		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
+}
+.scrollbar-button.vertical.decrement.disabled {
+	background-position: /* up arrow */
+		calc(9px * -1 + 1px) 1px,
+		calc(9px * -1 + 2px) 2px;
+	background-position: /* up arrow */
+		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
+}
+.scrollbar-button.vertical.increment.disabled {
+	background-position: /* down arrow */
+		calc(9px * -0 + 1px) 1px,
+		calc(9px * -0 + 2px) 2px;
+	background-position: /* down arrow */
+		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
+}
+
+.scrollbar-button.horizontal.decrement {
+	background-position: calc(9px * -3 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px; /* left */
+}
+.scrollbar-button.horizontal.increment {
+	background-position: calc(9px * -2 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px; /* right */
+}
+.scrollbar-button.vertical.decrement {
+	background-position: calc(9px * -1 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px; /* up */
+}
+.scrollbar-button.vertical.increment {
+	background-position: calc(9px * -0 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px; /* down */
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-button {
+	width: 13px;
+	width: var(--scrollbar-size);
+	height: 13px;
+	height: var(--scrollbar-size);
+}
+
+::-webkit-scrollbar {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P89eDJ/18PnzEwfjl46j+bvBQDAHJ8Cj5el2f8AAAAAElFTkSuQmCC") repeat;
+	background: var(--checker) repeat;
+	image-rendering: pixelated;
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	border-top: 1px solid rgb(244, 193, 202);
+	border-top: 1px solid var(--ButtonFace);
+	border-left: 1px solid rgb(244, 193, 202);
+	border-left: 1px solid var(--ButtonFace);
+	border-right: 1px solid rgb(64, 64, 64);
+	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid rgb(64, 64, 64);
+	border-bottom: 1px solid var(--ButtonDkShadow);
+	box-shadow: 1px 1px 0 rgb(250, 224, 228) inset, -1px -1px 0 rgb(222, 69, 96) inset;
+	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
+}
+::-webkit-scrollbar-corner {
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+}
+
+::-webkit-scrollbar-button {
+	background-color: rgb(244, 193, 202);
+	background-color: var(--ButtonFace);
+	border-top: 1px solid rgb(244, 193, 202);
+	border-top: 1px solid var(--ButtonFace);
+	border-left: 1px solid rgb(244, 193, 202);
+	border-left: 1px solid var(--ButtonFace);
+	border-right: 1px solid rgb(64, 64, 64);
+	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid rgb(64, 64, 64);
+	border-bottom: 1px solid var(--ButtonDkShadow);
+	box-shadow: 1px 1px 0 rgb(250, 224, 228) inset, -1px -1px 0 rgb(222, 69, 96) inset;
+	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
+	background-image: var(--scrollbar-arrows-ButtonText);
+	image-rendering: pixelated;
+	width: 13px;
+	width: var(--scrollbar-size);
+	height: 13px;
+	height: var(--scrollbar-size);
+	box-sizing: border-box;
+}
+
+::-webkit-scrollbar-button:not(.disabled):hover:active {
+	border: 1px solid rgb(222, 69, 96);
+	border: 1px solid var(--ButtonShadow);
+	box-shadow: none;
+}
+
+::-webkit-scrollbar-button.disabled {
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDrrnmvBfafcCosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/ANEWQAoG78U6AAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr14Ml/NgUZosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AIJVQAqPLmKjAAAAAElFTkSuQmCC");
+	background-image: var(--scrollbar-arrows-GrayText), var(--scrollbar-arrows-ButtonHilight);
+}
+
+::-webkit-scrollbar-button.horizontal.decrement.disabled {
+	background-position: /* left arrow */
+		calc(9px * -3 + 1px) 1px,
+		calc(9px * -3 + 2px) 2px;
+	background-position: /* left arrow */
+		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
+}
+
+::-webkit-scrollbar-button.horizontal.increment.disabled {
+	background-position: /* right arrow */
+		calc(9px * -2 + 1px) 1px,
+		calc(9px * -2 + 2px) 2px;
+	background-position: /* right arrow */
+		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
+}
+
+::-webkit-scrollbar-button.vertical.decrement.disabled {
+	background-position: /* up arrow */
+		calc(9px * -1 + 1px) 1px,
+		calc(9px * -1 + 2px) 2px;
+	background-position: /* up arrow */
+		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
+}
+
+::-webkit-scrollbar-button.vertical.increment.disabled {
+	background-position: /* down arrow */
+		calc(9px * -0 + 1px) 1px,
+		calc(9px * -0 + 2px) 2px;
+	background-position: /* down arrow */
+		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
+}
+
+::-webkit-scrollbar-button.horizontal.decrement {
+	background-position: calc(9px * -3 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px;/* left */
+}
+
+::-webkit-scrollbar-button.horizontal.increment {
+	background-position: calc(9px * -2 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px;/* right */
+}
+
+::-webkit-scrollbar-button.vertical.decrement {
+	background-position: calc(9px * -1 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px;/* up */
+}
+
+::-webkit-scrollbar-button.vertical.increment {
+	background-position: calc(9px * -0 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px;/* down */
+}
+::-webkit-scrollbar-button:hover:active {
+	border: 1px solid rgb(222, 69, 96);
+	border: 1px solid var(--ButtonShadow);
+	box-shadow: none;
+}
+::-webkit-scrollbar-button:disabled {
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDrrnmvBfafcCosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/ANEWQAoG78U6AAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr14Ml/NgUZosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AIJVQAqPLmKjAAAAAElFTkSuQmCC");
+	background-image: var(--scrollbar-arrows-GrayText), var(--scrollbar-arrows-ButtonHilight);
+}
+
+::-webkit-scrollbar-button:horizontal:decrement:disabled {
+	background-position: /* left arrow */
+		calc(9px * -3 + 1px) 1px,
+		calc(9px * -3 + 2px) 2px;
+	background-position: /* left arrow */
+		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
+}
+::-webkit-scrollbar-button:horizontal:increment:disabled {
+	background-position: /* right arrow */
+		calc(9px * -2 + 1px) 1px,
+		calc(9px * -2 + 2px) 2px;
+	background-position: /* right arrow */
+		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
+}
+::-webkit-scrollbar-button:vertical:decrement:disabled {
+	background-position: /* up arrow */
+		calc(9px * -1 + 1px) 1px,
+		calc(9px * -1 + 2px) 2px;
+	background-position: /* up arrow */
+		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
+}
+::-webkit-scrollbar-button:vertical:increment:disabled {
+	background-position: /* down arrow */
+		calc(9px * -0 + 1px) 1px,
+		calc(9px * -0 + 2px) 2px;
+	background-position: /* down arrow */
+		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
+}
+
+::-webkit-scrollbar-button:horizontal:decrement.disabled {
+	background-position: /* left arrow */
+		calc(9px * -3 + 1px) 1px,
+		calc(9px * -3 + 2px) 2px;
+	background-position: /* left arrow */
+		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
+}
+
+::-webkit-scrollbar-button:horizontal:decrement {
+	background-position: calc(9px * -3 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px;/* left */
+}
+::-webkit-scrollbar-button:horizontal:increment.disabled {
+	background-position: /* right arrow */
+		calc(9px * -2 + 1px) 1px,
+		calc(9px * -2 + 2px) 2px;
+	background-position: /* right arrow */
+		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
+}
+::-webkit-scrollbar-button:horizontal:increment {
+	background-position: calc(9px * -2 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px;/* right */
+}
+::-webkit-scrollbar-button:vertical:decrement.disabled {
+	background-position: /* up arrow */
+		calc(9px * -1 + 1px) 1px,
+		calc(9px * -1 + 2px) 2px;
+	background-position: /* up arrow */
+		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
+}
+::-webkit-scrollbar-button:vertical:decrement {
+	background-position: calc(9px * -1 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px;/* up */
+}
+::-webkit-scrollbar-button:vertical:increment.disabled {
+	background-position: /* down arrow */
+		calc(9px * -0 + 1px) 1px,
+		calc(9px * -0 + 2px) 2px;
+	background-position: /* down arrow */
+		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
+		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
+}
+::-webkit-scrollbar-button:vertical:increment {
+	background-position: calc(9px * -0 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px;/* down */
+}
+
+::-webkit-scrollbar-track-piece:hover:active {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P89eDJ/18PnzEwfjl46j+bvBQDAHJ8Cj5el2f8AAAAAElFTkSuQmCC") repeat;
+	background: var(--checker) repeat;
+	image-rendering: pixelated;
+	background-color: white;
+	background-blend-mode: difference;/* background-attachment: fixed; breaks the checkered background in chrome */
+}
+
+::-webkit-scrollbar-track-piece.increment {
+	background-position: bottom;
+}
+::-webkit-scrollbar-track-piece:increment {
+	background-position: bottom;
+}
+
+/* turn off double buttons */
+::-webkit-scrollbar-button:start:increment,
+::-webkit-scrollbar-button:end:decrement {
+	display: none;
+}
+
+/*# sourceMappingURL=windows-98.css.map */
