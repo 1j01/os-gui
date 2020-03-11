@@ -9,11 +9,8 @@
 .inset-deep {
 	border-style: solid;
 	border-width: 1px;
-	border-color: rgb(222, 69, 96) rgb(250, 224, 228) rgb(250, 224, 228) rgb(222, 69, 96);
 	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	color: rgb(0, 0, 0);
 	color: var(--ButtonText);/* as fallback */
 	position: relative;/* for pseudo element(s) */
 }
@@ -26,7 +23,6 @@
 
 @supports (--supports: supports) {
 	.inset-deep {
-		border-color: rgb(222, 69, 96);
 		border-color: var(--ButtonShadow);
 		border-style: solid;
 		border-width: 2px 2px;
@@ -43,7 +39,6 @@
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
-		border-color: rgb(250, 224, 228) rgb(64, 64, 64) rgb(64, 64, 64) rgb(250, 224, 228);
 		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -52,7 +47,6 @@
 
 @supports (--supports: supports) {
 	.inset-deep::after {
-		border-color: rgb(64, 64, 64);
 		border-color: var(--ButtonDkShadow);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -61,11 +55,8 @@
 .outset-deep {
 	border-style: solid;
 	border-width: 1px;
-	border-color: rgb(250, 224, 228) rgb(222, 69, 96) rgb(222, 69, 96) rgb(250, 224, 228);
 	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	color: rgb(0, 0, 0);
 	color: var(--ButtonText);/* as fallback */
 	position: relative;/* for pseudo element(s) */
 }
@@ -76,7 +67,6 @@
 }
 @supports (--supports: supports) {
 	.outset-deep {
-		border-color: rgb(247, 219, 215) rgb(222, 69, 96) rgb(222, 69, 96) rgb(247, 219, 215);
 		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
 		border-style: solid;
 		border-width: 2px 2px;
@@ -92,7 +82,6 @@
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
-		border-color: rgb(250, 224, 228) rgb(64, 64, 64) rgb(64, 64, 64) rgb(250, 224, 228);
 		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -101,32 +90,24 @@
 .inset-shallow {
 	border-style: solid;
 	border-width: 1px;
-	border-color: rgb(222, 69, 96) rgb(250, 224, 228) rgb(250, 224, 228) rgb(222, 69, 96);
 	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	color: rgb(0, 0, 0);
 	color: var(--ButtonText);
 }
 .outset-shallow {
 	border-style: solid;
 	border-width: 1px;
-	border-color: rgb(250, 224, 228) rgb(222, 69, 96) rgb(222, 69, 96) rgb(250, 224, 228);
 	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	color: rgb(0, 0, 0);
 	color: var(--ButtonText);
 }
 
 button {
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	color: rgb(0, 0, 0);
 	color: var(--ButtonText);
 }
 button:not(.lightweight) {
-	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */ border-style: solid; border-width: 1px; border-color: rgb(250, 224, 228) rgb(222, 69, 96) rgb(222, 69, 96) rgb(250, 224, 228); border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight); background-color: rgb(244, 193, 202); background-color: var(--ButtonFace); color: rgb(0, 0, 0); color: var(--ButtonText); /* as fallback */ position: relative; /* for pseudo element(s) */
+	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */ border-style: solid; border-width: 1px; border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight); background-color: var(--ButtonFace); color: var(--ButtonText); /* as fallback */ position: relative; /* for pseudo element(s) */
 }
 @supports (--supports: supports) {
 	button:not(.lightweight) {
@@ -135,7 +116,6 @@ button:not(.lightweight) {
 }
 @supports (--supports: supports) {
 	button:not(.lightweight) {
-		border-color: rgb(247, 219, 215) rgb(222, 69, 96) rgb(222, 69, 96) rgb(247, 219, 215);
 		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
 		border-style: solid;
 		border-width: 2px 2px;
@@ -151,7 +131,6 @@ button:not(.lightweight) {
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
-		border-color: rgb(250, 224, 228) rgb(64, 64, 64) rgb(64, 64, 64) rgb(250, 224, 228);
 		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -160,11 +139,8 @@ button:not(.lightweight) {
 button:not(.lightweight):hover:active {
 	border-style: solid;
 	border-width: 1px;
-	border-color: rgb(222, 69, 96) rgb(250, 224, 228) rgb(250, 224, 228) rgb(222, 69, 96);
 	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	color: rgb(0, 0, 0);
 	color: var(--ButtonText);/* as fallback */
 	position: relative;/* for pseudo element(s) */
 }
@@ -175,7 +151,6 @@ button:not(.lightweight):hover:active {
 }
 @supports (--supports: supports) {
 	button:not(.lightweight):hover:active {
-		border-color: rgb(222, 69, 96);
 		border-color: var(--ButtonShadow);
 		border-style: solid;
 		border-width: 2px 2px;
@@ -191,7 +166,6 @@ button:not(.lightweight):hover:active {
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
-		border-color: rgb(250, 224, 228) rgb(64, 64, 64) rgb(64, 64, 64) rgb(250, 224, 228);
 		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -199,7 +173,6 @@ button:not(.lightweight):hover:active {
 }
 @supports (--supports: supports) {
 	button:not(.lightweight):hover:active::after {
-		border-color: rgb(64, 64, 64);
 		border-color: var(--ButtonDkShadow);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -224,7 +197,6 @@ button:not(.lightweight):focus::before {
 	top: 2px;
 	right: 2px;
 	bottom: 2px;
-	border: 1px dotted rgb(64, 64, 64);
 	border: 1px dotted var(--ButtonDkShadow); /* ?? */
 	/* TODO: get exact inset dimensions, and have corners without dots ideally */
 	/* (could use outline instead of ::before at this point) */
@@ -240,25 +212,18 @@ button.lightweight {
 button.lightweight:not([disabled]):hover {
 	border-style: solid;
 	border-width: 1px;
-	border-color: rgb(250, 224, 228) rgb(222, 69, 96) rgb(222, 69, 96) rgb(250, 224, 228);
 	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	color: rgb(0, 0, 0);
 	color: var(--ButtonText);
 }
 button.lightweight:not([disabled]):hover:active {
 	border-style: solid;
 	border-width: 1px;
-	border-color: rgb(222, 69, 96) rgb(250, 224, 228) rgb(250, 224, 228) rgb(222, 69, 96);
 	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	color: rgb(0, 0, 0);
 	color: var(--ButtonText);
 }
 button[disabled] {
-	color: rgb(222, 69, 96);
 	color: var(--GrayText);
 	text-shadow: 1px 1px 0px white; /* TODO: what var for color? */
 }
@@ -266,11 +231,8 @@ button[disabled] {
 button:not(.lightweight).selected {
 	border-style: solid;
 	border-width: 1px;
-	border-color: rgb(222, 69, 96) rgb(250, 224, 228) rgb(250, 224, 228) rgb(222, 69, 96);
 	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	color: rgb(0, 0, 0);
 	color: var(--ButtonText);/* as fallback */
 	position: relative;/* for pseudo element(s) */
 }
@@ -281,7 +243,6 @@ button:not(.lightweight).selected {
 }
 @supports (--supports: supports) {
 	button:not(.lightweight).selected {
-		border-color: rgb(222, 69, 96);
 		border-color: var(--ButtonShadow);
 		border-style: solid;
 		border-width: 2px 2px;
@@ -297,7 +258,6 @@ button:not(.lightweight).selected {
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
-		border-color: rgb(250, 224, 228) rgb(64, 64, 64) rgb(64, 64, 64) rgb(250, 224, 228);
 		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -305,14 +265,12 @@ button:not(.lightweight).selected {
 }
 @supports (--supports: supports) {
 	button:not(.lightweight).selected::after {
-		border-color: rgb(64, 64, 64);
 		border-color: var(--ButtonDkShadow);
 		border-style: solid;
 		border-width: 1px 1px;
 	}
 }
 button:not(.lightweight).selected {
-	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P89eDJ/18PnzEwfjl46j+bvBQDAHJ8Cj5el2f8AAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
 	-ms-interpolation-mode: nearest-neighbor;
 	    image-rendering: -moz-crisp-edges;
@@ -324,13 +282,8 @@ button:not(.lightweight).selected {
 	flex-direction: row;
 	align-items: center;
 
-	background: rgb(0, 191, 188);
-
 	background: var(--ActiveTitle);
-	background: linear-gradient(to right, rgb(0, 191, 188) 0%, rgb(202, 156, 185) 100%);
 	background: linear-gradient(to right, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%);
-	
-	color: rgb(255, 255, 255);
 	
 	color: var(--TitleText);
 	
@@ -342,16 +295,12 @@ button:not(.lightweight).selected {
 }
 .window:not(.focused) .window-titlebar {
 	background: darkgray;
-	background: linear-gradient(to right, rgb(0, 187, 169) 0%, rgb(236, 145, 162) 100%);
 	background: linear-gradient(to right, var(--InactiveTitle) 0%, var(--GradientInactiveTitle) 100%);
-
-	color: rgb(0, 85, 77);
 
 	color: var(--InactiveTitleText);
 }
 .window {
 	/* Needed for when maximized, otherwise would be provided by %outset-deep */
-	background: rgb(244, 193, 202);
 	background: var(--ButtonFace);
 
 	/* background: var(--Window); */
@@ -363,11 +312,8 @@ button:not(.lightweight).selected {
 .window:not(.maximized) {
 	border-style: solid;
 	border-width: 1px;
-	border-color: rgb(250, 224, 228) rgb(222, 69, 96) rgb(222, 69, 96) rgb(250, 224, 228);
 	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	color: rgb(0, 0, 0);
 	color: var(--ButtonText);/* as fallback */
 	position: relative;/* for pseudo element(s) */
 }
@@ -378,7 +324,6 @@ button:not(.lightweight).selected {
 }
 @supports (--supports: supports) {
 	.window:not(.maximized) {
-		border-color: rgb(247, 219, 215) rgb(222, 69, 96) rgb(222, 69, 96) rgb(247, 219, 215);
 		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
 		border-style: solid;
 		border-width: 2px 2px;
@@ -394,7 +339,6 @@ button:not(.lightweight).selected {
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
-		border-color: rgb(250, 224, 228) rgb(64, 64, 64) rgb(64, 64, 64) rgb(250, 224, 228);
 		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -476,7 +420,6 @@ button:not(.lightweight).selected {
 
 
 .menus {
-	background: rgb(244, 193, 202);
 	background: var(--Menu);
 }
 .menus *, .menu-popup * {
@@ -491,16 +434,13 @@ button:not(.lightweight).selected {
 	position: relative;
 	outline: 0;
 	/* @extend button.lightweight; */
-	background: rgb(244, 193, 202);
 	background: var(--Menu);
 }
 .menu-button:hover {
-	box-shadow: 1px 1px 0 rgb(250, 224, 228) inset, -1px -1px 0 rgb(222, 69, 96) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
 .menu-button:active,
 .menu-button.active {
-	box-shadow: 1px 1px 0 rgb(222, 69, 96) inset, -1px -1px 0 white inset;
 	box-shadow: 1px 1px 0 var(--ButtonShadow) inset, -1px -1px 0 white inset;
 	top: 1px;
 	left: 1px;
@@ -508,21 +448,13 @@ button:not(.lightweight).selected {
 .menu-popup {
 	display: block;
 	padding: 2px;
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	border-top: 1px solid rgb(244, 193, 202);
 	border-top: 1px solid var(--ButtonFace);
-	border-left: 1px solid rgb(244, 193, 202);
 	border-left: 1px solid var(--ButtonFace);
-	border-right: 1px solid rgb(64, 64, 64);
 	border-right: 1px solid var(--ButtonDkShadow);
-	border-bottom: 1px solid rgb(64, 64, 64);
 	border-bottom: 1px solid var(--ButtonDkShadow);
-	box-shadow: 1px 1px 0 rgb(250, 224, 228) inset, -1px -1px 0 rgb(222, 69, 96) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
-	background: rgb(244, 193, 202);
 	background: var(--Menu);
-	color: rgb(0, 0, 0);
 	color: var(--MenuText);
 }
 .menu-item {
@@ -530,15 +462,12 @@ button:not(.lightweight).selected {
 	margin: 2px;
 }
 .menu-item[disabled] {
-	color: rgb(222, 69, 96);
 	color: var(--GrayText);
 	text-shadow: 0.8px 0.8px 0px #fff;
 }
 .menu-item:focus,
 .menu-item.active {
-	background: rgb(162, 219, 210);
 	background: var(--Hilight);
-	color: rgb(0, 0, 0);
 	color: var(--HilightText);
 	text-shadow: none;
 	outline: 0;
@@ -558,43 +487,31 @@ button:not(.lightweight).selected {
 
 
 ::-moz-selection {
-	background-color: rgb(162, 219, 210);
 	background-color: var(--Hilight);
-	color: rgb(0, 0, 0);
 	color: var(--HilightText);
 }
 
 
 ::selection {
-	background-color: rgb(162, 219, 210);
 	background-color: var(--Hilight);
-	color: rgb(0, 0, 0);
 	color: var(--HilightText);
 }
 
 .scrollbar {
-	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P89eDJ/18PnzEwfjl46j+bvBQDAHJ8Cj5el2f8AAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
 	-ms-interpolation-mode: nearest-neighbor;
 	    image-rendering: -moz-crisp-edges;
 	    image-rendering: pixelated;
 }
 .scrollbar-thumb {
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	border-top: 1px solid rgb(244, 193, 202);
 	border-top: 1px solid var(--ButtonFace);
-	border-left: 1px solid rgb(244, 193, 202);
 	border-left: 1px solid var(--ButtonFace);
-	border-right: 1px solid rgb(64, 64, 64);
 	border-right: 1px solid var(--ButtonDkShadow);
-	border-bottom: 1px solid rgb(64, 64, 64);
 	border-bottom: 1px solid var(--ButtonDkShadow);
-	box-shadow: 1px 1px 0 rgb(250, 224, 228) inset, -1px -1px 0 rgb(222, 69, 96) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
 .scrollbar-track-piece:hover:active {
-	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P89eDJ/18PnzEwfjl46j+bvBQDAHJ8Cj5el2f8AAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
 	-ms-interpolation-mode: nearest-neighbor;
 	    image-rendering: -moz-crisp-edges;
@@ -606,165 +523,113 @@ button:not(.lightweight).selected {
 	background-position: bottom;
 }
 .scrollbar-corner {
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
 }
 
 .scrollbar-button {
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	border-top: 1px solid rgb(244, 193, 202);
 	border-top: 1px solid var(--ButtonFace);
-	border-left: 1px solid rgb(244, 193, 202);
 	border-left: 1px solid var(--ButtonFace);
-	border-right: 1px solid rgb(64, 64, 64);
 	border-right: 1px solid var(--ButtonDkShadow);
-	border-bottom: 1px solid rgb(64, 64, 64);
 	border-bottom: 1px solid var(--ButtonDkShadow);
-	box-shadow: 1px 1px 0 rgb(250, 224, 228) inset, -1px -1px 0 rgb(222, 69, 96) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
-	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
 	background-image: var(--scrollbar-arrows-ButtonText);
 	-ms-interpolation-mode: nearest-neighbor;
 	    image-rendering: -moz-crisp-edges;
 	    image-rendering: pixelated;
-	width: 13px;
 	width: var(--scrollbar-size);
-	height: 13px;
 	height: var(--scrollbar-size);
 	box-sizing: border-box;
 }
 .scrollbar-button:not(.disabled):hover:active {
-	border: 1px solid rgb(222, 69, 96);
 	border: 1px solid var(--ButtonShadow);
 	box-shadow: none;
 }
 .scrollbar-button.disabled {
-	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDrrnmvBfafcCosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/ANEWQAoG78U6AAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr14Ml/NgUZosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AIJVQAqPLmKjAAAAAElFTkSuQmCC");
 	background-image: var(--scrollbar-arrows-GrayText), var(--scrollbar-arrows-ButtonHilight);
 }
 
 .scrollbar-button.horizontal.decrement.disabled {
-	background-position: /* left arrow */
-		calc(9px * -3 + 1px) 1px,
-		calc(9px * -3 + 2px) 2px;
 	background-position: /* left arrow */
 		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
 }
 .scrollbar-button.horizontal.increment.disabled {
 	background-position: /* right arrow */
-		calc(9px * -2 + 1px) 1px,
-		calc(9px * -2 + 2px) 2px;
-	background-position: /* right arrow */
 		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
 }
 .scrollbar-button.vertical.decrement.disabled {
-	background-position: /* up arrow */
-		calc(9px * -1 + 1px) 1px,
-		calc(9px * -1 + 2px) 2px;
 	background-position: /* up arrow */
 		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
 }
 .scrollbar-button.vertical.increment.disabled {
 	background-position: /* down arrow */
-		calc(9px * -0 + 1px) 1px,
-		calc(9px * -0 + 2px) 2px;
-	background-position: /* down arrow */
 		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
 }
 
 .scrollbar-button.horizontal.decrement {
-	background-position: calc(9px * -3 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px; /* left */
 }
 .scrollbar-button.horizontal.increment {
-	background-position: calc(9px * -2 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px; /* right */
 }
 .scrollbar-button.vertical.decrement {
-	background-position: calc(9px * -1 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px; /* up */
 }
 .scrollbar-button.vertical.increment {
-	background-position: calc(9px * -0 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px; /* down */
 }
 
 ::-webkit-scrollbar,
 ::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-button {
-	width: 13px;
 	width: var(--scrollbar-size);
-	height: 13px;
 	height: var(--scrollbar-size);
 }
 
 ::-webkit-scrollbar {
-	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P89eDJ/18PnzEwfjl46j+bvBQDAHJ8Cj5el2f8AAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
 	image-rendering: pixelated;
 }
 ::-webkit-scrollbar-thumb {
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	border-top: 1px solid rgb(244, 193, 202);
 	border-top: 1px solid var(--ButtonFace);
-	border-left: 1px solid rgb(244, 193, 202);
 	border-left: 1px solid var(--ButtonFace);
-	border-right: 1px solid rgb(64, 64, 64);
 	border-right: 1px solid var(--ButtonDkShadow);
-	border-bottom: 1px solid rgb(64, 64, 64);
 	border-bottom: 1px solid var(--ButtonDkShadow);
-	box-shadow: 1px 1px 0 rgb(250, 224, 228) inset, -1px -1px 0 rgb(222, 69, 96) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
 ::-webkit-scrollbar-corner {
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
 }
 
 ::-webkit-scrollbar-button {
-	background-color: rgb(244, 193, 202);
 	background-color: var(--ButtonFace);
-	border-top: 1px solid rgb(244, 193, 202);
 	border-top: 1px solid var(--ButtonFace);
-	border-left: 1px solid rgb(244, 193, 202);
 	border-left: 1px solid var(--ButtonFace);
-	border-right: 1px solid rgb(64, 64, 64);
 	border-right: 1px solid var(--ButtonDkShadow);
-	border-bottom: 1px solid rgb(64, 64, 64);
 	border-bottom: 1px solid var(--ButtonDkShadow);
-	box-shadow: 1px 1px 0 rgb(250, 224, 228) inset, -1px -1px 0 rgb(222, 69, 96) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
-	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
 	background-image: var(--scrollbar-arrows-ButtonText);
 	image-rendering: pixelated;
-	width: 13px;
 	width: var(--scrollbar-size);
-	height: 13px;
 	height: var(--scrollbar-size);
 	box-sizing: border-box;
 }
 
 ::-webkit-scrollbar-button:not(.disabled):hover:active {
-	border: 1px solid rgb(222, 69, 96);
 	border: 1px solid var(--ButtonShadow);
 	box-shadow: none;
 }
 
 ::-webkit-scrollbar-button.disabled {
-	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDrrnmvBfafcCosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/ANEWQAoG78U6AAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr14Ml/NgUZosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AIJVQAqPLmKjAAAAAElFTkSuQmCC");
 	background-image: var(--scrollbar-arrows-GrayText), var(--scrollbar-arrows-ButtonHilight);
 }
 
 ::-webkit-scrollbar-button.horizontal.decrement.disabled {
-	background-position: /* left arrow */
-		calc(9px * -3 + 1px) 1px,
-		calc(9px * -3 + 2px) 2px;
 	background-position: /* left arrow */
 		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
@@ -772,17 +637,11 @@ button:not(.lightweight).selected {
 
 ::-webkit-scrollbar-button.horizontal.increment.disabled {
 	background-position: /* right arrow */
-		calc(9px * -2 + 1px) 1px,
-		calc(9px * -2 + 2px) 2px;
-	background-position: /* right arrow */
 		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
 }
 
 ::-webkit-scrollbar-button.vertical.decrement.disabled {
-	background-position: /* up arrow */
-		calc(9px * -1 + 1px) 1px,
-		calc(9px * -1 + 2px) 2px;
 	background-position: /* up arrow */
 		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
@@ -790,70 +649,49 @@ button:not(.lightweight).selected {
 
 ::-webkit-scrollbar-button.vertical.increment.disabled {
 	background-position: /* down arrow */
-		calc(9px * -0 + 1px) 1px,
-		calc(9px * -0 + 2px) 2px;
-	background-position: /* down arrow */
 		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
 }
 
 ::-webkit-scrollbar-button.horizontal.decrement {
-	background-position: calc(9px * -3 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px;/* left */
 }
 
 ::-webkit-scrollbar-button.horizontal.increment {
-	background-position: calc(9px * -2 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px;/* right */
 }
 
 ::-webkit-scrollbar-button.vertical.decrement {
-	background-position: calc(9px * -1 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px;/* up */
 }
 
 ::-webkit-scrollbar-button.vertical.increment {
-	background-position: calc(9px * -0 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px;/* down */
 }
 ::-webkit-scrollbar-button:hover:active {
-	border: 1px solid rgb(222, 69, 96);
 	border: 1px solid var(--ButtonShadow);
 	box-shadow: none;
 }
 ::-webkit-scrollbar-button:disabled {
-	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDrrnmvBfafcCosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/ANEWQAoG78U6AAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr14Ml/NgUZosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AIJVQAqPLmKjAAAAAElFTkSuQmCC");
 	background-image: var(--scrollbar-arrows-GrayText), var(--scrollbar-arrows-ButtonHilight);
 }
 
 ::-webkit-scrollbar-button:horizontal:decrement:disabled {
-	background-position: /* left arrow */
-		calc(9px * -3 + 1px) 1px,
-		calc(9px * -3 + 2px) 2px;
 	background-position: /* left arrow */
 		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
 }
 ::-webkit-scrollbar-button:horizontal:increment:disabled {
 	background-position: /* right arrow */
-		calc(9px * -2 + 1px) 1px,
-		calc(9px * -2 + 2px) 2px;
-	background-position: /* right arrow */
 		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
 }
 ::-webkit-scrollbar-button:vertical:decrement:disabled {
 	background-position: /* up arrow */
-		calc(9px * -1 + 1px) 1px,
-		calc(9px * -1 + 2px) 2px;
-	background-position: /* up arrow */
 		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
 }
 ::-webkit-scrollbar-button:vertical:increment:disabled {
-	background-position: /* down arrow */
-		calc(9px * -0 + 1px) 1px,
-		calc(9px * -0 + 2px) 2px;
 	background-position: /* down arrow */
 		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
@@ -861,56 +699,39 @@ button:not(.lightweight).selected {
 
 ::-webkit-scrollbar-button:horizontal:decrement.disabled {
 	background-position: /* left arrow */
-		calc(9px * -3 + 1px) 1px,
-		calc(9px * -3 + 2px) 2px;
-	background-position: /* left arrow */
 		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
 }
 
 ::-webkit-scrollbar-button:horizontal:decrement {
-	background-position: calc(9px * -3 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px;/* left */
 }
 ::-webkit-scrollbar-button:horizontal:increment.disabled {
-	background-position: /* right arrow */
-		calc(9px * -2 + 1px) 1px,
-		calc(9px * -2 + 2px) 2px;
 	background-position: /* right arrow */
 		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
 }
 ::-webkit-scrollbar-button:horizontal:increment {
-	background-position: calc(9px * -2 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px;/* right */
 }
 ::-webkit-scrollbar-button:vertical:decrement.disabled {
-	background-position: /* up arrow */
-		calc(9px * -1 + 1px) 1px,
-		calc(9px * -1 + 2px) 2px;
 	background-position: /* up arrow */
 		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
 }
 ::-webkit-scrollbar-button:vertical:decrement {
-	background-position: calc(9px * -1 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px;/* up */
 }
 ::-webkit-scrollbar-button:vertical:increment.disabled {
-	background-position: /* down arrow */
-		calc(9px * -0 + 1px) 1px,
-		calc(9px * -0 + 2px) 2px;
 	background-position: /* down arrow */
 		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
 }
 ::-webkit-scrollbar-button:vertical:increment {
-	background-position: calc(9px * -0 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px;/* down */
 }
 
 ::-webkit-scrollbar-track-piece:hover:active {
-	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P89eDJ/18PnzEwfjl46j+bvBQDAHJ8Cj5el2f8AAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
 	image-rendering: pixelated;
 	background-color: white;
