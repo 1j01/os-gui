@@ -133,14 +133,14 @@ function renderThemeGraphics(cssProperties) {
 	var button_normal_border_image = border_image(`
 		<path d="M0 0h7v1h-6v6h-1v-7z" fill="${getProp("--ButtonHilight")}"/>
 		<path d="M7 0h1v8h-8v-1h7v-7z" fill="${getProp("--ButtonDkShadow")}"/>
-		<path d="M1 1h5v1h-4v4h-1v-5z" fill="${getProp("--ButtonHilight") /* should this be a different color? slightly less hilit? */}"/>
+		<path d="M1 1h5v1h-4v4h-1v-5z" fill="${getProp("--ButtonLight")}"/>
 		<path d="M6 1h1v6h-6v-1h5v-5z" fill="${getProp("--ButtonShadow")}"/>
 		<path d="M2 2h4v4h-4v-4z" fill="${getProp("--ButtonFace")}"/>
 	`);
 	var button_default_border_image = border_image(`
 		<path d="M0 0h8v8h-8v-8z" fill="${getProp("--ButtonDkShadow")}"/>
 		<path d="M1 1h5v1h-4v4h-1v-5z" fill="${getProp("--ButtonHilight")}"/>
-		<path d="M2 2h3v1h-2v2h-1v-3z" fill="${getProp("--ButtonHilight") /* should this be a different color? slightly less hilit? */}"/>
+		<path d="M2 2h3v1h-2v2h-1v-3z" fill="${getProp("--ButtonLight")}"/>
 		<path d="M5 2h1v4h-4v-1h3v-3z" fill="${getProp("--ButtonShadow")}"/>
 		<path d="M3 3h2v2h-2v-2z" fill="${getProp("--ButtonFace")}"/>
 	`);
