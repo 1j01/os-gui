@@ -1,3 +1,6 @@
+
+@import url("windows-default.css");
+
 %checkerboard {
 	background: var(--checker) repeat;
 	image-rendering: pixelated;

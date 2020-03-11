@@ -1,3 +1,43 @@
+:root {
+	/* These resources are generated. */
+	--checker: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC");
+	--scrollbar-arrows-ButtonText: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
+	--scrollbar-arrows-GrayText: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDmpoaPjf0NBAlNnoauGaQBLooYXLUEIWwswi5Chs6lB8gewofI6BOZwWajCCFZ/viQ1FqoUQtRI4oShFtgdnGqKWYyg1h6icQKklpOgHAM9mQArEvm5+AAAAAElFTkSuQmCC");
+	--scrollbar-arrows-ButtonHilight: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr///9/RkZGosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AKXFQAqyTJ6DAAAAAElFTkSuQmCC");
+	--scrollbar-size: 13px;
+	--scrollbar-button-inner-size: 9px;
+
+	/* Colors */
+	--ActiveBorder: rgb(192, 192, 192);
+	--ActiveTitle: rgb(0, 0, 128);
+	--AppWorkspace: rgb(128, 128, 128);
+	--Background: rgb(0, 128, 128);
+	--ButtonAlternateFace: rgb(180, 180, 180);
+	--ButtonDkShadow: rgb(0, 0, 0);
+	--ButtonFace: rgb(192, 192, 192);
+	--ButtonHilight: rgb(255, 255, 255);
+	--ButtonLight: rgb(223, 223, 223);
+	--ButtonShadow: rgb(128, 128, 128);
+	--ButtonText: rgb(0, 0, 0);
+	--GradientActiveTitle: rgb(16, 132, 208);
+	--GradientInactiveTitle: rgb(181, 181, 181);
+	--GrayText: rgb(128, 128, 128);
+	--Hilight: rgb(0, 0, 128);
+	--HilightText: rgb(255, 255, 255);
+	--HotTrackingColor: rgb(0, 0, 255);
+	--InactiveBorder: rgb(192, 192, 192);
+	--InactiveTitle: rgb(128, 128, 128);
+	--InactiveTitleText: rgb(192, 192, 192);
+	--InfoText: rgb(0, 0, 0);
+	--InfoWindow: rgb(255, 255, 225);
+	--Menu: rgb(192, 192, 192);
+	--MenuText: rgb(0, 0, 0);
+	--Scrollbar: rgb(192, 192, 192);
+	--TitleText: rgb(255, 255, 255);
+	--Window: rgb(255, 255, 255);
+	--WindowFrame: rgb(0, 0, 0);
+	--WindowText: rgb(0, 0, 0);
+}
 /* @supports selector(a::after) { ... } doesn't work */
 @supports (--supports: supports) {
 }
@@ -9,10 +49,15 @@
 .inset-deep {
 	border-style: solid;
 	border-width: 1px;
+	border-color: rgb(128, 128, 128) rgb(255, 255, 255) rgb(255, 255, 255) rgb(128, 128, 128);
 	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
-	color: var(--ButtonText);/* as fallback */
-	position: relative;/* for pseudo element(s) */
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);
+	/* as fallback */
+	position: relative;
+	/* for pseudo element(s) */
 }
 
 @supports (--supports: supports) {
@@ -23,6 +68,7 @@
 
 @supports (--supports: supports) {
 	.inset-deep {
+		border-color: rgb(128, 128, 128);
 		border-color: var(--ButtonShadow);
 		border-style: solid;
 		border-width: 2px 2px;
@@ -39,6 +85,7 @@
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
+		border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
 		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -47,6 +94,7 @@
 
 @supports (--supports: supports) {
 	.inset-deep::after {
+		border-color: rgb(0, 0, 0);
 		border-color: var(--ButtonDkShadow);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -55,10 +103,15 @@
 .outset-deep {
 	border-style: solid;
 	border-width: 1px;
+	border-color: rgb(255, 255, 255) rgb(128, 128, 128) rgb(128, 128, 128) rgb(255, 255, 255);
 	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
-	color: var(--ButtonText);/* as fallback */
-	position: relative;/* for pseudo element(s) */
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);
+	/* as fallback */
+	position: relative;
+	/* for pseudo element(s) */
 }
 @supports (--supports: supports) {
 	.outset-deep {
@@ -67,6 +120,7 @@
 }
 @supports (--supports: supports) {
 	.outset-deep {
+		border-color: rgb(223, 223, 223) rgb(128, 128, 128) rgb(128, 128, 128) rgb(223, 223, 223);
 		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
 		border-style: solid;
 		border-width: 2px 2px;
@@ -82,6 +136,7 @@
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
+		border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
 		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -90,24 +145,32 @@
 .inset-shallow {
 	border-style: solid;
 	border-width: 1px;
+	border-color: rgb(128, 128, 128) rgb(255, 255, 255) rgb(255, 255, 255) rgb(128, 128, 128);
 	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
 	color: var(--ButtonText);
 }
 .outset-shallow {
 	border-style: solid;
 	border-width: 1px;
+	border-color: rgb(255, 255, 255) rgb(128, 128, 128) rgb(128, 128, 128) rgb(255, 255, 255);
 	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
 	color: var(--ButtonText);
 }
 
 button {
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
 	color: var(--ButtonText);
 }
 button:not(.lightweight) {
-	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */ border-style: solid; border-width: 1px; border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight); background-color: var(--ButtonFace); color: var(--ButtonText); /* as fallback */ position: relative; /* for pseudo element(s) */
+	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */ border-style: solid; border-width: 1px; border-color: rgb(255, 255, 255) rgb(128, 128, 128) rgb(128, 128, 128) rgb(255, 255, 255); border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight); background-color: rgb(192, 192, 192); background-color: var(--ButtonFace); color: rgb(0, 0, 0); color: var(--ButtonText); /* as fallback */ position: relative; /* for pseudo element(s) */
 }
 @supports (--supports: supports) {
 	button:not(.lightweight) {
@@ -116,6 +179,7 @@ button:not(.lightweight) {
 }
 @supports (--supports: supports) {
 	button:not(.lightweight) {
+		border-color: rgb(223, 223, 223) rgb(128, 128, 128) rgb(128, 128, 128) rgb(223, 223, 223);
 		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
 		border-style: solid;
 		border-width: 2px 2px;
@@ -131,6 +195,7 @@ button:not(.lightweight) {
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
+		border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
 		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -139,10 +204,15 @@ button:not(.lightweight) {
 button:not(.lightweight):hover:active {
 	border-style: solid;
 	border-width: 1px;
+	border-color: rgb(128, 128, 128) rgb(255, 255, 255) rgb(255, 255, 255) rgb(128, 128, 128);
 	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
-	color: var(--ButtonText);/* as fallback */
-	position: relative;/* for pseudo element(s) */
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);
+	/* as fallback */
+	position: relative;
+	/* for pseudo element(s) */
 }
 @supports (--supports: supports) {
 	button:not(.lightweight):hover:active {
@@ -151,6 +221,7 @@ button:not(.lightweight):hover:active {
 }
 @supports (--supports: supports) {
 	button:not(.lightweight):hover:active {
+		border-color: rgb(128, 128, 128);
 		border-color: var(--ButtonShadow);
 		border-style: solid;
 		border-width: 2px 2px;
@@ -166,6 +237,7 @@ button:not(.lightweight):hover:active {
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
+		border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
 		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -173,6 +245,7 @@ button:not(.lightweight):hover:active {
 }
 @supports (--supports: supports) {
 	button:not(.lightweight):hover:active::after {
+		border-color: rgb(0, 0, 0);
 		border-color: var(--ButtonDkShadow);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -197,6 +270,7 @@ button:not(.lightweight):focus::before {
 	top: 2px;
 	right: 2px;
 	bottom: 2px;
+	border: 1px dotted rgb(0, 0, 0);
 	border: 1px dotted var(--ButtonDkShadow); /* ?? */
 	/* TODO: get exact inset dimensions, and have corners without dots ideally */
 	/* (could use outline instead of ::before at this point) */
@@ -212,18 +286,25 @@ button.lightweight {
 button.lightweight:not([disabled]):hover {
 	border-style: solid;
 	border-width: 1px;
+	border-color: rgb(255, 255, 255) rgb(128, 128, 128) rgb(128, 128, 128) rgb(255, 255, 255);
 	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
 	color: var(--ButtonText);
 }
 button.lightweight:not([disabled]):hover:active {
 	border-style: solid;
 	border-width: 1px;
+	border-color: rgb(128, 128, 128) rgb(255, 255, 255) rgb(255, 255, 255) rgb(128, 128, 128);
 	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
 	color: var(--ButtonText);
 }
 button[disabled] {
+	color: rgb(128, 128, 128);
 	color: var(--GrayText);
 	text-shadow: 1px 1px 0px white; /* TODO: what var for color? */
 }
@@ -231,10 +312,15 @@ button[disabled] {
 button:not(.lightweight).selected {
 	border-style: solid;
 	border-width: 1px;
+	border-color: rgb(128, 128, 128) rgb(255, 255, 255) rgb(255, 255, 255) rgb(128, 128, 128);
 	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
-	color: var(--ButtonText);/* as fallback */
-	position: relative;/* for pseudo element(s) */
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);
+	/* as fallback */
+	position: relative;
+	/* for pseudo element(s) */
 }
 @supports (--supports: supports) {
 	button:not(.lightweight).selected {
@@ -243,6 +329,7 @@ button:not(.lightweight).selected {
 }
 @supports (--supports: supports) {
 	button:not(.lightweight).selected {
+		border-color: rgb(128, 128, 128);
 		border-color: var(--ButtonShadow);
 		border-style: solid;
 		border-width: 2px 2px;
@@ -258,6 +345,7 @@ button:not(.lightweight).selected {
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
+		border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
 		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -265,12 +353,14 @@ button:not(.lightweight).selected {
 }
 @supports (--supports: supports) {
 	button:not(.lightweight).selected::after {
+		border-color: rgb(0, 0, 0);
 		border-color: var(--ButtonDkShadow);
 		border-style: solid;
 		border-width: 1px 1px;
 	}
 }
 button:not(.lightweight).selected {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
 	-ms-interpolation-mode: nearest-neighbor;
 	    image-rendering: -moz-crisp-edges;
@@ -282,8 +372,13 @@ button:not(.lightweight).selected {
 	flex-direction: row;
 	align-items: center;
 
+	background: rgb(0, 0, 128);
+
 	background: var(--ActiveTitle);
+	background: linear-gradient(to right, rgb(0, 0, 128) 0%, rgb(16, 132, 208) 100%);
 	background: linear-gradient(to right, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%);
+	
+	color: rgb(255, 255, 255);
 	
 	color: var(--TitleText);
 	
@@ -295,12 +390,16 @@ button:not(.lightweight).selected {
 }
 .window:not(.focused) .window-titlebar {
 	background: darkgray;
+	background: linear-gradient(to right, rgb(128, 128, 128) 0%, rgb(181, 181, 181) 100%);
 	background: linear-gradient(to right, var(--InactiveTitle) 0%, var(--GradientInactiveTitle) 100%);
+
+	color: rgb(192, 192, 192);
 
 	color: var(--InactiveTitleText);
 }
 .window {
 	/* Needed for when maximized, otherwise would be provided by %outset-deep */
+	background: rgb(192, 192, 192);
 	background: var(--ButtonFace);
 
 	/* background: var(--Window); */
@@ -312,10 +411,15 @@ button:not(.lightweight).selected {
 .window:not(.maximized) {
 	border-style: solid;
 	border-width: 1px;
+	border-color: rgb(255, 255, 255) rgb(128, 128, 128) rgb(128, 128, 128) rgb(255, 255, 255);
 	border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight);
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
-	color: var(--ButtonText);/* as fallback */
-	position: relative;/* for pseudo element(s) */
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);
+	/* as fallback */
+	position: relative;
+	/* for pseudo element(s) */
 }
 @supports (--supports: supports) {
 	.window:not(.maximized) {
@@ -324,6 +428,7 @@ button:not(.lightweight).selected {
 }
 @supports (--supports: supports) {
 	.window:not(.maximized) {
+		border-color: rgb(223, 223, 223) rgb(128, 128, 128) rgb(128, 128, 128) rgb(223, 223, 223);
 		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
 		border-style: solid;
 		border-width: 2px 2px;
@@ -339,6 +444,7 @@ button:not(.lightweight).selected {
 		top: -2px;
 		right: -2px;
 		bottom: -2px;
+		border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
 		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
 		border-style: solid;
 		border-width: 1px 1px;
@@ -420,6 +526,7 @@ button:not(.lightweight).selected {
 
 
 .menus {
+	background: rgb(192, 192, 192);
 	background: var(--Menu);
 }
 .menus *, .menu-popup * {
@@ -434,13 +541,16 @@ button:not(.lightweight).selected {
 	position: relative;
 	outline: 0;
 	/* @extend button.lightweight; */
+	background: rgb(192, 192, 192);
 	background: var(--Menu);
 }
 .menu-button:hover {
+	box-shadow: 1px 1px 0 rgb(255, 255, 255) inset, -1px -1px 0 rgb(128, 128, 128) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
 .menu-button:active,
 .menu-button.active {
+	box-shadow: 1px 1px 0 rgb(128, 128, 128) inset, -1px -1px 0 white inset;
 	box-shadow: 1px 1px 0 var(--ButtonShadow) inset, -1px -1px 0 white inset;
 	top: 1px;
 	left: 1px;
@@ -448,13 +558,21 @@ button:not(.lightweight).selected {
 .menu-popup {
 	display: block;
 	padding: 2px;
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
+	border-top: 1px solid rgb(192, 192, 192);
 	border-top: 1px solid var(--ButtonFace);
+	border-left: 1px solid rgb(192, 192, 192);
 	border-left: 1px solid var(--ButtonFace);
+	border-right: 1px solid rgb(0, 0, 0);
 	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid rgb(0, 0, 0);
 	border-bottom: 1px solid var(--ButtonDkShadow);
+	box-shadow: 1px 1px 0 rgb(255, 255, 255) inset, -1px -1px 0 rgb(128, 128, 128) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
+	background: rgb(192, 192, 192);
 	background: var(--Menu);
+	color: rgb(0, 0, 0);
 	color: var(--MenuText);
 }
 .menu-item {
@@ -462,12 +580,15 @@ button:not(.lightweight).selected {
 	margin: 2px;
 }
 .menu-item[disabled] {
+	color: rgb(128, 128, 128);
 	color: var(--GrayText);
 	text-shadow: 0.8px 0.8px 0px #fff;
 }
 .menu-item:focus,
 .menu-item.active {
+	background: rgb(0, 0, 128);
 	background: var(--Hilight);
+	color: rgb(255, 255, 255);
 	color: var(--HilightText);
 	text-shadow: none;
 	outline: 0;
@@ -487,149 +608,214 @@ button:not(.lightweight).selected {
 
 
 ::-moz-selection {
+	background-color: rgb(0, 0, 128);
 	background-color: var(--Hilight);
+	color: rgb(255, 255, 255);
 	color: var(--HilightText);
 }
 
 
 ::selection {
+	background-color: rgb(0, 0, 128);
 	background-color: var(--Hilight);
+	color: rgb(255, 255, 255);
 	color: var(--HilightText);
 }
 
 .scrollbar {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
 	-ms-interpolation-mode: nearest-neighbor;
 	    image-rendering: -moz-crisp-edges;
 	    image-rendering: pixelated;
 }
 .scrollbar-thumb {
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
+	border-top: 1px solid rgb(192, 192, 192);
 	border-top: 1px solid var(--ButtonFace);
+	border-left: 1px solid rgb(192, 192, 192);
 	border-left: 1px solid var(--ButtonFace);
+	border-right: 1px solid rgb(0, 0, 0);
 	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid rgb(0, 0, 0);
 	border-bottom: 1px solid var(--ButtonDkShadow);
+	box-shadow: 1px 1px 0 rgb(255, 255, 255) inset, -1px -1px 0 rgb(128, 128, 128) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
 .scrollbar-track-piece:hover:active {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
 	-ms-interpolation-mode: nearest-neighbor;
 	    image-rendering: -moz-crisp-edges;
 	    image-rendering: pixelated;
 	background-color: white;
-	background-blend-mode: difference;/* background-attachment: fixed; breaks the checkered background in chrome */
+	background-blend-mode: difference;
+	/* background-attachment: fixed; breaks the checkered background in chrome */
 }
 .scrollbar-track-piece.increment {
 	background-position: bottom;
 }
 .scrollbar-corner {
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
 }
 
 .scrollbar-button {
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
+	border-top: 1px solid rgb(192, 192, 192);
 	border-top: 1px solid var(--ButtonFace);
+	border-left: 1px solid rgb(192, 192, 192);
 	border-left: 1px solid var(--ButtonFace);
+	border-right: 1px solid rgb(0, 0, 0);
 	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid rgb(0, 0, 0);
 	border-bottom: 1px solid var(--ButtonDkShadow);
+	box-shadow: 1px 1px 0 rgb(255, 255, 255) inset, -1px -1px 0 rgb(128, 128, 128) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
 	background-image: var(--scrollbar-arrows-ButtonText);
 	-ms-interpolation-mode: nearest-neighbor;
 	    image-rendering: -moz-crisp-edges;
 	    image-rendering: pixelated;
+	width: 13px;
 	width: var(--scrollbar-size);
+	height: 13px;
 	height: var(--scrollbar-size);
 	box-sizing: border-box;
 }
 .scrollbar-button:not(.disabled):hover:active {
+	border: 1px solid rgb(128, 128, 128);
 	border: 1px solid var(--ButtonShadow);
 	box-shadow: none;
 }
 .scrollbar-button.disabled {
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDmpoaPjf0NBAlNnoauGaQBLooYXLUEIWwswi5Chs6lB8gewofI6BOZwWajCCFZ/viQ1FqoUQtRI4oShFtgdnGqKWYyg1h6icQKklpOgHAM9mQArEvm5+AAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr///9/RkZGosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AKXFQAqyTJ6DAAAAAElFTkSuQmCC");
 	background-image: var(--scrollbar-arrows-GrayText), var(--scrollbar-arrows-ButtonHilight);
 }
 
 .scrollbar-button.horizontal.decrement.disabled {
+	background-position: /* left arrow */
+		calc(9px * -3 + 1px) 1px,
+		calc(9px * -3 + 2px) 2px;
 	background-position: /* left arrow */
 		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
 }
 .scrollbar-button.horizontal.increment.disabled {
 	background-position: /* right arrow */
+		calc(9px * -2 + 1px) 1px,
+		calc(9px * -2 + 2px) 2px;
+	background-position: /* right arrow */
 		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
 }
 .scrollbar-button.vertical.decrement.disabled {
+	background-position: /* up arrow */
+		calc(9px * -1 + 1px) 1px,
+		calc(9px * -1 + 2px) 2px;
 	background-position: /* up arrow */
 		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
 }
 .scrollbar-button.vertical.increment.disabled {
 	background-position: /* down arrow */
+		calc(9px * -0 + 1px) 1px,
+		calc(9px * -0 + 2px) 2px;
+	background-position: /* down arrow */
 		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
 }
 
 .scrollbar-button.horizontal.decrement {
+	background-position: calc(9px * -3 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px; /* left */
 }
 .scrollbar-button.horizontal.increment {
+	background-position: calc(9px * -2 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px; /* right */
 }
 .scrollbar-button.vertical.decrement {
+	background-position: calc(9px * -1 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px; /* up */
 }
 .scrollbar-button.vertical.increment {
+	background-position: calc(9px * -0 + 1px) 1px;
 	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px; /* down */
 }
 
 ::-webkit-scrollbar,
 ::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-button {
+	width: 13px;
 	width: var(--scrollbar-size);
+	height: 13px;
 	height: var(--scrollbar-size);
 }
 
 ::-webkit-scrollbar {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
 	image-rendering: pixelated;
 }
 ::-webkit-scrollbar-thumb {
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
+	border-top: 1px solid rgb(192, 192, 192);
 	border-top: 1px solid var(--ButtonFace);
+	border-left: 1px solid rgb(192, 192, 192);
 	border-left: 1px solid var(--ButtonFace);
+	border-right: 1px solid rgb(0, 0, 0);
 	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid rgb(0, 0, 0);
 	border-bottom: 1px solid var(--ButtonDkShadow);
+	box-shadow: 1px 1px 0 rgb(255, 255, 255) inset, -1px -1px 0 rgb(128, 128, 128) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
 ::-webkit-scrollbar-corner {
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
 }
 
 ::-webkit-scrollbar-button {
+	background-color: rgb(192, 192, 192);
 	background-color: var(--ButtonFace);
+	border-top: 1px solid rgb(192, 192, 192);
 	border-top: 1px solid var(--ButtonFace);
+	border-left: 1px solid rgb(192, 192, 192);
 	border-left: 1px solid var(--ButtonFace);
+	border-right: 1px solid rgb(0, 0, 0);
 	border-right: 1px solid var(--ButtonDkShadow);
+	border-bottom: 1px solid rgb(0, 0, 0);
 	border-bottom: 1px solid var(--ButtonDkShadow);
+	box-shadow: 1px 1px 0 rgb(255, 255, 255) inset, -1px -1px 0 rgb(128, 128, 128) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
 	background-image: var(--scrollbar-arrows-ButtonText);
 	image-rendering: pixelated;
+	width: 13px;
 	width: var(--scrollbar-size);
+	height: 13px;
 	height: var(--scrollbar-size);
 	box-sizing: border-box;
 }
 
 ::-webkit-scrollbar-button:not(.disabled):hover:active {
+	border: 1px solid rgb(128, 128, 128);
 	border: 1px solid var(--ButtonShadow);
 	box-shadow: none;
 }
 
 ::-webkit-scrollbar-button.disabled {
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDmpoaPjf0NBAlNnoauGaQBLooYXLUEIWwswi5Chs6lB8gewofI6BOZwWajCCFZ/viQ1FqoUQtRI4oShFtgdnGqKWYyg1h6icQKklpOgHAM9mQArEvm5+AAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr///9/RkZGosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AKXFQAqyTJ6DAAAAAElFTkSuQmCC");
 	background-image: var(--scrollbar-arrows-GrayText), var(--scrollbar-arrows-ButtonHilight);
 }
 
 ::-webkit-scrollbar-button.horizontal.decrement.disabled {
+	background-position: /* left arrow */
+		calc(9px * -3 + 1px) 1px,
+		calc(9px * -3 + 2px) 2px;
 	background-position: /* left arrow */
 		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
@@ -637,11 +823,17 @@ button:not(.lightweight).selected {
 
 ::-webkit-scrollbar-button.horizontal.increment.disabled {
 	background-position: /* right arrow */
+		calc(9px * -2 + 1px) 1px,
+		calc(9px * -2 + 2px) 2px;
+	background-position: /* right arrow */
 		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
 }
 
 ::-webkit-scrollbar-button.vertical.decrement.disabled {
+	background-position: /* up arrow */
+		calc(9px * -1 + 1px) 1px,
+		calc(9px * -1 + 2px) 2px;
 	background-position: /* up arrow */
 		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
@@ -649,49 +841,74 @@ button:not(.lightweight).selected {
 
 ::-webkit-scrollbar-button.vertical.increment.disabled {
 	background-position: /* down arrow */
+		calc(9px * -0 + 1px) 1px,
+		calc(9px * -0 + 2px) 2px;
+	background-position: /* down arrow */
 		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
 }
 
 ::-webkit-scrollbar-button.horizontal.decrement {
-	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px;/* left */
+	background-position: calc(9px * -3 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px;
+	/* left */
 }
 
 ::-webkit-scrollbar-button.horizontal.increment {
-	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px;/* right */
+	background-position: calc(9px * -2 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px;
+	/* right */
 }
 
 ::-webkit-scrollbar-button.vertical.decrement {
-	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px;/* up */
+	background-position: calc(9px * -1 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px;
+	/* up */
 }
 
 ::-webkit-scrollbar-button.vertical.increment {
-	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px;/* down */
+	background-position: calc(9px * -0 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px;
+	/* down */
 }
 ::-webkit-scrollbar-button:hover:active {
+	border: 1px solid rgb(128, 128, 128);
 	border: 1px solid var(--ButtonShadow);
 	box-shadow: none;
 }
 ::-webkit-scrollbar-button:disabled {
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDmpoaPjf0NBAlNnoauGaQBLooYXLUEIWwswi5Chs6lB8gewofI6BOZwWajCCFZ/viQ1FqoUQtRI4oShFtgdnGqKWYyg1h6icQKklpOgHAM9mQArEvm5+AAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr///9/RkZGosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AKXFQAqyTJ6DAAAAAElFTkSuQmCC");
 	background-image: var(--scrollbar-arrows-GrayText), var(--scrollbar-arrows-ButtonHilight);
 }
 
 ::-webkit-scrollbar-button:horizontal:decrement:disabled {
+	background-position: /* left arrow */
+		calc(9px * -3 + 1px) 1px,
+		calc(9px * -3 + 2px) 2px;
 	background-position: /* left arrow */
 		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
 }
 ::-webkit-scrollbar-button:horizontal:increment:disabled {
 	background-position: /* right arrow */
+		calc(9px * -2 + 1px) 1px,
+		calc(9px * -2 + 2px) 2px;
+	background-position: /* right arrow */
 		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
 }
 ::-webkit-scrollbar-button:vertical:decrement:disabled {
 	background-position: /* up arrow */
+		calc(9px * -1 + 1px) 1px,
+		calc(9px * -1 + 2px) 2px;
+	background-position: /* up arrow */
 		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
 }
 ::-webkit-scrollbar-button:vertical:increment:disabled {
+	background-position: /* down arrow */
+		calc(9px * -0 + 1px) 1px,
+		calc(9px * -0 + 2px) 2px;
 	background-position: /* down arrow */
 		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
@@ -699,43 +916,65 @@ button:not(.lightweight).selected {
 
 ::-webkit-scrollbar-button:horizontal:decrement.disabled {
 	background-position: /* left arrow */
+		calc(9px * -3 + 1px) 1px,
+		calc(9px * -3 + 2px) 2px;
+	background-position: /* left arrow */
 		calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -3 + 2px) 2px;
 }
 
 ::-webkit-scrollbar-button:horizontal:decrement {
-	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px;/* left */
+	background-position: calc(9px * -3 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -3 + 1px) 1px;
+	/* left */
 }
 ::-webkit-scrollbar-button:horizontal:increment.disabled {
+	background-position: /* right arrow */
+		calc(9px * -2 + 1px) 1px,
+		calc(9px * -2 + 2px) 2px;
 	background-position: /* right arrow */
 		calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -2 + 2px) 2px;
 }
 ::-webkit-scrollbar-button:horizontal:increment {
-	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px;/* right */
+	background-position: calc(9px * -2 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -2 + 1px) 1px;
+	/* right */
 }
 ::-webkit-scrollbar-button:vertical:decrement.disabled {
+	background-position: /* up arrow */
+		calc(9px * -1 + 1px) 1px,
+		calc(9px * -1 + 2px) 2px;
 	background-position: /* up arrow */
 		calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -1 + 2px) 2px;
 }
 ::-webkit-scrollbar-button:vertical:decrement {
-	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px;/* up */
+	background-position: calc(9px * -1 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -1 + 1px) 1px;
+	/* up */
 }
 ::-webkit-scrollbar-button:vertical:increment.disabled {
+	background-position: /* down arrow */
+		calc(9px * -0 + 1px) 1px,
+		calc(9px * -0 + 2px) 2px;
 	background-position: /* down arrow */
 		calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px,
 		calc(var(--scrollbar-button-inner-size) * -0 + 2px) 2px;
 }
 ::-webkit-scrollbar-button:vertical:increment {
-	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px;/* down */
+	background-position: calc(9px * -0 + 1px) 1px;
+	background-position: calc(var(--scrollbar-button-inner-size) * -0 + 1px) 1px;
+	/* down */
 }
 
 ::-webkit-scrollbar-track-piece:hover:active {
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
 	image-rendering: pixelated;
 	background-color: white;
-	background-blend-mode: difference;/* background-attachment: fixed; breaks the checkered background in chrome */
+	background-blend-mode: difference;
+	/* background-attachment: fixed; breaks the checkered background in chrome */
 }
 
 ::-webkit-scrollbar-track-piece.increment {
