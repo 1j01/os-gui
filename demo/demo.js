@@ -121,7 +121,7 @@ $(()=> {
 		}
 	});
 	
-	/*applyCSSProperties(parseThemeFileString(`
+	applyCSSProperties(parseThemeFileString(`
 
 [Control Panel\\Colors]
 ActiveTitle=0 0 128
@@ -150,7 +150,7 @@ ButtonLight=192 192 192
 InfoText=0 0 0
 InfoWindow=255 255 225
 
-`));*/
+`));
 	var $scrollbar_buttons = $(".scrollbar-demo");
 	$scrollbar_buttons.after(
 		$scrollbar_buttons.clone().css("--scrollbar-size", "15px"),
