@@ -488,7 +488,7 @@ button:not(.lightweight).selected {
 .window-close-button,
 .window-maximize-button,
 .window-minimize-button {
-	background-image: url("../src/images/titlebar-buttons.png");
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAKCAYAAADo3z3CAAAAoUlEQVRIS9VVWw7AIAib9z/0FpZgCOFRgpluf9MClhYdV++7gfDhYLxYDw+UyiHd5F8S5lr6zNa6Xpv/KwhHOahQpLB1+CwfycgYrwmE0WK8MTsIR1aOGsR+NYkkYzN5/pGwVA9xA/diq8LeHCKuQxQ+aoYt2yJWtpSNZth0edRpGVC5eGQcSg4hXLml3fdpBeHs8evWyPKX9ruXVqnYCeAHA8IyC9K2kmkAAAAASUVORK5CYII=");
 	-ms-interpolation-mode: nearest-neighbor;
 	    image-rendering: -moz-crisp-edges;
 	    image-rendering: pixelated;

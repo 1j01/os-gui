@@ -43,7 +43,7 @@
 	],
 	"scripts": {
 		"prewatch": "mkdirp build",
-		"watch": "postcss src/**/*.css --base src --dir build --map --watch --use precss --use autoprefixer --use postcss-url",
+		"watch": "postcss src/**/*.css --base src --dir build --map --watch",
 		"live-server": "live-server --open=demo/"
 	},
 	"devDependencies": {
