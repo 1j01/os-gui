@@ -10,10 +10,10 @@
 .window-titlebar .icon {
 	vertical-align: bottom;
 }
-.window-content {
+/* .window-content {
 	margin: 0;
 	padding: 0;
-}
+} */
 .desktop-icon {
 	display: inline-block;
 	vertical-align: bottom; /* with inline-block, always specify */
