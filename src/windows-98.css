@@ -33,42 +33,40 @@
 	@extend %outset-shallow; /* as fallback */
 	position: relative; /* for pseudo element(s) */
 }
-/* @supports selector(a::after) { ... } doesn't work */
-@supports (--supports: supports) {
-	%inset-deep,
-	%outset-deep {
-		border: none;
-	}
-	%outset-deep {
-		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
-		border-style: solid;
-		border-width: 2px 2px;
-	}
-	%inset-deep {
-		border-color: var(--ButtonShadow);
-		border-style: solid;
-		border-width: 2px 2px;
-	}
-	%outset-deep::after {
-		content: "";
-		display: block;
-		position: absolute;
-		pointer-events: none;
-		left: -2px;
-		top: -2px;
-		right: -2px;
-		bottom: -2px;
-		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
-		border-style: solid;
-		border-width: 1px 1px;
-	}
-	%inset-deep::after {
-		@extend %outset-deep::after;
-		border-color: var(--ButtonDkShadow);
-		border-style: solid;
-		border-width: 1px 1px;
-	}
+%inset-deep,
+%outset-deep {
+	border: none;
 }
+%outset-deep {
+	border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
+	border-style: solid;
+	border-width: 2px 2px;
+}
+%inset-deep {
+	border-color: var(--ButtonShadow);
+	border-style: solid;
+	border-width: 2px 2px;
+}
+%outset-deep::after {
+	content: "";
+	display: block;
+	position: absolute;
+	pointer-events: none;
+	left: -2px;
+	top: -2px;
+	right: -2px;
+	bottom: -2px;
+	border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+	border-style: solid;
+	border-width: 1px 1px;
+}
+%inset-deep::after {
+	@extend %outset-deep::after;
+	border-color: var(--ButtonDkShadow);
+	border-style: solid;
+	border-width: 1px 1px;
+}
+
 %outset-deep-2 {
 	background-color: var(--ButtonFace);
 	border-top: 1px solid var(--ButtonFace);

@@ -38,13 +38,6 @@
 	--WindowFrame: rgb(0, 0, 0);
 	--WindowText: rgb(0, 0, 0);
 }
-/* @supports selector(a::after) { ... } doesn't work */
-@supports (--supports: supports) {
-}
-@supports (--supports: supports) and (--supports: supports) {
-}
-@supports (--supports: supports) {
-}
 
 .inset-deep {
 	border-style: solid;
@@ -58,47 +51,30 @@
 	/* as fallback */
 	position: relative;
 	/* for pseudo element(s) */
+	border: none;
+	border-color: rgb(128, 128, 128);
+	border-color: var(--ButtonShadow);
+	border-style: solid;
+	border-width: 2px 2px;
 }
 
-@supports (--supports: supports) {
-	.inset-deep {
-		border: none;
-	}
-}
-
-@supports (--supports: supports) {
-	.inset-deep {
-		border-color: rgb(128, 128, 128);
-		border-color: var(--ButtonShadow);
-		border-style: solid;
-		border-width: 2px 2px;
-	}
-}
-
-@supports (--supports: supports) and (--supports: supports) {
-	.inset-deep::after {
-		content: "";
-		display: block;
-		position: absolute;
-		pointer-events: none;
-		left: -2px;
-		top: -2px;
-		right: -2px;
-		bottom: -2px;
-		border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
-		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
-		border-style: solid;
-		border-width: 1px 1px;
-	}
-}
-
-@supports (--supports: supports) {
-	.inset-deep::after {
-		border-color: rgb(0, 0, 0);
-		border-color: var(--ButtonDkShadow);
-		border-style: solid;
-		border-width: 1px 1px;
-	}
+.inset-deep::after {
+	content: "";
+	display: block;
+	position: absolute;
+	pointer-events: none;
+	left: -2px;
+	top: -2px;
+	right: -2px;
+	bottom: -2px;
+	border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
+	border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+	border-style: solid;
+	border-width: 1px 1px;
+	border-color: rgb(0, 0, 0);
+	border-color: var(--ButtonDkShadow);
+	border-style: solid;
+	border-width: 1px 1px;
 }
 .outset-deep {
 	border-style: solid;
@@ -112,35 +88,25 @@
 	/* as fallback */
 	position: relative;
 	/* for pseudo element(s) */
+	border: none;
+	border-color: rgb(223, 223, 223) rgb(128, 128, 128) rgb(128, 128, 128) rgb(223, 223, 223);
+	border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
+	border-style: solid;
+	border-width: 2px 2px;
 }
-@supports (--supports: supports) {
-	.outset-deep {
-		border: none;
-	}
-}
-@supports (--supports: supports) {
-	.outset-deep {
-		border-color: rgb(223, 223, 223) rgb(128, 128, 128) rgb(128, 128, 128) rgb(223, 223, 223);
-		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
-		border-style: solid;
-		border-width: 2px 2px;
-	}
-}
-@supports (--supports: supports) {
-	.outset-deep::after {
-		content: "";
-		display: block;
-		position: absolute;
-		pointer-events: none;
-		left: -2px;
-		top: -2px;
-		right: -2px;
-		bottom: -2px;
-		border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
-		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
-		border-style: solid;
-		border-width: 1px 1px;
-	}
+.outset-deep::after {
+	content: "";
+	display: block;
+	position: absolute;
+	pointer-events: none;
+	left: -2px;
+	top: -2px;
+	right: -2px;
+	bottom: -2px;
+	border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
+	border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+	border-style: solid;
+	border-width: 1px 1px;
 }
 .inset-shallow {
 	border-style: solid;
@@ -170,36 +136,21 @@ button {
 	color: var(--ButtonText);
 }
 button:not(.lightweight) {
-	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */ border-style: solid; border-width: 1px; border-color: rgb(255, 255, 255) rgb(128, 128, 128) rgb(128, 128, 128) rgb(255, 255, 255); border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight); background-color: rgb(192, 192, 192); background-color: var(--ButtonFace); color: rgb(0, 0, 0); color: var(--ButtonText); /* as fallback */ position: relative; /* for pseudo element(s) */
+	outline: none; /* replaced with inner dotted focus ring (which is admittedly not so prominent...) */ border-style: solid; border-width: 1px; border-color: rgb(255, 255, 255) rgb(128, 128, 128) rgb(128, 128, 128) rgb(255, 255, 255); border-color: var(--ButtonHilight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonHilight); background-color: rgb(192, 192, 192); background-color: var(--ButtonFace); color: rgb(0, 0, 0); color: var(--ButtonText); /* as fallback */ position: relative; /* for pseudo element(s) */ border: none; border-color: rgb(223, 223, 223) rgb(128, 128, 128) rgb(128, 128, 128) rgb(223, 223, 223); border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight); border-style: solid; border-width: 2px 2px;
 }
-@supports (--supports: supports) {
-	button:not(.lightweight) {
-		border: none;
-	}
-}
-@supports (--supports: supports) {
-	button:not(.lightweight) {
-		border-color: rgb(223, 223, 223) rgb(128, 128, 128) rgb(128, 128, 128) rgb(223, 223, 223);
-		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
-		border-style: solid;
-		border-width: 2px 2px;
-	}
-}
-@supports (--supports: supports) {
-	button:not(.lightweight)::after {
-		content: "";
-		display: block;
-		position: absolute;
-		pointer-events: none;
-		left: -2px;
-		top: -2px;
-		right: -2px;
-		bottom: -2px;
-		border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
-		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
-		border-style: solid;
-		border-width: 1px 1px;
-	}
+button:not(.lightweight)::after {
+	content: "";
+	display: block;
+	position: absolute;
+	pointer-events: none;
+	left: -2px;
+	top: -2px;
+	right: -2px;
+	bottom: -2px;
+	border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
+	border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+	border-style: solid;
+	border-width: 1px 1px;
 }
 button:not(.lightweight):hover:active {
 	border-style: solid;
@@ -213,43 +164,29 @@ button:not(.lightweight):hover:active {
 	/* as fallback */
 	position: relative;
 	/* for pseudo element(s) */
+	border: none;
+	border-color: rgb(128, 128, 128);
+	border-color: var(--ButtonShadow);
+	border-style: solid;
+	border-width: 2px 2px;
 }
-@supports (--supports: supports) {
-	button:not(.lightweight):hover:active {
-		border: none;
-	}
-}
-@supports (--supports: supports) {
-	button:not(.lightweight):hover:active {
-		border-color: rgb(128, 128, 128);
-		border-color: var(--ButtonShadow);
-		border-style: solid;
-		border-width: 2px 2px;
-	}
-}
-@supports (--supports: supports) and (--supports: supports) {
-	button:not(.lightweight):hover:active::after {
-		content: "";
-		display: block;
-		position: absolute;
-		pointer-events: none;
-		left: -2px;
-		top: -2px;
-		right: -2px;
-		bottom: -2px;
-		border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
-		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
-		border-style: solid;
-		border-width: 1px 1px;
-	}
-}
-@supports (--supports: supports) {
-	button:not(.lightweight):hover:active::after {
-		border-color: rgb(0, 0, 0);
-		border-color: var(--ButtonDkShadow);
-		border-style: solid;
-		border-width: 1px 1px;
-	}
+button:not(.lightweight):hover:active::after {
+	content: "";
+	display: block;
+	position: absolute;
+	pointer-events: none;
+	left: -2px;
+	top: -2px;
+	right: -2px;
+	bottom: -2px;
+	border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
+	border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+	border-style: solid;
+	border-width: 1px 1px;
+	border-color: rgb(0, 0, 0);
+	border-color: var(--ButtonDkShadow);
+	border-style: solid;
+	border-width: 1px 1px;
 }
 
 /* TODO: offset content on press! */
@@ -321,43 +258,29 @@ button:not(.lightweight).selected {
 	/* as fallback */
 	position: relative;
 	/* for pseudo element(s) */
+	border: none;
+	border-color: rgb(128, 128, 128);
+	border-color: var(--ButtonShadow);
+	border-style: solid;
+	border-width: 2px 2px;
 }
-@supports (--supports: supports) {
-	button:not(.lightweight).selected {
-		border: none;
-	}
-}
-@supports (--supports: supports) {
-	button:not(.lightweight).selected {
-		border-color: rgb(128, 128, 128);
-		border-color: var(--ButtonShadow);
-		border-style: solid;
-		border-width: 2px 2px;
-	}
-}
-@supports (--supports: supports) and (--supports: supports) {
-	button:not(.lightweight).selected::after {
-		content: "";
-		display: block;
-		position: absolute;
-		pointer-events: none;
-		left: -2px;
-		top: -2px;
-		right: -2px;
-		bottom: -2px;
-		border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
-		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
-		border-style: solid;
-		border-width: 1px 1px;
-	}
-}
-@supports (--supports: supports) {
-	button:not(.lightweight).selected::after {
-		border-color: rgb(0, 0, 0);
-		border-color: var(--ButtonDkShadow);
-		border-style: solid;
-		border-width: 1px 1px;
-	}
+button:not(.lightweight).selected::after {
+	content: "";
+	display: block;
+	position: absolute;
+	pointer-events: none;
+	left: -2px;
+	top: -2px;
+	right: -2px;
+	bottom: -2px;
+	border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
+	border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+	border-style: solid;
+	border-width: 1px 1px;
+	border-color: rgb(0, 0, 0);
+	border-color: var(--ButtonDkShadow);
+	border-style: solid;
+	border-width: 1px 1px;
 }
 button:not(.lightweight).selected {
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC") repeat;
@@ -420,35 +343,25 @@ button:not(.lightweight).selected {
 	/* as fallback */
 	position: relative;
 	/* for pseudo element(s) */
+	border: none;
+	border-color: rgb(223, 223, 223) rgb(128, 128, 128) rgb(128, 128, 128) rgb(223, 223, 223);
+	border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
+	border-style: solid;
+	border-width: 2px 2px;
 }
-@supports (--supports: supports) {
-	.window:not(.maximized) {
-		border: none;
-	}
-}
-@supports (--supports: supports) {
-	.window:not(.maximized) {
-		border-color: rgb(223, 223, 223) rgb(128, 128, 128) rgb(128, 128, 128) rgb(223, 223, 223);
-		border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
-		border-style: solid;
-		border-width: 2px 2px;
-	}
-}
-@supports (--supports: supports) {
-	.window:not(.maximized)::after {
-		content: "";
-		display: block;
-		position: absolute;
-		pointer-events: none;
-		left: -2px;
-		top: -2px;
-		right: -2px;
-		bottom: -2px;
-		border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
-		border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
-		border-style: solid;
-		border-width: 1px 1px;
-	}
+.window:not(.maximized)::after {
+	content: "";
+	display: block;
+	position: absolute;
+	pointer-events: none;
+	left: -2px;
+	top: -2px;
+	right: -2px;
+	bottom: -2px;
+	border-color: rgb(255, 255, 255) rgb(0, 0, 0) rgb(0, 0, 0) rgb(255, 255, 255);
+	border-color: var(--ButtonHilight) var(--ButtonDkShadow) var(--ButtonDkShadow) var(--ButtonHilight);
+	border-style: solid;
+	border-width: 1px 1px;
 }
 .window > * {
 	/* margin: 1px; */
