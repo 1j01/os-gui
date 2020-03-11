@@ -121,7 +121,7 @@ function renderThemeGraphics(cssProperties) {
 		// 	</g>
 		// </svg>`;
 		var svg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="${view_size}px" height="${view_size}px" viewBox="0 0 ${view_size} ${view_size}">
-			${svg_contents.replace(/d="[^"]*"/g, (d)=> d.replace(/\d+/g, (n)=> n * scale))}
+			${svg_contents.replace(/(d|x|y|width|height|stroke-width)="[^"]*"/g, (attr)=> attr.replace(/\d+/g, (n)=> n * scale))}
 		</svg>`;
 		var url = `data:image/svg+xml,${encodeURIComponent(svg)}`;
 		// order: top | right | bottom | left
@@ -136,6 +136,12 @@ function renderThemeGraphics(cssProperties) {
 		<path d="M1 1h6v6h-6v-6z" fill="${getProp("--ButtonShadow")}"/>
 		<path d="M2 2h4v4h-4v-4z" fill="${getProp("--ButtonFace")}"/>
 	`);
+	var button_default_active_border_image = border_image(`
+		<path d="M0 0h8v8h-8v-8z" fill="${getProp("--ButtonDkShadow")}"/>
+		<path d="M1 1h6v6h-6v-6z" fill="${getProp("--ButtonShadow")}"/>
+		<path d="M2 2h4v4h-4v-4z" fill="${getProp("--ButtonFace")}"/>
+		<rect x="0" y="0" width="8" height="8" stroke-width="2" stroke="${getProp("--WindowFrame")}" fill="none"/>
+	`);
 	var button_normal_border_image = border_image(`
 		<path d="M0 0h7v1h-6v6h-1v-7z" fill="${getProp("--ButtonHilight")}"/>
 		<path d="M7 0h1v8h-8v-1h7v-7z" fill="${getProp("--ButtonDkShadow")}"/>
@@ -149,6 +155,7 @@ function renderThemeGraphics(cssProperties) {
 		<path d="M2 2h3v1h-2v2h-1v-3z" fill="${getProp("--ButtonLight")}"/>
 		<path d="M5 2h1v4h-4v-1h3v-3z" fill="${getProp("--ButtonShadow")}"/>
 		<path d="M3 3h2v2h-2v-2z" fill="${getProp("--ButtonFace")}"/>
+		<rect x="0" y="0" width="8" height="8" stroke-width="2" stroke="${getProp("--WindowFrame")}" fill="none"/>
 	`);
 
 	return {
@@ -156,6 +163,7 @@ function renderThemeGraphics(cssProperties) {
 		"--button-active-border-image": button_active_border_image,
 		"--button-normal-border-image": button_normal_border_image,
 		"--button-default-border-image": button_default_border_image,
+		"--button-default-active-border-image": button_default_active_border_image,
 		"--scrollbar-arrows-ButtonText": scrollbar_arrows_ButtonText,
 		"--scrollbar-arrows-GrayText": scrollbar_arrows_GrayText,
 		"--scrollbar-arrows-ButtonHilight": scrollbar_arrows_ButtonHilight,

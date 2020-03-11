@@ -83,6 +83,9 @@ button:not(.lightweight).default {
 button:not(.lightweight):hover:active {
 	border-image: var(--button-active-border-image);
 }
+button:not(.lightweight).default:hover:active {
+	border-image: var(--button-default-active-border-image);
+}
 
 /* TODO: offset content on press! */
 /* (this would need a child ELEMENT, wouldn't work with text nodes as direct descendants:) */
