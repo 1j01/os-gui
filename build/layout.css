@@ -13,26 +13,6 @@
 .window-titlebar .icon {
 	vertical-align: bottom;
 }
-/* .window-content {
-	margin: 0;
-	padding: 0;
-} */
-.desktop-icon {
-	display: inline-block;
-	vertical-align: bottom; /* with inline-block, always specify */
-	margin: 5px;
-	text-align: center;
-}
-.desktop-icon .icon-wrapper {
-	display: inline-block;
-	vertical-align: bottom; /* with inline-block, always specify */
-	position: relative;
-}
-.desktop-icon .title {
-	line-height: 1;
-	max-height: 2em;
-	text-overflow: ellipsis;
-}
 
 /* Fix dragging things (like windows) over iframes */
 .drag iframe {
@@ -76,13 +56,13 @@
 	text-align: center;
 }
 
-.window-content .button-group {
+/* .window-content .button-group {
 	width: 85px;
 }
 .window-content .button-group > button {
 	width: 95%;
 	padding: 3px 5px;
-}
+} */
 
 ::before,
 ::after {
