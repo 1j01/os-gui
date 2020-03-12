@@ -1,0 +1,26 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.html) does not yet apply.
+
+## [Unreleased]
+
+## [0.2.0] - 2020-03-12
+### Added
+- Rewrote using PostCSS
+- Everything is now **themable**, by dragging and dropping `.theme` and `.themepack` files
+- Maximize and Minimize, with flying titlebar effect
+- Default buttons
+- Toggle buttons
+
+### Changed
+- Button borders are now based on SVG `border-image`, instead of using pseudo elements, `border` and `box-shadow`.
+  - Metrics for buttons are changed, they're simpler now, because it's not extending visibly outside the border-box.
+  - (`::after` is now free to use for other things, altho `::before` is still used for showing focus.)
+- Window component is now an app window instead of a tool window, to aid reintegration with 98.js.org; jspaint will come later.
+- Window component is styled with `.os-window` now, altho it includes both classes `os-window` and `window`.
+
+[Unreleased]: https://github.com/1j01/os-gui/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/1j01/os-gui/releases/tag/v0.2.0
