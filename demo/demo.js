@@ -162,5 +162,5 @@ InfoWindow=255 255 225
 		applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), element);
 	});
 
-	$(".window").css({top: $("#window-example").position().top});
+	$window.css({top: $("#window-example").position().top});
 });

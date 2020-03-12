@@ -242,7 +242,7 @@ button:not(.lightweight).selected {
 	
 	font-weight: bold;
 }
-.window:not(.focused) .window-titlebar {
+.os-window:not(.focused) .window-titlebar {
 	background: darkgray;
 	background: linear-gradient(to right, rgb(128, 128, 128) 0%, rgb(181, 181, 181) 100%);
 	background: linear-gradient(to right, var(--InactiveTitle) 0%, var(--GradientInactiveTitle) 100%);
@@ -251,7 +251,7 @@ button:not(.lightweight).selected {
 
 	color: var(--InactiveTitleText);
 }
-.window {
+.os-window {
 	/* Needed for when maximized, otherwise would be provided by %outset-deep */
 	background: rgb(192, 192, 192);
 	background: var(--ButtonFace);
@@ -262,7 +262,7 @@ button:not(.lightweight).selected {
 	/* TODO: use window-specific theme colors; also different types of windows */
 	/* padding: 2px; */
 }
-.window:not(.maximized) {
+.os-window:not(.maximized) {
 	border-style: solid;
 	border-width: 1px;
 	border-color: rgb(255, 255, 255) rgb(128, 128, 128) rgb(128, 128, 128) rgb(255, 255, 255);
@@ -283,7 +283,7 @@ button:not(.lightweight).selected {
 	border-style: solid;
 	border-width: 2px 2px;
 }
-.window > * {
+.os-window > * {
 	/* margin: 1px; */
 }
 .window-button {

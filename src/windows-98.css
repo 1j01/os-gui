@@ -146,13 +146,13 @@ button:not(.lightweight).selected {
 	@extend %font;
 	font-weight: bold;
 }
-.window:not(.focused) .window-titlebar {
+.os-window:not(.focused) .window-titlebar {
 	background: darkgray;
 	background: linear-gradient(to right, var(--InactiveTitle) 0%, var(--GradientInactiveTitle) 100%);
 
 	color: var(--InactiveTitleText);
 }
-.window {
+.os-window {
 	/* Needed for when maximized, otherwise would be provided by %outset-deep */
 	background: var(--ButtonFace);
 
@@ -162,10 +162,10 @@ button:not(.lightweight).selected {
 	/* TODO: use window-specific theme colors; also different types of windows */
 	/* padding: 2px; */
 }
-.window:not(.maximized) {
+.os-window:not(.maximized) {
 	@extend %outset-deep;
 }
-.window > * {
+.os-window > * {
 	/* margin: 1px; */
 }
 .window-button {
