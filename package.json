@@ -41,6 +41,13 @@
 		"stylesheet",
 		"theme"
 	],
+	"files": [
+		"demo/",
+		"build/",
+		"$MenuBar.js",
+		"$Window.js",
+		"parse-theme.js"
+	],
 	"scripts": {
 		"prewatch": "mkdirp build",
 		"watch": "postcss src/**/*.css --base src --dir build --map --watch",
