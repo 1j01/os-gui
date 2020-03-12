@@ -86,9 +86,9 @@ $(()=> {
 		top: $("#window-example").offset().top
 	});
 
-	// $("#demo-toggle-button").on("click", (e)=> {
-	// 	$(e.target).toggleClass("selected");
-	// });
+	$("#demo-toggle-button").on("click", (e)=> {
+		$(e.target).toggleClass("selected");
+	});
 
 	function loadThemeFile(file) {
 		var reader = new FileReader();

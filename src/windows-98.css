@@ -28,8 +28,7 @@
 %inset-deep {
 	@extend %inset-shallow; /* as fallback */
 	position: relative; /* for pseudo element(s) */
-	border-image: var(--button-active-border-image);
-	/* TODO: different inset style here? */
+	border-image: var(--inset-deep-border-image);
 }
 %outset-deep {
 	@extend %outset-shallow; /* as fallback */
@@ -129,7 +128,10 @@ button[disabled] {
 	text-shadow: 1px 1px 0px white; /* TODO: what var for color? */
 }
 /* TODO: [checked]? .pressed? .depressed? .down? .held? what should it be called? */
-button:not(.lightweight).selected {
+button:not(.lightweight).toggle:hover:active {
+	@extend %inset-deep;
+}
+button:not(.lightweight).toggle.selected {
 	@extend %inset-deep;
 	@extend %checkerboard;
 }

@@ -258,3 +258,6 @@ Close the server & watch script when updating dependencies or installing new one
 
 The styles are written with PostCSS, for mixins and other transforms.  
 Recommended: install a PostCSS language plugin for your editor, like [PostCSS Language Support](https://marketplace.visualstudio.com/items?itemName=csstools.postcss) for VS Code.
+
+Currently there's some CSS that has to manually be regenerated in-browser and copied into theme-specific CSS files.  
+In the future this could be done with a custom PostCSS syntax parser for .theme/.themepack files, and maybe SVG instead of any raster graphics to avoid needing `node-canvas` (native dependencies are a pain).  

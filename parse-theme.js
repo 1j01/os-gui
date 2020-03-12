@@ -136,11 +136,19 @@ function renderThemeGraphics(cssProperties) {
 		<path d="M2 2h4v4h-4v-4z" fill="${getProp("--ButtonFace")}"/>
 		<rect x="0" y="0" width="8" height="8" stroke-width="2" stroke="${getProp("--WindowFrame")}" fill="none"/>
 	`);
+	// TODO: rename
 	var button_normal_border_image = border_image(2, `
 		<path d="M0 0h7v1h-6v6h-1v-7z" fill="${getProp("--ButtonHilight")}"/>
 		<path d="M7 0h1v8h-8v-1h7v-7z" fill="${getProp("--ButtonDkShadow")}"/>
 		<path d="M1 1h5v1h-4v4h-1v-5z" fill="${getProp("--ButtonLight")}"/>
 		<path d="M6 1h1v6h-6v-1h5v-5z" fill="${getProp("--ButtonShadow")}"/>
+		<path d="M2 2h4v4h-4v-4z" fill="${getProp("--ButtonFace")}"/>
+	`);
+	var inset_deep_border_image = border_image(2, `
+		<path d="M0 0h7v1h-6v6h-1v-7z" fill="${getProp("--ButtonDkShadow")}"/>
+		<path d="M7 0h1v8h-8v-1h7v-7z" fill="${getProp("--ButtonHilight")}"/>
+		<path d="M1 1h5v1h-4v4h-1v-5z" fill="${getProp("--ButtonShadow")}"/>
+		<path d="M6 1h1v6h-6v-1h5v-5z" fill="${getProp("--ButtonLight")}"/>
 		<path d="M2 2h4v4h-4v-4z" fill="${getProp("--ButtonFace")}"/>
 	`);
 	var button_default_border_image = border_image(3, `
@@ -156,6 +164,7 @@ function renderThemeGraphics(cssProperties) {
 		"--checker": checker,
 		"--button-active-border-image": button_active_border_image,
 		"--button-normal-border-image": button_normal_border_image,
+		"--inset-deep-border-image": inset_deep_border_image,
 		"--button-default-border-image": button_default_border_image,
 		"--button-default-active-border-image": button_default_active_border_image,
 		"--scrollbar-arrows-ButtonText": scrollbar_arrows_ButtonText,
