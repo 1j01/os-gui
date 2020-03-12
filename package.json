@@ -58,9 +58,7 @@
 		"live-server": "1.2.1",
 		"mkdirp": "1.0.3",
 		"postcss-cli": "7.1.0",
+		"postcss-url": "8.0.0",
 		"precss": "4.0.0"
-	},
-	"dependencies": {
-		"postcss-url": "8.0.0"
 	}
 }
