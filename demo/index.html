@@ -43,18 +43,31 @@
 			p > button {
 				vertical-align: bottom; /* so text in a paragraph following the button flows with consistent line spacing */
 			}
-			#a-panel-or-something {
-				padding: 2em;
-			}
 			.window-content {
 				padding: 1em;
 			}
-			#buttons-demo td {
-				padding: 0.5em;
+			#buttons-demo td button {
+				width: 100%;
 			}
-			#buttons-demo {
+			#buttons-demo,
+			#insets-outsets-demo {
 				border-collapse: collapse;
 			}
+			#buttons-demo td,
+			#insets-outsets-demo td {
+				padding: 0.5em;
+			}
+
+			#insets-outsets-demo td:first-of-type div {
+				padding: 10px;
+			}
+
+			td:nth-child(2) code {
+				display: block;
+				background: white;
+				color: black;
+			}
+
 			.scrollbar-demo {
 				display: inline-block;
 				padding: 15px;
@@ -118,24 +131,26 @@
 			</div>
 			<h2>Buttons</h2>
 			<table id="buttons-demo">
-				<col style="background: var(--ButtonFace); color: var(--ButtonText);"/>
+				<col style="background: var(--ButtonFace); color: var(--ButtonText); width: 150px;"/>
 				<col style="background: var(--InfoWindow); color: var(--InfoText);"/>
 				<tr>
 					<td><button>Basic button</button></td>
-					<td></td>
+					<td><code>&lt;button&gt;Basic button&lt;/button&gt;</code></td>
+					<td>A normal command button. (Note: you should use verbs when possible. Labels here describe the button type for demo purposes.)</td>
 				</tr>
 				<tr>
 					<td><button disabled>Disabled button</button></td>
-					<td></td>
+					<td><code>&lt;button disabled&gt;Disabled button&lt;/button&gt;</code></td>
+					<td>Use the standard <code>disabled</code> attribute to mark buttons as disabled.</td>
 				</tr>
 				<tr>
+					<td><button class="default">Default button</button></td>
+					<td><code>&lt;button class="default"&gt;Default button&lt;/button&gt;</code></td>
 					<td>
-						<button class="default" title="">Default button</button>
-					</td>
-					<td>
-						Default or tabbed-to action; basically, what will be triggered if you hit Enter.
-						This style is also shown when a focused button becomes disabled... and you can even get it <a href="https://i.imgur.com/WICAL98.png">where it shows two buttons with the so-called "default" style</a> (neither disabled!).
-						The real default, <em>OK</em>, will apply, not <em>Apply</em> (when you hit Enter).
+						The default action that will be triggered if you hit Enter.
+						The default should change to whatever button you tab to, or if you tab to another control in a form, return to the default default button.
+						<!-- This style is also shown when a focused button becomes disabled... and you can even get it <a href="https://i.imgur.com/WICAL98.png">where it shows two buttons with the so-called "default" style</a> (neither disabled!).
+						The real default, <em>OK</em>, will apply, not <em>Apply</em> (when you hit Enter).) -->
 					</td>
 				</tr>
 				<tr>
@@ -143,8 +158,12 @@
 						<button class="toggle selected" id="demo-toggle-button">Toggle button</button>
 					</td>
 					<td>
-						Taskbar buttons, Start button, List/Details buttons in file open/save dialogs.
-						Tool buttons in Paint look different.
+						<code>&lt;button class="toggle selected"&gt;Toggle button&lt;/button&gt;</code>
+					</td>
+					<td>
+						Toggle the <code>selected</code> class when clicked.
+						Examples: Start button, taskbar buttons, List/Details buttons in file open/save dialogs.
+						Tool buttons in Paint look a bit different.
 					</td>
 				</tr>
 				<!-- TODO: <tr>
@@ -163,6 +182,9 @@
 						<button class="lightweight" tabindex="-1">Lightweight button</button>
 					</td>
 					<td>
+						<code>&lt;button class="lightweight" tabindex="-1"&gt;Lightweight button&lt;/button&gt;</code>
+					</td>
+					<td>
 						No border until hover. Used for menu and toolbar buttons. Generally not focusable.
 					</td>
 				</tr>
@@ -170,11 +192,62 @@
 					<td>
 						<button class="lightweight" disabled tabindex="-1">Lightweight disabled</button>
 					</td>
-					<td></td>
+					<td>
+						<code>&lt;button class="lightweight" disabled tabindex="-1"&gt;Lightweight disabled&lt;/button&gt;</code>
+					</td>
+					<td>Use the standard <code>disabled</code> attribute to mark buttons as disabled.</td>
 				</tr>
 			</table>
-			<h2>Outset Border</h2>
-			<div id="a-panel-or-something" class="outset-deep">Here's perhaps a panel, styled with <code>class="outset-deep"</code></div>
+			<h2>Insets & Outsets</h2>
+			<table id="insets-outsets-demo">
+				<col style="background: var(--ButtonFace); color: var(--ButtonText); width: 150px;"/>
+				<col style="background: var(--InfoWindow); color: var(--InfoText);"/>
+				<tr>
+					<td>
+						<div class="inset-shallow"></div>
+					</td>
+					<td>
+						<code>&lt;div class="inset-shallow"&gt;&lt;/div&gt;</code>
+					</td>
+					<td>
+						Examples: tray in taskbar, status bar sections, tool options in Paint, Length/Position boxes in Sound Recorder
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="outset-shallow"></div>
+					</td>
+					<td>
+						<code>&lt;div class="outset-shallow"&gt;&lt;/div&gt;</code>
+					</td>
+					<td>
+						Examples: lightweight action buttons on hover
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="inset-deep"></div>
+					</td>
+					<td>
+						<code>&lt;div class="inset-deep"&gt;&lt;/div&gt;</code>
+					</td>
+					<td>
+						Examples: text inputs, content panes for pages in Help Topics or Internet Explorer
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="outset-deep"></div>
+					</td>
+					<td>
+						<code>&lt;div class="outset-deep"&gt;&lt;/div&gt;</code>
+					</td>
+					<td>
+						Examples: slider handle in Sound Recorder, buttons
+					</td>
+				</tr>
+			</table>
+			<!-- <div style="padding: 2em" class="outset-deep">Here's perhaps a panel, styled with <code>class="outset-deep"</code></div> -->
 		</main>
 		<footer>
 			Open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
