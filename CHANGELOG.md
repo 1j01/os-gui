@@ -8,6 +8,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [Unreleased]
 
 ### Fixed
+- Some layout-important CSS is moved to `layout.css`
 - Some titlebar-related styles are scoped in to `.os-window *` to fix conflicts in jspaint, where I'm trying to use a separate window class temporarily for tool windows.
 - Colors:
   - Menu bar dividers now correctly use the theme colors
