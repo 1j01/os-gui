@@ -295,9 +295,11 @@ function $Window(options){
 		drag_offset_x = e.clientX - $w.position().left;
 		drag_offset_y = e.clientY - $w.position().top;
 		$G.on("pointermove", drag);
+		$("body").addClass("dragging"); // for when mouse goes over an iframe
 	});
 	$G.on("pointerup", function(e){
 		$G.off("pointermove", drag);
+		$("body").removeClass("dragging");
 	});
 	$w.$titlebar.on("dblclick", function(e){
 		if($component){

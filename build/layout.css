@@ -26,7 +26,7 @@ body > .window-titlebar {
 }
 
 /* Fix dragging things (like windows) over iframes */
-.drag iframe {
+.dragging iframe {
 	pointer-events: none;
 }
 
