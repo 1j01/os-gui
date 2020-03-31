@@ -1,13 +1,13 @@
 .menus,
 .menu-popup,
 .os-window,
-.window-titlebar,
-.window-title {
+.os-window .window-titlebar,
+.os-window .window-title {
 	cursor: default;
 	user-select: none;
 }
 
-.window-titlebar .icon {
+.os-window .window-titlebar .icon {
 	vertical-align: bottom;
 }
 
