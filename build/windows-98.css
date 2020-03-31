@@ -382,6 +382,12 @@ button:not(.lightweight).toggle.selected {
 .menus {
 	background: rgb(192, 192, 192);
 	background: var(--Menu);
+	color: rgb(0, 0, 0);
+	color: var(--MenuText);
+}
+.os-window:not(.focused) .menus {
+	color: rgb(128, 128, 128);
+	color: var(--GrayText);
 }
 .menus *, .menu-popup * {
 	font-family: 'Segoe UI', sans-serif;

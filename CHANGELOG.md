@@ -11,6 +11,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Menu bar dividers now correctly use the theme colors
 - Disabled buttons now correctly use the theme colors
 - Disabled menu items now correctly use the theme colors except that sometimes it should just show GrayText and not a 3D effect
+- Menu bar button text uses the correct colors now
 
 ### Removed
 - Unwanted globals `$G` and `E` are no longer exported

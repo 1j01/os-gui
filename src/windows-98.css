@@ -242,6 +242,10 @@ button:not(.lightweight).toggle.selected {
 
 .menus {
 	background: var(--Menu);
+	color: var(--MenuText);
+}
+.os-window:not(.focused) .menus {
+	color: var(--GrayText);
 }
 .menus *,
 .menu-popup * {
