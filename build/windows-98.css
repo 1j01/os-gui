@@ -190,7 +190,8 @@ button.lightweight:not([disabled]):hover:active {
 button[disabled] {
 	color: rgb(128, 128, 128);
 	color: var(--GrayText);
-	text-shadow: 1px 1px 0px white; /* TODO: what var for color? */
+	text-shadow: 1px 1px 0px rgb(255, 255, 255);
+	text-shadow: 1px 1px 0px var(--ButtonHilight);
 }
 /* TODO: [checked]? .pressed? .depressed? .down? .held? what should it be called? */
 button:not(.lightweight).toggle:hover:active {
@@ -403,8 +404,8 @@ button:not(.lightweight).toggle.selected {
 }
 .menu-button:active,
 .menu-button.active {
-	box-shadow: 1px 1px 0 rgb(128, 128, 128) inset, -1px -1px 0 white inset;
-	box-shadow: 1px 1px 0 var(--ButtonShadow) inset, -1px -1px 0 white inset;
+	box-shadow: 1px 1px 0 rgb(128, 128, 128) inset, -1px -1px 0 rgb(255, 255, 255) inset;
+	box-shadow: 1px 1px 0 var(--ButtonShadow) inset, -1px -1px 0 var(--ButtonHilight) inset;
 	top: 1px;
 	left: 1px;
 }
@@ -435,7 +436,8 @@ button:not(.lightweight).toggle.selected {
 .menu-item[disabled] {
 	color: rgb(128, 128, 128);
 	color: var(--GrayText);
-	text-shadow: 0.8px 0.8px 0px #fff;
+	text-shadow: 0.8px 0.8px 0px rgb(255, 255, 255);
+	text-shadow: 0.8px 0.8px 0px var(--ButtonHilight);
 }
 .menu-item:focus,
 .menu-item.active {
@@ -451,8 +453,10 @@ button:not(.lightweight).toggle.selected {
 }
 .menu-hr {
 	border: 0;
-	border-top: 1px solid #808080;
-	border-bottom: 1px solid #ffffff;
+	border-top: 1px solid rgb(128, 128, 128);
+	border-top: 1px solid var(--ButtonShadow);
+	border-bottom: 1px solid rgb(255, 255, 255);
+	border-bottom: 1px solid var(--ButtonHilight);
 	margin: 0px 2px;
 }
 .menu-hotkey {
