@@ -300,6 +300,7 @@ function $Window(options){
 	$G.on("pointerup", function(e){
 		$G.off("pointermove", drag);
 		$("body").removeClass("dragging");
+		$w.applyBounds();
 	});
 	$w.$titlebar.on("dblclick", function(e){
 		if($component){
