@@ -1,9 +1,10 @@
+(function(exports) {
+
 // TODO: E\("([a-z]+)"\) -> "<$1>" or get rid of jQuery as a dependency
 function E(t){
 	return document.createElement(t);
 }
 
-// TODO: remove!
 var $G = $(window);
 
 
@@ -435,4 +436,9 @@ function $FormWindow(title){
 	};
 
 	return $w;
-};
+}
+
+exports.$Window = $Window;
+exports.$FormWindow = $FormWindow;
+
+})(window);

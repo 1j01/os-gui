@@ -7,6 +7,9 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Removed
+- Unwanted globals `$G` and `E` are no longer exported
+
 ## [0.2.0] - 2020-03-12
 ### Added
 - Rewrote using PostCSS
