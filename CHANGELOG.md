@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.html) does not yet apply.
 
 ## [Unreleased]
+<details>
+	<summary>
+		Changes in master that are not yet released.
+		Click to see more.
+	</summary>
+
+Nothing here yet...
+
+</details>
+
+## [0.2.1]
+
+### Removed
+- Unwanted globals `$G` and `E` are no longer exported
 
 ### Changed
 - Windows are bounded to the screen at the end of a drag operation. This doesn't match behavior of windows in Windows 98, but in lieu of OS features for getting windows back on screen like <kbd>Alt+Space</kbd>, I think this makes sense for now.
@@ -18,9 +32,6 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - Disabled buttons now correctly use the theme colors
   - Disabled menu items now correctly use the theme colors except that sometimes it should just show GrayText and not a 3D effect
   - Menu bar button text uses the correct colors now
-
-### Removed
-- Unwanted globals `$G` and `E` are no longer exported
 
 ## [0.2.0] - 2020-03-12
 ### Added
@@ -37,5 +48,6 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Window component is now an app window instead of a tool window, to aid reintegration with 98.js.org; jspaint will come later.
 - Window component is styled with `.os-window` now, altho it includes both classes `os-window` and `window`.
 
-[Unreleased]: https://github.com/1j01/os-gui/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/1j01/os-gui/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/1j01/os-gui/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/1j01/os-gui/releases/tag/v0.2.0
