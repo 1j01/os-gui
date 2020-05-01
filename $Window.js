@@ -258,8 +258,8 @@ function $Window(options){
 	
 	$w.applyBounds = function(){
 		$w.css({
-			left: Math.max(0, Math.min(innerWidth - $w.width(), $w.position().left)),
-			top: Math.max(0, Math.min(innerHeight - $w.height(), $w.position().top)),
+			left: Math.max(0, Math.min(document.body.scrollWidth - $w.width(), $w.position().left)),
+			top: Math.max(0, Math.min(document.body.scrollHeight - $w.height(), $w.position().top)),
 		});
 	};
 	
