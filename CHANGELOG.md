@@ -12,6 +12,12 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+Nothing here yet...
+
+</details>
+
+## [0.2.2] - 2020-04-30
+
 ### Added
 - Added a [Blue color scheme](https://www.deviantart.com/tpenguinltg/art/Blue-525167751) for use in JS Paint for the Winter theme.
 
@@ -23,8 +29,6 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Windows are now clamped to the bounds of a scrollable page instead of an area the size of the view at the top of the page
 - Windows are now centered correctly in view when the page is scrolled
 - Windows are now dragged correctly while scrolling the page
-
-</details>
 
 ## [0.2.1]
 
@@ -59,6 +63,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Window component is now an app window instead of a tool window, to aid reintegration with 98.js.org; jspaint will come later.
 - Window component is styled with `.os-window` now, altho it includes both classes `os-window` and `window`.
 
-[Unreleased]: https://github.com/1j01/os-gui/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/1j01/os-gui/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/1j01/os-gui/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/1j01/os-gui/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/1j01/os-gui/releases/tag/v0.2.0
