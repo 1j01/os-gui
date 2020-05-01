@@ -18,6 +18,9 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Changed
 - The menu bar is now a fixed height, which should help with automated visual regression testing in JS Paint.
 
+### Fixed
+- Submenu popups are now offset correctly on scrollable pages (such as the demo)
+
 </details>
 
 ## [0.2.1]
