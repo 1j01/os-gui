@@ -15,6 +15,9 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Added
 - Added a [Blue color scheme](https://www.deviantart.com/tpenguinltg/art/Blue-525167751) for use in JS Paint for the Winter theme.
 
+### Changed
+- The menu bar is now a fixed height, which should help with automated visual regression testing in JS Paint.
+
 </details>
 
 ## [0.2.1]
