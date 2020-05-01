@@ -275,10 +275,13 @@ function $Window(options){
 	$G.on("resize", $w.applyBounds);
 	
 	var drag_offset_x, drag_offset_y;
-	var drag = function(e){
+	var mouse_x, mouse_y;
+	var update_drag = function(e){
+		mouse_x = e.clientX != null ? e.clientX : mouse_x;
+		mouse_y = e.clientY != null ? e.clientY : mouse_y;
 		$w.css({
-			left: e.clientX - drag_offset_x,
-			top: e.clientY - drag_offset_y,
+			left: mouse_x + scrollX - drag_offset_x,
+			top: mouse_y + scrollY - drag_offset_y,
 		});
 	};
 	$w.$titlebar.attr("touch-action", "none");
@@ -292,13 +295,15 @@ function $Window(options){
 		if ($w.hasClass("maximized")) {
 			return;
 		}
-		drag_offset_x = e.clientX - $w.position().left;
-		drag_offset_y = e.clientY - $w.position().top;
-		$G.on("pointermove", drag);
+		drag_offset_x = e.clientX + scrollX - $w.position().left;
+		drag_offset_y = e.clientY + scrollY - $w.position().top;
+		$G.on("pointermove", update_drag);
+		$G.on("scroll", update_drag);
 		$("body").addClass("dragging"); // for when mouse goes over an iframe
 	});
 	$G.on("pointerup", function(e){
-		$G.off("pointermove", drag);
+		$G.off("pointermove", update_drag);
+		$G.off("scroll", update_drag);
 		$("body").removeClass("dragging");
 		$w.applyBounds();
 	});
