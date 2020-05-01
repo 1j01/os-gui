@@ -25,6 +25,7 @@ Nothing here yet...
 - Windows are bounded to the screen at the end of a drag operation. This doesn't match behavior of windows in Windows 98, but in lieu of OS features for getting windows back on screen like <kbd>Alt+Space</kbd>, I think this makes sense for now.
 
 ### Fixed
+- Dragging over iframes is fixed
 - Some layout-important CSS is moved to `layout.css`
 - Some titlebar-related styles are scoped in to `.os-window *` to fix conflicts in jspaint, where I'm trying to use a separate window class temporarily for tool windows.
 - Colors:
