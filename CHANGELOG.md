@@ -21,6 +21,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Fixed
 - Submenu popups are now offset correctly on scrollable pages (such as the demo)
 - Windows are now clamped to bounds correctly on scrollable pages
+- Windows are now centered correctly on scrollable pages
 
 </details>
 

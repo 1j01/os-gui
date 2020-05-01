@@ -265,8 +265,8 @@ function $Window(options){
 	
 	$w.center = function(){
 		$w.css({
-			left: (innerWidth - $w.width()) / 2,
-			top: (innerHeight - $w.height()) / 2,
+			left: (innerWidth - $w.width()) / 2 + window.scrollX,
+			top: (innerHeight - $w.height()) / 2 + window.scrollY,
 		});
 		$w.applyBounds();
 	};
