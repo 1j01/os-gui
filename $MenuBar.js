@@ -5,7 +5,35 @@ function E(t){
 	return document.createElement(t);
 }
 
-// TODO: make menus not take focus so we can support copy/pasting text in the text tool textarea from the menus
+// @TODO: DRY hotkey helpers with jspaint (export them?)
+
+// & defines accelerators (hotkeys) in menus and buttons and things, which get underlined in the UI.
+// & can be escaped by doubling it, e.g. "&Taskbar && Start Menu"
+function index_of_hotkey(text) {
+	// Returns the index of the ampersand that defines a hotkey, or -1 if not present.
+
+	// return english_text.search(/(?<!&)&(?!&|\s)/); // not enough browser support for negative lookbehind assertions
+
+	// The space here handles beginning-of-string matching and counteracts the offset for the [^&] so it acts like a negative lookbehind
+	return ` ${text}`.search(/[^&]&[^&\s]/);
+}
+// function has_hotkey(text) {
+// 	return index_of_hotkey(text) !== -1;
+// }
+// function remove_hotkey(text) {
+// 	return text.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
+// }
+function display_hotkey(text) {
+	// TODO: use a more general term like .hotkey or .accelerator?
+	return text.replace(/([^&]|^)&([^&\s])/, "$1<span class='menu-hotkey'>$2</span>").replace(/&&/g, "&");
+}
+function get_hotkey(text) {
+	return text[index_of_hotkey(text) + 1].toUpperCase();
+}
+
+// TODO: support copy/pasting text in the text tool textarea from the menus
+// probably by recording document.activeElement on pointer down,
+// and restoring focus before executing menu item actions.
 
 const MENU_DIVIDER = "MENU_DIVIDER";
 
@@ -18,9 +46,6 @@ function $MenuBar(menus){
 	
 	$menus.attr("touch-action", "none");
 	let selecting_menus = false;
-	
-	const _html = menus_key => menus_key.replace(/&(.)/, m => `<span class='menu-hotkey'>${m[1]}</span>`);
-	const _hotkey = menus_key => menus_key[menus_key.indexOf("&")+1].toUpperCase();
 	
 	const close_menus = () => {
 		$menus.find(".menu-button").trigger("release");
@@ -59,7 +84,7 @@ function $MenuBar(menus){
 				
 				$item.attr("tabIndex", -1);
 				
-				$label.html(_html(item.item));
+				$label.html(display_hotkey(item.item));
 				$shortcut.text(item.shortcut);
 				
 				$menu_popup.on("update", () => {
@@ -175,7 +200,7 @@ function $MenuBar(menus){
 					if(e.ctrlKey || e.shiftKey || e.altKey || e.metaKey){
 						return;
 					}
-					if(String.fromCharCode(e.keyCode) === _hotkey(item.item)){
+					if(String.fromCharCode(e.keyCode) === get_hotkey(item.item)){
 						e.preventDefault();
 						$item.trogger("click");
 					}
@@ -207,7 +232,7 @@ function $MenuBar(menus){
 		$menu_button.addClass(`${menu_id}-menu-button`);
 		
 		$menu_popup.hide();
-		$menu_button.html(_html(menus_key));
+		$menu_button.html(display_hotkey(menus_key));
 		$menu_button.attr("tabIndex", -1)
 		$menu_container.on("keydown", e => {
 			const $focused_item = $menu_popup.find(".menu-item:focus");
@@ -258,7 +283,7 @@ function $MenuBar(menus){
 				return;
 			}
 			if(e.altKey){
-				if(String.fromCharCode(e.keyCode) === _hotkey(menus_key)){
+				if(String.fromCharCode(e.keyCode) === get_hotkey(menus_key)){
 					e.preventDefault();
 					$menu_button.trigger("pointerdown");
 				}
