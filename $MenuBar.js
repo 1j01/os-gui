@@ -31,6 +31,11 @@ function get_hotkey(text) {
 	return text[index_of_hotkey(text) + 1].toUpperCase();
 }
 
+// returns writing/layout direction, "ltr" or "rtl"
+function get_direction() {
+	return window.get_direction ? window.get_direction() : getComputedStyle(document.body).direction; 
+}
+
 // TODO: support copy/pasting text in the text tool textarea from the menus
 // probably by recording document.activeElement on pointer down,
 // and restoring focus before executing menu item actions.
@@ -104,7 +109,10 @@ function $MenuBar(menus){
 				
 				if(item.submenu){
 					$submenu_area.html('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="11" viewBox="0 0 10 11" style="fill:currentColor;display:inline-block;vertical-align:middle"><path d="M7.5 4.33L0 8.66L0 0z"/></svg>');
-					
+					if (get_direction() === "rtl") {
+						$submenu_area.find("svg").css("transform", "scaleX(-1)");
+					}
+
 					const $submenu_popup = $MenuPopup(item.submenu).appendTo("body");
 					$submenu_popup.hide();
 					
@@ -112,21 +120,40 @@ function $MenuBar(menus){
 						$submenu_popup.show();
 						$submenu_popup.triggerHandler("update");
 						const rect = $item[0].getBoundingClientRect();
+						let submenu_popup_rect = $submenu_popup[0].getBoundingClientRect();
 						$submenu_popup.css({
 							position: "absolute",
-							left: rect.right + window.scrollX,
+							right: "unset", // needed for RTL layout
+							left: (get_direction() === "rtl" ? rect.left - submenu_popup_rect.width : rect.right) + window.scrollX,
 							top: rect.top + window.scrollY,
 						});
-						let submenu_popup_rect = $submenu_popup[0].getBoundingClientRect();
-						if (submenu_popup_rect.right > innerWidth) {
-							$submenu_popup.css({
-								left: rect.left - submenu_popup_rect.width,
-							});
-							submenu_popup_rect = $submenu_popup[0].getBoundingClientRect();
+						submenu_popup_rect = $submenu_popup[0].getBoundingClientRect();
+						// This is surely not the cleanest way of doing this,
+						// and the logic is not very robust in the first place,
+						// but I want to get RTL support done and so I'm mirroring this in the simplest way possible.
+						if (get_direction() === "rtl") {
 							if (submenu_popup_rect.left < 0) {
 								$submenu_popup.css({
-									left: 0,
+									left: rect.right,
 								});
+								submenu_popup_rect = $submenu_popup[0].getBoundingClientRect();
+								if (submenu_popup_rect.right > innerWidth) {
+									$submenu_popup.css({
+										left: innerWidth - submenu_popup_rect.width,
+									});
+								}
+							}
+						} else {
+							if (submenu_popup_rect.right > innerWidth) {
+								$submenu_popup.css({
+									left: rect.left - submenu_popup_rect.width,
+								});
+								submenu_popup_rect = $submenu_popup[0].getBoundingClientRect();
+								if (submenu_popup_rect.left < 0) {
+									$submenu_popup.css({
+										left: 0,
+									});
+								}
 							}
 						}
 					};
@@ -218,10 +245,15 @@ function $MenuBar(menus){
 		const $menu_popup = $MenuPopup(menu_items).appendTo($menu_container);
 		
 		const update_position_from_containing_bounds = ()=> {
-			$menu_popup.css("left", "");
+			$menu_popup.css("left", "unset");
+			$menu_popup.css("right", "unset"); // needed for RTL layout
 			const uncorrected_rect = $menu_popup[0].getBoundingClientRect();
-			if(uncorrected_rect.right > innerWidth) {
+			// rounding down is needed for RTL layout for the rightmost menu
+			if(Math.floor(uncorrected_rect.right) > innerWidth) {
 				$menu_popup.css("left", innerWidth - uncorrected_rect.width - uncorrected_rect.left);
+			}
+			if(Math.ceil(uncorrected_rect.left) < 0) {
+				$menu_popup.css("left", 0);
 			}
 		};
 		$G.on("resize", update_position_from_containing_bounds);
