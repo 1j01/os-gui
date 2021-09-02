@@ -432,8 +432,8 @@ function $Window(options) {
 			});
 		return $b;
 	};
-	$w.title = (title) => {
-		if (title !== undefined) {
+	$w.title = title => {
+		if (title) {
 			$w.$title.text(title);
 			if ($w.task) {
 				$w.task.updateTitle();
