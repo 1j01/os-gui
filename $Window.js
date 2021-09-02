@@ -81,7 +81,7 @@ function $Window(options) {
 		}
 	});
 
-	$w.attr("touch-action", "none");
+	$w.css("touch-action", "none");
 
 	$w.$x.on("click", () => {
 		$w.close();
@@ -303,7 +303,7 @@ function $Window(options) {
 			top: mouse_y + scrollY - drag_offset_y,
 		});
 	};
-	$w.$titlebar.attr("touch-action", "none");
+	$w.$titlebar.css("touch-action", "none");
 	$w.$titlebar.on("mousedown selectstart", (e) => {
 		e.preventDefault();
 	});
