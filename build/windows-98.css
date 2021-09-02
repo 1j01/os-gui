@@ -279,7 +279,7 @@ body > .window-titlebar {
 	/*color: var(--WindowText);*/
 	/*border: 1px solid var(--WindowFrame);*/
 	/* TODO: use window-specific theme colors; also different types of windows */
-	/* padding: 2px; */
+	padding: 2px;
 }
 .os-window:not(.maximized) {
 	border-style: solid;
