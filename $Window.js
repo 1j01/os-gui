@@ -194,44 +194,96 @@ function $Window(options) {
 	$w.on("pointerdown", () => {
 		$w.bringToFront();
 	});
+	// var focused = false;
+	var last_focused_control;
+	$w.on("pointerdown", (event) => {
+		$w.css({
+			zIndex: $Window.Z_INDEX++
+		});
+		// Test cases where it should refocus the last focused control in the window:
+		// - Click in the blank space of the window
+		// - Click on the window title bar
+		// - Close a second window, focusing the first window
+		// - Clicking on a control in the window should focus it, by way of updating last_focused_control
+		// - Simulated clicks
+		// It should NOT refocus when:
+		// - Clicking on a control in a different window
+		// - Trying to select text
+
+		// Wait for other pointerdown handlers and default behavior, and focusin events.
+		// Set focus to the last focused control, which should be updated if a click just occurred.
+		requestAnimationFrame(() => {
+			// focused = true;
+			// But if the element is selectable, wait until the click is done and see if anything was selected first.
+			// This is a bit of a weird compromise, for now.
+			const target_style = getComputedStyle(event.target);
+			if (target_style.userSelect !== "none") {
+				$w.one("pointerup", () => {
+					requestAnimationFrame(() => { // this seems to make it more reliable in regards to double clicking
+						if (last_focused_control && !getSelection().toString().trim()) {
+							last_focused_control.focus();
+						}
+					});
+				});
+				return;
+			}
+			if (last_focused_control) {
+				last_focused_control.focus();
+			}
+		});
+	});
+	// Assumption: no control exists in the window before, this "focusin" handler is set up,
+	// so any element.focus() will be after and trigger this handler.
+	$w.on("focusin", () => {
+		// focused = true;
+		if (document.activeElement && $.contains($w[0], document.activeElement)) {
+			last_focused_control = document.activeElement;
+		}
+	});
+	// $w.on("focusout", ()=> {
+	// 	requestAnimationFrame(()=> {
+	// 		if (!document.activeElement || !$.contains($w[0], document.activeElement)) {
+	// 			focused = false;
+	// 		}
+	// 	});
+	// });
 
 	$w.on("keydown", (e) => {
-		if (e.ctrlKey || e.altKey || e.shiftKey) {
+		if (e.ctrlKey || e.altKey || e.metaKey) {
 			return;
 		}
-		var $buttons = $w.$content.find("button");
-		var $focused = $(document.activeElement);
-		var focused_index = $buttons.index($focused);
-		// console.log(e.keyCode);
+		const $buttons = $w.$content.find("button");
+		const $focused = $(document.activeElement);
+		const focused_index = $buttons.index($focused);
 		switch (e.keyCode) {
 			case 40: // Down
 			case 39: // Right
-				if ($focused.is("button")) {
+				if ($focused.is("button") && !e.shiftKey) {
 					if (focused_index < $buttons.length - 1) {
-						$buttons.get(focused_index + 1).focus();
+						$buttons[focused_index + 1].focus();
 						e.preventDefault();
 					}
 				}
 				break;
 			case 38: // Up
 			case 37: // Left
-				if ($focused.is("button")) {
+				if ($focused.is("button") && !e.shiftKey) {
 					if (focused_index > 0) {
-						$buttons.get(focused_index - 1).focus();
+						$buttons[focused_index - 1].focus();
 						e.preventDefault();
 					}
 				}
 				break;
 			case 32: // Space
 			case 13: // Enter (doesn't actually work in chrome because the button gets clicked immediately)
-				if ($focused.is("button")) {
+				if ($focused.is("button") && !e.shiftKey) {
 					$focused.addClass("pressed");
-					var release = () => {
+					const release = () => {
 						$focused.removeClass("pressed");
 						$focused.off("focusout", release);
 						$(window).off("keyup", keyup);
 					};
-					var keyup = (e) => {
+					const keyup = (e) => {
 						if (e.keyCode === 32 || e.keyCode === 13) {
 							release();
 						}
@@ -240,21 +292,55 @@ function $Window(options) {
 					$(window).on("keyup", keyup);
 				}
 				break;
-			case 9: // Tab
+			case 9: { // Tab
 				// wrap around when tabbing through controls in a window
-				var $controls = $w.$content.find("input, textarea, select, button, a");
-				var focused_control_index = $controls.index($focused);
-				if (focused_control_index === $controls.length - 1) {
-					e.preventDefault();
-					$controls[0].focus();
+				// @#: focusables
+				let $controls = $w.$content.find("input, textarea, select, button, object, a[href], [tabIndex='0'], details summary").filter(":enabled, summary, a").filter(":visible");
+				// const $controls = $w.$content.find(":tabbable"); // https://api.jqueryui.com/tabbable-selector/
+				// Radio buttons should be treated as a group with one tabstop.
+				// If there's no selected ("checked") radio, it should still visit the group,
+				// but it should skip all unselected radios in that group if there is a selected radio in that group.
+				const radios = {}; // best radio found so far, per group
+				const toSkip = [];
+				for (const el of $controls) {
+					if (el.nodeName.toLowerCase() === "input" && el.type === "radio") {
+						if (radios[el.name]) {
+							if (el.checked) {
+								toSkip.push(radios[el.name]);
+								radios[el.name] = el;
+							} else {
+								toSkip.push(el);
+							}
+						} else {
+							radios[el.name] = el;
+						}
+					}
+				}
+				$controls = $controls.not(toSkip);
+				// debug viz:
+				// $controls.css({boxShadow: "0 0 2px 2px green"});
+				// $(toSkip).css({boxShadow: "0 0 2px 2px gray"})
+				if ($controls.length > 0) {
+					const focused_control_index = $controls.index($focused);
+					if (e.shiftKey) {
+						if (focused_control_index === 0) {
+							e.preventDefault();
+							$controls[$controls.length - 1].focus();
+						}
+					} else {
+						if (focused_control_index === $controls.length - 1) {
+							e.preventDefault();
+							$controls[0].focus();
+						}
+					}
 				}
 				break;
+			}
 			case 27: // Esc
 				$w.close();
 				break;
 		}
 	});
-	// @TODO: restore last focused controls when clicking/mousing down on the window
 
 	$w.applyBounds = () => {
 		// TODO: outerWidth vs width? not sure
