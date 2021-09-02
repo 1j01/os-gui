@@ -250,11 +250,9 @@ Install [Node.js](https://nodejs.org/) if you don't already have it.
 
 Initially and when pulling changes from git, run `npm i` to install dependencies.
 
-Run `npm run live-server` to open a development server.
+Run `npm start` to open a development server. It will open a demo page in your default browser. Changes to the library will be automatically recompiled, and the page will automatically reload.
 
-In a separate terminal, run `npm run watch` to watch source files and recompile on changes.
-
-Close the server & watch script when updating dependencies or installing new ones (or you'll run into EPERM issues).
+Close the dev server when updating dependencies or installing new ones (or you may run into EPERM issues).
 
 The styles are written with PostCSS, for mixins and other transforms.  
 Recommended: install a PostCSS language plugin for your editor, like [PostCSS Language Support](https://marketplace.visualstudio.com/items?itemName=csstools.postcss) for VS Code.
