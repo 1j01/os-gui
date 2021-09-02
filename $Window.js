@@ -533,7 +533,7 @@ function $Window(options) {
 		$w.remove();
 		$w.closed = true;
 		$eventTarget.triggerHandler("closed");
-		// $w.trigger("closed");
+		$w.trigger("closed");
 		// TODO: change usages of "close" to "closed" where appropriate
 		// and probably rename the "close" event
 

@@ -15,6 +15,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Added
 - Added window options `toolWindow`, `parentWindow`, `maximizeButton`, `minimizeButton`, `closeButton`
 - Added window method `bringTitleBarInBounds()`
+- Added window event `closed`, which should be used instead of `close` for detecting when the window is closed. Use `close` only for preventing the window from closing.
 - Focus wrapping now works with Shift+Tab in addition to Tab, and handles more types of focusable elements.
 - Focus is now restored to the last focused element within the window when the window is focused again.
 - Focus is now given to the next-topmost window when the window is closed.

@@ -251,8 +251,12 @@ Whether the window has been closed.
 
 #### Event: `close`
 
-Can be used to prevent closing a window (with `event.preventDefault()`), or just to know when it closed.
+Can be used to prevent closing a window, with `event.preventDefault()`.
+Since there could be multiple listeners, and another listener could prevent closing, if you want to detect when the window is actually closed, use the `closed` event.
 
+#### Event: `closed`
+
+This event is emitted when the window is closed. It cannot be prevented.
 
 ## License
 
