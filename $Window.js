@@ -538,6 +538,8 @@ function $Window(options) {
 		// and probably rename the "close" event
 
 		// Focus next-topmost window
+		// TODO: store the last focused control OUTSIDE the window, and restore it here,
+		// so that it works with not just other windows but also arbitrary controls outside of any window.
 		var $next_topmost = $($(".window:visible").toArray().sort((a, b) => b.style.zIndex - a.style.zIndex)[0]);
 		$next_topmost.triggerHandler("refocus-window");
 	};

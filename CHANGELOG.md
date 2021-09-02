@@ -12,7 +12,21 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
-Nothing here yet...
+### Added
+- Added window options `toolWindow`, `parentWindow`, `maximizeButton`, `minimizeButton`, `closeButton`
+- Added window method `bringTitleBarInBounds()`
+- Focus wrapping now works with Shift+Tab in addition to Tab, and handles more types of focusable elements.
+- Focus is now restored to the last focused element within the window when the window is focused again.
+- Focus is now given to the next-topmost window when the window is closed.
+
+### Changed
+- Loosened constraints on windows when releasing a drag. You can now drag a window out of the screen, except the titlebar is kept in bounds. (This still doesn't match the behavior of Windows, but in Windows you can recover a window from offscreen with Alt+Space or the taskbar context menu.)
+- Increased thickness of the window frame to match the look of Windows 98.
+
+### Fixed
+- Use standard `touch-action` CSS property instead of obsolete PEP polyfill's attribute. The PEP library was never included or documented as a dependency.
+- Keyboard shortcuts using the meta key are no longer swallowed by the window.
+- Allow setting title to empty string. Not very useful.
 
 </details>
 
@@ -51,7 +65,7 @@ Nothing here yet...
 ## [0.2.0] - 2020-03-12
 ### Added
 - Rewrote using PostCSS
-- Everything is now **themable**, by dragging and dropping `.theme` and `.themepack` files
+- Everything is now **themeable**, by dragging and dropping `.theme` and `.themepack` files
 - Maximize and Minimize, with flying titlebar effect
 - Default buttons
 - Toggle buttons

@@ -163,6 +163,16 @@ Creates a window component that can be dragged around and such, brought to the f
 
 `options.icon`: Sets the icon of the window, assuming a global `TITLEBAR_ICON_SIZE` (which should generally be 16) and a global `$Icon` function which takes an icon identifier and size and returns an `img` (or other image-like element).
 
+`options.toolWindow`: If `true`, the window will be a tool window, which means it will not have a minimize or maximize button, and it will be shown as always focused by default. It will also have a smaller close button in the default styles.
+
+`options.parentWindow`: If specified, the window will be a child of this window. For tool windows, the focus state will be shared with the parent window.
+
+`options.maximizeButton`: If set to `false`, the window will not have a maximize button. You cannot enable this if `toolWindow` is `true`.
+
+`options.minimizeButton`: If set to `false`, the window will not have a minimize button. You cannot enable this if `toolWindow` is `true`.
+
+`options.closeButton`: If set to `false`, the window will not have a close button.
+
 ```js
 // var DESKTOP_ICON_SIZE = 32;
 // var TASKBAR_ICON_SIZE = 16;
@@ -206,6 +216,10 @@ You should call this after creating the contents of the window, and either rende
 
 Fits the window within the page if it's partially offscreen.
 (Doesn't resize the window if it's too large; it'll go off the right and bottom of the screen.)
+
+#### `bringTitleBarInBounds()`
+
+Repositions the window so that the title bar is within the bounds of the page, so it can be dragged.
 
 #### `bringToFront()`
 
