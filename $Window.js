@@ -34,6 +34,9 @@ function $Window(options) {
 	if (options.toolWindow) {
 		$w.addClass("tool-window");
 	}
+	if (options.parentWindow) {
+		options.parentWindow.addChildWindow($w);
+	}
 
 	var $component = options.$component;
 	if (options.icon) {
@@ -61,13 +64,24 @@ function $Window(options) {
 	$w.onBlur = makeSimpleListenable("blur");
 	$w.onClosed = makeSimpleListenable("closed");
 
+	let $focusShowers = $w;
+	$w.addChildWindow = ($childWindow) => {
+		$focusShowers = $focusShowers.add($childWindow);
+	};
 	$w.focus = () => {
+		if (options.parentWindow) {
+			// TODO: remove flicker of unfocused state (for both child and parent windows)
+			setTimeout((() => { // wait til after blur handler of parent window
+				options.parentWindow.focus();
+			}), 0);
+			return;
+		}
 		if (window.focusedWindow === $w) {
 			return;
 		}
 		window.focusedWindow && focusedWindow.blur();
 		$w.bringToFront();
-		$w.addClass("focused");
+		$focusShowers.addClass("focused");
 		window.focusedWindow = $w;
 		$eventTarget.triggerHandler("focus");
 	};
@@ -75,7 +89,7 @@ function $Window(options) {
 		if (window.focusedWindow !== $w) {
 			return;
 		}
-		$w.removeClass("focused");
+		$focusShowers.removeClass("focused");
 		// TODO: document.activeElement && document.activeElement.blur()?
 		$eventTarget.triggerHandler("blur");
 

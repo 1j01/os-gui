@@ -86,7 +86,7 @@ $(()=> {
 		top: $("#app-window-example").offset().top
 	});
 
-	var $window2 = new $Window({ title: "Tool Window", toolWindow: true });
+	var $window2 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $window });
 	$window2.$content.append($("#tool-window-example-content"));
 
 	$window2.$Button("Button Text", () => {
