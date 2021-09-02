@@ -1,4 +1,4 @@
-(function(exports) {
+((exports)=> {
 
 // TODO: E\("([a-z]+)"\) -> "<$1>" or get rid of jQuery as a dependency
 function E(t){

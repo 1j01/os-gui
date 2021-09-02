@@ -1,4 +1,4 @@
-(function(exports) {
+((exports)=> {
 
 // TODO: E\("([a-z]+)"\) -> "<$1>" or get rid of jQuery as a dependency
 function E(t){
@@ -69,7 +69,7 @@ function $Window(options){
 		window.focusedWindow = null;
 	};
 
-	$w.on("focusin pointerdown", function(e){
+	$w.on("focusin pointerdown", (e)=>{
 		$w.focus();
 	});
 	$G.on("pointerdown", (e)=> {
@@ -83,13 +83,13 @@ function $Window(options){
 
 	$w.attr("touch-action", "none");
 	
-	$w.$x.on("click", function(){
+	$w.$x.on("click", ()=>{
 		$w.close();
 	});
 
-	$w.minimize = function() {
+	$w.minimize = ()=> {
 		if ($w.is(":visible")) {
-			const $task = this.task.$task;
+			const $task = $w.task.$task;
 			const before_rect = $w.$titlebar[0].getBoundingClientRect();
 			const after_rect = $task[0].getBoundingClientRect();
 			$w.animateTitlebar(before_rect, after_rect, ()=> {
@@ -98,9 +98,9 @@ function $Window(options){
 			});
 		}
 	};
-	$w.unminimize = function() {
+	$w.unminimize = ()=> {
 		if ($w.is(":hidden")) {
-			const $task = this.task.$task;
+			const $task = $w.task.$task;
 			const before_rect = $task[0].getBoundingClientRect();
 			$w.show();
 			const after_rect = $w.$titlebar[0].getBoundingClientRect();
@@ -114,7 +114,7 @@ function $Window(options){
 	};
 
 	let before_maximize;
-	$w.$maximize.on("click", function(){
+	$w.$maximize.on("click", ()=>{
 
 		const instantly_maximize = ()=> {
 			before_maximize = {
@@ -172,10 +172,10 @@ function $Window(options){
 			}
 		});
 	});
-	$w.$minimize.on("click", function(){
+	$w.$minimize.on("click", ()=>{
 		$w.minimize();
 	});
-	$w.$title_area.on("mousedown selectstart", ".window-button", function(e){
+	$w.$title_area.on("mousedown selectstart", ".window-button", (e)=>{
 		e.preventDefault();
 	});
 	$w.$title_area.on("dblclick", ()=> {
@@ -186,16 +186,16 @@ function $Window(options){
 		position: "absolute",
 		zIndex: $Window.Z_INDEX++
 	});
-	$w.bringToFront = function(){
+	$w.bringToFront = ()=>{
 		$w.css({
 			zIndex: $Window.Z_INDEX++
 		});
 	};
-	$w.on("pointerdown", function(){
+	$w.on("pointerdown", ()=>{
 		$w.bringToFront();
 	});
 	
-	$w.on("keydown", function(e){
+	$w.on("keydown", (e)=>{
 		if(e.ctrlKey || e.altKey || e.shiftKey){
 			return;
 		}
@@ -226,12 +226,12 @@ function $Window(options){
 			case 13: // Enter (doesn't actually work in chrome because the button gets clicked immediately)
 				if($focused.is("button")){
 					$focused.addClass("pressed");
-					var release = function(){
+					var release = ()=>{
 						$focused.removeClass("pressed");
 						$focused.off("focusout", release);
 						$(window).off("keyup", keyup);
 					};
-					var keyup = function(e){
+					var keyup = (e)=>{
 						if(e.keyCode === 32 || e.keyCode === 13){
 							release();
 						}
@@ -256,14 +256,14 @@ function $Window(options){
 	});
 	// @TODO: restore last focused controls when clicking/mousing down on the window
 	
-	$w.applyBounds = function(){
+	$w.applyBounds = () => {
 		$w.css({
 			left: Math.max(0, Math.min(document.body.scrollWidth - $w.width(), $w.position().left)),
 			top: Math.max(0, Math.min(document.body.scrollHeight - $w.height(), $w.position().top)),
 		});
 	};
 	
-	$w.center = function(){
+	$w.center = ()=>{
 		$w.css({
 			left: (innerWidth - $w.width()) / 2 + window.scrollX,
 			top: (innerHeight - $w.height()) / 2 + window.scrollY,
@@ -276,7 +276,7 @@ function $Window(options){
 	
 	var drag_offset_x, drag_offset_y;
 	var mouse_x, mouse_y;
-	var update_drag = function(e){
+	var update_drag = (e)=>{
 		mouse_x = e.clientX != null ? e.clientX : mouse_x;
 		mouse_y = e.clientY != null ? e.clientY : mouse_y;
 		$w.css({
@@ -285,10 +285,10 @@ function $Window(options){
 		});
 	};
 	$w.$titlebar.attr("touch-action", "none");
-	$w.$titlebar.on("mousedown selectstart", function(e){
+	$w.$titlebar.on("mousedown selectstart", (e)=>{
 		e.preventDefault();
 	});
-	$w.$titlebar.on("pointerdown", function(e){
+	$w.$titlebar.on("pointerdown", (e)=>{
 		if($(e.target).closest("button").length){
 			return;
 		}
@@ -301,23 +301,23 @@ function $Window(options){
 		$G.on("scroll", update_drag);
 		$("body").addClass("dragging"); // for when mouse goes over an iframe
 	});
-	$G.on("pointerup", function(e){
+	$G.on("pointerup", (e)=>{
 		$G.off("pointermove", update_drag);
 		$G.off("scroll", update_drag);
 		$("body").removeClass("dragging");
 		$w.applyBounds();
 	});
-	$w.$titlebar.on("dblclick", function(e){
+	$w.$titlebar.on("dblclick", (e)=>{
 		if($component){
 			$component.dock();
 		}
 	});
 	
-	$w.$Button = function(text, handler){
+	$w.$Button = (text, handler)=>{
 		var $b = $(E("button"))
 			.appendTo($w.$content)
 			.text(text)
-			.on("click", function(){
+			.on("click", ()=>{
 				if(handler){
 					handler();
 				}
@@ -325,7 +325,7 @@ function $Window(options){
 			});
 		return $b;
 	};
-	$w.title = function(title){
+	$w.title = (title)=>{
 		if(title !== undefined){
 			$w.$title.text(title);
 			if ($w.task) {
@@ -336,13 +336,13 @@ function $Window(options){
 			return $w.$title.text();
 		}
 	};
-	$w.getTitle = function() {
+	$w.getTitle = ()=> {
 		return $w.title();
 	};
-	$w.getIconName = function() {
+	$w.getIconName = ()=> {
 		return $w.icon_name;
 	};
-	$w.setIconByID = function(icon_name){
+	$w.setIconByID = (icon_name)=>{
 		// $w.$icon.attr("src", getIconPath(icon_name));
 		var old_$icon = $w.$icon;
 		$w.$icon = $Icon(icon_name, TITLEBAR_ICON_SIZE);
@@ -351,7 +351,7 @@ function $Window(options){
 		$w.task.updateIcon();
 		return $w;
 	};
-	$w.animateTitlebar = function(from, to, callback=()=>{}) {
+	$w.animateTitlebar = (from, to, callback=()=>{})=> {
 		const $eye_leader = $w.$titlebar.clone(true);
 		$eye_leader.find("button").remove();
 		$eye_leader.appendTo("body");
@@ -385,7 +385,7 @@ function $Window(options){
 			callback();
 		});
 	};
-	$w.close = function(force){
+	$w.close = (force)=>{
 		if(!force){
 			var e = $.Event("close");
 			$w.trigger(e);
@@ -426,9 +426,9 @@ function $FormWindow(title){
 	$w.$main = $(E("div")).appendTo($w.$form);
 	$w.$buttons = $(E("div")).appendTo($w.$form).addClass("button-group");
 	
-	$w.$Button = function(label, action){
+	$w.$Button = (label, action)=>{
 		var $b = $(E("button")).appendTo($w.$buttons).text(label);
-		$b.on("click", function(e){
+		$b.on("click", (e)=>{
 			// prevent the form from submitting
 			// @TODO: instead, prevent the form's submit event
 			e.preventDefault();
@@ -436,7 +436,7 @@ function $FormWindow(title){
 			action();
 		});
 		
-		$b.on("pointerdown", function(){
+		$b.on("pointerdown", ()=>{
 			$b.focus();
 		});
 		
