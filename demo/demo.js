@@ -63,7 +63,7 @@ $(()=> {
 	$menubar.appendTo("#menubar-example");
 
 	var $window = new $Window({title: "Testing 123"});
-	$window.$content.append($("#window-example-content"));
+	$window.$content.append($("#app-window-example-content"));
 
 	$window.$Button("Open Another Window", ()=> {
 		var $new_window = new $Window({title: "Testing Testing 123"});
@@ -73,18 +73,36 @@ $(()=> {
 		event.preventDefault();
 	});
 	
-	// $window.appendTo("#window-example");
+	// $window.appendTo("#app-window-example");
 	// $window.css({
 	// 	position: "relative",
 	// 	top: 0,
 	// 	left: 0
 	// });
 
-	$("#window-example").height($window.height());
+	$("#app-window-example").height($window.height());
 	$window.offset({
-		left: $("#window-example").offset().left,
-		top: $("#window-example").offset().top
+		left: $("#app-window-example").offset().left,
+		top: $("#app-window-example").offset().top
 	});
+
+	var $window2 = new $Window({ title: "Tool Window", toolWindow: true });
+	$window2.$content.append($("#tool-window-example-content"));
+
+	$window2.$Button("Button Text", () => {
+		var $new_window = new $Window({ title: "You Did It" });
+		$new_window.$content.html("You Clicked The Button.");
+	});
+	$window2.on("close", (event) => {
+		event.preventDefault();
+	});
+
+	$("#tool-window-example").height($window2.height());
+	$window2.offset({
+		left: $("#tool-window-example").offset().left,
+		top: $("#tool-window-example").offset().top
+	});
+	
 
 	$("#demo-toggle-button").on("click", (e)=> {
 		$(e.target).toggleClass("selected");
@@ -162,5 +180,6 @@ InfoWindow=255 255 225
 		applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), element);
 	});
 
-	$window.css({top: $("#window-example").position().top});
+	$window.css({top: $("#app-window-example").position().top});
+	$window2.css({top: $("#tool-window-example").position().top});
 });

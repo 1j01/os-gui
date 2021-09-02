@@ -17,10 +17,23 @@ function $Window(options) {
 	$w.$titlebar = $(E("div")).addClass("window-titlebar").appendTo($w);
 	$w.$title_area = $(E("div")).addClass("window-title-area").appendTo($w.$titlebar);
 	$w.$title = $(E("span")).addClass("window-title").appendTo($w.$title_area);
-	$w.$minimize = $(E("button")).addClass("window-minimize-button window-button").appendTo($w.$titlebar);
-	$w.$maximize = $(E("button")).addClass("window-maximize-button window-button").appendTo($w.$titlebar);
-	$w.$x = $(E("button")).addClass("window-close-button window-button").appendTo($w.$titlebar);
+	if (options.toolWindow) {
+		options.minimizeButton = false;
+		options.maximizeButton = false;
+	}
+	if (options.minimizeButton !== false) {
+		$w.$minimize = $(E("button")).addClass("window-minimize-button window-button").appendTo($w.$titlebar);
+	}
+	if (options.maximizeButton !== false) {
+		$w.$maximize = $(E("button")).addClass("window-maximize-button window-button").appendTo($w.$titlebar);
+	}
+	if (options.closeButton !== false) {
+		$w.$x = $(E("button")).addClass("window-close-button window-button").appendTo($w.$titlebar);
+	}
 	$w.$content = $(E("div")).addClass("window-content").appendTo($w);
+	if (options.toolWindow) {
+		$w.addClass("tool-window");
+	}
 
 	var $component = options.$component;
 	if (options.icon) {
@@ -83,7 +96,7 @@ function $Window(options) {
 
 	$w.css("touch-action", "none");
 
-	$w.$x.on("click", () => {
+	$w.$x?.on("click", () => {
 		$w.close();
 	});
 
@@ -114,7 +127,7 @@ function $Window(options) {
 	};
 
 	let before_maximize;
-	$w.$maximize.on("click", () => {
+	$w.$maximize?.on("click", () => {
 
 		const instantly_maximize = () => {
 			before_maximize = {
@@ -172,14 +185,14 @@ function $Window(options) {
 			}
 		});
 	});
-	$w.$minimize.on("click", () => {
+	$w.$minimize?.on("click", () => {
 		$w.minimize();
 	});
 	$w.$title_area.on("mousedown selectstart", ".window-button", (e) => {
 		e.preventDefault();
 	});
 	$w.$title_area.on("dblclick", () => {
-		$w.$maximize.triggerHandler("click");
+		$w.$maximize?.triggerHandler("click");
 	});
 
 	$w.css({
