@@ -257,9 +257,28 @@ function $Window(options){
 	// @TODO: restore last focused controls when clicking/mousing down on the window
 	
 	$w.applyBounds = () => {
+		// TODO: outerWidth vs width? not sure
 		$w.css({
 			left: Math.max(0, Math.min(document.body.scrollWidth - $w.width(), $w.position().left)),
 			top: Math.max(0, Math.min(document.body.scrollHeight - $w.height(), $w.position().top)),
+		});
+	};
+	
+	$w.bringTitleBarInBounds = () => {
+		// Try to make the titlebar always accessible
+		const min_horizontal_pixels_on_screen = 40; // enough for space past a close button
+		$w.css({
+			left: Math.max(
+				min_horizontal_pixels_on_screen - $w.outerWidth(),
+				Math.min(
+					document.body.scrollWidth - min_horizontal_pixels_on_screen,
+					$w.position().left
+				)
+			),
+			top: Math.max(0, Math.min(
+				document.body.scrollHeight - $w.$titlebar.outerHeight() - 5,
+				$w.position().top
+			)),
 		});
 	};
 	
@@ -272,7 +291,7 @@ function $Window(options){
 	};
 	
 	
-	$G.on("resize", $w.applyBounds);
+	$G.on("resize", $w.bringTitleBarInBounds);
 	
 	var drag_offset_x, drag_offset_y;
 	var mouse_x, mouse_y;
@@ -305,7 +324,9 @@ function $Window(options){
 		$G.off("pointermove", update_drag);
 		$G.off("scroll", update_drag);
 		$("body").removeClass("dragging");
-		$w.applyBounds();
+		// $w.applyBounds(); // Windows doesn't really try to keep windows on screen
+		// but you also can't really drag off of the desktop, whereas here you can drag to way outside the web page.
+		$w.bringTitleBarInBounds();
 	});
 	$w.$titlebar.on("dblclick", (e)=>{
 		if($component){
