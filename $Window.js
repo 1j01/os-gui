@@ -196,7 +196,7 @@ function $Window(options) {
 	});
 	// var focused = false;
 	var last_focused_control;
-	$w.on("pointerdown", (event) => {
+	$w.on("pointerdown refocus-window", (event) => {
 		$w.css({
 			zIndex: $Window.Z_INDEX++
 		});
@@ -509,6 +509,10 @@ function $Window(options) {
 		// $w.trigger("closed");
 		// TODO: change usages of "close" to "closed" where appropriate
 		// and probably rename the "close" event
+
+		// Focus next-topmost window
+		var $next_topmost = $($(".window:visible").toArray().sort((a, b) => b.style.zIndex - a.style.zIndex)[0]);
+		$next_topmost.triggerHandler("refocus-window");
 	};
 	$w.closed = false;
 
