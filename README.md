@@ -82,7 +82,7 @@ The API is not versioned using semver yet, but it should be once a version 1.0 i
 ### Button styles
 
 Button styles are applied to `button` elements globally.
-And to reset it, you have to get rid of the psuedo element `::after` as well.
+And to reset it, you have to get rid of the pseudo element `::after` as well.
 
 You can have the depressed (held down) style stay using `.selected`
 
@@ -90,13 +90,13 @@ You can have the depressed (held down) style stay using `.selected`
 
 Scrollbar styles are applied globally, but they have a `-webkit-` prefix, so they'll only work in "webkit-based" browsers, generally, like Chrome, Safari, and Opera.
 
-Can be overriden with `::-webkit-scrollbar` and related selectors (but not easily reset to the browser default, unless `-webkit-appearance: scrollbar` works)
+Can be overridden with `::-webkit-scrollbar` and related selectors (but not easily reset to the browser default, unless `-webkit-appearance: scrollbar` works)
 
 ### Selection styles
 
 Selection styles are applied globally.
 
-Can be overriden with `::selection` (but not easily reset to the browser default... unless with `unset` - but that's not very clean; there should be a better way to scope where the selection styles apply, like maybe a `.os-gui` class)
+Can be overridden with `::selection` (but not easily reset to the browser default... unless with `unset` - but that's not very clean; there should be a better way to scope where the selection styles apply, like maybe a `.os-gui` class)
 
 ### `$MenuBar(menus)`
 

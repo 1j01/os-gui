@@ -229,7 +229,7 @@ function $MenuBar(menus){
 					}
 					if(String.fromCharCode(e.keyCode) === get_hotkey(item.item)){
 						e.preventDefault();
-						$item.trogger("click");
+						$item.trigger("click");
 					}
 				});
 			}
