@@ -62,47 +62,31 @@ $(()=> {
 	var $menubar = new $MenuBar(menus);
 	$menubar.appendTo("#menubar-example");
 
-	var $window = new $Window({title: "Testing 123"});
-	$window.$content.append($("#app-window-example-content"));
+	var $app_window_1 = new $Window({title: "Testing 123"});
+	$app_window_1.$content.append($("#app-window-example-content"));
 
-	$window.$Button("Open Another Window", ()=> {
+	$app_window_1.$Button("Open Another Window", ()=> {
 		var $new_window = new $Window({title: "Testing Testing 123"});
 		$new_window.$content.html("Hey look, a window!");
 	});
-	$window.on("close", (event)=> {
-		event.preventDefault();
-	});
-	
-	// $window.appendTo("#app-window-example");
-	// $window.css({
-	// 	position: "relative",
-	// 	top: 0,
-	// 	left: 0
-	// });
-
-	$("#app-window-example").height($window.height());
-	$window.offset({
-		left: $("#app-window-example").offset().left,
-		top: $("#app-window-example").offset().top
-	});
-
-	var $window2 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $window });
-	$window2.$content.append($("#tool-window-example-content"));
-
-	$window2.$Button("Button Text", () => {
-		var $new_window = new $Window({ title: "You Did It" });
-		$new_window.$content.html("You Clicked The Button.");
-	});
-	$window2.on("close", (event) => {
+	$app_window_1.on("close", (event)=> {
 		event.preventDefault();
 	});
 
-	$("#tool-window-example").height($window2.height());
-	$window2.offset({
-		left: $("#tool-window-example").offset().left,
-		top: $("#tool-window-example").offset().top
+	var $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_1 });
+	$tool_window_1.$content.append($("#tool-window-example-content"));
+	$tool_window_1.on("close", (event) => {
+		event.preventDefault();
 	});
-	
+
+	var $app_window_2 = new $Window({title: "Testing 123"});
+	$app_window_2.$content.prepend(new $MenuBar(menus));
+	$app_window_2.$content.css("padding", "0");
+	$app_window_2.$content.append("This is the main application window.");
+	var $tool_window_2 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_2 });
+	$tool_window_2.$content.text("This tool window is a child of the main application window.");
+
+	// Note: the windows are positioned later on to fit into the page layout. See below.
 
 	$("#demo-toggle-button").on("click", (e)=> {
 		$(e.target).toggleClass("selected");
@@ -180,6 +164,30 @@ InfoWindow=255 255 225
 		applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), element);
 	});
 
-	$window.css({top: $("#app-window-example").position().top});
-	$window2.css({top: $("#tool-window-example").position().top});
+	// position the windows within the demo page, in the flow of text, but freely moveable
+	const window_list = [
+		[$app_window_1, "app-window-example"],
+		[$tool_window_1, "tool-window-example"],
+		[$app_window_2, "combined-example"],
+		[$tool_window_2, "combined-example"],
+	];
+	for (const [$window, positioning_el_id] of window_list) {
+		const $positioning_el = $(`#${positioning_el_id}`);
+		$positioning_el.height($window.height());
+	}
+	for (const [$window, positioning_el_id] of window_list) {
+		const $positioning_el = $(`#${positioning_el_id}`);
+		$window.offset({
+			left: $positioning_el.offset().left,
+			top: $positioning_el.offset().top
+		});
+
+		// $window.appendTo($positioning_el);
+		// $window.css({
+		// 	position: "relative",
+		// 	top: 0,
+		// 	left: 0
+		// });
+	}
+
 });
