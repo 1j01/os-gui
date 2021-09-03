@@ -4,9 +4,9 @@ A library for imitating operating system graphical user interfaces on the web
 
 Specifically, Windows 98 - for now at least; it could be expanded in the future
 
-<!-- Check out 98 and jspaint (and sound-recorder and notepad and minesweeper) and maybe mos and maybe pbp2d... -->
+This library powers [98.js.org](https://98.js.org), a web-based version of Windows 98, including Paint, Notepad, Sound Recorder, and more.
 
-**Important**: This project is pre-alpha and not really "quality" yet.
+**Note**: The API will likely change a lot, but I maintain a [Changelog](CHANGELOG.md).
 
 
 ## Features
@@ -15,15 +15,17 @@ Specifically, Windows 98 - for now at least; it could be expanded in the future
 
 - Windows which you can drag around and maximize
 
-- Flying titlebar animation that guides your eyes
+- Flying titlebar animation that guides your eyes, for maximize/minimize/restore
 
-- Button styles, including lightweight buttons and disabled buttons
+- Focus containment: if you Tab or Shift+Tab within a window, it wraps around to the first/last control.
+
+- Button styles, including lightweight buttons, disabled buttons, and default action buttons
 
 - Scrollbar styles, webkit-specific (in the future there could be a custom scrollbar based on a nonintrusive scrollbar library, or styles *supporting* a library, where you're expected to use the library directly)
   - Procedurally rendered arrows, allowing for different scrollbar sizes
   - Inversion effect when clicking on scrollbar track
 
-- Themeable with Windows `.theme` & `.themepack` files at runtime
+- Themeable with Windows `.theme` & `.themepack` files **at runtime**!
 
 ## Demo
 
@@ -44,7 +46,7 @@ This library currently requires [jQuery](https://jquery.com/), or, almost certai
 
 ## Setup
 
-The library is not yet provided as a bundle or package.
+The library is not yet provided as a bundle.
 
 You have to include `$MenuBar.js` or `$Window.js` specifically, as required,
 along with stylesheets for layout and a theme and a color scheme.
