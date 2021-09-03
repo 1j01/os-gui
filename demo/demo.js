@@ -62,7 +62,7 @@ $(()=> {
 	var $menubar = new $MenuBar(menus);
 	$menubar.appendTo("#menubar-example");
 
-	var $app_window_1 = new $Window({title: "Application Window"});
+	var $app_window_1 = new $Window({title: "Application Window", resizable: true});
 	$app_window_1.$content.append($("#app-window-example-content"));
 
 	$app_window_1.$Button("Open Another Window", ()=> {
@@ -79,7 +79,7 @@ $(()=> {
 		event.preventDefault();
 	});
 
-	var $app_window_2 = new $Window({title: "Application Example"});
+	var $app_window_2 = new $Window({title: "Application Example", resizable: true});
 	$app_window_2.$content.prepend(new $MenuBar(menus));
 	$app_window_2.$content.css("padding", "0");
 	$app_window_2.$content.append(`

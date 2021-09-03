@@ -175,6 +175,14 @@ Creates a window component that can be dragged around and such, brought to the f
 
 `options.closeButton`: If set to `false`, the window will not have a close button.
 
+`options.resizable`: If set to `true`, the window can be resized by the edges and corners.
+
+`options.minWidth`: The minimum outer width of the window (when resizing), in pixels.
+
+`options.minHeight`: The minimum outer height of the window (when resizing), in pixels.
+
+`options.constrainRect(rect, x_axis, y_axis)`: A function that can be used to constrain the window to a particular rectangle. Takes and returns a rectangle object with `x`, `y`, `width`, and `height` properties. `x_axis` and `y_axis` define what is being dragged `-1` for left and top, `1` for right and bottom, and `0` for middle. Note that the window will always be constrained to not move past the minimum width and height.
+
 ```js
 // var DESKTOP_ICON_SIZE = 32;
 // var TASKBAR_ICON_SIZE = 16;

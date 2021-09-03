@@ -406,14 +406,15 @@ function $Window(options) {
 
 	$G.on("resize", $w.bringTitleBarInBounds);
 
-	var drag_offset_x, drag_offset_y;
-	var mouse_x, mouse_y;
+	var drag_offset_x, drag_offset_y, drag_pointer_x, drag_pointer_y, drag_pointer_id;
 	var update_drag = (e) => {
-		mouse_x = e.clientX != null ? e.clientX : mouse_x;
-		mouse_y = e.clientY != null ? e.clientY : mouse_y;
+		if (drag_pointer_id === e.pointerId) {
+			drag_pointer_x = e.clientX ?? drag_pointer_x;
+			drag_pointer_y = e.clientY ?? drag_pointer_y;
+		}
 		$w.css({
-			left: mouse_x + scrollX - drag_offset_x,
-			top: mouse_y + scrollY - drag_offset_y,
+			left: drag_pointer_x + scrollX - drag_offset_x,
+			top: drag_pointer_y + scrollY - drag_offset_y,
 		});
 	};
 	$w.$titlebar.css("touch-action", "none");
@@ -429,11 +430,15 @@ function $Window(options) {
 		}
 		drag_offset_x = e.clientX + scrollX - $w.position().left;
 		drag_offset_y = e.clientY + scrollY - $w.position().top;
+		drag_pointer_x = e.clientX;
+		drag_pointer_y = e.clientY;
+		drag_pointer_id = e.pointerId;
 		$G.on("pointermove", update_drag);
 		$G.on("scroll", update_drag);
 		$("body").addClass("dragging"); // for when mouse goes over an iframe
 	});
 	$G.on("pointerup", (e) => {
+		if (e.pointerId !== drag_pointer_id) { return; }
 		$G.off("pointermove", update_drag);
 		$G.off("scroll", update_drag);
 		$("body").removeClass("dragging");
@@ -446,6 +451,153 @@ function $Window(options) {
 			$component.dock();
 		}
 	});
+
+	if (options.resizable) {
+
+		const HANDLE_MIDDLE = 0;
+		const HANDLE_START = -1;
+		const HANDLE_END = 1;
+		const HANDLE_LEFT = HANDLE_START;
+		const HANDLE_RIGHT = HANDLE_END;
+		const HANDLE_TOP = HANDLE_START;
+		const HANDLE_BOTTOM = HANDLE_END;
+
+		[
+			[HANDLE_TOP, HANDLE_RIGHT], // ↗
+			[HANDLE_TOP, HANDLE_MIDDLE], // ↑
+			[HANDLE_TOP, HANDLE_LEFT], // ↖
+			[HANDLE_MIDDLE, HANDLE_LEFT], // ←
+			[HANDLE_BOTTOM, HANDLE_LEFT], // ↙
+			[HANDLE_BOTTOM, HANDLE_MIDDLE], // ↓
+			[HANDLE_BOTTOM, HANDLE_RIGHT], // ↘
+			[HANDLE_MIDDLE, HANDLE_RIGHT], // →
+		].forEach(([y_axis, x_axis]) => {
+			// const resizes_height = y_axis !== HANDLE_MIDDLE;
+			// const resizes_width = x_axis !== HANDLE_MIDDLE;
+			const $handle = $("<div>").addClass("handle").appendTo($w);
+
+			let cursor = "";
+			if (y_axis === HANDLE_TOP) { cursor += "n"; }
+			if (y_axis === HANDLE_BOTTOM) { cursor += "s"; }
+			if (x_axis === HANDLE_LEFT) { cursor += "w"; }
+			if (x_axis === HANDLE_RIGHT) { cursor += "e"; }
+			cursor += "-resize";
+
+			const thickness = ($w.outerWidth() - $w.width()) / 2; // Note: innerWidth() would be less "inner" than width(), because it includes padding!
+			const windowFrameHeight = $w.outerHeight() - $w.$content.outerHeight();
+			$handle.css({
+				position: "absolute",
+				"--resize-thickness": `${thickness}px`,
+				top: y_axis === HANDLE_TOP ? 0 : y_axis === HANDLE_MIDDLE ? "var(--resize-thickness)" : "",
+				bottom: y_axis === HANDLE_BOTTOM ? 0 : "",
+				left: x_axis === HANDLE_LEFT ? 0 : x_axis === HANDLE_MIDDLE ? "var(--resize-thickness)" : "",
+				right: x_axis === HANDLE_RIGHT ? 0 : "",
+				width: x_axis === HANDLE_MIDDLE ? "calc(100% - var(--resize-thickness) * 2)" : "var(--resize-thickness)",
+				height: y_axis === HANDLE_MIDDLE ? "calc(100% - var(--resize-thickness) * 2)" : "var(--resize-thickness)",
+				// background: x_axis === HANDLE_MIDDLE || y_axis === HANDLE_MIDDLE ? "rgba(255,0,0,0.3)" : "rgba(255,255,0,0.3)",
+				touchAction: "none",
+				cursor,
+			});
+
+			let rect;
+			let resize_offset_x, resize_offset_y, resize_pointer_x, resize_pointer_y, resize_pointer_id;
+			$handle.on("pointerdown", (e) => {
+				e.preventDefault();
+				const handle_offset = $handle.offset();
+				// hacky, mostly works, just figured from experimentation, not any kind of math
+				// a few pixels off, probably because of the border
+				// (maybe it needs to work from the bottom/right instead of the top/left, for the bottom/right handles... in some way)
+				resize_offset_x = e.clientX + scrollX - handle_offset.left - (x_axis === HANDLE_END ? $handle.width() : 0);
+				resize_offset_y = e.clientY + scrollY - handle_offset.top - (y_axis === HANDLE_END ? $handle.height() : 0);
+				resize_pointer_x = e.clientX;
+				resize_pointer_y = e.clientY;
+				resize_pointer_id = e.pointerId;
+
+				$G.on("pointermove", handle_pointermove);
+				$G.on("scroll", update_resize); // scroll doesn't have clientX/Y, so we have to remember it
+				$("body").addClass("dragging"); // for when mouse goes over an iframe
+				$G.on("pointerup", end_resize);
+
+				rect = {
+					x: $w.position().left,
+					y: $w.position().top,
+					width: $w.outerWidth(),
+					height: $w.outerHeight(),
+				};
+			});
+			function handle_pointermove(e) {
+				if (e.pointerId !== resize_pointer_id) { return; }
+				resize_pointer_x = e.clientX;
+				resize_pointer_y = e.clientY;
+				update_resize();
+			}
+			function end_resize(e) {
+				if (e.pointerId !== resize_pointer_id) { return; }
+				$G.off("pointermove", handle_pointermove);
+				$G.off("scroll", onscroll);
+				$("body").removeClass("dragging");
+				$G.off("pointerup", end_resize);
+				$w.bringTitleBarInBounds();
+			}
+			function update_resize() {
+				const m = {
+					x: resize_pointer_x + scrollX - resize_offset_x,
+					y: resize_pointer_y + scrollY - resize_offset_y,
+				};
+				let delta_x = 0;
+				let delta_y = 0;
+				let width, height;
+				if (x_axis === HANDLE_RIGHT) {
+					delta_x = 0;
+					width = ~~(m.x - rect.x);
+				} else if (x_axis === HANDLE_LEFT) {
+					delta_x = ~~(m.x - rect.x);
+					width = ~~(rect.x + rect.width - m.x);
+				} else {
+					width = ~~(rect.width);
+				}
+				if (y_axis === HANDLE_BOTTOM) {
+					delta_y = 0;
+					height = ~~(m.y - rect.y);
+				} else if (y_axis === HANDLE_TOP) {
+					delta_y = ~~(m.y - rect.y);
+					height = ~~(rect.y + rect.height - m.y);
+				} else {
+					height = ~~(rect.height);
+				}
+				let new_rect = {
+					x: rect.x + delta_x,
+					y: rect.y + delta_y,
+					width,
+					height,
+				};
+
+				new_rect.width = Math.max(1, new_rect.width);
+				new_rect.height = Math.max(1, new_rect.height);
+
+				// Constraints
+				if (options.constrainRect) {
+					new_rect = options.constrainRect(new_rect, x_axis, y_axis);
+				}
+				new_rect.width = Math.max(new_rect.width, options.minWidth ?? 100);
+				new_rect.height = Math.max(new_rect.height, options.minHeight ?? windowFrameHeight);
+				// prevent free movement via resize past minimum size
+				if (x_axis === HANDLE_LEFT) {
+					new_rect.x = Math.min(new_rect.x, rect.x + rect.width - new_rect.width);
+				}
+				if (y_axis === HANDLE_TOP) {
+					new_rect.y = Math.min(new_rect.y, rect.y + rect.height - new_rect.height);
+				}
+
+				$w.css({
+					top: new_rect.y,
+					left: new_rect.x,
+				});
+				$w.outerWidth(new_rect.width);
+				$w.outerHeight(new_rect.height);
+			}
+		});
+	}
 
 	$w.$Button = (text, handler) => {
 		var $b = $(E("button"))
