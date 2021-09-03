@@ -540,28 +540,26 @@ function $Window(options) {
 				$w.bringTitleBarInBounds();
 			}
 			function update_resize() {
-				const m = {
-					x: resize_pointer_x + scrollX - resize_offset_x,
-					y: resize_pointer_y + scrollY - resize_offset_y,
-				};
+				const mouse_x = resize_pointer_x + scrollX - resize_offset_x;
+				const mouse_y = resize_pointer_y + scrollY - resize_offset_y;
 				let delta_x = 0;
 				let delta_y = 0;
 				let width, height;
 				if (x_axis === HANDLE_RIGHT) {
 					delta_x = 0;
-					width = ~~(m.x - rect.x);
+					width = ~~(mouse_x - rect.x);
 				} else if (x_axis === HANDLE_LEFT) {
-					delta_x = ~~(m.x - rect.x);
-					width = ~~(rect.x + rect.width - m.x);
+					delta_x = ~~(mouse_x - rect.x);
+					width = ~~(rect.x + rect.width - mouse_x);
 				} else {
 					width = ~~(rect.width);
 				}
 				if (y_axis === HANDLE_BOTTOM) {
 					delta_y = 0;
-					height = ~~(m.y - rect.y);
+					height = ~~(mouse_y - rect.y);
 				} else if (y_axis === HANDLE_TOP) {
-					delta_y = ~~(m.y - rect.y);
-					height = ~~(rect.y + rect.height - m.y);
+					delta_y = ~~(mouse_y - rect.y);
+					height = ~~(rect.y + rect.height - mouse_y);
 				} else {
 					height = ~~(rect.height);
 				}
