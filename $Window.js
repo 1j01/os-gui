@@ -64,8 +64,10 @@ function $Window(options) {
 	$w.onBlur = makeSimpleListenable("blur");
 	$w.onClosed = makeSimpleListenable("closed");
 
+	let child$Windows = [];
 	let $focusShowers = $w;
 	$w.addChildWindow = ($childWindow) => {
+		child$Windows.push($childWindow);
 		$focusShowers = $focusShowers.add($childWindow);
 	};
 	$w.focus = () => {
@@ -217,16 +219,14 @@ function $Window(options) {
 		$w.css({
 			zIndex: $Window.Z_INDEX++
 		});
+		for (const $childWindow of child$Windows) {
+			$childWindow.bringToFront();
+		}
 	};
-	$w.on("pointerdown", () => {
-		$w.bringToFront();
-	});
 	// var focused = false;
 	var last_focused_control;
 	$w.on("pointerdown refocus-window", (event) => {
-		$w.css({
-			zIndex: $Window.Z_INDEX++
-		});
+		$w.bringToFront();
 		// Test cases where it should refocus the last focused control in the window:
 		// - Click in the blank space of the window
 		// - Click on the window title bar
