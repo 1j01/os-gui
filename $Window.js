@@ -245,7 +245,7 @@ function $Window(options) {
 			// This is a bit of a weird compromise, for now.
 			const target_style = getComputedStyle(event.target);
 			if (target_style.userSelect !== "none") {
-				$w.one("pointerup", () => {
+				$w.one("pointerup pointercancel", () => {
 					requestAnimationFrame(() => { // this seems to make it more reliable in regards to double clicking
 						if (last_focused_control && !getSelection().toString().trim()) {
 							last_focused_control.focus();
@@ -437,7 +437,7 @@ function $Window(options) {
 		$G.on("scroll", update_drag);
 		$("body").addClass("dragging"); // for when mouse goes over an iframe
 	});
-	$G.on("pointerup", (e) => {
+	$G.on("pointerup pointercancel", (e) => {
 		if (e.pointerId !== drag_pointer_id) { return; }
 		$G.off("pointermove", update_drag);
 		$G.off("scroll", update_drag);
@@ -516,7 +516,7 @@ function $Window(options) {
 				$G.on("pointermove", handle_pointermove);
 				$G.on("scroll", update_resize); // scroll doesn't have clientX/Y, so we have to remember it
 				$("body").addClass("dragging"); // for when mouse goes over an iframe
-				$G.on("pointerup", end_resize);
+				$G.on("pointerup pointercancel", end_resize);
 
 				rect = {
 					x: $w.position().left,
@@ -536,7 +536,7 @@ function $Window(options) {
 				$G.off("pointermove", handle_pointermove);
 				$G.off("scroll", onscroll);
 				$("body").removeClass("dragging");
-				$G.off("pointerup", end_resize);
+				$G.off("pointerup pointercancel", end_resize);
 				$w.bringTitleBarInBounds();
 			}
 			function update_resize() {
