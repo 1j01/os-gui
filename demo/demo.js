@@ -62,29 +62,34 @@ $(()=> {
 	var $menubar = new $MenuBar(menus);
 	$menubar.appendTo("#menubar-example");
 
-	var $app_window_1 = new $Window({title: "Testing 123"});
+	var $app_window_1 = new $Window({title: "Application Window"});
 	$app_window_1.$content.append($("#app-window-example-content"));
 
 	$app_window_1.$Button("Open Another Window", ()=> {
-		var $new_window = new $Window({title: "Testing Testing 123"});
+		var $new_window = new $Window({title: "Testing, Testing, 123"});
 		$new_window.$content.html("Hey look, a window!");
 	});
 	$app_window_1.on("close", (event)=> {
 		event.preventDefault();
 	});
 
-	var $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_1 });
+	var $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true });
 	$tool_window_1.$content.append($("#tool-window-example-content"));
 	$tool_window_1.on("close", (event) => {
 		event.preventDefault();
 	});
 
-	var $app_window_2 = new $Window({title: "Testing 123"});
+	var $app_window_2 = new $Window({title: "Application Example"});
 	$app_window_2.$content.prepend(new $MenuBar(menus));
 	$app_window_2.$content.css("padding", "0");
-	$app_window_2.$content.append("This is the main application window.");
+	$app_window_2.$content.append(`
+		<div style='padding: 20px; background: var(--Window); color: var(--WindowText); user-select: text;'>
+			<p>This is the main application window.</p>
+			<p>It has a tool window that belongs to it, as well as a menu bar.</p>
+		</div>
+	`);
 	var $tool_window_2 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_2 });
-	$tool_window_2.$content.text("This tool window is a child of the main application window.");
+	$tool_window_2.$content.text("This tool window is a child of the app window.");
 
 	// Note: the windows are positioned later on to fit into the page layout. See below.
 
@@ -168,12 +173,13 @@ InfoWindow=255 255 225
 	const window_list = [
 		[$app_window_1, "app-window-example"],
 		[$tool_window_1, "tool-window-example"],
-		[$app_window_2, "combined-example"],
-		[$tool_window_2, "combined-example"],
+		[$app_window_2, "app-window-2-positioner"],
+		[$tool_window_2, "tool-window-2-positioner"],
 	];
 	for (const [$window, positioning_el_id] of window_list) {
 		const $positioning_el = $(`#${positioning_el_id}`);
-		$positioning_el.height($window.height());
+		$positioning_el.width($window.outerWidth());
+		$positioning_el.height($window.outerHeight());
 	}
 	for (const [$window, positioning_el_id] of window_list) {
 		const $positioning_el = $(`#${positioning_el_id}`);
