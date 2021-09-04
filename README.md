@@ -268,6 +268,10 @@ Since there could be multiple listeners, and another listener could prevent clos
 
 This event is emitted when the window is closed. It cannot be prevented.
 
+#### Event: `window-drag-start`
+
+Can be used to prevent dragging a window, with `event.preventDefault()`.
+
 ## License
 
 Licensed under the [MIT License](https://opensource.org/licenses/MIT), see [LICENSE](LICENSE) for details.

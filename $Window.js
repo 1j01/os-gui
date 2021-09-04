@@ -428,6 +428,11 @@ function $Window(options) {
 		if ($w.hasClass("maximized")) {
 			return;
 		}
+		const customEvent = $.Event("window-drag-start");
+		$w.trigger(customEvent);
+		if (customEvent.isDefaultPrevented()) {
+			return; // allow custom drag behavior of component windows in jspaint (Tools / Colors)
+		}
 		drag_offset_x = e.clientX + scrollX - $w.position().left;
 		drag_offset_y = e.clientY + scrollY - $w.position().top;
 		drag_pointer_x = e.clientX;
