@@ -81,9 +81,13 @@ $(()=> {
 
 	var $app_window_2 = new $Window({title: "Application Example", resizable: true});
 	$app_window_2.$content.prepend(new $MenuBar(menus));
-	$app_window_2.$content.css("padding", "0");
+	$app_window_2.$content.css({
+		padding: 0,
+		display: "flex",
+		flexDirection: "column",
+	});
 	$app_window_2.$content.append(`
-		<div style='padding: 20px; background: var(--Window); color: var(--WindowText); user-select: text;'>
+		<div style='padding: 20px; background: var(--Window); color: var(--WindowText); user-select: text; cursor: text; flex: 1;'>
 			<p>This is the main application window.</p>
 			<p>It has a tool window that belongs to it, as well as a menu bar.</p>
 		</div>
