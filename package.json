@@ -52,7 +52,7 @@
 		"start": "run-p watch-css live-server",
 		"prestart": "mkdirp build",
 		"prewatch": "mkdirp build",
-		"watch-css": "postcss src/**/*.css --base src --dir build --map --watch",
+		"watch-css": "postcss src/**/*.css --base src --dir build --map --watch --poll",
 		"live-server": "live-server --open=demo/"
 	},
 	"devDependencies": {
