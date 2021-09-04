@@ -23,7 +23,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Changed
 - Loosened constraints on windows when releasing a drag. You can now drag a window out of the screen, except the titlebar is kept in bounds. (This still doesn't match the behavior of Windows, but in Windows you can recover a window from offscreen with Alt+Space or the taskbar context menu.)
 - Increased thickness of the window frame to match the look of Windows 98.
-- Windows now have `overflow: hidden` in the layout stylesheet.
+- Window overflow is now hidden by default, with `overflow: hidden` and `contain: layout paint;` in the layout CSS.
 
 ### Fixed
 - Use standard `touch-action` CSS property instead of obsolete PEP polyfill's attribute. The PEP library was never included or documented as a dependency.

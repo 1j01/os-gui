@@ -12,6 +12,7 @@
 
 .os-window {
 	overflow: hidden;
+	contain: layout paint;
 }
 
 .os-window .window-titlebar,
