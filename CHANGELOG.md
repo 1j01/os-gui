@@ -12,6 +12,12 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+Nothing here yet.
+
+</details>
+
+## [0.3.0] - 2021-09-04
+
 ### Added
 - Added window options `toolWindow`, `parentWindow`, `maximizeButton`, `minimizeButton`, `closeButton`, `resizable`, `minWidth`, `minHeight`, and `constrainRect(rect, x_axis, y_axis)`.
 - Added window method `bringTitleBarInBounds()`.
@@ -31,8 +37,6 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Use standard `touch-action` CSS property instead of obsolete PEP polyfill's attribute. The PEP library was never included or documented as a dependency.
 - Keyboard shortcuts using the meta key are no longer swallowed by the window.
 - Allow setting title to empty string. Not very useful.
-
-</details>
 
 ## [0.2.2] - 2020-04-30
 
@@ -81,7 +85,8 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Window component is now an app window instead of a tool window, to aid reintegration with 98.js.org; jspaint will come later.
 - Window component is styled with `.os-window` now, altho it includes both classes `os-window` and `window`.
 
-[Unreleased]: https://github.com/1j01/os-gui/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/1j01/os-gui/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/1j01/os-gui/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/1j01/os-gui/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/1j01/os-gui/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/1j01/os-gui/releases/tag/v0.2.0
