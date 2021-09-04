@@ -483,16 +483,19 @@ function $Window(options) {
 			if (x_axis === HANDLE_RIGHT) { cursor += "e"; }
 			cursor += "-resize";
 
-			const thickness = ($w.outerWidth() - $w.width()) / 2; // Note: innerWidth() would be less "inner" than width(), because it includes padding!
+			// Note: innerWidth() is less "inner" than width(), because it includes padding!
+			// outerWidth(true): margin, [ outerWidth(): border, [ innerWidth(): padding, [ width(): content ] ] ]
+			const handle_thickness = ($w.outerWidth() - $w.width()) / 2;
+			const border_width = ($w.outerWidth() - $w.innerWidth()) / 2;
 			const window_frame_height = $w.outerHeight() - $w.$content.outerHeight(); // includes titlebar and borders
 			$handle.css({
 				position: "absolute",
-				top: y_axis === HANDLE_TOP ? 0 : y_axis === HANDLE_MIDDLE ? `${thickness}px` : "",
+				top: y_axis === HANDLE_TOP ? 0 : y_axis === HANDLE_MIDDLE ? `${handle_thickness}px` : "",
 				bottom: y_axis === HANDLE_BOTTOM ? 0 : "",
-				left: x_axis === HANDLE_LEFT ? 0 : x_axis === HANDLE_MIDDLE ? `${thickness}px` : "",
+				left: x_axis === HANDLE_LEFT ? 0 : x_axis === HANDLE_MIDDLE ? `${handle_thickness}px` : "",
 				right: x_axis === HANDLE_RIGHT ? 0 : "",
-				width: x_axis === HANDLE_MIDDLE ? `calc(100% - ${thickness * 2}px)` : `${thickness}px`,
-				height: y_axis === HANDLE_MIDDLE ? `calc(100% - ${thickness * 2}px)` : `${thickness}px`,
+				width: x_axis === HANDLE_MIDDLE ? `calc(100% - ${handle_thickness * 2}px)` : `${handle_thickness}px`,
+				height: y_axis === HANDLE_MIDDLE ? `calc(100% - ${handle_thickness * 2}px)` : `${handle_thickness}px`,
 				// background: x_axis === HANDLE_MIDDLE || y_axis === HANDLE_MIDDLE ? "rgba(255,0,0,0.3)" : "rgba(255,255,0,0.3)",
 				touchAction: "none",
 				cursor,
@@ -503,11 +506,8 @@ function $Window(options) {
 			$handle.on("pointerdown", (e) => {
 				e.preventDefault();
 				const handle_offset = $handle.offset();
-				// hacky, mostly works, just figured from experimentation, not any kind of math
-				// a few pixels off, probably because of the border
-				// (maybe it needs to work from the bottom/right instead of the top/left, for the bottom/right handles... in some way)
-				resize_offset_x = e.clientX + scrollX - handle_offset.left - (x_axis === HANDLE_END ? thickness : 0);
-				resize_offset_y = e.clientY + scrollY - handle_offset.top - (y_axis === HANDLE_END ? thickness : 0);
+				resize_offset_x = e.clientX + scrollX - handle_offset.left - (x_axis === HANDLE_END ? handle_thickness + border_width : -border_width);
+				resize_offset_y = e.clientY + scrollY - handle_offset.top - (y_axis === HANDLE_END ? handle_thickness + border_width : -border_width);
 				resize_pointer_x = e.clientX;
 				resize_pointer_y = e.clientY;
 				resize_pointer_id = e.pointerId;
@@ -523,6 +523,7 @@ function $Window(options) {
 					width: $w.outerWidth(),
 					height: $w.outerHeight(),
 				};
+				// handle_pointermove(e); // was useful for checking that the offset is correct
 			});
 			function handle_pointermove(e) {
 				if (e.pointerId !== resize_pointer_id) { return; }
