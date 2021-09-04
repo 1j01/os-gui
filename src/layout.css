@@ -8,11 +8,12 @@
 }
 
 .os-window {
-	overflow: hidden;
-	contain: layout paint;
+	contain: layout; /* contain: paint; seems to clip children to the padding-box, including for interaction, not just painting; it breaks being able to grab resize handles over the border */
+	/* overflow: hidden; is also not usable for the same reason */
+	/* I might be able to do either with overflow-clip-margin however (@TODO) */
 	display: flex;
 	flex-direction: column;
-	/* will-change: width height; */
+	/* will-change: width height left top; */
 }
 .window-content {
 	flex: 1;
