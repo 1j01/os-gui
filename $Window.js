@@ -47,22 +47,22 @@ function $Window(options) {
 		$w.addClass("component-window");
 	}
 
-	const $eventTarget = $({});
-	const makeSimpleListenable = (name) => {
+	const $event_target = $({});
+	const make_simple_listenable = (name) => {
 		return (callback) => {
 			const fn = () => {
 				callback();
 			};
-			$eventTarget.on(name, fn);
+			$event_target.on(name, fn);
 			const dispose = () => {
-				$eventTarget.off(name, fn);
+				$event_target.off(name, fn);
 			};
 			return dispose;
 		};
 	};
-	$w.onFocus = makeSimpleListenable("focus");
-	$w.onBlur = makeSimpleListenable("blur");
-	$w.onClosed = makeSimpleListenable("closed");
+	$w.onFocus = make_simple_listenable("focus");
+	$w.onBlur = make_simple_listenable("blur");
+	$w.onClosed = make_simple_listenable("closed");
 
 	let child$Windows = [];
 	let $focusShowers = $w;
@@ -85,7 +85,7 @@ function $Window(options) {
 		$w.bringToFront();
 		$focusShowers.addClass("focused");
 		window.focusedWindow = $w;
-		$eventTarget.triggerHandler("focus");
+		$event_target.triggerHandler("focus");
 	};
 	$w.blur = () => {
 		if (window.focusedWindow !== $w) {
@@ -93,7 +93,7 @@ function $Window(options) {
 		}
 		$focusShowers.removeClass("focused");
 		// TODO: document.activeElement && document.activeElement.blur()?
-		$eventTarget.triggerHandler("blur");
+		$event_target.triggerHandler("blur");
 
 		window.focusedWindow = null;
 	};
@@ -328,22 +328,22 @@ function $Window(options) {
 				// If there's no selected ("checked") radio, it should still visit the group,
 				// but it should skip all unselected radios in that group if there is a selected radio in that group.
 				const radios = {}; // best radio found so far, per group
-				const toSkip = [];
+				const to_skip = [];
 				for (const el of $controls) {
 					if (el.nodeName.toLowerCase() === "input" && el.type === "radio") {
 						if (radios[el.name]) {
 							if (el.checked) {
-								toSkip.push(radios[el.name]);
+								to_skip.push(radios[el.name]);
 								radios[el.name] = el;
 							} else {
-								toSkip.push(el);
+								to_skip.push(el);
 							}
 						} else {
 							radios[el.name] = el;
 						}
 					}
 				}
-				$controls = $controls.not(toSkip);
+				$controls = $controls.not(to_skip);
 				// debug viz:
 				// $controls.css({boxShadow: "0 0 2px 2px green"});
 				// $(toSkip).css({boxShadow: "0 0 2px 2px gray"})
@@ -484,7 +484,7 @@ function $Window(options) {
 			cursor += "-resize";
 
 			const thickness = ($w.outerWidth() - $w.width()) / 2; // Note: innerWidth() would be less "inner" than width(), because it includes padding!
-			const windowFrameHeight = $w.outerHeight() - $w.$content.outerHeight();
+			const window_frame_height = $w.outerHeight() - $w.$content.outerHeight(); // includes titlebar and borders
 			$handle.css({
 				position: "absolute",
 				"--resize-thickness": `${thickness}px`,
@@ -578,7 +578,7 @@ function $Window(options) {
 					new_rect = options.constrainRect(new_rect, x_axis, y_axis);
 				}
 				new_rect.width = Math.max(new_rect.width, options.minWidth ?? 100);
-				new_rect.height = Math.max(new_rect.height, options.minHeight ?? windowFrameHeight);
+				new_rect.height = Math.max(new_rect.height, options.minHeight ?? window_frame_height);
 				// prevent free movement via resize past minimum size
 				if (x_axis === HANDLE_LEFT) {
 					new_rect.x = Math.min(new_rect.x, rect.x + rect.width - new_rect.width);
@@ -639,10 +639,10 @@ function $Window(options) {
 		const $eye_leader = $w.$titlebar.clone(true);
 		$eye_leader.find("button").remove();
 		$eye_leader.appendTo("body");
-		const durationMS = 200; // TODO: how long?
-		const duration = `${durationMS}ms`;
+		const duration_ms = 200; // TODO: how long?
+		const duration_str = `${duration_ms}ms`;
 		$eye_leader.css({
-			transition: `left ${duration} linear, top ${duration} linear, width ${duration} linear, height ${duration} linear`,
+			transition: `left ${duration_str} linear, top ${duration_str} linear, width ${duration_str} linear, height ${duration_str} linear`,
 			position: "fixed",
 			zIndex: 10000000,
 			pointerEvents: "none",
@@ -662,7 +662,7 @@ function $Window(options) {
 		const tid = setTimeout(() => {
 			$eye_leader.remove();
 			callback();
-		}, durationMS * 1.2);
+		}, duration_ms * 1.2);
 		$eye_leader.on("transitionend animationcancel", () => {
 			$eye_leader.remove();
 			clearTimeout(tid);
@@ -682,7 +682,7 @@ function $Window(options) {
 		}
 		$w.remove();
 		$w.closed = true;
-		$eventTarget.triggerHandler("closed");
+		$event_target.triggerHandler("closed");
 		$w.trigger("closed");
 		// TODO: change usages of "close" to "closed" where appropriate
 		// and probably rename the "close" event
