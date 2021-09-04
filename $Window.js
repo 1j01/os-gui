@@ -487,13 +487,12 @@ function $Window(options) {
 			const window_frame_height = $w.outerHeight() - $w.$content.outerHeight(); // includes titlebar and borders
 			$handle.css({
 				position: "absolute",
-				"--resize-thickness": `${thickness}px`,
-				top: y_axis === HANDLE_TOP ? 0 : y_axis === HANDLE_MIDDLE ? "var(--resize-thickness)" : "",
+				top: y_axis === HANDLE_TOP ? 0 : y_axis === HANDLE_MIDDLE ? `${thickness}px` : "",
 				bottom: y_axis === HANDLE_BOTTOM ? 0 : "",
-				left: x_axis === HANDLE_LEFT ? 0 : x_axis === HANDLE_MIDDLE ? "var(--resize-thickness)" : "",
+				left: x_axis === HANDLE_LEFT ? 0 : x_axis === HANDLE_MIDDLE ? `${thickness}px` : "",
 				right: x_axis === HANDLE_RIGHT ? 0 : "",
-				width: x_axis === HANDLE_MIDDLE ? "calc(100% - var(--resize-thickness) * 2)" : "var(--resize-thickness)",
-				height: y_axis === HANDLE_MIDDLE ? "calc(100% - var(--resize-thickness) * 2)" : "var(--resize-thickness)",
+				width: x_axis === HANDLE_MIDDLE ? `calc(100% - ${thickness * 2}px)` : `${thickness}px`,
+				height: y_axis === HANDLE_MIDDLE ? `calc(100% - ${thickness * 2}px)` : `${thickness}px`,
 				// background: x_axis === HANDLE_MIDDLE || y_axis === HANDLE_MIDDLE ? "rgba(255,0,0,0.3)" : "rgba(255,255,0,0.3)",
 				touchAction: "none",
 				cursor,
@@ -507,8 +506,8 @@ function $Window(options) {
 				// hacky, mostly works, just figured from experimentation, not any kind of math
 				// a few pixels off, probably because of the border
 				// (maybe it needs to work from the bottom/right instead of the top/left, for the bottom/right handles... in some way)
-				resize_offset_x = e.clientX + scrollX - handle_offset.left - (x_axis === HANDLE_END ? $handle.width() : 0);
-				resize_offset_y = e.clientY + scrollY - handle_offset.top - (y_axis === HANDLE_END ? $handle.height() : 0);
+				resize_offset_x = e.clientX + scrollX - handle_offset.left - (x_axis === HANDLE_END ? thickness : 0);
+				resize_offset_y = e.clientY + scrollY - handle_offset.top - (y_axis === HANDLE_END ? thickness : 0);
 				resize_pointer_x = e.clientX;
 				resize_pointer_y = e.clientY;
 				resize_pointer_id = e.pointerId;
