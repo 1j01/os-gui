@@ -63,7 +63,7 @@ $(()=> {
 	$menubar.appendTo("#menubar-example");
 
 	var $app_window_1 = new $Window({title: "Application Window", resizable: true});
-	$app_window_1.$content.append($("#app-window-example-content"));
+	$app_window_1.$content.append($("#app-window-example-content").attr("hidden", null));
 
 	$app_window_1.$Button("Open Another Window", ()=> {
 		var $new_window = new $Window({title: "Testing, Testing, 123"});
@@ -74,7 +74,7 @@ $(()=> {
 	});
 
 	var $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true });
-	$tool_window_1.$content.append($("#tool-window-example-content"));
+	$tool_window_1.$content.append($("#tool-window-example-content").attr("hidden", null));
 	$tool_window_1.on("close", (event) => {
 		event.preventDefault();
 	});
@@ -195,5 +195,19 @@ InfoWindow=255 255 225
 		// 	left: 0
 		// });
 	}
+
+	// Users of library: DON'T WORRY ABOUT THIS STUFF
+	// This is just for the demo page, to prevent scroll jank when loading the page.
+	// This is only needed because of all the dynamic content that is interspersed with text.
+	// Usually you would have floating windows, that aren't trying to also fit into a document.
+	let static_styles = "";
+	for (selector of window_list.map(([, el_id]) => `#${el_id}`).concat([
+		"#scrollbar-demos",
+		"#menubar-example",
+	])) {
+		const el = $(selector)[0];
+		static_styles += `${selector} { width: ${el.offsetWidth}px; height: ${el.offsetHeight}px; }\n`;
+	}
+	window.static_styles = static_styles; // export these static styles to the demo's HTML (manually)
 
 });
