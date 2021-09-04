@@ -13,6 +13,17 @@
 .os-window {
 	overflow: hidden;
 	contain: layout paint;
+	display: flex;
+	flex-direction: column;
+	/* will-change: width height; */
+}
+.window-content {
+	flex: 1;
+	min-height: 0px;
+	/* We want to allow scrollbars to be enabled easily, but not enable them,
+	and we want to clip to the border of the window, without overlapping it at all.
+	It's already clipped to the outside of .os-window's border, but we want to clip to the inside. */
+    contain: layout paint;
 }
 
 .os-window .window-titlebar,
