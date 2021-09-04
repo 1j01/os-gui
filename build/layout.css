@@ -10,6 +10,10 @@
 	        user-select: none;
 }
 
+.os-window {
+	overflow: hidden;
+}
+
 .os-window .window-titlebar,
 body > .window-titlebar {
 	display: flex;
