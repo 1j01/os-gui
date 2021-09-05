@@ -64,11 +64,11 @@ function $Window(options) {
 	$w.onBlur = make_simple_listenable("blur");
 	$w.onClosed = make_simple_listenable("closed");
 
-	let child$Windows = [];
-	let $focusShowers = $w;
-	$w.addChildWindow = ($childWindow) => {
-		child$Windows.push($childWindow);
-		$focusShowers = $focusShowers.add($childWindow);
+	let child_$windows = [];
+	let $focus_showers = $w;
+	$w.addChildWindow = ($child_window) => {
+		child_$windows.push($child_window);
+		$focus_showers = $focus_showers.add($child_window);
 	};
 	$w.focus = () => {
 		if (options.parentWindow) {
@@ -83,7 +83,7 @@ function $Window(options) {
 		}
 		window.focusedWindow && focusedWindow.blur();
 		$w.bringToFront();
-		$focusShowers.addClass("focused");
+		$focus_showers.addClass("focused");
 		window.focusedWindow = $w;
 		$event_target.triggerHandler("focus");
 	};
@@ -91,7 +91,7 @@ function $Window(options) {
 		if (window.focusedWindow !== $w) {
 			return;
 		}
-		$focusShowers.removeClass("focused");
+		$focus_showers.removeClass("focused");
 		// TODO: document.activeElement && document.activeElement.blur()?
 		$event_target.triggerHandler("blur");
 
@@ -216,7 +216,7 @@ function $Window(options) {
 		$w.css({
 			zIndex: $Window.Z_INDEX++
 		});
-		for (const $childWindow of child$Windows) {
+		for (const $childWindow of child_$windows) {
 			$childWindow.bringToFront();
 		}
 	};
