@@ -12,9 +12,10 @@ for (let i = 0; i < n_objects; ++i) {
 		outerWidth: 100,
 		outerHeight: 100,
 	});
+	const motherRect = $mothership.$content[0].getBoundingClientRect();
 	const object = {
-		x: 0,
-		y: 0,
+		x: motherRect.left + motherRect.width / 2,
+		y: motherRect.top + motherRect.height / 2,
 		velocityX: Math.sin(Date.now() / 1000 + i / n_objects * Math.PI * 2) * 15,
 		velocityY: Math.cos(Date.now() / 1000 + i / n_objects * Math.PI * 2) * 15,
 		clipping: true,
@@ -36,17 +37,17 @@ const animate = () => {
 		o.velocityY *= 0.999;
 		o.velocityX -= (o.x - (motherRect.left + motherRect.width / 2)) * 0.001;
 		o.velocityY -= (o.y - (motherRect.top + motherRect.height / 2)) * 0.001;
-		for (let j = 0; j < objects.length; j++) {
-			if (i === j) {
-				continue;
-			}
-			const o2 = objects[j];
-			const dist = Math.sqrt(
-				Math.pow(o.x - o2.x, 2) + Math.pow(o.y - o2.y, 2)
-			);
-			o.velocityX += (o.x - o2.x) * 0.1 / dist;
-			o.velocityY += (o.y - o2.y) * 0.1 / dist;
-		}
+		// for (let j = 0; j < objects.length; j++) {
+		// 	if (i === j) {
+		// 		continue;
+		// 	}
+		// 	const o2 = objects[j];
+		// 	const dist = Math.sqrt(
+		// 		Math.pow(o.x - o2.x, 2) + Math.pow(o.y - o2.y, 2)
+		// 	);
+		// 	o.velocityX += (o.x - o2.x) * 0.1 / dist;
+		// 	o.velocityY += (o.y - o2.y) * 0.1 / dist;
+		// }
 		const x = ~~o.x;
 		const y = ~~o.y;
 		const width = ~~$window.outerWidth();
