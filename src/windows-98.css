@@ -166,26 +166,35 @@ body > .window-titlebar {
 .os-window:not(.maximized) {
 	@extend %outset-deep;
 }
-.os-window > * {
-	/* margin: 1px; */
-}
 .window-button {
 	margin: 2px 0;
+}
+.os-window .window-button:hover:active {
+	@extend %inset-deep;
 }
 .window-close-button {
 	margin-left: 2px;
 	margin-right: 2px;
 }
-.tool-window .window-close-button {
-	width: 13px;
+.os-window.tool-window .window-close-button {
+	width: 11px;
 	height: 11px;
-	background-position: 8px 0;
+	background-position: 7px 0;
 }
-.tool-window .window-close-button:hover:active {
-	background-position: 9px 1px;
+.os-window.tool-window .window-close-button:hover:active {
+	background-position: 8px 1px;
 }
 .os-window .window-title-area {
-	height: 16px; /* 100% doesn't work */
+	height: 16px;
+}
+.os-window.tool-window .window-title-area {
+	height: 14px;
+}
+.os-window .window-titlebar {
+	height: 18px;
+}
+.os-window.tool-window .window-titlebar {
+	height: 15px;
 }
 .os-window .window-title {
 	position: absolute;

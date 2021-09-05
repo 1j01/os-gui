@@ -302,26 +302,53 @@ body > .window-titlebar {
 	border-style: solid;
 	border-width: 2px 2px;
 }
-.os-window > * {
-	/* margin: 1px; */
-}
 .window-button {
 	margin: 2px 0;
+}
+.os-window .window-button:hover:active {
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgb(128, 128, 128) rgb(255, 255, 255) rgb(255, 255, 255) rgb(128, 128, 128);
+	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	background-color: rgb(192, 192, 192);
+	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);
+	/* as fallback */
+	position: relative;
+	/* for pseudo element(s) */
+	-o-border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h224v32h-192v192h-32v-224z%22%20fill%3D%22%20rgb(0%2C%200%2C%200)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M224%200h32v256h-256v-32h224v-224z%22%20fill%3D%22%20rgb(255%2C%20255%2C%20255)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h160v32h-128v128h-32v-160z%22%20fill%3D%22%20rgb(128%2C%20128%2C%20128)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M192%2032h32v192h-192v-32h160v-160z%22%20fill%3D%22%20rgb(223%2C%20223%2C%20223)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22%20rgb(192%2C%20192%2C%20192)%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
+	   border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h224v32h-192v192h-32v-224z%22%20fill%3D%22%20rgb(0%2C%200%2C%200)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M224%200h32v256h-256v-32h224v-224z%22%20fill%3D%22%20rgb(255%2C%20255%2C%20255)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h160v32h-128v128h-32v-160z%22%20fill%3D%22%20rgb(128%2C%20128%2C%20128)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M192%2032h32v192h-192v-32h160v-160z%22%20fill%3D%22%20rgb(223%2C%20223%2C%20223)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22%20rgb(192%2C%20192%2C%20192)%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
+	-o-border-image: var(--inset-deep-border-image);
+	   border-image: var(--inset-deep-border-image);
+	border-color: rgb(128, 128, 128);
+	border-color: var(--ButtonShadow);
+	border-style: solid;
+	border-width: 2px 2px;
 }
 .window-close-button {
 	margin-left: 2px;
 	margin-right: 2px;
 }
-.tool-window .window-close-button {
-	width: 13px;
+.os-window.tool-window .window-close-button {
+	width: 11px;
 	height: 11px;
-	background-position: 8px 0;
+	background-position: 7px 0;
 }
-.tool-window .window-close-button:hover:active {
-	background-position: 9px 1px;
+.os-window.tool-window .window-close-button:hover:active {
+	background-position: 8px 1px;
 }
 .os-window .window-title-area {
-	height: 16px; /* 100% doesn't work */
+	height: 16px;
+}
+.os-window.tool-window .window-title-area {
+	height: 14px;
+}
+.os-window .window-titlebar {
+	height: 18px;
+}
+.os-window.tool-window .window-titlebar {
+	height: 15px;
 }
 .os-window .window-title {
 	position: absolute;
