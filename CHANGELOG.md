@@ -12,9 +12,13 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+### Changed
+- `parseThemeFileString` can now return `undefined` if the theme file is not valid.
+
 ### Fixed
 - Improved accuracy of the titlebar styles, especially for tool windows.
 - Fixed active state of the titlebar buttons in Firefox.
+- In demo: When loading a theme file, do not apply any styles if it is not a valid theme file.
 
 </details>
 

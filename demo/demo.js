@@ -107,8 +107,10 @@ $(()=> {
 			var fileText = reader.result;
 
 			var cssProperties = parseThemeFileString(fileText);
-			applyCSSProperties(cssProperties);
-			console.log(makeThemeCSSFile(cssProperties));
+			if (cssProperties) {
+				applyCSSProperties(cssProperties);
+				console.log(makeThemeCSSFile(cssProperties));
+			}
 		};
 		reader.readAsText(file);
 	}

@@ -214,6 +214,7 @@ function parseThemeFileString(themeIni) {
 	if (!colors) {
 		alert("Invalid theme file, no [Control Panel\\Colors] section");
 		console.log(theme);
+		return;
 	}
 	for (var k in colors) {
 		// for .themepack file support, just ignore bad keys that were parsed
