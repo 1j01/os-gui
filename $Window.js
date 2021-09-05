@@ -64,6 +64,31 @@ function $Window(options) {
 	$w.onBlur = make_simple_listenable("blur");
 	$w.onClosed = make_simple_listenable("closed");
 
+	$w.setDimensions = ({ innerWidth, innerHeight, outerWidth, outerHeight }) => {
+		let width_from_frame, height_from_frame;
+		// It's good practice to make all measurements first, then update the DOM.
+		// Once you update the DOM, the browser has to recalculate layout, which can be slow.
+		if (innerWidth) {
+			width_from_frame = $win.outerWidth() - $win.$content.outerWidth();
+		}
+		if (innerHeight) {
+			height_from_frame = $win.outerHeight() - $win.$content.outerHeight();
+		}
+		if (outerWidth) {
+			$w.outerWidth(outerWidth);
+		}
+		if (outerHeight) {
+			$w.outerHeight(outerHeight);
+		}
+		if (innerWidth) {
+			$w.outerWidth(innerWidth + width_from_frame);
+		}
+		if (innerHeight) {
+			$w.outerHeight(innerHeight + height_from_frame);
+		}
+	};
+	$w.setDimensions(options);
+
 	let child_$windows = [];
 	let $focus_showers = $w;
 	$w.addChildWindow = ($child_window) => {

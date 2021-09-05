@@ -177,6 +177,14 @@ Creates a window component that can be dragged around and such, brought to the f
 
 `options.resizable`: If set to `true`, the window can be resized by the edges and corners.
 
+`options.outerWidth`: Specifies the initial width of the window, including borders.
+
+`options.outerHeight`: Specifies the initial height of the window, including title bar, menu bar, and borders.
+
+`options.innerWidth`: Specifies the initial width of the window contents, excluding borders.
+
+`options.innerHeight`: Specifies the initial height of the window contents, excluding title bar and borders. May include the menu bar, watch out!
+
 `options.minWidth`: The minimum outer width of the window (when resizing), in pixels.
 
 `options.minHeight`: The minimum outer height of the window (when resizing), in pixels.
@@ -234,6 +242,12 @@ Repositions the window so that the title bar is within the bounds of the page, s
 #### `bringToFront()`
 
 Brings the window to the front by setting its `z-index` to larger than any `z-index` yet used by the windowing system.
+
+#### `setDimensions({ innerWidth, innerHeight, outerWidth, outerHeight })`
+
+Sets the size of the window. Pass `{ innerWidth, innerHeight }` to specify the size in terms of the window content, or `{ outerWidth, outerHeight }` to specify the size including the window frame.
+
+*(This may be expanded in the future to allow setting the position as well.)*
 
 #### `$Button(text, action)`
 
