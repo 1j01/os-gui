@@ -204,9 +204,6 @@ function $Window(options) {
 	$w.$minimize?.on("click", () => {
 		$w.minimize();
 	});
-	$w.$title_area.on("mousedown selectstart", ".window-button", (e) => {
-		e.preventDefault();
-	});
 	$w.$title_area.on("dblclick", () => {
 		$w.$maximize?.triggerHandler("click");
 	});
