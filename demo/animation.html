@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>OS GUI: Animation Demo</title>
+		<link href="../build/layout.css" rel="stylesheet" type="text/css">
+		<link href="../build/windows-98.css" rel="stylesheet" type="text/css">
+		<link href="../build/windows-default.css" rel="alternate stylesheet" title="Windows Default" type="text/css">
+		<link href="../build/peggys-pastels.css" rel="stylesheet" title="Peggy's Pastels" type="text/css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+			html,
+			body {
+				height: 100%;
+				margin: 0;
+				display: flex;
+				flex-direction: column;
+			}
+			body {
+				font-family: sans-serif;
+				/*background-color: var(--Background);*/
+				background-color: var(--InfoWindow);
+				color: var(--InfoText);
+				/* background-color: var(--ButtonFace);
+				color: var(--ButtonText); */
+			}
+			main,
+			footer {
+				padding: 1em;
+			}
+			main {
+				flex: 1;
+			}
+			footer {
+				flex: 0 0 auto;
+				text-align: center;
+				background: var(--ButtonFace);
+				color: var(--ButtonText);
+			}
+		</style>
+	</head>
+	<body>
+		<script src="lib/jquery-3.3.1.js"></script>
+		<script src="../$MenuBar.js"></script>
+		<script src="../$Window.js"></script>
+		<script src="../parse-theme.js"></script>
+		<script src="animation.js"></script>
+		<main>
+			<h1>os-gui.js</h1>
+			<h2>Animation Demo</h2>
+		</main>
+		<footer>
+			Open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
+		</footer>
+	</body>
+</html>
