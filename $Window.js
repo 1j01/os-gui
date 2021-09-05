@@ -260,7 +260,7 @@ function $Window(options) {
 	// so any element.focus() will be after and trigger this handler.
 	$w.on("focusin", () => {
 		// focused = true;
-		if (document.activeElement && $.contains($w[0], document.activeElement)) {
+		if (document.activeElement && $.contains($w.$content[0], document.activeElement)) {
 			last_focused_control = document.activeElement;
 		}
 	});
@@ -415,8 +415,18 @@ function $Window(options) {
 		});
 	};
 	$w.$titlebar.css("touch-action", "none");
-	$w.$titlebar.on("mousedown selectstart", (e) => {
+	$w.$titlebar.on("selectstart", (e) => { // preventing mousedown would break :active state, I'm not sure if just selectstart is enough...
 		e.preventDefault();
+	});
+	$w.$titlebar.on("mousedown", "button", (e) => {
+		// prevent focus ring on titlebar buttons
+		setTimeout(() => {
+			if (last_focused_control) {
+				last_focused_control.focus();
+			} else {
+				document.activeElement.blur()
+			}
+		}, 0);
 	});
 	$w.$titlebar.on("pointerdown", (e) => {
 		if ($(e.target).closest("button").length) {

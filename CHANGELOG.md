@@ -14,6 +14,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Fixed
 - Improved accuracy of the titlebar styles, especially for tool windows.
+- Fixed active state of the titlebar buttons in Firefox.
 
 </details>
 
