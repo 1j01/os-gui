@@ -14,8 +14,8 @@ const animate = () => {
 	for (let i = 0; i < $windows.length; i++) {
 		const $window = $windows[i];
 		$window.css({
-			left: ~~(Math.sin(Date.now() / 1000 + i) * 100 + centerX),
-			top: ~~(Math.cos(Date.now() / 1000 + i) * 100 + centerY),
+			left: ~~(Math.sin(Date.now() / 1000 + i / n_$windows * Math.PI) * 100 + centerX),
+			top: ~~(Math.cos(Date.now() / 1000 + i / n_$windows * Math.PI) * 100 + centerY),
 			width: ~~(Math.sin(Date.now() / 1000 + i) * 100 + 100),
 			height: ~~(Math.cos(Date.now() / 1000 + i) * 100 + 100),
 		});
