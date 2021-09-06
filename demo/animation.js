@@ -2,20 +2,41 @@ const repel_force_slider = document.getElementById("repel-force-slider");
 const gravity_force_slider = document.getElementById("gravity-force-slider");
 const pause_checkbox = document.getElementById("pause-checkbox");
 
-const objects = [];
-const n_objects = 10;
 const $mothership = new $Window({
 	title: 'Mothership',
 	outerWidth: 400,
 	outerHeight: 300,
+	resizable: true,
 });
+$mothership.$content.css({
+	backgroundImage: "url('https://i.postimg.cc/VLVk5Cm6/image.png')",
+	backgroundSize: "cover",
+	backgroundRepeat: "no-repeat",
+	backgroundPosition: "center",
+});
+
+const ship_image_urls = [
+	"https://i.postimg.cc/ncJhmJD8/ship5.png",
+	"https://i.postimg.cc/0jp54thH/ship6.png",
+	"https://i.postimg.cc/nV7LMzMY/spiked-ship-3-small-blue.png",
+	"https://i.postimg.cc/sXsTS1sQ/ship-16-colour-transparent.png",
+	"https://i.postimg.cc/pTCqBxL0/Spaceship-tut.png",
+];
+const objects = [];
+const n_objects = ship_image_urls.length * 2;
 
 for (let i = 0; i < n_objects; ++i) {
 	const $window = new $Window({
-		title: "Window " + i,
-		outerWidth: 100,
-		outerHeight: 100,
+		title: "Ship " + i,
 	});
+	$window.$content.append(
+		$("<img>")
+			.attr("src", ship_image_urls[i % ship_image_urls.length])
+			.css({
+				maxWidth: 100,
+				margin: "auto", // just in case you maximize the window
+			})
+	);
 	const motherRect = $mothership.$content[0].getBoundingClientRect();
 	const object = {
 		x: motherRect.left + motherRect.width / 2,
@@ -48,7 +69,7 @@ const animate = () => {
 			o.velocityX -= (targetX - o.x) / dist * repelForce;
 			o.velocityY -= (targetY - o.y) / dist * repelForce;
 			
-			const gravityForce = gravity_force_slider.value / 10000;
+			const gravityForce = gravity_force_slider.value / 20000;
 			o.velocityX -= (o.x - (motherRect.left + motherRect.width / 2)) * gravityForce;
 			o.velocityY -= (o.y - (motherRect.top + motherRect.height / 2)) * gravityForce;
 			for (let j = 0; j < objects.length; j++) {
