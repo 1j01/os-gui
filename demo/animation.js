@@ -34,8 +34,8 @@ const animate = () => {
 		const $window = o.$window;
 		o.x += o.velocityX;
 		o.y += o.velocityY;
-		o.velocityX *= 0.99;
-		o.velocityY *= 0.99;
+		o.velocityX *= 0.999;
+		o.velocityY *= 0.999;
 		const targetX = motherRect.left + motherRect.width / 2 + 100;
 		const targetY = motherRect.top + motherRect.height / 2;
 		const dist = Math.hypot(targetX - o.x, targetY - o.y);
@@ -54,12 +54,14 @@ const animate = () => {
 		// 	o.velocityX += (o.x - o2.x) * 0.1 / dist;
 		// 	o.velocityY += (o.y - o2.y) * 0.1 / dist;
 		// }
-		// const x = ~~o.x;
-		// const y = ~~o.y;
+		const x = ~~o.x;
+		const y = ~~o.y;
 		const width = ~~$window.outerWidth();
 		const height = ~~$window.outerHeight();
-		const x = ~~$window.offset().left;
-		const y = ~~$window.offset().top;
+		// if dragging / interaction enabled {
+		// const x = ~~$window.offset().left;
+		// const y = ~~$window.offset().top;
+		// }
 		const containedByMothership =
 			motherRect.left < x && motherRect.left + motherRect.width > x + width &&
 			motherRect.top < y && motherRect.top + motherRect.height > y + height;
@@ -97,12 +99,15 @@ const animate = () => {
 		} else if (!containedByMothership) {
 			o.crossedDuringThisContainment = false;
 		}
+		// unless dragging / interaction enabled {
 		$window.css({
-			// left: x,
-			// top: y,
+			left: x,
+			top: y,
 			// width: width,
 			// height: height,
-			// zIndex: ~~((Math.cos(Date.now() / 1000 + i / n_objects * Math.PI * 2)) * 100),
+		});
+		// }
+		$window.css({
 			zIndex: o.z,
 			clipPath: o.clipping ? `polygon(
 				${motherRect.left - x}px ${motherRect.top - y}px,
