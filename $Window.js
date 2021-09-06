@@ -69,10 +69,10 @@ function $Window(options) {
 		// It's good practice to make all measurements first, then update the DOM.
 		// Once you update the DOM, the browser has to recalculate layout, which can be slow.
 		if (innerWidth) {
-			width_from_frame = $win.outerWidth() - $win.$content.outerWidth();
+			width_from_frame = $w.outerWidth() - $w.$content.outerWidth();
 		}
 		if (innerHeight) {
-			height_from_frame = $win.outerHeight() - $win.$content.outerHeight();
+			height_from_frame = $w.outerHeight() - $w.$content.outerHeight();
 		}
 		if (outerWidth) {
 			$w.outerWidth(outerWidth);
