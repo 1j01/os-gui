@@ -1,3 +1,7 @@
+const repel_force_slider = document.getElementById("repel-force-slider");
+const gravity_force_slider = document.getElementById("gravity-force-slider");
+const pause_checkbox = document.getElementById("pause-checkbox");
+
 const objects = [];
 const n_objects = 10;
 const $mothership = new $Window({
@@ -32,39 +36,41 @@ const animate = () => {
 	for (let i = 0; i < objects.length; i++) {
 		const o = objects[i];
 		const $window = o.$window;
-		o.x += o.velocityX;
-		o.y += o.velocityY;
-		o.velocityX *= 0.999;
-		o.velocityY *= 0.999;
-		const targetX = motherRect.left + motherRect.width / 2 + 100;
-		const targetY = motherRect.top + motherRect.height / 2;
-		const dist = Math.hypot(targetX - o.x, targetY - o.y);
-		o.velocityX += (targetX - o.x) / dist * 0.1;
-		o.velocityY += (targetY - o.y) / dist * 0.1;
-		// o.velocityX -= (o.x - (motherRect.left + motherRect.width / 2)) * 0.001;
-		// o.velocityY -= (o.y - (motherRect.top + motherRect.height / 2)) * 0.001;
-		// for (let j = 0; j < objects.length; j++) {
-		// 	if (i === j) {
-		// 		continue;
-		// 	}
-		// 	const o2 = objects[j];
-		// 	const dist = Math.sqrt(
-		// 		Math.pow(o.x - o2.x, 2) + Math.pow(o.y - o2.y, 2)
-		// 	);
-		// 	o.velocityX += (o.x - o2.x) * 0.1 / dist;
-		// 	o.velocityY += (o.y - o2.y) * 0.1 / dist;
-		// }
-		const x = ~~o.x;
-		const y = ~~o.y;
+		if (!pause_checkbox.checked) {
+			o.x += o.velocityX;
+			o.y += o.velocityY;
+			o.velocityX *= 0.999;
+			o.velocityY *= 0.999;
+			const targetX = motherRect.left + motherRect.width / 2 + 100;
+			const targetY = motherRect.top + motherRect.height / 2;
+			const dist = Math.hypot(targetX - o.x, targetY - o.y);
+			const repelForce = repel_force_slider.value / 100;
+			o.velocityX -= (targetX - o.x) / dist * repelForce;
+			o.velocityY -= (targetY - o.y) / dist * repelForce;
+			
+			const gravityForce = gravity_force_slider.value / 10000;
+			o.velocityX -= (o.x - (motherRect.left + motherRect.width / 2)) * gravityForce;
+			o.velocityY -= (o.y - (motherRect.top + motherRect.height / 2)) * gravityForce;
+			for (let j = 0; j < objects.length; j++) {
+				if (i === j) {
+					continue;
+				}
+				const o2 = objects[j];
+				const dist = Math.sqrt(
+					Math.pow(o.x - o2.x, 2) + Math.pow(o.y - o2.y, 2)
+				);
+				o.velocityX += (o.x - o2.x) * 0.1 / dist;
+				o.velocityY += (o.y - o2.y) * 0.1 / dist;
+			}
+		}
+		const x = pause_checkbox.checked ? ~~$window.offset().left : ~~o.x;
+		const y = pause_checkbox.checked ? ~~$window.offset().top : ~~o.y;
 		const width = ~~$window.outerWidth();
 		const height = ~~$window.outerHeight();
-		// if dragging / interaction enabled {
-		// const x = ~~$window.offset().left;
-		// const y = ~~$window.offset().top;
-		// }
-		const containedByMothership =
+		const containedByMothership = (
 			motherRect.left < x && motherRect.left + motherRect.width > x + width &&
-			motherRect.top < y && motherRect.top + motherRect.height > y + height;
+			motherRect.top < y && motherRect.top + motherRect.height > y + height
+		);
 		if (
 			containedByMothership &&
 			objects.every((otherObject) => {
@@ -99,14 +105,17 @@ const animate = () => {
 		} else if (!containedByMothership) {
 			o.crossedDuringThisContainment = false;
 		}
-		// unless dragging / interaction enabled {
-		$window.css({
-			left: x,
-			top: y,
-			// width: width,
-			// height: height,
-		});
-		// }
+		if (pause_checkbox.checked) {
+			o.x = $window.offset().left;
+			o.y = $window.offset().top;
+		} else {
+			$window.css({
+				left: x,
+				top: y,
+				// width: width,
+				// height: height,
+			});
+		}
 		$window.css({
 			zIndex: o.z,
 			clipPath: o.clipping ? `polygon(

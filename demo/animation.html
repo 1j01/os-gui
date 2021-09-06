@@ -38,6 +38,20 @@
 				background: var(--ButtonFace);
 				color: var(--ButtonText);
 			}
+			#controls {
+				display: flex;
+				flex-direction: column;
+			}
+			#controls > * {
+				margin-bottom: 0.5em;
+			}
+			.slider-item {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: space-between;
+				width: 460px;
+			}
 		</style>
 	</head>
 	<body>
@@ -45,13 +59,27 @@
 		<script src="../$MenuBar.js"></script>
 		<script src="../$Window.js"></script>
 		<script src="../parse-theme.js"></script>
-		<script src="animation.js"></script>
 		<main>
 			<h1>os-gui.js</h1>
 			<h2>Animation Demo</h2>
+			<div id="controls">
+				<label class="checkbox-item">
+					<input type="checkbox" id="pause-checkbox">
+					Pause and interact with all the windows :)
+				</label>
+				<label class="slider-item">
+					Repel Force (between windows):
+					<input type="range" id="repel-force-slider" min="0" max="100" step="1" value="50">
+				</label>
+				<label class="slider-item">
+					Gravity (towards mothership):
+					<input type="range" id="gravity-force-slider" min="0" max="100" step="1" value="50">
+				</label>
+			</div>
 		</main>
 		<footer>
 			Open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
 		</footer>
+		<script src="animation.js"></script>
 	</body>
 </html>
