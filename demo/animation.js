@@ -36,7 +36,15 @@ for (let i = 0; i < n_objects; ++i) {
 				maxWidth: 100,
 				margin: "auto", // just in case you maximize the window
 			})
+			.on("load", () => {
+				$window.$content.css({
+					minWidth: Math.max($window.$content.width(), $window.$content.height()),
+					minHeight: Math.max($window.$content.width(), $window.$content.height()),
+					display: "flex",
+				});
+			})
 	);
+	
 	const motherRect = $mothership.$content[0].getBoundingClientRect();
 	const object = {
 		x: motherRect.left + motherRect.width / 2,
@@ -147,6 +155,13 @@ const animate = () => {
 			)` : '',
 			// "--ButtonFace": o.clipping ? "#f0a390" : "#f0f390",
 		});
+		if (o.x !== o.prev_x || o.y !== o.prev_y) {
+			$window.find("img").css({
+				transform: `rotate(${Math.atan2(o.y - o.prev_y, o.x - o.prev_x) * 180 / Math.PI + 90}deg)`,
+			});
+		}
+		o.prev_x = o.x;
+		o.prev_y = o.y;
 	}
 };
 animate();
