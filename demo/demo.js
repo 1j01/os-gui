@@ -1,5 +1,5 @@
-var show_nothingness = true;
-var menus = {
+let nothingness_state = true;
+const menus = {
 	"&File": [
 		{
 			item: "&Open",
@@ -24,11 +24,9 @@ var menus = {
 		{
 			item: "&Nothingness",
 			checkbox: {
-				check: () => {
-					return show_nothingness;
-				},
+				check: () => nothingness_state,
 				toggle: () => {
-					show_nothingness = !show_nothingness;
+					nothingness_state = !nothingness_state;
 				}
 			}
 		},
@@ -65,27 +63,27 @@ var menus = {
 };
 // wait for page load (could alternatively just move the script so it executes after the elements are declared)
 $(() => {
-	var $menubar = new $MenuBar(menus);
+	const $menubar = new $MenuBar(menus);
 	$menubar.appendTo("#menubar-example");
 
-	var $app_window_1 = new $Window({ title: "Application Window", resizable: true });
+	const $app_window_1 = new $Window({ title: "Application Window", resizable: true });
 	$app_window_1.$content.append($("#app-window-example-content").attr("hidden", null));
 
 	$app_window_1.$Button("Open Another Window", () => {
-		var $new_window = new $Window({ title: "Testing, Testing, 123" });
+		const $new_window = new $Window({ title: "Testing, Testing, 123" });
 		$new_window.$content.html("Hey look, a window!");
 	});
 	$app_window_1.on("close", (event) => {
 		event.preventDefault();
 	});
 
-	var $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true });
+	const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true });
 	$tool_window_1.$content.append($("#tool-window-example-content").attr("hidden", null));
 	$tool_window_1.on("close", (event) => {
 		event.preventDefault();
 	});
 
-	var $app_window_2 = new $Window({ title: "Application Example", resizable: true });
+	const $app_window_2 = new $Window({ title: "Application Example", resizable: true });
 	$app_window_2.$content.prepend(new $MenuBar(menus));
 	$app_window_2.$content.css({
 		padding: 0,
@@ -98,42 +96,36 @@ $(() => {
 			<p>It has a tool window that belongs to it, as well as a menu bar.</p>
 		</div>
 	`);
-	var $tool_window_2 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_2 });
+	const $tool_window_2 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_2 });
 	$tool_window_2.$content.text("This tool window is a child of the app window.");
 
 	// Note: the windows are positioned later on to fit into the page layout. See below.
 
-	$("#demo-toggle-button").on("click", (e) => {
+	$("button.toggle").on("click", (e) => {
 		$(e.target).toggleClass("selected");
 	});
 
-	function loadThemeFile(file) {
-		var reader = new FileReader();
-		reader.onload = () => {
-			var fileText = reader.result;
-
-			var cssProperties = parseThemeFileString(fileText);
-			if (cssProperties) {
-				applyCSSProperties(cssProperties);
-				console.log(makeThemeCSSFile(cssProperties));
-			}
-		};
-		reader.readAsText(file);
+	async function loadThemeFile(file) {
+		const fileText = await file.text();
+		const cssProperties = parseThemeFileString(fileText);
+		if (cssProperties) {
+			applyCSSProperties(cssProperties);
+			console.log(makeThemeCSSFile(cssProperties));
+		}
 	}
-
-	$("html").on("dragover", function (event) {
+	$("html").on("dragover", (event)=> {
 		event.preventDefault();
 		event.stopPropagation();
 	});
-	$("html").on("dragleave", function (event) {
+	$("html").on("dragleave", (event)=> {
 		event.preventDefault();
 		event.stopPropagation();
 	});
-	$("html").on("drop", function (event) {
+	$("html").on("drop", (event)=> {
 		event.preventDefault();
 		event.stopPropagation();
-		var files = [...event.originalEvent.dataTransfer.files];
-		for (var file of files) {
+		const files = [...event.originalEvent.dataTransfer.files];
+		for (const file of files) {
 			if (file.name.match(/\.theme(pack)?$/i)) {
 				loadThemeFile(file);
 			}
@@ -170,7 +162,7 @@ InfoText=0 0 0
 InfoWindow=255 255 225
 
 `));*/
-	var $scrollbar_buttons = $(".scrollbar-demo");
+	const $scrollbar_buttons = $(".scrollbar-demo");
 	$scrollbar_buttons.after(
 		$scrollbar_buttons.clone().css("--scrollbar-size", "15px"),
 		$scrollbar_buttons.clone().css("--scrollbar-size", "16px"),
