@@ -4,7 +4,9 @@ var menus = {
 		{
 			item: "&Open",
 			action: ()=> {
-				alert("\"Open Sesame!\"");
+				const $w = $Window({ title: "Ali Baba and the Forty Thieves", resizable: false, maximizeButton: false, minimizeButton: false });
+				$w.$content.html("<p>\"Open Sesame!\"</p>");
+				$w.$Button("OK", ()=> $w.close()).focus().css({ width: 100 });
 			},
 			shortcut: "Ctrl+O",
 		},
@@ -12,7 +14,9 @@ var menus = {
 		{
 			item: "&Brexit",
 			action: ()=> {
-				alert("Sorry, I'm not informed enough on the topic to make a witty remark.");
+				const $w = $Window({ title: "Membership Status", resizable: false, maximizeButton: false, minimizeButton: false });
+				$w.$content.html("<p>You have left the EU.</p>");
+				$w.$Button("OK", ()=> $w.close()).focus().css({ width: 100 });
 			}
 		}
 	],
@@ -45,8 +49,10 @@ var menus = {
 	"&Edit": [
 		{
 			item: "Copy",
-			action: ()=> {
-				alert("\"Over and out!\"")
+			action: () => {
+				const $w = $Window({ title: "Radio Message", resizable: false, maximizeButton: false, minimizeButton: false });
+				$w.$content.html("<p>\"Over and out!\"</p>");
+				$w.$Button("OK", ()=> $w.close()).focus().css({ width: 100 });
 			},
 			shortcut: "Ctrl+C",
 		},
