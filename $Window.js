@@ -520,12 +520,13 @@ function $Window(options) {
 			if (x_axis === HANDLE_RIGHT) { cursor += "e"; }
 			cursor += "-resize";
 
-			// Note: innerWidth() is less "inner" than width(), because it includes padding!
+			// Note: MISNOMER: innerWidth() is less "inner" than width(), because it includes padding!
 			// Here's a little diagram of sorts:
 			// outerWidth(true): margin, [ outerWidth(): border, [ innerWidth(): padding, [ width(): content ] ] ]
 			const handle_thickness = ($w.outerWidth() - $w.width()) / 2; // padding + border
 			const border_width = ($w.outerWidth() - $w.innerWidth()) / 2; // border; need to outset the handles by this amount so they overlap the border + padding, and not the content
-			const window_frame_height = $w.outerHeight() - $w.$content.outerHeight(); // includes titlebar and borders
+			const window_frame_height = $w.outerHeight() - $w.$content.outerHeight(); // includes titlebar and borders, padding, but not content
+			const window_frame_width = $w.outerWidth() - $w.$content.outerWidth(); // includes borders, padding, but not content
 			$handle.css({
 				position: "absolute",
 				top: y_axis === HANDLE_TOP ? -border_width : y_axis === HANDLE_MIDDLE ? `calc(${handle_thickness}px - ${border_width}px)` : "",
@@ -616,8 +617,10 @@ function $Window(options) {
 				if (options.constrainRect) {
 					new_rect = options.constrainRect(new_rect, x_axis, y_axis);
 				}
-				new_rect.width = Math.max(new_rect.width, options.minWidth ?? 100);
-				new_rect.height = Math.max(new_rect.height, options.minHeight ?? window_frame_height);
+				new_rect.width = Math.max(new_rect.width, options.minOuterWidth ?? 100);
+				new_rect.height = Math.max(new_rect.height, options.minOuterHeight ?? 0);
+				new_rect.width = Math.max(new_rect.width, (options.minInnerWidth ?? 0) + window_frame_width);
+				new_rect.height = Math.max(new_rect.height, (options.minInnerHeight ?? 0) + window_frame_height);
 				// prevent free movement via resize past minimum size
 				if (x_axis === HANDLE_LEFT) {
 					new_rect.x = Math.min(new_rect.x, rect.x + rect.width - new_rect.width);

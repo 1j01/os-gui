@@ -12,12 +12,17 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+### Removed
+- `minWidth` option; use `minOuterWidth` instead.
+- `minHeight` option; use `minOuterHeight` instead.
+
 ### Changed
 - `parseThemeFileString` can now return `undefined` if the theme file is not valid.
 
 ### Added
 - Window method `setDimensions({ innerWidth, innerHeight, outerWidth, outerHeight })` to set the size of the window.
 - Window options `innerWidth`, `innerHeight`, `outerWidth`, `outerHeight` to set the initial size of the window.
+- Window options `minInnerWidth`, `minInnerHeight`, `minOuterWidth`, `minOuterHeight` to set the minimum size of the window.
 
 ### Fixed
 - Improved accuracy of the titlebar styles, especially for tool windows.

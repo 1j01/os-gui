@@ -185,9 +185,13 @@ Creates a window component that can be dragged around and such, brought to the f
 
 `options.innerHeight`: Specifies the initial height of the window contents, excluding title bar and borders. May include the menu bar, watch out!
 
-`options.minWidth`: The minimum outer width of the window (when resizing), in pixels.
+`options.minOuterWidth`: The minimum outer width of the window (when resizing), in pixels.
 
-`options.minHeight`: The minimum outer height of the window (when resizing), in pixels.
+`options.minOuterHeight`: The minimum outer height of the window (when resizing), in pixels.
+
+`options.minInnerWidth`: The minimum width of the window contents (when resizing), in pixels.
+
+`options.minInnerHeight`: The minimum height of the window contents (when resizing), in pixels.
 
 `options.constrainRect(rect, x_axis, y_axis)`: A function that can be used to constrain the window to a particular rectangle. Takes and returns a rectangle object with `x`, `y`, `width`, and `height` properties. `x_axis` and `y_axis` define what is being dragged `-1` for left and top, `1` for right and bottom, and `0` for middle. Note that the window will always be constrained to not move past the minimum width and height.
 
