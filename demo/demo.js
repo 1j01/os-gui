@@ -3,20 +3,20 @@ var menus = {
 	"&File": [
 		{
 			item: "&Open",
-			action: ()=> {
+			action: () => {
 				const $w = $Window({ title: "Ali Baba and the Forty Thieves", resizable: false, maximizeButton: false, minimizeButton: false });
 				$w.$content.html("<p>\"Open Sesame!\"</p>");
-				$w.$Button("OK", ()=> $w.close()).focus().css({ width: 100 });
+				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
 			},
 			shortcut: "Ctrl+O",
 		},
 		MENU_DIVIDER,
 		{
 			item: "&Brexit",
-			action: ()=> {
+			action: () => {
 				const $w = $Window({ title: "Membership Status", resizable: false, maximizeButton: false, minimizeButton: false });
 				$w.$content.html("<p>You have left the EU.</p>");
-				$w.$Button("OK", ()=> $w.close()).focus().css({ width: 100 });
+				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
 			}
 		}
 	],
@@ -24,10 +24,10 @@ var menus = {
 		{
 			item: "&Nothingness",
 			checkbox: {
-				check: ()=> {
+				check: () => {
 					return show_nothingness;
 				},
-				toggle: ()=> {
+				toggle: () => {
 					show_nothingness = !show_nothingness;
 				}
 			}
@@ -38,7 +38,7 @@ var menus = {
 				{
 					item: "&Schrödinger's Checkbox",
 					checkbox: {
-						check: ()=> {
+						check: () => {
 							return Math.random() < 0.5;
 						}
 					}
@@ -52,7 +52,7 @@ var menus = {
 			action: () => {
 				const $w = $Window({ title: "Radio Message", resizable: false, maximizeButton: false, minimizeButton: false });
 				$w.$content.html("<p>\"Over and out!\"</p>");
-				$w.$Button("OK", ()=> $w.close()).focus().css({ width: 100 });
+				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
 			},
 			shortcut: "Ctrl+C",
 		},
@@ -64,18 +64,18 @@ var menus = {
 	]
 };
 // wait for page load (could alternatively just move the script so it executes after the elements are declared)
-$(()=> {
+$(() => {
 	var $menubar = new $MenuBar(menus);
 	$menubar.appendTo("#menubar-example");
 
-	var $app_window_1 = new $Window({title: "Application Window", resizable: true});
+	var $app_window_1 = new $Window({ title: "Application Window", resizable: true });
 	$app_window_1.$content.append($("#app-window-example-content").attr("hidden", null));
 
-	$app_window_1.$Button("Open Another Window", ()=> {
-		var $new_window = new $Window({title: "Testing, Testing, 123"});
+	$app_window_1.$Button("Open Another Window", () => {
+		var $new_window = new $Window({ title: "Testing, Testing, 123" });
 		$new_window.$content.html("Hey look, a window!");
 	});
-	$app_window_1.on("close", (event)=> {
+	$app_window_1.on("close", (event) => {
 		event.preventDefault();
 	});
 
@@ -85,7 +85,7 @@ $(()=> {
 		event.preventDefault();
 	});
 
-	var $app_window_2 = new $Window({title: "Application Example", resizable: true});
+	var $app_window_2 = new $Window({ title: "Application Example", resizable: true });
 	$app_window_2.$content.prepend(new $MenuBar(menus));
 	$app_window_2.$content.css({
 		padding: 0,
@@ -103,13 +103,13 @@ $(()=> {
 
 	// Note: the windows are positioned later on to fit into the page layout. See below.
 
-	$("#demo-toggle-button").on("click", (e)=> {
+	$("#demo-toggle-button").on("click", (e) => {
 		$(e.target).toggleClass("selected");
 	});
 
 	function loadThemeFile(file) {
 		var reader = new FileReader();
-		reader.onload = ()=> {
+		reader.onload = () => {
 			var fileText = reader.result;
 
 			var cssProperties = parseThemeFileString(fileText);
@@ -121,16 +121,16 @@ $(()=> {
 		reader.readAsText(file);
 	}
 
-	$("html").on("dragover", function(event) {
-		event.preventDefault();  
+	$("html").on("dragover", function (event) {
+		event.preventDefault();
 		event.stopPropagation();
 	});
-	$("html").on("dragleave", function(event) {
-		event.preventDefault();  
+	$("html").on("dragleave", function (event) {
+		event.preventDefault();
 		event.stopPropagation();
 	});
-	$("html").on("drop", function(event) {
-		event.preventDefault();  
+	$("html").on("drop", function (event) {
+		event.preventDefault();
 		event.stopPropagation();
 		var files = [...event.originalEvent.dataTransfer.files];
 		for (var file of files) {
@@ -139,7 +139,7 @@ $(()=> {
 			}
 		}
 	});
-	
+
 	/*applyCSSProperties(parseThemeFileString(`
 
 [Control Panel\\Colors]
@@ -177,7 +177,7 @@ InfoWindow=255 255 225
 		$scrollbar_buttons.clone().css("--scrollbar-size", "30px"),
 		$scrollbar_buttons.clone().css("--scrollbar-size", "50px"),
 	);
-	$(".scrollbar-demo").each((index, element)=> {
+	$(".scrollbar-demo").each((index, element) => {
 		applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), element);
 	});
 
