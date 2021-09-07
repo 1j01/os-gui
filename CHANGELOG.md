@@ -22,6 +22,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Fixed
 - Improved accuracy of the titlebar styles, especially for tool windows.
 - Fixed active state of the titlebar buttons in Firefox.
+- Disabled buttons no longer show active state if you try to click on them.
 - In demo: When loading a theme file, do not apply any styles if it is not a valid theme file.
 
 </details>

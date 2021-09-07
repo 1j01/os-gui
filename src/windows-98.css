@@ -79,10 +79,10 @@ button:not(.lightweight) {
 button:not(.lightweight).default {
 	border-image: var(--button-default-border-image);
 }
-button:not(.lightweight):hover:active {
+button:not(.lightweight):enabled:hover:active {
 	border-image: var(--button-active-border-image);
 }
-button:not(.lightweight).default:hover:active {
+button:not(.lightweight).default:enabled:hover:active {
 	border-image: var(--button-default-active-border-image);
 }
 
@@ -116,19 +116,19 @@ button.lightweight {
 	border-color: transparent;
 }
 /* TODO: recommend preventing focus on click for lightweight buttons */
-button.lightweight:not([disabled]):hover /*,
+button.lightweight:enabled:hover /*,
 button.lightweight:focus */ {
 	@extend %outset-shallow;
 }
-button.lightweight:not([disabled]):hover:active {
+button.lightweight:enabled:hover:active {
 	@extend %inset-shallow;
 }
-button[disabled] {
+button:disabled {
 	color: var(--GrayText);
 	text-shadow: 1px 1px 0px var(--ButtonHilight);
 }
-/* TODO: [checked]? .pressed? .depressed? .down? .held? what should it be called? */
-button:not(.lightweight).toggle:hover:active {
+/* TODO: [checked]? .pressed? .depressed? .down? .held? .active? what should it be called? */
+button:not(.lightweight).toggle:enabled:hover:active {
 	@extend %inset-deep;
 }
 button:not(.lightweight).toggle.selected {
@@ -169,7 +169,7 @@ body > .window-titlebar {
 .window-button {
 	margin: 2px 0;
 }
-.os-window .window-button:hover:active {
+.os-window .window-button:enabled:hover:active {
 	@extend %inset-deep;
 }
 .window-close-button {
@@ -181,7 +181,7 @@ body > .window-titlebar {
 	height: 11px;
 	background-position: 7px 0;
 }
-.os-window.tool-window .window-close-button:hover:active {
+.os-window.tool-window .window-close-button:enabled:hover:active {
 	background-position: 8px 1px;
 }
 .os-window .window-title-area {
@@ -240,16 +240,16 @@ body > .window-titlebar {
 	background-position: calc(-0 * 13px - 1px) 0px;
 }
 
-.window-close-button:hover:active {
+.window-close-button:enabled:hover:active {
 	background-position: calc(-3 * 13px - 0px) 1px;
 }
-.window-maximize-button:hover:active {
+.window-maximize-button:enabled:hover:active {
 	background-position: calc(-1 * 13px - 0px) 1px;
 }
-.maximized .window-maximize-button:hover:active {
+.maximized .window-maximize-button:enabled:hover:active {
 	background-position: calc(-2 * 13px - 0px) 1px;
 }
-.window-minimize-button:hover:active {
+.window-minimize-button:enabled:hover:active {
 	background-position: calc(-0 * 13px - 0px) 1px;
 }
 
