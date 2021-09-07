@@ -155,7 +155,6 @@ $(() => {
 		$scrollbar_buttons.clone().css("--scrollbar-size", "15px"),
 		$scrollbar_buttons.clone().css("--scrollbar-size", "16px"),
 		$scrollbar_buttons.clone().css("--scrollbar-size", "30px"),
-		$scrollbar_buttons.clone().css("--scrollbar-size", "50px"),
 	);
 	$(".scrollbar-demo").each((index, element) => {
 		applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), element);

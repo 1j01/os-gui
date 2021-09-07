@@ -70,7 +70,7 @@
 
 			.scrollbar-demo {
 				display: inline-block;
-				padding: 15px;
+				padding: 0 15px;
 			}
 			.scrollbar-demo .scrollbar-track.vertical,
 			.scrollbar-demo .scrollbar.vertical {
@@ -96,28 +96,6 @@
 		<script src="demo.js"></script>
 		<main>
 			<h1>os-gui.js</h1>
-			<h2>Scrollbars</h2>
-			<div id="scrollbar-demos" style="height: 557px;">
-				<div class="scrollbar-demo">
-					<div class="scrollbar-button decrement horizontal" style="display: inline-block;"></div><div class="scrollbar-button increment horizontal" style="display: inline-block;"></div>
-					<div class="scrollbar-button decrement vertical"></div>
-					<div class="scrollbar-button increment vertical"></div>
-					<br>
-					<div class="scrollbar-button decrement horizontal disabled" style="display: inline-block;"></div><div class="scrollbar-button increment horizontal disabled" style="display: inline-block;"></div>
-					<div class="scrollbar-button decrement vertical disabled"></div>
-					<div class="scrollbar-button increment vertical disabled"></div>
-					<br>
-					<div class="scrollbar vertical">
-						<div class="scrollbar-button decrement vertical disabled"></div>
-						<div class="scrollbar-track vertical">
-							<div class="scrollbar-track-piece decrement vertical"></div>
-							<div class="scrollbar-thumb vertical"></div>
-							<div class="scrollbar-track-piece increment vertical"></div>
-						</div>
-						<div class="scrollbar-button increment vertical disabled"></div>
-					</div>
-				</div>
-			</div>
 			<h2>MenuBar</h2>
 			<div>
 				<div id="menubar-example" style="height: 21px;"></div>
@@ -213,6 +191,28 @@
 					<td>Use the standard <code>disabled</code> attribute to mark buttons as disabled.</td>
 				</tr>
 			</table>
+			<h2>Scrollbars</h2>
+			<div id="scrollbar-demos" style="height: 270px;">
+				<div class="scrollbar-demo">
+					<div class="scrollbar-button decrement horizontal" style="display: inline-block;"></div><div class="scrollbar-button increment horizontal" style="display: inline-block;"></div>
+					<div class="scrollbar-button decrement vertical"></div>
+					<div class="scrollbar-button increment vertical"></div>
+					<br>
+					<div class="scrollbar-button decrement horizontal disabled" style="display: inline-block;"></div><div class="scrollbar-button increment horizontal disabled" style="display: inline-block;"></div>
+					<!-- <div class="scrollbar-button decrement vertical disabled"></div>
+					<div class="scrollbar-button increment vertical disabled"></div> -->
+					<br>
+					<div class="scrollbar vertical">
+						<div class="scrollbar-button decrement vertical disabled"></div>
+						<div class="scrollbar-track vertical">
+							<div class="scrollbar-track-piece decrement vertical"></div>
+							<div class="scrollbar-thumb vertical"></div>
+							<div class="scrollbar-track-piece increment vertical"></div>
+						</div>
+						<div class="scrollbar-button increment vertical disabled"></div>
+					</div>
+				</div>
+			</div>
 			<h2>Insets & Outsets</h2>
 			<table id="insets-outsets-demo">
 				<col style="background: var(--ButtonFace); color: var(--ButtonText); width: 150px;"/>
