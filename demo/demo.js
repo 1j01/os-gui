@@ -75,15 +75,11 @@ $(() => {
 		const $new_window = new $Window({ title: "Testing, Testing, 123" });
 		$new_window.$content.html("Hey look, a window!");
 	});
-	$app_window_1.on("close", (event) => {
-		event.preventDefault();
-	});
+	fake_closing($app_window_1);
 
 	const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true });
 	$tool_window_1.$content.append($("#tool-window-example-content").attr("hidden", null));
-	$tool_window_1.on("close", (event) => {
-		event.preventDefault();
-	});
+	fake_closing($tool_window_1);
 
 	const $app_window_2 = new $Window({ title: "Application Example", resizable: true });
 	$app_window_2.$content.prepend(new $MenuBar(menus));
@@ -98,8 +94,23 @@ $(() => {
 			<p>It has a tool window that belongs to it, as well as a menu bar.</p>
 		</div>
 	`);
+	fake_closing($app_window_2);
 	const $tool_window_2 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_2 });
 	$tool_window_2.$content.text("This tool window is a child of the app window.");
+	fake_closing($tool_window_2);
+	$app_window_2.on("close", () => {
+		$tool_window_2.close();
+	});
+
+	function fake_closing($window) {
+		$window.on("close", (event) => {
+			event.preventDefault();
+			$window.hide();
+			setTimeout(() => {
+				$window.fadeIn();
+			}, 1000);
+		});
+	}
 
 	// Position the windows within the demo page, in the flow of text, but freely moveable
 	const window_list = [
