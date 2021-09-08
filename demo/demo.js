@@ -99,28 +99,36 @@ $(() => {
 		$tool_window_2.close();
 	});
 
-	function fake_closing($window) {
-		$window.on("close", (event) => {
-			event.preventDefault();
-			$window.hide();
-			setTimeout(() => {
-				$window.fadeIn();
-			}, 1000);
-		});
-	}
-
 	// Position the windows within the demo page, in the flow of text, but freely moveable
-	const window_list = [
+	const windows_and_positioner_ids = [
 		[$app_window_1, "app-window-example"],
 		[$tool_window_1, "tool-window-example"],
 		[$app_window_2, "app-window-2-positioner"],
 		[$tool_window_2, "tool-window-2-positioner"],
 	];
-	for (const [$window, positioning_el_id] of window_list) {
+	for (const [$window, positioning_el_id] of windows_and_positioner_ids) {
 		const $positioning_el = $(`#${positioning_el_id}`);
-		$window.offset({
+		$window.css({
 			left: $positioning_el.offset().left,
 			top: $positioning_el.offset().top
+		});
+	}
+
+	// Fake closing the windows (hide and fade back in), for demo purposes
+	function fake_closing($window) {
+		$window.on("close", (event) => {
+			event.preventDefault();
+			$window.hide();
+			setTimeout(() => {
+				// Restore position
+				const $positioning_el = $(`#${windows_and_positioner_ids.find(([$w]) => $window === $w)[1]}`);
+				$window.css({
+					left: $positioning_el.offset().left,
+					top: $positioning_el.offset().top
+				});
+				// Fade back in
+				$window.fadeIn();
+			}, 1000);
 		});
 	}
 
