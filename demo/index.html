@@ -95,20 +95,23 @@
 				width: 8em;
 				height: calc(8em * (164 / 241));
 				vertical-align: middle;
+				position: relative;
 			}
 			#spaceship-graphic::after {
 				content: "";
 				display: inline-block;
+				position: absolute;
+				top: 50%;
+				left: 50%;
 				background: url("https://i.postimg.cc/pTCqBxL0/Spaceship-tut.png");
 				width: 164px;
 				height: 241px;
-				transform: translateX(125px) scale(0.5) rotate(.25turn);
-				transform-origin: 0% 0%;
+				transform: translate(-50%, -50%) scale(0.5) rotate(.25turn);
 				transition: transform 1s;
 			}
 			#spaceship-link:active #spaceship-graphic::after,
 			#spaceship-link:focus #spaceship-graphic::after {
-				transform: translateX(460px) scale(0.5) rotate(.25turn);
+				transform: translate(-50%, -50%) translateX(460px) scale(0.3) rotate(.25turn);
 			}
 		</style>
 	</head>
