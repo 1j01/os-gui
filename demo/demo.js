@@ -123,7 +123,9 @@ $(() => {
 				const $positioning_el = $windows_and_$positioners.find(([$other_window]) => $window === $other_window)[1];
 				$window.css({
 					left: $positioning_el.offset().left,
-					top: $positioning_el.offset().top
+					top: $positioning_el.offset().top,
+					width: "",
+					height: "",
 				});
 				// Fade back in
 				$window.fadeIn();
