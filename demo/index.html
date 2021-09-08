@@ -87,17 +87,29 @@
 				overflow: scroll; /* show off the custom scrollbars :) */
 			}
 
-			#spaceship-link img {
-				height: 8em;
+			/* Why two elements? Well if you make part of the link fly away, it makes clicking the link unreliable,
+			given that the link is no longer under your mouse. So if you're animating a link or button,
+			it's useful to separate the click target from the visual element that is animating. */
+			#spaceship-graphic {
+				display: inline-block;
+				width: 8em;
+				height: calc(8em * (164 / 241));
 				vertical-align: middle;
-				transform: translateX(50px) rotate(.25turn);
+			}
+			#spaceship-graphic::after {
+				content: "";
+				display: inline-block;
+				background: url("https://i.postimg.cc/pTCqBxL0/Spaceship-tut.png");
+				width: 164px;
+				height: 241px;
+				transform: translateX(125px) scale(0.5) rotate(.25turn);
+				transform-origin: 0% 0%;
 				transition: transform 1s;
 			}
-			#spaceship-link:active img,
-			#spaceship-link:focus img {
-				transform: translateX(250px) rotate(.25turn) scale(0.8);
+			#spaceship-link:active #spaceship-graphic::after,
+			#spaceship-link:focus #spaceship-graphic::after {
+				transform: translateX(460px) scale(0.5) rotate(.25turn);
 			}
-
 		</style>
 	</head>
 	<body>
@@ -271,7 +283,7 @@
 			</table>
 			<!-- <div style="padding: 2em" class="outset-deep">Here's perhaps a panel, styled with <code>class="outset-deep"</code></div> -->
 			<h2>Crazy Animation Demo</h2>
-			<p>Check out the interactive <a href="./animation.html" id="spaceship-link">spaceship animation demo <img src="https://i.postimg.cc/pTCqBxL0/Spaceship-tut.png"></a></p>
+			<p>Check out the interactive <a href="./animation.html" id="spaceship-link">spaceship animation demo<span id="spaceship-graphic"></span></a></p>
 			<h2>A Full Web Desktop</h2>
 			<p><a href="https://98.js.org/">98.js</a> is an extensive recreation of the Windows 98 desktop, including Paint, Sound Recorder, Solitaire, and more.</p>
 			<p><a href="https://jspaint.app">JS Paint</a> is why I started this whole thing.</p>
