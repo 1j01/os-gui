@@ -100,14 +100,13 @@ $(() => {
 	});
 
 	// Position the windows within the demo page, in the flow of text, but freely moveable
-	const windows_and_positioner_ids = [
-		[$app_window_1, "app-window-example"],
-		[$tool_window_1, "tool-window-example"],
-		[$app_window_2, "app-window-2-positioner"],
-		[$tool_window_2, "tool-window-2-positioner"],
+	const $windows_and_$positioners = [
+		[$app_window_1, $("#app-window-example")],
+		[$tool_window_1, $("#tool-window-example")],
+		[$app_window_2, $("#app-window-2-positioner")],
+		[$tool_window_2, $("#tool-window-2-positioner")],
 	];
-	for (const [$window, positioning_el_id] of windows_and_positioner_ids) {
-		const $positioning_el = $(`#${positioning_el_id}`);
+	for (const [$window, $positioning_el] of $windows_and_$positioners) {
 		$window.css({
 			left: $positioning_el.offset().left,
 			top: $positioning_el.offset().top
@@ -121,7 +120,7 @@ $(() => {
 			$window.hide();
 			setTimeout(() => {
 				// Restore position
-				const $positioning_el = $(`#${windows_and_positioner_ids.find(([$w]) => $window === $w)[1]}`);
+				const $positioning_el = $windows_and_$positioners.find(([$other_window]) => $window === $other_window)[1];
 				$window.css({
 					left: $positioning_el.offset().left,
 					top: $positioning_el.offset().top
