@@ -69,16 +69,13 @@ $(() => {
 
 	// Create demo windows
 	const $app_window_1 = new $Window({ title: "Application Window", resizable: true });
-	$app_window_1.$content.append($("#app-window-example-content").attr("hidden", null));
-
-	$app_window_1.$Button("Open Another Window", () => {
-		const $new_window = new $Window({ title: "Testing, Testing, 123" });
-		$new_window.$content.html("Hey look, a window!");
-	});
+	$app_window_1.$content.append(`
+		<p>This is a window that can be moved around and resized.</p>
+	`);
 	fake_closing($app_window_1);
 
 	const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true });
-	$tool_window_1.$content.append($("#tool-window-example-content").attr("hidden", null));
+	$tool_window_1.$content.text("This is a tool window.");
 	fake_closing($tool_window_1);
 
 	const $app_window_2 = new $Window({ title: "Application Example", resizable: true });
