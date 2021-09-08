@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>OS GUI</title>
+		<title>OS GUI — Windows 98 CSS+JS Library Demo</title>
 		<link href="../build/layout.css" rel="stylesheet" type="text/css">
 		<link href="../build/windows-98.css" rel="stylesheet" type="text/css">
 		<link href="../build/windows-default.css" rel="stylesheet" title="Windows Default" type="text/css">
@@ -86,6 +86,18 @@
 			body {
 				overflow: scroll; /* show off the custom scrollbars :) */
 			}
+
+			#spaceship-link img {
+				height: 8em;
+				vertical-align: middle;
+				transform: translateX(50px) rotate(.25turn);
+				transition: transform 1s;
+			}
+			#spaceship-link:active img,
+			#spaceship-link:focus img {
+				transform: translateX(250px) rotate(.25turn) scale(0.8);
+			}
+
 		</style>
 	</head>
 	<body>
@@ -95,7 +107,7 @@
 		<script src="../parse-theme.js"></script>
 		<script src="demo.js"></script>
 		<main>
-			<h1><img src="../images/os-gui-logo.svg" alt="os-gui.js" style="max-height: 60px; width: 100%;"></h1>
+			<h1><img src="../images/os-gui-logo.svg" alt="os-gui.js" style="max-height: 100px; width: 100%;"></h1>
 			<h2>MenuBar</h2>
 			<div>
 				<div id="menubar-example" style="height: 21px;"></div>
@@ -259,7 +271,10 @@
 			</table>
 			<!-- <div style="padding: 2em" class="outset-deep">Here's perhaps a panel, styled with <code>class="outset-deep"</code></div> -->
 			<h2>Crazy Animation Demo</h2>
-			<p>See an <a href="./animation.html">animation demo</a></p>
+			<p>Check out the interactive <a href="./animation.html" id="spaceship-link">spaceship animation demo <img src="https://i.postimg.cc/pTCqBxL0/Spaceship-tut.png"></a></p>
+			<h2>A Full Web Desktop</h2>
+			<p><a href="https://98.js.org/">98.js</a> is an extensive recreation of the Windows 98 desktop, including Paint, Sound Recorder, Solitaire, and more.</p>
+			<p><a href="https://jspaint.app">JS Paint</a> is why I started this whole thing.</p>
 		</main>
 		<footer>
 			Open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
