@@ -1,4 +1,4 @@
-# os-gui.js
+# ![os-gui.js](images/os-gui-logo-simple-italic.svg)
 
 A library for imitating operating system graphical user interfaces on the web
 
