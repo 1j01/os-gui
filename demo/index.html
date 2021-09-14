@@ -87,6 +87,21 @@
 				overflow: scroll; /* show off the custom scrollbars :) */
 			}
 
+			#logo-heading {
+				margin: 0.1em 0;
+				line-height: 1;
+				font-size: min(100px, 16vw);
+				text-align: center;
+				white-space: nowrap;
+			}
+			#logo-heading > span {
+				background: url('../images/os-gui-logo.svg');
+				background-repeat: no-repeat;
+				background-size: contain;
+				background-position: center;
+				color: transparent;
+			}
+
 			/* Why two elements? Well if you make part of the link fly away, it makes clicking the link unreliable,
 			given that the link is no longer under your mouse. So if you're animating a link or button,
 			it's useful to separate the click target from the visual element that is animating. */
@@ -122,7 +137,7 @@
 		<script src="../parse-theme.js"></script>
 		<script src="demo.js"></script>
 		<main>
-			<h1 style="margin: 0.1em 0; line-height: 1; font-size: min(100px, 16vw); text-align: center; white-space: nowrap;"><span style="background: url('../images/os-gui-logo.svg'); background-repeat: no-repeat; background-size: contain; background-position: center; color: transparent;">OS-GUI.JS</span></h1>
+			<h1 id="logo-heading"><span>OS-GUI.JS</span></h1>
 			<h2>MenuBar</h2>
 			<div>
 				<div id="menubar-example" style="height: 21px;"></div>
