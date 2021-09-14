@@ -90,9 +90,13 @@
 			#logo-heading {
 				margin: 0.1em 0;
 				line-height: 1;
-				font-size: min(100px, 16vw);
+				font-size: min(100px, 12vw);
 				text-align: center;
 				white-space: nowrap;
+				/* picked for metric compatibility - with each other, mainly; it's not that good of a match though for Laser Corps, the font I used for the logo */
+				/* I could do selectable text in a bullet proof way if I wanted, by specifying the sizes of spans per letter. */
+				font-family: Arial, Helvetica, Liberation Sans, FreeSans, sans-serif;
+				letter-spacing: 0.25em;
 			}
 			#logo-heading > span {
 				background: url('../images/os-gui-logo.svg');
