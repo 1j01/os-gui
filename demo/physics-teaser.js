@@ -14,6 +14,9 @@ let connections = [];
 const pointRadius = 3;
 const border = pointRadius;
 
+const friction = 0.2;
+const coefficientOfRestitution = 0.8;
+
 function add_point(options) {
 	const point = Object.assign({
 		x: 0,
@@ -88,19 +91,23 @@ function animate() {
 		point.circle.setAttribute("cy", point.y);
 		if (point.x < border) {
 			point.x = border;
-			point.vx *= -0.8;
+			point.vx *= -coefficientOfRestitution;
+			point.vy /= 1 + friction;
 		}
 		if (point.x > svg.clientWidth - border) {
 			point.x = svg.clientWidth - border;
-			point.vx *= -0.8;
+			point.vx *= -coefficientOfRestitution;
+			point.vy /= 1 + friction;
 		}
 		if (point.y < border) {
 			point.y = border;
-			point.vy *= -0.8;
+			point.vy *= -coefficientOfRestitution;
+			point.vx /= 1 + friction;
 		}
 		if (point.y > svg.clientHeight - border) {
 			point.y = svg.clientHeight - border;
-			point.vy *= -0.8;
+			point.vy *= -coefficientOfRestitution;
+			point.vx /= 1 + friction;
 		}
 		point.fx = 0;
 		point.fy = 0;
