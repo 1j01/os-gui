@@ -132,11 +132,26 @@ function animate() {
 		point2.fx -= force * dx;
 		point2.fy -= force * dy;
 	}
+
+	let averageX = 0;
+	let averageY = 0;
+	for (const point of points) {
+		averageX += point.x;
+		averageY += point.y;
+	}
+	averageX /= points.length;
+	averageY /= points.length;
+
+	if (svg.style.clipPath !== "none") {
+		svg.style.clipPath = `circle(${50}px at ${averageX}px ${averageY}px)`;
+	}
+
 	requestAnimationFrame(animate);
 }
 animate();
 
 svg.onpointerdown = () => {
+	svg.style.clipPath = "none";
 	for (const connection of connections) {
 		connection.targetDistance *= 2;
 		if (connection.targetDistance > 100) {
