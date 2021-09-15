@@ -13,6 +13,7 @@ let connections = [];
 
 const pointRadius = 3;
 const border = pointRadius;
+let clipPathRadius = 50;
 
 const friction = 0.2;
 const coefficientOfRestitution = 0.8;
@@ -142,20 +143,19 @@ function animate() {
 	averageX /= points.length;
 	averageY /= points.length;
 
-	if (svg.style.clipPath !== "none") {
-		svg.style.clipPath = `circle(${50}px at ${averageX}px ${averageY}px)`;
-	}
+	svg.style.clipPath = `circle(${clipPathRadius}px at ${averageX}px ${averageY}px)`;
 
 	requestAnimationFrame(animate);
 }
 animate();
 
 svg.onpointerdown = () => {
-	svg.style.clipPath = "none";
 	for (const connection of connections) {
 		connection.targetDistance *= 2;
+		clipPathRadius = 100;
 		if (connection.targetDistance > 100) {
 			connection.targetDistance = 50;
+			clipPathRadius = 50;
 		}
 	}
 };
