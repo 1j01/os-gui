@@ -8,6 +8,9 @@ function createElementSVG(tag, attrs) {
 	return el;
 }
 
+const g = createElementSVG("g", { filter: "drop-shadow(1px 1px rgba(0, 0, 0, 0.6))" });
+svg.appendChild(g);
+
 let points = [];
 let connections = [];
 
@@ -34,7 +37,7 @@ function add_point(options) {
 		fill: point.color,
 	});
 	point.circle = el;
-	svg.appendChild(el);
+	g.appendChild(el);
 	points.push(point);
 	return point;
 }
@@ -47,8 +50,8 @@ function add_connection(point1, point2, targetDistance = 10) {
 		line1: createElementSVG("line", { stroke: point1.color }),
 		line2: createElementSVG("line", { stroke: point2.color }),
 	};
-	svg.appendChild(connection.line1);
-	svg.appendChild(connection.line2);
+	g.appendChild(connection.line1);
+	g.appendChild(connection.line2);
 	connections.push(connection);
 	return connection;
 }
