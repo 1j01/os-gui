@@ -14,6 +14,8 @@ let connections = [];
 const pointRadius = 3;
 const border = pointRadius;
 let clipPathRadius = 50;
+let inViewport = false;
+let animating = false;
 
 const friction = 0.2;
 const coefficientOfRestitution = 0.8;
@@ -145,9 +147,24 @@ function animate() {
 
 	svg.style.clipPath = `circle(${clipPathRadius}px at ${averageX}px ${averageY}px)`;
 
-	requestAnimationFrame(animate);
+	if (inViewport) {
+		requestAnimationFrame(animate);
+	} else {
+		animating = false;
+	}
 }
-animate();
+
+function possiblyAnimate() {
+	const rect = svg.getBoundingClientRect();
+	inViewport = rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
+	if (inViewport && !animating) {
+		animating = true;
+		animate();
+	}
+}
+window.addEventListener('scroll', possiblyAnimate);
+window.addEventListener('resize', possiblyAnimate);
+setTimeout(possiblyAnimate, 100);
 
 svg.onpointerdown = () => {
 	for (const connection of connections) {
