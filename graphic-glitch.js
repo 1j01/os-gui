@@ -17,7 +17,7 @@ function graphic_glitch(w) {
 	filter.setAttribute("y", "-100%");
 	filter.setAttribute("width", "300%");
 	filter.setAttribute("height", "300%");
-	var animate = ()=> {
+	var animate = () => {
 		requestAnimationFrame(animate);
 		var current_rect = w.getBoundingClientRect();
 		var current_pos = [current_rect.left, current_rect.top];
@@ -58,8 +58,8 @@ function graphic_glitch(w) {
 				feOffset.setAttribute("dy", y - current_pos[1]);
 			}
 
-			filter.setAttribute("x", Math.min(0, 10-current_rect.left));
-			filter.setAttribute("y", Math.min(0, 10-current_rect.top));
+			filter.setAttribute("x", Math.min(0, 10 - current_rect.left));
+			filter.setAttribute("y", Math.min(0, 10 - current_rect.top));
 			filter.setAttribute("width", innerWidth);
 			filter.setAttribute("height", innerHeight);
 		}
