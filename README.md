@@ -298,14 +298,15 @@ Licensed under the [MIT License](https://opensource.org/licenses/MIT), see [LICE
 
 Install [Node.js](https://nodejs.org/) if you don't already have it.
 
-Initially and when pulling changes from git, run `npm i` to install dependencies.
+Clone the repository, then in the project directory run `npm i` to install the dependencies.
+Also run `npm i` when pulling in changes from the repository, in case there are changes to the dependencies.
 
 Run `npm start` to open a development server. It will open a demo page in your default browser. Changes to the library will be automatically recompiled, and the page will automatically reload.
 
-Close the dev server when updating dependencies or installing new ones (or you may run into EPERM issues).
+It's a good idea to close the server when updating or installing dependencies; otherwise you may run into EPERM issues.
 
-The styles are written with PostCSS, for mixins and other transforms.  
+The styles are written with [PostCSS](https://postcss.org/), for mixins and other transforms.  
 Recommended: install a PostCSS language plugin for your editor, like [PostCSS Language Support](https://marketplace.visualstudio.com/items?itemName=csstools.postcss) for VS Code.
 
 Currently there's some CSS that has to manually be regenerated in-browser and copied into theme-specific CSS files.  
-In the future this could be done with a custom PostCSS syntax parser for .theme/.themepack files, and maybe SVG instead of any raster graphics to avoid needing `node-canvas` (native dependencies are a pain).  
+In the future this could be done with a custom PostCSS syntax parser for .theme/.themepack files, and maybe SVG instead of any raster graphics to avoid needing `node-canvas` (native dependencies are a pain). Or maybe UPNG.js and plain pixel manipulation.
