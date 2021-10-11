@@ -73,6 +73,11 @@ function $Window(options) {
 		}
 		if (innerHeight) {
 			height_from_frame = $w.outerHeight() - $w.$content.outerHeight();
+			const $menu_bar = $w.$content.find(".menus"); // only if inside .content; might move to a slot outside .content later
+			if ($menu_bar.length) {
+				// maybe this isn't technically part of the frame, per se? but it's part of the non-client area, which is what I technically mean.
+				height_from_frame += $menu_bar.outerHeight();
+			}
 		}
 		if (outerWidth) {
 			$w.outerWidth(outerWidth);

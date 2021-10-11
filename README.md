@@ -183,7 +183,7 @@ Creates a window component that can be dragged around and such, brought to the f
 
 `options.innerWidth`: Specifies the initial width of the window contents, excluding borders.
 
-`options.innerHeight`: Specifies the initial height of the window contents, excluding title bar and borders. May include the menu bar, watch out!
+`options.innerHeight`: Specifies the initial height of the window contents, excluding title bar, menu bar, and borders
 
 `options.minOuterWidth`: The minimum outer width of the window (when resizing), in pixels.
 
