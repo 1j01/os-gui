@@ -47,6 +47,18 @@ function $Window(options) {
 		$w.addClass("component-window");
 	}
 
+	
+	setTimeout(() => {
+		if (get_direction() == "rtl") {
+			$w.addClass("rtl"); // for reversing the titlebar gradient
+		}
+	}, 0);
+
+	// returns writing/layout direction, "ltr" or "rtl"
+	function get_direction() {
+		return window.get_direction ? window.get_direction() : getComputedStyle($w[0]).direction;
+	}
+
 	const $event_target = $({});
 	const make_simple_listenable = (name) => {
 		return (callback) => {

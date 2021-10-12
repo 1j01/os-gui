@@ -144,6 +144,9 @@ body > .window-titlebar {
 	color: var(--TitleText);
 	@extend %font;
 }
+.os-window.rtl .window-titlebar {
+	background: linear-gradient(to left, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%);
+}
 .os-window:not(.tool-window) .window-titlebar {
 	font-weight: bold;
 }
@@ -152,6 +155,9 @@ body > .window-titlebar {
 	background: linear-gradient(to right, var(--InactiveTitle) 0%, var(--GradientInactiveTitle) 100%);
 
 	color: var(--InactiveTitleText);
+}
+.os-window.rtl:not(.focused) .window-titlebar {
+	background: linear-gradient(to left, var(--InactiveTitle) 0%, var(--GradientInactiveTitle) 100%);
 }
 .os-window {
 	/* Needed for when maximized, otherwise would be provided by %outset-deep */
