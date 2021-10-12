@@ -283,8 +283,8 @@ function $Window(options) {
 		//   - Clicking a control that focuses something outside the window (I don't have an example)
 		// - Trying to select text
 
+		const formerly_focused = null; // event.relatedTarget doesn't exist, this isn't focusin/focus
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
-		const formerly_focused = event.relatedTarget;
 		requestAnimationFrame(() => {
 			// console.log("did focus change?", { last_focused_control, formerly_focused, activeElement: document.activeElement, win_elem: $w[0]}, document.activeElement !== formerly_focused);
 			
