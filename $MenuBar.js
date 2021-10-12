@@ -51,6 +51,18 @@ function get_hotkey(text) {
 
 const MENU_DIVIDER = "MENU_DIVIDER";
 
+const MAX_MENU_NESTING = 1000;
+
+const internal_z_counter = 1;
+function get_new_menu_z_index() {
+	// integrate with the OS window z-indexes, if applicable
+	// but don't depend on $Window existing, the modules should be independent
+	if (typeof $Window !== "undefined") {
+		return ($Window.Z_INDEX++) + MAX_MENU_NESTING; // MAX_MENU_NESTING is needed because the window gets brought to the top
+	}
+	return (++internal_z_counter) + MAX_MENU_NESTING;
+}
+	
 function MenuBar(menus) {
 	if (!(this instanceof MenuBar)) {
 		return new MenuBar(menus);
@@ -258,6 +270,9 @@ function MenuBar(menus) {
 
 					const open_submenu = () => {
 						submenu_popup_el.style.display = "";
+						submenu_popup_el.style.zIndex = get_new_menu_z_index();
+						// console.log("open_submenu — submenu_popup_el.style.zIndex", submenu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
+						// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
 						$(submenu_popup_el).triggerHandler("update");
 						const rect = item_el.getBoundingClientRect();
 						let submenu_popup_rect = submenu_popup_el.getBoundingClientRect();
@@ -442,6 +457,9 @@ function MenuBar(menus) {
 			menu_button_el.classList.add("active");
 			menu_button_el.setAttribute("aria-expanded", "true");
 			menu_popup_el.style.display = "";
+			menu_popup_el.style.zIndex = get_new_menu_z_index();
+			// console.log("pointerdown (possibly simulated) — menu_popup_el.style.zIndex", menu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
+			// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
 			active_menu_index = Object.keys(menus).indexOf(menus_key);
 			// menu_popup_el.dispatchEvent(new CustomEvent("update")); // TODO: do stuff like this, for example.
 			$(menu_popup_el).trigger("update");
