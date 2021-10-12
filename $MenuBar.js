@@ -69,6 +69,12 @@ function MenuBar(menus) {
 
 	let selecting_menus = false;
 
+	// There can be multiple menu bars instantiated from the same menu definitions,
+	// so this can't be a map of menu item to submenu, it has to be of menu item ELEMENTS to submenu.
+	// (or you know, it could work totally differently, this is just one way obviously)
+	// This is for entering submenus.
+	const submenu_popups_by_menu_item_el = new Map();
+
 	const close_menus = () => {
 		$(menus_el).find(".menu-button").trigger("release"); // using jQuery just for events system; @TODO: remove jQuery dependency
 		// Close any rogue floating submenus
@@ -119,6 +125,8 @@ function MenuBar(menus) {
 				label_el.innerHTML = display_hotkey(item.item);
 				shortcut_el.textContent = item.shortcut;
 
+				item_el._menu_item = item;
+
 				$(menu_popup_el).on("update", () => {
 					// item_el.disabled = is_disabled(item); // doesn't work, probably because it's a <tr>
 					if (is_disabled(item)) {
@@ -148,9 +156,12 @@ function MenuBar(menus) {
 						}
 					}, 0);
 
-					const submenu_popup_el = MenuPopup(item.submenu).element;
+					const submenu_popup = MenuPopup(item.submenu);
+					const submenu_popup_el = submenu_popup.element;
 					document.body.appendChild(submenu_popup_el);
 					submenu_popup_el.style.display = "none";
+
+					submenu_popups_by_menu_item_el.set(item_el, submenu_popup);
 
 					const open_submenu = () => {
 						submenu_popup_el.style.display = "";
@@ -272,8 +283,10 @@ function MenuBar(menus) {
 		menus_el.appendChild(menu_container_el);
 		menu_container_el.appendChild(menu_button_el);
 
-		const menu_popup_el = MenuPopup(menu_items).element;
+		const menu_popup = MenuPopup(menu_items);
+		const menu_popup_el = menu_popup.element;
 		menu_container_el.appendChild(menu_popup_el);
+		submenu_popups_by_menu_item_el.set(menu_button_el, menu_popup);
 
 		const update_position_from_containing_bounds = () => {
 			menu_popup_el.style.left = "unset";
@@ -309,10 +322,16 @@ function MenuBar(menus) {
 					) {
 						// enter submenu
 						$(focused_item_el).trigger("click");
-						// @TODO: enter sub-submenus; this only works for the first level
-						document.querySelector(".menu-popup .menu-item").focus(); // first item
+						// focus first item in submenu
+						const submenu_popup = submenu_popups_by_menu_item_el.get(focused_item_el);
+						submenu_popup.element.querySelector(".menu-item").focus();
 						e.preventDefault();
 					} else {
+						// @TODO: if in a submenu, go back to parent menu with opposite arrow key,
+						// or with the same arrow key go to the next/previous(?) top level menu
+						// Need to expand the keydown scope to handle this. Since the popup elements are appended to the body,
+						// it needs to be separate or totally global.
+
 						// go to next/previous menu
 						const next_previous = ((get_direction() === "ltr") === right) ? "next" : "previous";
 						const target_button_el = menu_container_el[`${next_previous}ElementSibling`]?.querySelector(".menu-button");
