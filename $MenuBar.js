@@ -74,6 +74,9 @@ function MenuBar(menus) {
 	// (or you know, it could work totally differently, this is just one way obviously)
 	// This is for entering submenus.
 	const submenu_popups_by_menu_item_el = new Map();
+	
+	// This is for exiting submenus.
+	const parent_item_el_by_popup_el = new Map();
 
 	const any_open_menus = ()=> !!document.querySelector(".menu-popup"); // @TODO: specific to this menu bar (note that popups are not (all) descendants of the menu bar)
 	const close_menus = () => {
@@ -107,7 +110,9 @@ function MenuBar(menus) {
 		const menu_button_el = e.target.closest(".menu-button");
 		console.log("keydown", e.key, { target: e.target, active_menu_popup_el, button_menu_popup_el, menu_button_el });
 		const menu_popup_el = active_menu_popup_el || button_menu_popup_el;
+		const parent_item_el = parent_item_el_by_popup_el.get(active_menu_popup_el);
 		const focused_item_el = menu_popup_el.querySelector(".menu-item:focus");
+
 		switch (e.keyCode) {
 			case 37: // Left
 			case 39: // Right
@@ -123,22 +128,11 @@ function MenuBar(menus) {
 					submenu_popup.element.querySelector(".menu-item").focus();
 					e.preventDefault();
 				} else if (
-					active_menu_popup_el &&
+					parent_item_el &&
 					(get_direction() === "ltr") !== right
 				) {
 					// exit submenu
-					// @HACK: assuming DOM order (but at least not assuming there's no elements in between popups in the <body>)
-					// popups created more recently are on top, so look at previous siblings
-					let parent_menu = active_menu_popup_el;
-					while (parent_menu.previousElementSibling) {
-						parent_menu = parent_menu.previousElementSibling;
-						if (parent_menu.classList.contains("menu-popup")) {
-							break;
-						}
-					}
-					console.log("parent of", active_menu_popup_el, "is", parent_menu);
-					// const parent_menu = active_menu_popup_el.previousElementSibling; // this could easily get confused by other code (anything that adds to the <body>)
-					parent_menu.querySelector(".menu-item").focus(); // @TODO: focus the item that opened the submenu
+					parent_item_el.focus();
 					active_menu_popup_el.style.display = "none";
 					e.preventDefault();
 				} else {
@@ -259,6 +253,7 @@ function MenuBar(menus) {
 					submenu_popup_el.style.display = "none";
 
 					submenu_popups_by_menu_item_el.set(item_el, submenu_popup);
+					parent_item_el_by_popup_el.set(submenu_popup_el, item_el);
 
 					const open_submenu = () => {
 						submenu_popup_el.style.display = "";
