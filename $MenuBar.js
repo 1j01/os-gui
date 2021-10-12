@@ -75,6 +75,7 @@ function MenuBar(menus) {
 	// This is for entering submenus.
 	const submenu_popups_by_menu_item_el = new Map();
 
+	const any_open_menus = ()=> !!document.querySelector(".menu-popup"); // @TODO: specific to this menu bar (note that popups are not (all) descendants of the menu bar)
 	const close_menus = () => {
 		$(menus_el).find(".menu-button").trigger("release"); // using jQuery just for events system; @TODO: remove jQuery dependency
 		// Close any rogue floating submenus
@@ -368,8 +369,16 @@ function MenuBar(menus) {
 					}
 					e.preventDefault();
 					break;
+				case 27: // Escape
+					if (any_open_menus()) {
+						close_menus();
+						e.preventDefault();
+					}
+					break;
 			}
 		});
+		// @TODO: allow setting scope for alt shortcuts, like menuBar.setKeyboardScope(windowElement||window)
+		// and add a helper to $Window to set up a menu bar, like $window.setMenuBar(menuBar||null)
 		$G.on("keydown", e => {
 			if (e.ctrlKey || e.metaKey) { // Ctrl or Command held
 				if (e.keyCode !== 17 && e.keyCode !== 91 && e.keyCode !== 93 && e.keyCode !== 224) { // anything but Ctrl or Command pressed
