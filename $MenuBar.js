@@ -122,10 +122,27 @@ function MenuBar(menus) {
 					const submenu_popup = submenu_popups_by_menu_item_el.get(focused_item_el);
 					submenu_popup.element.querySelector(".menu-item").focus();
 					e.preventDefault();
+				} else if (
+					active_menu_popup_el &&
+					(get_direction() === "ltr") !== right
+				) {
+					// exit submenu
+					// @HACK: assuming DOM order (but at least not assuming there's no elements in between popups in the <body>)
+					// popups created more recently are on top, so look at previous siblings
+					let parent_menu = active_menu_popup_el;
+					while (parent_menu.previousElementSibling) {
+						parent_menu = parent_menu.previousElementSibling;
+						if (parent_menu.classList.contains("menu-popup")) {
+							break;
+						}
+					}
+					console.log("parent of", active_menu_popup_el, "is", parent_menu);
+					// const parent_menu = active_menu_popup_el.previousElementSibling; // this could easily get confused by other code (anything that adds to the <body>)
+					parent_menu.querySelector(".menu-item").focus(); // @TODO: focus the item that opened the submenu
+					active_menu_popup_el.style.display = "none";
+					e.preventDefault();
 				} else {
-					// @TODO: if in a submenu, go back to parent menu with opposite arrow key
-
-					// go to next/previous menu
+					// go to next/previous top level menu
 					const next_previous = ((get_direction() === "ltr") === right) ? "next" : "previous";
 					const target_button_el = menu_container_el[`${next_previous}ElementSibling`]?.querySelector(".menu-button");
 					if (target_button_el) {
