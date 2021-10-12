@@ -245,7 +245,7 @@ function MenuBar(menus) {
 					if (visible(item_el)) {
 						$menus.triggerHandler("info", "");
 						// may not exist for submenu popups
-						const menu_button = $(menu_popup_el).closest(".menu-container").find(".menu-button")[0];
+						const menu_button = menu_popup_el.closest(".menu-container")?.querySelector(".menu-button");
 						if (menu_button) {
 							menu_button.focus();
 						}
