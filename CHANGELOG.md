@@ -33,7 +33,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Fixed active state of the titlebar buttons in Firefox.
 - Disabled buttons no longer show active state if you try to click on them.
 - In demo: When loading a theme file, do not apply any styles if it is not a valid theme file.
-- For right-to-left languages, submenus are now opened with the left arrow key, matching the arrow direction shown, and menus are navigated with left/right arrow keys spacially (before it was swapped because the order of elements was reversed but the key bindings were not).
+- For right-to-left languages, submenus are now opened with the left arrow key, matching the arrow direction shown, and menus are navigated with left/right arrow keys spatially (before it was swapped because the order of elements was reversed but the key bindings were not).
 - Titlebar gradient is flipped for RTL languages.
 
 </details>
