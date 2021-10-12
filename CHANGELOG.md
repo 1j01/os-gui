@@ -27,6 +27,9 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Window method `setDimensions({ innerWidth, innerHeight, outerWidth, outerHeight })` to set the size of the window.
 - Window options `innerWidth`, `innerHeight`, `outerWidth`, `outerHeight` to set the initial size of the window.
 - Window options `minInnerWidth`, `minInnerHeight`, `minOuterWidth`, `minOuterHeight` to set the minimum size of the window.
+- Menus can now be closed with Escape.
+- Submenus can now be navigated with the arrow keys.
+- The default action of scrolling the page with arrow keys is now prevented when menus are focused.
 
 ### Fixed
 - Improved accuracy of the titlebar styles, especially for tool windows.
@@ -35,6 +38,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - In demo: When loading a theme file, do not apply any styles if it is not a valid theme file.
 - For right-to-left languages, submenus are now opened with the left arrow key, matching the arrow direction shown, and menus are navigated with left/right arrow keys spatially (before it was swapped because the order of elements was reversed but the key bindings were not).
 - Titlebar gradient is flipped for RTL languages.
+- Focused disabled menu items are distinguished from enabled menu items.
 
 </details>
 
