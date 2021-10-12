@@ -95,11 +95,90 @@ function MenuBar(menus) {
 		}
 	};
 
+	// attached to menu bar and floating popups (which are not descendants of the menu bar)
+	function handleKeyDown(e) {
+		if (e.defaultPrevented) {
+			return;
+		}
+		const active_menu_popup_el = e.target.closest(".menu-popup");
+		const menu_container_el = e.target.closest(".menu-container") ||
+			[...menus_el.querySelectorAll(".menu-container")].find(el => el.querySelector(".menu-popup")?.style.display !== "none"); // @TODO: simplify with an "open" class? or aria-expanded
+		const button_menu_popup_el = menu_container_el?.querySelector(".menu-popup");
+		const menu_button_el = e.target.closest(".menu-button");
+		console.log("keydown", e.key, { target: e.target, active_menu_popup_el, button_menu_popup_el, menu_button_el });
+		const menu_popup_el = active_menu_popup_el || button_menu_popup_el;
+		const focused_item_el = menu_popup_el.querySelector(".menu-item:focus");
+		switch (e.keyCode) {
+			case 37: // Left
+			case 39: // Right
+				const right = e.keyCode === 39;
+				if (
+					focused_item_el?.classList.contains("has-submenu") &&
+					(get_direction() === "ltr") === right
+				) {
+					// enter submenu
+					$(focused_item_el).trigger("click");
+					// focus first item in submenu
+					const submenu_popup = submenu_popups_by_menu_item_el.get(focused_item_el);
+					submenu_popup.element.querySelector(".menu-item").focus();
+					e.preventDefault();
+				} else {
+					// @TODO: if in a submenu, go back to parent menu with opposite arrow key
+
+					// go to next/previous menu
+					const next_previous = ((get_direction() === "ltr") === right) ? "next" : "previous";
+					const target_button_el = menu_container_el[`${next_previous}ElementSibling`]?.querySelector(".menu-button");
+					if (target_button_el) {
+						$(target_button_el).trigger("pointerdown");
+					}
+					e.preventDefault();
+				}
+				break;
+			case 40: // Down
+				if (menu_popup_el && visible(menu_popup_el) && focused_item_el) {
+					let next_el = focused_item_el.nextElementSibling;
+					while (next_el && !next_el.classList.contains("menu-item")) {
+						next_el = next_el.nextElementSibling;
+					}
+					next_el?.focus();
+				} else {
+					$(menu_button_el).trigger("pointerdown");
+					menu_popup_el.querySelector(".menu-item").focus(); // first item
+				}
+				e.preventDefault();
+				break;
+			case 38: // Up
+				if (menu_popup_el && visible(menu_popup_el) && focused_item_el) {
+					let prev_el = focused_item_el.previousElementSibling;
+					while (prev_el && !prev_el.classList.contains("menu-item")) {
+						prev_el = prev_el.previousElementSibling;
+					}
+					prev_el?.focus();
+				} else {
+					$(menu_button_el).trigger("pointerdown"); // or maybe do nothing?
+					const menu_items = menu_popup_el.querySelectorAll(".menu-item");
+					menu_items[menu_items.length - 1].focus(); // last item
+				}
+				e.preventDefault();
+				break;
+			case 27: // Escape
+				if (any_open_menus()) {
+					close_menus();
+					e.preventDefault();
+				}
+				break;
+		}
+	}
+
+	menus_el.addEventListener("keydown", handleKeyDown);
+
 	// TODO: API for context menus (i.e. floating menu popups)
 	function MenuPopup(menu_items) {
 		const menu_popup_el = E("div", { class: "menu-popup" });
 		const menu_popup_table_el = E("table", { class: "menu-popup-table" });
 		menu_popup_el.appendChild(menu_popup_table_el);
+
+		menu_popup_el.addEventListener("keydown", handleKeyDown);
 
 		menu_items.forEach(item => {
 			const row_el = E("tr", { class: "menu-row" });
@@ -311,72 +390,7 @@ function MenuBar(menus) {
 		menu_popup_el.style.display = "none";
 		menu_button_el.innerHTML = display_hotkey(menus_key);
 		menu_button_el.tabIndex = -1;
-		$(menu_container_el).on("keydown", e => {
-			const focused_item_el = menu_popup_el.querySelector(".menu-item:focus");
-			switch (e.keyCode) {
-				case 37: // Left
-				case 39: // Right
-					const right = e.keyCode === 39;
-					if (
-						focused_item_el?.classList.contains("has-submenu") &&
-						(get_direction() === "ltr") === right
-					) {
-						// enter submenu
-						$(focused_item_el).trigger("click");
-						// focus first item in submenu
-						const submenu_popup = submenu_popups_by_menu_item_el.get(focused_item_el);
-						submenu_popup.element.querySelector(".menu-item").focus();
-						e.preventDefault();
-					} else {
-						// @TODO: if in a submenu, go back to parent menu with opposite arrow key,
-						// or with the same arrow key go to the next/previous(?) top level menu
-						// Need to expand the keydown scope to handle this. Since the popup elements are appended to the body,
-						// it needs to be separate or totally global.
-
-						// go to next/previous menu
-						const next_previous = ((get_direction() === "ltr") === right) ? "next" : "previous";
-						const target_button_el = menu_container_el[`${next_previous}ElementSibling`]?.querySelector(".menu-button");
-						if (target_button_el) {
-							$(target_button_el).trigger("pointerdown");
-						}
-						e.preventDefault();
-					}
-					break;
-				case 40: // Down
-					if (visible(menu_popup_el) && focused_item_el) {
-						let next_el = focused_item_el.nextElementSibling;
-						while (next_el && !next_el.classList.contains("menu-item")) {
-							next_el = next_el.nextElementSibling;
-						}
-						next_el?.focus();
-					} else {
-						$(menu_button_el).trigger("pointerdown");
-						menu_popup_el.querySelector(".menu-item").focus(); // first item
-					}
-					e.preventDefault();
-					break;
-				case 38: // Up
-					if (visible(menu_popup_el) && focused_item_el) {
-						let prev_el = focused_item_el.previousElementSibling;
-						while (prev_el && !prev_el.classList.contains("menu-item")) {
-							prev_el = prev_el.previousElementSibling;
-						}
-						prev_el?.focus();
-					} else {
-						$(menu_button_el).trigger("pointerdown"); // or maybe do nothing?
-						const menu_items = menu_popup_el.querySelectorAll(".menu-item");
-						menu_items[menu_items.length - 1].focus(); // last item
-					}
-					e.preventDefault();
-					break;
-				case 27: // Escape
-					if (any_open_menus()) {
-						close_menus();
-						e.preventDefault();
-					}
-					break;
-			}
-		});
+		
 		// @TODO: allow setting scope for alt shortcuts, like menuBar.setKeyboardScope(windowElement||window)
 		// and add a helper to $Window to set up a menu bar, like $window.setMenuBar(menuBar||null)
 		$G.on("keydown", e => {
