@@ -21,7 +21,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 - `parseThemeFileString` can now return `undefined` if the theme file is not valid.
-- For right-to-left languages, submenus can now be opened with the left arrow key instead of the right arrow key, matching the arrow direction.
+- HTML `dir` attribute / CSS `direction` property is now respected at the level of the window/menu bar, rather than just the document body, so you can have individual windows with different directions.
 
 ### Added
 - Window method `setDimensions({ innerWidth, innerHeight, outerWidth, outerHeight })` to set the size of the window.
@@ -33,6 +33,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Fixed active state of the titlebar buttons in Firefox.
 - Disabled buttons no longer show active state if you try to click on them.
 - In demo: When loading a theme file, do not apply any styles if it is not a valid theme file.
+- For right-to-left languages, submenus are now opened with the left arrow key, matching the arrow direction shown, and menus are navigated with left/right arrow keys spacially (before it was swapped because the order of elements was reversed but the key bindings were not).
 
 </details>
 

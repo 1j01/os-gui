@@ -45,11 +45,6 @@ function get_hotkey(text) {
 	return text[index_of_hotkey(text) + 1].toUpperCase();
 }
 
-// returns writing/layout direction, "ltr" or "rtl"
-function get_direction() {
-	return window.get_direction ? window.get_direction() : getComputedStyle(document.body).direction;
-}
-
 // TODO: support copy/pasting text in the text tool textarea from the menus
 // probably by recording document.activeElement on pointer down,
 // and restoring focus before executing menu item actions.
@@ -66,6 +61,11 @@ function MenuBar(menus) {
 
 	const menus_el = E("div", { class: "menus", "touch-action": "none" });
 	const $menus = $(menus_el);
+
+	// returns writing/layout direction, "ltr" or "rtl"
+	function get_direction() {
+		return window.get_direction ? window.get_direction() : getComputedStyle(menus_el).direction;
+	}
 
 	let selecting_menus = false;
 
@@ -142,9 +142,11 @@ function MenuBar(menus) {
 				if (item.submenu) {
 					item_el.classList.add("has-submenu");
 					submenu_area_el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="11" viewBox="0 0 10 11" style="fill:currentColor;display:inline-block;vertical-align:middle"><path d="M7.5 4.33L0 8.66L0 0z"/></svg>';
-					if (get_direction() === "rtl") {
-						submenu_area_el.querySelector("svg").style.transform = "scaleX(-1)";
-					}
+					setTimeout(() => { // allow time for the menu to be added to the DOM so it can inherit `direction` CSS property if applicable
+						if (get_direction() === "rtl") {
+							submenu_area_el.querySelector("svg").style.transform = "scaleX(-1)";
+						}
+					}, 0);
 
 					const submenu_popup_el = MenuPopup(item.submenu).element;
 					document.body.appendChild(submenu_popup_el);
@@ -312,7 +314,7 @@ function MenuBar(menus) {
 						e.preventDefault();
 					} else {
 						// go to next/previous menu
-						const next_previous = right ? "next" : "previous";
+						const next_previous = ((get_direction() === "ltr") === right) ? "next" : "previous";
 						const target_button_el = menu_container_el[`${next_previous}ElementSibling`]?.querySelector(".menu-button");
 						if (target_button_el) {
 							$(target_button_el).trigger("pointerdown");
