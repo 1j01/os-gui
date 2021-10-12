@@ -64,8 +64,8 @@ const menus = {
 // wait for page load (could alternatively just move the script so it executes after the elements are declared)
 $(() => {
 	// Create menu bar
-	const $menubar = new $MenuBar(menus);
-	$menubar.appendTo("#menubar-example");
+	const menubar = new MenuBar(menus);
+	$(menubar.element).appendTo("#menubar-example");
 
 	// Create demo windows
 	const $app_window_1 = new $Window({ title: "Application Window", resizable: true });
@@ -79,7 +79,7 @@ $(() => {
 	fake_closing($tool_window_1);
 
 	const $app_window_2 = new $Window({ title: "Application Example", resizable: true });
-	$app_window_2.$content.prepend(new $MenuBar(menus));
+	$app_window_2.$content.prepend(new MenuBar(menus).element);
 	$app_window_2.$content.css({
 		padding: 0,
 		display: "flex",

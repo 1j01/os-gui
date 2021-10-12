@@ -100,13 +100,15 @@ Selection styles are applied globally.
 
 Can be overridden with `::selection` (but not easily reset to the browser default... unless with `unset` - but that's not very clean; there should be a better way to scope where the selection styles apply, like maybe a `.os-gui` class)
 
-### `$MenuBar(menus)`
+### `MenuBar(menus)`
 
 Creates a menu bar component.
 
 `menus` should be an object holding arrays of [menu item specifications](#menu-item-specification), keyed by menu button name.
 
-Returns a jQuery object, which you should then append to the DOM where you want it.
+Returns an object with property `element`, which you should then append to the DOM where you want it.
+
+See examples in the [demo code](./demo/demo.js).
 
 #### Event: `info`
 
@@ -114,7 +116,7 @@ Can be used to implement a status bar.
 A description is provided when rolling over menu items that specify a `description`, via an extra parameter to the event handler. For example:
 
 ```js
-$menubar.on("info", (event, description)=> {
+$(menubar.element).on("info", (event, description)=> {
 	$status.text(description);
 });
 ```
@@ -124,7 +126,7 @@ $menubar.on("info", (event, description)=> {
 Should be used to reset a status bar, if present, to blank or a default message.
 
 ```js
-$menubar.on("default-info", ()=> {
+$(menubar.element).on("default-info", ()=> {
 	$status.text("");
 	// or
 	$status.text("For Help, click Help Topics on the Help Menu.");

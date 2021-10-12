@@ -56,7 +56,10 @@ function get_direction() {
 
 const MENU_DIVIDER = "MENU_DIVIDER";
 
-function $MenuBar(menus) {
+function MenuBar(menus) {
+	if (!(this instanceof MenuBar)) {
+		return new MenuBar(menus);
+	}
 
 	const $ = jQuery;
 	const $G = $(self);
@@ -414,10 +417,15 @@ function $MenuBar(menus) {
 		}
 	});
 
-	return $menus;
-
+	this.element = menus_el;
 }
 
+function $MenuBar(menus) {
+	console?.warn?.("$MenuBar is deprecated. Use `new MenuBar(menus).element` instead.");
+	return jQuery(new MenuBar(menus).element);
+}
+
+exports.MenuBar = MenuBar;
 exports.$MenuBar = $MenuBar;
 exports.MENU_DIVIDER = MENU_DIVIDER;
 

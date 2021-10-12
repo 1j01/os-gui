@@ -16,6 +16,9 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `minWidth` option; use `minOuterWidth` instead.
 - `minHeight` option; use `minOuterHeight` instead.
 
+### Deprecated
+- `$MenuBar(menus)`; use `new MenuBar(menus).element` instead. (jQuery is being phased out.)
+
 ### Changed
 - `parseThemeFileString` can now return `undefined` if the theme file is not valid.
 
