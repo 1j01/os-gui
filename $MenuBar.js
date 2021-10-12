@@ -67,18 +67,20 @@ function MenuBar(menus) {
 		return window.get_direction ? window.get_direction() : getComputedStyle(menus_el).direction;
 	}
 
-	let selecting_menus = false;
+	let selecting_menus = false; // state where you can glide between menus without clicking
+
+	let active_menu_index = -1; // index of the top level menu that's most recently open
 
 	// There can be multiple menu bars instantiated from the same menu definitions,
 	// so this can't be a map of menu item to submenu, it has to be of menu item ELEMENTS to submenu.
 	// (or you know, it could work totally differently, this is just one way obviously)
 	// This is for entering submenus.
 	const submenu_popups_by_menu_item_el = new Map();
-	
+
 	// This is for exiting submenus.
 	const parent_item_el_by_popup_el = new Map();
 
-	const any_open_menus = ()=> !!document.querySelector(".menu-popup"); // @TODO: specific to this menu bar (note that popups are not (all) descendants of the menu bar)
+	const any_open_menus = ()=> !!document.querySelector(".menu-popup"); // @TODO: specific to this menu bar (note that popups are not descendants of the menu bar)
 	const close_menus = () => {
 		$(menus_el).find(".menu-button").trigger("release"); // using jQuery just for events system; @TODO: remove jQuery dependency
 		// Close any rogue floating submenus
@@ -104,11 +106,9 @@ function MenuBar(menus) {
 			return;
 		}
 		const active_menu_popup_el = e.target.closest(".menu-popup");
-		const menu_container_el = e.target.closest(".menu-container") ||
-			[...menus_el.querySelectorAll(".menu-container")].find(el => el.querySelector(".menu-popup")?.style.display !== "none"); // @TODO: simplify with an "open" class? or aria-expanded
-		const button_menu_popup_el = menu_container_el?.querySelector(".menu-popup");
-		const menu_button_el = e.target.closest(".menu-button");
-		console.log("keydown", e.key, { target: e.target, active_menu_popup_el, button_menu_popup_el, menu_button_el });
+		const menu_button_el = e.target.closest(".menu-button") || menus_el.children[active_menu_index]; //menus_el.querySelector(".menu-button[aria-expanded='true']");
+		const button_menu_popup_el = document.getElementById(menu_button_el.getAttribute("aria-controls"));
+		// console.log("keydown", e.key, { target: e.target, active_menu_popup_el, button_menu_popup_el, menu_button_el });
 		const menu_popup_el = active_menu_popup_el || button_menu_popup_el;
 		const parent_item_el = parent_item_el_by_popup_el.get(active_menu_popup_el);
 		const focused_item_el = menu_popup_el.querySelector(".menu-item:focus");
@@ -129,6 +129,7 @@ function MenuBar(menus) {
 					e.preventDefault();
 				} else if (
 					parent_item_el &&
+					!parent_item_el.classList.contains("menu-button") && // left/right doesn't make sense to close the top level menu
 					(get_direction() === "ltr") !== right
 				) {
 					// exit submenu
@@ -138,7 +139,7 @@ function MenuBar(menus) {
 				} else {
 					// go to next/previous top level menu
 					const next_previous = ((get_direction() === "ltr") === right) ? "next" : "previous";
-					const target_button_el = menu_container_el[`${next_previous}ElementSibling`]?.querySelector(".menu-button");
+					const target_button_el = menu_button_el[`${next_previous}ElementSibling`];
 					if (target_button_el) {
 						$(target_button_el).trigger("pointerdown");
 					}
@@ -261,7 +262,6 @@ function MenuBar(menus) {
 						const rect = item_el.getBoundingClientRect();
 						let submenu_popup_rect = submenu_popup_el.getBoundingClientRect();
 						submenu_popup_el.style.position = "absolute";
-						submenu_popup_el.style.right = "unset"; // needed for RTL layout
 						submenu_popup_el.style.left = `${(get_direction() === "rtl" ? rect.left - submenu_popup_rect.width : rect.right) + window.scrollX}px`;
 						submenu_popup_el.style.top = `${rect.top + window.scrollY}px`;
 
@@ -298,7 +298,9 @@ function MenuBar(menus) {
 						open_tid = setTimeout(open_submenu, 200);
 					});
 					$(item_el).add(submenu_popup_el).on("pointerout", () => {
-						menu_popup_el.closest(".menu-container").querySelector(".menu-button").focus();
+						// menu_popup_el.closest(".menu-container").querySelector(".menu-button").focus();
+						parent_item_el_by_popup_el.get(submenu_popup_el).focus(); // ????
+
 						if (open_tid) { clearTimeout(open_tid); }
 						if (close_tid) { clearTimeout(close_tid); }
 						close_tid = setTimeout(() => {
@@ -336,10 +338,8 @@ function MenuBar(menus) {
 					if (visible(item_el)) {
 						$menus.triggerHandler("info", "");
 						// may not exist for submenu popups
-						const menu_button = menu_popup_el.closest(".menu-container")?.querySelector(".menu-button");
-						if (menu_button) {
-							menu_button.focus();
-						}
+						// const menu_button = menu_popup_el.closest(".menu-container")?.querySelector(".menu-button");
+						parent_item_el_by_popup_el.get(menu_popup_el)?.focus(); // maybe???
 					}
 				});
 
@@ -369,24 +369,28 @@ function MenuBar(menus) {
 	}
 
 	let this_click_opened_the_menu = false;
-	const make_menu = (menus_key, menu_items) => {
-		const menu_container_el = E("div", { class: "menu-container" });
-		const menu_button_el = E("div", { class: "menu-button" });
-		menus_el.appendChild(menu_container_el);
-		menu_container_el.appendChild(menu_button_el);
+	const make_menu_button = (menus_key, menu_items) => {
+		const menu_button_el = E("div", { class: "menu-button", "aria-expanded": "false" });
+
+		menus_el.appendChild(menu_button_el);
 
 		const menu_popup = MenuPopup(menu_items);
 		const menu_popup_el = menu_popup.element;
-		menu_container_el.appendChild(menu_popup_el);
+		document.body.appendChild(menu_popup_el);
 		submenu_popups_by_menu_item_el.set(menu_button_el, menu_popup);
+		parent_item_el_by_popup_el.set(menu_popup_el, menu_button_el);
 
 		const update_position_from_containing_bounds = () => {
-			menu_popup_el.style.left = "unset";
-			menu_popup_el.style.right = "unset"; // needed for RTL layout
+			const rect = menu_button_el.getBoundingClientRect();
+			let popup_rect = menu_popup_el.getBoundingClientRect();
+			menu_popup_el.style.position = "absolute";
+			menu_popup_el.style.left = `${(get_direction() === "rtl" ? rect.right - popup_rect.width : rect.left) + window.scrollX}px`;
+			menu_popup_el.style.top = `${rect.bottom + window.scrollY}px`;
+
 			const uncorrected_rect = menu_popup_el.getBoundingClientRect();
-			// rounding down is needed for RTL layout for the rightmost menu
+			// rounding down is needed for RTL layout for the rightmost menu, to prevent a scrollbar
 			if (Math.floor(uncorrected_rect.right) > innerWidth) {
-				menu_popup_el.style.left = `${innerWidth - uncorrected_rect.width - uncorrected_rect.left}px`;
+				menu_popup_el.style.left = `${innerWidth - uncorrected_rect.width}px`;
 			}
 			if (Math.ceil(uncorrected_rect.left) < 0) {
 				menu_popup_el.style.left = "0px";
@@ -394,16 +398,19 @@ function MenuBar(menus) {
 		};
 		$G.on("resize", update_position_from_containing_bounds);
 		$(menu_popup_el).on("update", update_position_from_containing_bounds);
-		update_position_from_containing_bounds();
+		// update_position_from_containing_bounds(); // will be called when the menu is opened
 
 		const menu_id = menus_key.replace("&", "").replace(/ /g, "-").toLowerCase();
 		menu_button_el.classList.add(`${menu_id}-menu-button`);
-
+		menu_popup_el.id = `${menu_id}-menu-popup-${Math.random().toString(36).substr(2, 9)}`;
 		menu_popup_el.style.display = "none";
 		menu_button_el.innerHTML = display_hotkey(menus_key);
 		menu_button_el.tabIndex = -1;
 		
-		// @TODO: allow setting scope for alt shortcuts, like menuBar.setKeyboardScope(windowElement||window)
+		menu_button_el.setAttribute("aria-haspopup", "true");
+		menu_button_el.setAttribute("aria-controls", menu_popup_el.id);
+
+		// @TODO: allow setting scope for alt shortcuts, like menuBar.setHotkeyScope(windowElement||window)
 		// and add a helper to $Window to set up a menu bar, like $window.setMenuBar(menuBar||null)
 		$G.on("keydown", e => {
 			if (e.ctrlKey || e.metaKey) { // Ctrl or Command held
@@ -433,7 +440,9 @@ function MenuBar(menus) {
 
 			menu_button_el.focus();
 			menu_button_el.classList.add("active");
+			menu_button_el.setAttribute("aria-expanded", "true");
 			menu_popup_el.style.display = "";
+			active_menu_index = Object.keys(menus).indexOf(menus_key);
 			// menu_popup_el.dispatchEvent(new CustomEvent("update")); // TODO: do stuff like this, for example.
 			$(menu_popup_el).trigger("update");
 
@@ -455,12 +464,13 @@ function MenuBar(menus) {
 
 			menu_button_el.classList.remove("active");
 			menu_popup_el.style.display = "none";
+			menu_button_el.setAttribute("aria-expanded", "false");
 
 			$menus.triggerHandler("default-info");
 		});
 	};
 	for (const menu_key in menus) {
-		make_menu(menu_key, menus[menu_key]);
+		make_menu_button(menu_key, menus[menu_key]);
 	}
 
 	$G.on("keypress", e => {
