@@ -112,12 +112,28 @@ $(() => {
 		$tool_window_2.close();
 	});
 
+	const $app_window_3 = new $Window({ title: "Right-To-Left Example", resizable: true });
+	$app_window_3.css("direction", "rtl");
+	$app_window_3.$content.prepend(new MenuBar(menus).element);
+	$app_window_3.$content.css({
+		padding: 0,
+		display: "flex",
+		flexDirection: "column",
+	});
+	$app_window_3.$content.append(`
+		<div style='padding: 20px; background: var(--Window); color: var(--WindowText); user-select: text; cursor: text; flex: 1;'>
+			<p dir="ltr">You can imagine some Hebrew/Arabic/etc. text in the menus and titlebar.</p>
+		</div>
+	`);
+	fake_closing($app_window_3);
+
 	// Position the windows within the demo page, in the flow of text, but freely moveable
 	const $windows_and_$positioners = [
 		[$app_window_1, $("#app-window-example")],
 		[$tool_window_1, $("#tool-window-example")],
 		[$app_window_2, $("#app-window-2-positioner")],
 		[$tool_window_2, $("#tool-window-2-positioner")],
+		[$app_window_3, $("#app-window-3-positioner")],
 	];
 	for (const [$window, $positioning_el] of $windows_and_$positioners) {
 		$window.css({
