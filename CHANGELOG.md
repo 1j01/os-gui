@@ -21,6 +21,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 - `parseThemeFileString` can now return `undefined` if the theme file is not valid.
+- For right-to-left languages, submenus can now be opened with the left arrow key instead of the right arrow key, matching the arrow direction.
 
 ### Added
 - Window method `setDimensions({ innerWidth, innerHeight, outerWidth, outerHeight })` to set the size of the window.

@@ -299,23 +299,23 @@ function MenuBar(menus) {
 			const focused_item_el = menu_popup_el.querySelector(".menu-item:focus");
 			switch (e.keyCode) {
 				case 37: // Left
-					// @TODO: for RTL layout, open submenu via left arrow
-					const prev_button_el = menu_container_el.previousElementSibling?.querySelector(".menu-button");
-					if (prev_button_el) {
-						$(prev_button_el).trigger("pointerdown");
-					}
-					break;
 				case 39: // Right
-					// @TODO: open submenu via right arrow only for LTR layout
-					if (focused_item_el?.classList.contains("has-submenu")) {
+					const right = e.keyCode === 39;
+					if (
+						focused_item_el?.classList.contains("has-submenu") &&
+						(get_direction() === "ltr") === right
+					) {
+						// enter submenu
 						$(focused_item_el).trigger("click");
 						// @TODO: enter sub-submenus; this only works for the first level
 						document.querySelector(".menu-popup .menu-item").focus(); // first item
 						e.preventDefault();
 					} else {
-						const next_button_el = menu_container_el.nextElementSibling?.querySelector(".menu-button");
-						if (next_button_el) {
-							$(next_button_el).trigger("pointerdown");
+						// go to next/previous menu
+						const next_previous = right ? "next" : "previous";
+						const target_button_el = menu_container_el[`${next_previous}ElementSibling`]?.querySelector(".menu-button");
+						if (target_button_el) {
+							$(target_button_el).trigger("pointerdown");
 						}
 					}
 					break;
