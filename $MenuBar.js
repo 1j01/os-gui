@@ -338,6 +338,7 @@ function MenuBar(menus) {
 						if (target_button_el) {
 							$(target_button_el).trigger("pointerdown");
 						}
+						e.preventDefault();
 					}
 					break;
 				case 40: // Down
@@ -351,6 +352,7 @@ function MenuBar(menus) {
 						$(menu_button_el).trigger("pointerdown");
 						menu_popup_el.querySelector(".menu-item").focus(); // first item
 					}
+					e.preventDefault();
 					break;
 				case 38: // Up
 					if (visible(menu_popup_el) && focused_item_el) {
@@ -364,6 +366,7 @@ function MenuBar(menus) {
 						const menu_items = menu_popup_el.querySelectorAll(".menu-item");
 						menu_items[menu_items.length - 1].focus(); // last item
 					}
+					e.preventDefault();
 					break;
 			}
 		});
