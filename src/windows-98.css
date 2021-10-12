@@ -310,10 +310,13 @@ body > .window-titlebar {
 	color: var(--GrayText);
 	text-shadow: 0.8px 0.8px 0px var(--ButtonHilight);
 }
+.menu-item:focus:not([disabled]),
+.menu-item.active:not([disabled]) {
+	color: var(--HilightText);
+}
 .menu-item:focus,
 .menu-item.active {
 	background: var(--Hilight);
-	color: var(--HilightText);
 	text-shadow: none;
 	outline: 0;
 }
