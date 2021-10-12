@@ -140,6 +140,7 @@ function MenuBar(menus) {
 				}
 
 				if (item.submenu) {
+					item_el.classList.add("has-submenu");
 					submenu_area_el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="11" viewBox="0 0 10 11" style="fill:currentColor;display:inline-block;vertical-align:middle"><path d="M7.5 4.33L0 8.66L0 0z"/></svg>';
 					if (get_direction() === "rtl") {
 						submenu_area_el.querySelector("svg").style.transform = "scaleX(-1)";
@@ -298,15 +299,17 @@ function MenuBar(menus) {
 			const focused_item_el = menu_popup_el.querySelector(".menu-item:focus");
 			switch (e.keyCode) {
 				case 37: // Left
+					// @TODO: for RTL layout, open submenu via left arrow
 					const prev_button_el = menu_container_el.previousElementSibling?.querySelector(".menu-button");
 					if (prev_button_el) {
 						$(prev_button_el).trigger("pointerdown");
 					}
 					break;
 				case 39: // Right
-					// @TODO: make a class like .has-submenu
-					if (focused_item_el?.querySelector(".menu-item-submenu-area:not(:empty)")) {
+					// @TODO: open submenu via right arrow only for LTR layout
+					if (focused_item_el?.classList.contains("has-submenu")) {
 						$(focused_item_el).trigger("click");
+						// @TODO: enter sub-submenus; this only works for the first level
 						document.querySelector(".menu-popup .menu-item").focus(); // first item
 						e.preventDefault();
 					} else {
