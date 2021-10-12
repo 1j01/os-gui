@@ -268,19 +268,39 @@ function $Window(options) {
 		$w.bringToFront();
 		// Test cases where it should refocus the last focused control in the window:
 		// - Click in the blank space of the window
+		//   - Click in blank space again now that something's focused
 		// - Click on the window title bar
-		// - Close a second window, focusing the first window
-		// - Clicking on a control in the window should focus it, by way of updating last_focused_control
-		// - Simulated clicks
+		// - Closing a second window should focus the first window
+		//   - Open a dialog window from an app window that has a tool window, then close the dialog window
+		//     (@FIXME: right now this doesn't work because the tool window is on top, so it's considered the next window to focus, and it doesn't have any controls, so nothing gets focused)
+		// - Clicking on a control in the window should focus said control (perhaps by way of updating last_focused_control)
+		// - Simulated clicks (important for JS Paint's eye gaze and speech recognition modes)
+		// - (@TODO: Should clicking a child window focus the parent window?)
 		// It should NOT refocus when:
 		// - Clicking on a control in a different window
+		// - When other event handlers set focus
+		//   - Using the keyboard to focus something outside the window, such as a menu popup
+		//   - Clicking a control that focuses something outside the window (I don't have an example)
 		// - Trying to select text
 
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
-		// Set focus to the last focused control, which should be updated if a click just occurred.
+		const formerly_focused = event.relatedTarget;
 		requestAnimationFrame(() => {
+			// console.log("did focus change?", { last_focused_control, formerly_focused, activeElement: document.activeElement, win_elem: $w[0]}, document.activeElement !== formerly_focused);
+			
+			// If something programmatically got focus, don't refocus.
+			if (
+				document.activeElement &&
+				document.activeElement !== document &&
+				document.activeElement !== document.body &&
+				document.activeElement !== formerly_focused
+			) {
+				return;
+			}
+
 			// focused = true;
-			// But if the element is selectable, wait until the click is done and see if anything was selected first.
+
+			// If the element is selectable, wait until the click is done and see if anything was selected first.
 			// This is a bit of a weird compromise, for now.
 			const target_style = getComputedStyle(event.target);
 			if (target_style.userSelect !== "none") {
@@ -293,16 +313,21 @@ function $Window(options) {
 				});
 				return;
 			}
+			// Set focus to the last focused control, which should be updated if a click just occurred.
 			if (last_focused_control) {
 				last_focused_control.focus();
 			}
 		});
 	});
-	// Assumption: no control exists in the window before, this "focusin" handler is set up,
-	// so any element.focus() will be after and trigger this handler.
+	// Assumption: no control exists in the window before this "focusin" handler is set up,
+	// so any element.focus() will come after and trigger this handler.
 	$w.on("focusin", () => {
 		// focused = true;
-		if (document.activeElement && $.contains($w.$content[0], document.activeElement)) {
+		if (
+			document.activeElement &&
+			$.contains($w.$content[0], document.activeElement) &&
+			!document.activeElement.closest(".menus")
+		) {
 			last_focused_control = document.activeElement;
 		}
 	});
