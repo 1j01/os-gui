@@ -61,7 +61,6 @@ function $MenuBar(menus) {
 	const $ = jQuery;
 	const $G = $(self);
 
-	// const $menus = $(E("div")).addClass("menus").attr("touch-action", "none");
 	const menus_el = E("div", { class: "menus", "touch-action": "none" });
 	const $menus = $(menus_el);
 
@@ -70,7 +69,6 @@ function $MenuBar(menus) {
 	const close_menus = () => {
 		$(menus_el).find(".menu-button").trigger("release"); // using jQuery just for events system; @TODO: remove jQuery dependency
 		// Close any rogue floating submenus
-		// $(".menu-popup").hide();
 		const popup_els = document.querySelectorAll(".menu-popup");
 		for (const popup_el of popup_els) {
 			popup_el.style.display = "none";
@@ -89,30 +87,19 @@ function $MenuBar(menus) {
 
 	// TODO: API for context menus (i.e. floating menu popups)
 	function MenuPopup(menu_items) {
-		// const $menu_popup = $(E("div")).addClass("menu-popup");
-		// const $menu_popup_table = $(E("table")).addClass("menu-popup-table").appendTo($menu_popup);
 		const menu_popup_el = E("div", { class: "menu-popup" });
 		const menu_popup_table_el = E("table", { class: "menu-popup-table" });
 		menu_popup_el.appendChild(menu_popup_table_el);
 
-		// $.map(menu_items, item => {
 		menu_items.forEach(item => {
-			// const $row = $(E("tr")).addClass("menu-row").appendTo($menu_popup_table);
 			const row_el = E("tr", { class: "menu-row" });
 			menu_popup_table_el.appendChild(row_el);
 			if (item === MENU_DIVIDER) {
-				// const $td = $(E("td")).attr({ colspan: 4 }).appendTo($row);
-				// const $hr = $(E("hr")).addClass("menu-hr").appendTo($td);
 				const td_el = E("td", { colspan: 4 });
 				const hr_el = E("hr", { class: "menu-hr" });
 				td_el.appendChild(hr_el);
 				row_el.appendChild(td_el);
 			} else {
-				// const $item = $row.addClass("menu-item").attr("tabIndex", -1);
-				// const $checkbox_area = $(E("td")).addClass("menu-item-checkbox-area");
-				// const $label = $(E("td")).addClass("menu-item-label");
-				// const $shortcut = $(E("td")).addClass("menu-item-shortcut");
-				// const $submenu_area = $(E("td")).addClass("menu-item-submenu-area");
 				const item_el = row_el;
 				item_el.classList.add("menu-item");
 				item_el.setAttribute("tabIndex", -1);
@@ -121,19 +108,15 @@ function $MenuBar(menus) {
 				const shortcut_el = E("td", { class: "menu-item-shortcut" });
 				const submenu_area_el = E("td", { class: "menu-item-submenu-area" });
 
-				// $item.append($checkbox_area, $label, $shortcut, $submenu_area);
 				item_el.appendChild(checkbox_area_el);
 				item_el.appendChild(label_el);
 				item_el.appendChild(shortcut_el);
 				item_el.appendChild(submenu_area_el);
 
-				// $label.html(display_hotkey(item.item));
-				// $shortcut.text(item.shortcut);
 				label_el.innerHTML = display_hotkey(item.item);
 				shortcut_el.textContent = item.shortcut;
 
 				$(menu_popup_el).on("update", () => {
-					// $item.attr("disabled", is_disabled(item));
 					// item_el.disabled = is_disabled(item); // doesn't work, probably because it's a <tr>
 					if (is_disabled(item)) {
 						item_el.setAttribute("disabled", "");
@@ -141,47 +124,33 @@ function $MenuBar(menus) {
 						item_el.removeAttribute("disabled");
 					}
 					if (item.checkbox && item.checkbox.check) {
-						// $checkbox_area.text(item.checkbox.check() ? "✓" : "");
 						checkbox_area_el.textContent = item.checkbox.check() ? "✓" : "";
 					}
 				});
 				$(item_el).on("pointerover", () => {
 					$(menu_popup_el).triggerHandler("update");
-					// $item[0].focus();
 					item_el.focus();
 				});
 
 				if (item.checkbox) {
-					// $checkbox_area.text("✓");
 					checkbox_area_el.textContent = "✓";
 				}
 
 				if (item.submenu) {
-					// $submenu_area.html('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="11" viewBox="0 0 10 11" style="fill:currentColor;display:inline-block;vertical-align:middle"><path d="M7.5 4.33L0 8.66L0 0z"/></svg>');
 					submenu_area_el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="11" viewBox="0 0 10 11" style="fill:currentColor;display:inline-block;vertical-align:middle"><path d="M7.5 4.33L0 8.66L0 0z"/></svg>';
 					if (get_direction() === "rtl") {
-						// $submenu_area.find("svg").css("transform", "scaleX(-1)");
 						submenu_area_el.querySelector("svg").style.transform = "scaleX(-1)";
 					}
 
-					// const $submenu_popup = $MenuPopup(item.submenu).appendTo("body");
 					const submenu_popup_el = MenuPopup(item.submenu).element;
 					document.body.appendChild(submenu_popup_el);
-					// $submenu_popup.hide();
 					submenu_popup_el.style.display = "none";
 
 					const open_submenu = () => {
-						// $submenu_popup.show();
 						submenu_popup_el.style.display = "";
 						$(submenu_popup_el).triggerHandler("update");
 						const rect = item_el.getBoundingClientRect();
 						let submenu_popup_rect = submenu_popup_el.getBoundingClientRect();
-						// $submenu_popup.css({
-						// 	position: "absolute",
-						// 	right: "unset", // needed for RTL layout
-						// 	left: (get_direction() === "rtl" ? rect.left - submenu_popup_rect.width : rect.right) + window.scrollX,
-						// 	top: rect.top + window.scrollY,
-						// });
 						submenu_popup_el.style.position = "absolute";
 						submenu_popup_el.style.right = "unset"; // needed for RTL layout
 						submenu_popup_el.style.left = `${(get_direction() === "rtl" ? rect.left - submenu_popup_rect.width : rect.right) + window.scrollX}px`;
@@ -193,29 +162,17 @@ function $MenuBar(menus) {
 						// but I want to get RTL support done and so I'm mirroring this in the simplest way possible.
 						if (get_direction() === "rtl") {
 							if (submenu_popup_rect.left < 0) {
-								// $submenu_popup.css({
-								// 	left: rect.right,
-								// });
 								submenu_popup_el.style.left = `${rect.right}px`;
 								submenu_popup_rect = submenu_popup_el.getBoundingClientRect();
 								if (submenu_popup_rect.right > innerWidth) {
-									// $submenu_popup.css({
-									// 	left: innerWidth - submenu_popup_rect.width,
-									// });
 									submenu_popup_el.style.left = `${innerWidth - submenu_popup_rect.width}px`;
 								}
 							}
 						} else {
 							if (submenu_popup_rect.right > innerWidth) {
-								// $submenu_popup.css({
-								// 	left: rect.left - submenu_popup_rect.width,
-								// });
 								submenu_popup_el.style.left = `${rect.left - submenu_popup_rect.width}px`;
 								submenu_popup_rect = submenu_popup_el.getBoundingClientRect();
 								if (submenu_popup_rect.left < 0) {
-									// $submenu_popup.css({
-									// 	left: 0,
-									// });
 									submenu_popup_el.style.left = "0";
 								}
 							}
@@ -232,12 +189,10 @@ function $MenuBar(menus) {
 						open_tid = setTimeout(open_submenu, 200);
 					});
 					$(item_el).add(submenu_popup_el).on("pointerout", () => {
-						// $menu_popup.closest(".menu-container").find(".menu-button")[0].focus();
 						menu_popup_el.closest(".menu-container").querySelector(".menu-button").focus();
 						if (open_tid) { clearTimeout(open_tid); }
 						if (close_tid) { clearTimeout(close_tid); }
 						close_tid = setTimeout(() => {
-							// $submenu_popup.hide();
 							submenu_popup_el.style.display = "none";
 						}, 200);
 					});
@@ -269,7 +224,6 @@ function $MenuBar(menus) {
 					}
 				});
 				$(item_el).on("pointerout", () => {
-					// if ($item.is(":visible")) {
 					if (visible(item_el)) {
 						$menus.triggerHandler("info", "");
 						// may not exist for submenu popups
@@ -307,30 +261,23 @@ function $MenuBar(menus) {
 
 	let this_click_opened_the_menu = false;
 	const make_menu = (menus_key, menu_items) => {
-		// const $menu_container = $(E("div")).addClass("menu-container").appendTo($menus);
-		// const $menu_button = $(E("div")).addClass("menu-button").appendTo($menu_container);
 		const menu_container_el = E("div", { class: "menu-container" });
 		const menu_button_el = E("div", { class: "menu-button" });
 		menus_el.appendChild(menu_container_el);
 		menu_container_el.appendChild(menu_button_el);
 
-		// const $menu_popup = $MenuPopup(menu_items).appendTo($menu_container);
 		const menu_popup_el = MenuPopup(menu_items).element;
 		menu_container_el.appendChild(menu_popup_el);
 
 		const update_position_from_containing_bounds = () => {
-			// $menu_popup.css("left", "unset");
-			// $menu_popup.css("right", "unset"); // needed for RTL layout
 			menu_popup_el.style.left = "unset";
 			menu_popup_el.style.right = "unset"; // needed for RTL layout
 			const uncorrected_rect = menu_popup_el.getBoundingClientRect();
 			// rounding down is needed for RTL layout for the rightmost menu
 			if (Math.floor(uncorrected_rect.right) > innerWidth) {
-				// $menu_popup.css("left", innerWidth - uncorrected_rect.width - uncorrected_rect.left);
 				menu_popup_el.style.left = `${innerWidth - uncorrected_rect.width - uncorrected_rect.left}px`;
 			}
 			if (Math.ceil(uncorrected_rect.left) < 0) {
-				// $menu_popup.css("left", 0);
 				menu_popup_el.style.left = "0px";
 			}
 		};
@@ -339,21 +286,15 @@ function $MenuBar(menus) {
 		update_position_from_containing_bounds();
 
 		const menu_id = menus_key.replace("&", "").replace(/ /g, "-").toLowerCase();
-		// $menu_button.addClass(`${menu_id}-menu-button`);
 		menu_button_el.classList.add(`${menu_id}-menu-button`);
 
-		// $menu_popup.hide();
 		menu_popup_el.style.display = "none";
-		// $menu_button.html(display_hotkey(menus_key));
 		menu_button_el.innerHTML = display_hotkey(menus_key);
-		// $menu_button.attr("tabIndex", -1);
 		menu_button_el.tabIndex = -1;
 		$(menu_container_el).on("keydown", e => {
-			// const $focused_item = $menu_popup.find(".menu-item:focus");
 			const focused_item_el = menu_popup_el.querySelector(".menu-item:focus");
 			switch (e.keyCode) {
 				case 37: // Left
-					// $menu_container.prev().find(".menu-button").trigger("pointerdown");
 					const prev_button_el = menu_container_el.previousElementSibling?.querySelector(".menu-button");
 					if (prev_button_el) {
 						$(prev_button_el).trigger("pointerdown");
@@ -361,14 +302,11 @@ function $MenuBar(menus) {
 					break;
 				case 39: // Right
 					// @TODO: make a class like .has-submenu
-					// if ($focused_item.find(".menu-item-submenu-area:not(:empty)").length) {
 					if (focused_item_el?.querySelector(".menu-item-submenu-area:not(:empty)")) {
 						$(focused_item_el).trigger("click");
-						// $(".menu-popup .menu-item")[0].focus(); // first item
 						document.querySelector(".menu-popup .menu-item").focus(); // first item
 						e.preventDefault();
 					} else {
-						// $menu_container.next().find(".menu-button").trigger("pointerdown");
 						const next_button_el = menu_container_el.nextElementSibling?.querySelector(".menu-button");
 						if (next_button_el) {
 							$(next_button_el).trigger("pointerdown");
@@ -376,13 +314,7 @@ function $MenuBar(menus) {
 					}
 					break;
 				case 40: // Down
-					// if ($menu_popup.is(":visible") && $focused_item.length) {
 					if (visible(menu_popup_el) && focused_item_el) {
-						// let $next = $focused_item.next();
-						// while ($next.length && !$next.is(".menu-item")) {
-						// 	$next = $next.next();
-						// }
-						// $next[0].focus();
 						let next_el = focused_item_el.nextElementSibling;
 						while (next_el && !next_el.classList.contains("menu-item")) {
 							next_el = next_el.nextElementSibling;
@@ -390,18 +322,11 @@ function $MenuBar(menus) {
 						next_el?.focus();
 					} else {
 						$(menu_button_el).trigger("pointerdown");
-						// $menu_popup.find(".menu-item")[0].focus(); // first item
 						menu_popup_el.querySelector(".menu-item").focus(); // first item
 					}
 					break;
 				case 38: // Up
-					// if ($menu_popup.is(":visible") && $focused_item.length) {
 					if (visible(menu_popup_el) && focused_item_el) {
-						// let $prev = $focused_item.prev();
-						// while ($prev.length && !$prev.is(".menu-item")) {
-						// 	$prev = $prev.prev();
-						// }
-						// $prev[0].focus();
 						let prev_el = focused_item_el.previousElementSibling;
 						while (prev_el && !prev_el.classList.contains("menu-item")) {
 							prev_el = prev_el.previousElementSibling;
@@ -409,7 +334,6 @@ function $MenuBar(menus) {
 						prev_el?.focus();
 					} else {
 						$(menu_button_el).trigger("pointerdown"); // or maybe do nothing?
-						// $menu_popup.find(".menu-item").last()[0].focus();
 						const menu_items = menu_popup_el.querySelectorAll(".menu-item");
 						menu_items[menu_items.length - 1].focus(); // last item
 					}
@@ -435,7 +359,6 @@ function $MenuBar(menus) {
 				return;
 			}
 			if (e.type !== "pointerover") {
-				// if (!$menu_button.hasClass("active")) {
 				if (!menu_button_el.classList.contains("active")) {
 					this_click_opened_the_menu = true;
 				}
@@ -444,9 +367,6 @@ function $MenuBar(menus) {
 			close_menus();
 
 			menu_button_el.focus();
-			// $menu_button.addClass("active");
-			// $menu_popup.show();
-			// $menu_popup.triggerHandler("update");
 			menu_button_el.classList.add("active");
 			menu_popup_el.style.display = "";
 			// menu_popup_el.dispatchEvent(new CustomEvent("update")); // TODO: do stuff like this, for example.
@@ -461,7 +381,6 @@ function $MenuBar(menus) {
 				this_click_opened_the_menu = false;
 				return;
 			}
-			// if ($menu_button.hasClass("active")) {
 			if (menu_button_el.classList.contains("active")) {
 				close_menus();
 			}
@@ -469,8 +388,6 @@ function $MenuBar(menus) {
 		$(menu_button_el).on("release", () => {
 			selecting_menus = false;
 
-			// $menu_button.removeClass("active");
-			// $menu_popup.hide();
 			menu_button_el.classList.remove("active");
 			menu_popup_el.style.display = "none";
 
@@ -491,7 +408,6 @@ function $MenuBar(menus) {
 		close_menus();
 	});
 	$G.on("pointerdown pointerup", e => {
-		// if ($(e.target).closest(".menus, .menu-popup").length === 0) {
 		if (!e.target.closest(".menus, .menu-popup")) {
 			// window.console && console.log(e.type, "occurred outside of menus (on ", e.target, ") so...");
 			close_menus();
