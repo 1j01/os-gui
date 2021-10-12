@@ -69,7 +69,10 @@ const menus = {
 			enabled: false,
 			shortcut: "Ctrl+V",
 		},
-	]
+	],
+	"&Help": new Array(100).fill(0).map((_, i) => ({
+		item: new Array(i+3).fill("A").join(""),
+	})),
 };
 // wait for page load (could alternatively just move the script so it executes after the elements are declared)
 $(() => {
