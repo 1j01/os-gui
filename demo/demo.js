@@ -43,6 +43,16 @@ const menus = {
 				},
 			]
 		},
+		{
+			item: "&Many Items",
+			submenu: new Array(100).fill(0).map((_, i) => ({
+				item: `Item ${i}`,
+				checkbox: {
+					check: () => i % 2 === 0,
+				},
+				shortcut: `Ctrl+${i}`,
+			}))
+		},
 	],
 	"&Edit": [
 		{
