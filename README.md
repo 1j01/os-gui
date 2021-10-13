@@ -2,18 +2,19 @@
 
 A library for imitating operating system graphical user interfaces on the web
 
-Specifically, Windows 98 - for now at least; it could be expanded in the future
+Specifically, Windows 98 — for now at least; it could be expanded in the future.
 
 This library powers [98.js.org](https://98.js.org), a web-based version of Windows 98, including Paint, Notepad, Sound Recorder, and more.
-
-**Note**: The API will likely change a lot, but I maintain a [Changelog](CHANGELOG.md).
+See the [demos](https://1j01.github.io/os-gui/demo/) for more information.
 
 
 ## Features
 
 - Menu bars, with support for checkbox items, disabled states, and at least partial support for submenus
 
-- Windows which you can drag around and maximize
+- App windows which you can drag around, maximize, minimize, close, and resize
+
+- Dialog and tool window variants
 
 - Flying titlebar animation that guides your eyes, for maximize/minimize/restore
 
@@ -72,7 +73,7 @@ In `<head>` or `<body>`:
 
 ## API
 
-The API is not versioned using semver yet, but it should be once a version 1.0 is released.
+**Note**: The API will likely change a lot, but I maintain a [Changelog](CHANGELOG.md).
 
 ### Panel & Inset Styles
 

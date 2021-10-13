@@ -31,6 +31,12 @@
 			main {
 				flex: 1;
 			}
+			nav {
+				text-align: center;
+				font-size: 2em;
+				margin-top: 1em;
+				margin-bottom: 1em;
+			}
 			footer {
 				flex: 0 0 auto;
 				text-align: center;
@@ -142,7 +148,28 @@
 		<script src="demo.js"></script>
 		<main>
 			<h1 id="logo-heading"><span>OS-GUI.JS</span></h1>
-			<h2>MenuBar</h2>
+			<nav>
+				<a href="https://github.com/1j01/os-gui">GitHub</a>
+				&middot;
+				<a href="https://npmjs.com/package/os-gui">npm</a>
+				&middot;
+				<a href="#components">Components</a>
+				&middot;
+				<a href="#demos">Demos</a>
+				<!-- &middot; -->
+				<!-- <a href="#themes">Themes</a> -->
+			</nav>
+			<p>
+				<b>OS-GUI.js</b> is a JavaScript and CSS library for creating operating system-like user interfaces.
+				The default theme is an accurate recreation of Windows 98's appearance.
+			</p>
+			<p>
+				You can find the source code and docs on <a href="https://github.com/1j01/os-gui">GitHub</a>.
+				This page is also acting as documentation. You may want to view <a href="demo.js">this page's source code.</a>
+			</p>
+			<br>
+			<br>
+			<h2><a id="components"></a>MenuBar</h2>
 			<div>
 				<div id="menubar-example" style="height: 21px;"></div>
 			</div>
@@ -315,7 +342,7 @@
 				</tr>
 			</table>
 			<!-- <div style="padding: 2em" class="outset-deep">Here's perhaps a panel, styled with <code>class="outset-deep"</code></div> -->
-			<h2>Crazy Animation Demo</h2>
+			<h2><a id="demos"></a>Crazy Animation Demo</h2>
 			<p>Check out the interactive <a href="./animation.html" id="spaceship-link">spaceship animation demo<span id="spaceship-graphic"></span></a></p>
 			<h2>A Physics Sandbox</h2>
 			<a href="https://1j01.github.io/pbj-sandbox/"><svg style="width: 100%; height: 150px;" id="physics-teaser"></svg></a>
