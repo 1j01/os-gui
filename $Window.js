@@ -5,6 +5,40 @@ function E(t) {
 	return document.createElement(t);
 }
 
+function find_tabstops($el) {
+	// This function finds focusable controls, but not necessarily all of them;
+	// for radio elements, it only gives one: either the checked one, or the first one if none are checked.
+
+	let $controls = $el.find("input, textarea, select, button, object, a[href], [tabIndex='0'], details summary")
+		.filter(":enabled, summary, a")
+		.filter(":visible");
+	// const $controls = $el.find(":tabbable"); // https://api.jqueryui.com/tabbable-selector/
+
+	// Radio buttons should be treated as a group with one tabstop.
+	// If there's no selected ("checked") radio, it should still visit the group,
+	// but if there is a selected radio in the group, it should skip all unselected radios in the group.
+	const radios = {}; // best radio found so far, per group
+	const to_skip = [];
+	for (const el of $controls) {
+		if (el.nodeName.toLowerCase() === "input" && el.type === "radio") {
+			if (radios[el.name]) {
+				if (el.checked) {
+					to_skip.push(radios[el.name]);
+					radios[el.name] = el;
+				} else {
+					to_skip.push(el);
+				}
+			} else {
+				radios[el.name] = el;
+			}
+		}
+	}
+	const $tabstops = $controls.not(to_skip);
+	// debug viz:
+	// $tabstops.css({boxShadow: "0 0 2px 2px green"});
+	// $(to_skip).css({boxShadow: "0 0 2px 2px gray"})
+	return $tabstops;
+}
 var $G = $(window);
 
 
@@ -300,23 +334,29 @@ function $Window(options) {
 
 			// focused = true;
 
+			const refocus = () => {
+				if (last_focused_control) {
+					last_focused_control.focus();
+				} else {
+					find_tabstops($w.$content).first().focus();
+				}
+			};
+
 			// If the element is selectable, wait until the click is done and see if anything was selected first.
 			// This is a bit of a weird compromise, for now.
 			const target_style = getComputedStyle(event.target);
 			if (target_style.userSelect !== "none") {
 				$w.one("pointerup pointercancel", () => {
 					requestAnimationFrame(() => { // this seems to make it more reliable in regards to double clicking
-						if (last_focused_control && !getSelection().toString().trim()) {
-							last_focused_control.focus();
+						if (!getSelection().toString().trim()) {
+							refocus();
 						}
 					});
 				});
 				return;
 			}
 			// Set focus to the last focused control, which should be updated if a click just occurred.
-			if (last_focused_control) {
-				last_focused_control.focus();
-			}
+			refocus();
 		});
 	});
 	// Assumption: no control exists in the window before this "focusin" handler is set up,
@@ -385,32 +425,7 @@ function $Window(options) {
 				break;
 			case 9: { // Tab
 				// wrap around when tabbing through controls in a window
-				// @#: focusables
-				let $controls = $w.$content.find("input, textarea, select, button, object, a[href], [tabIndex='0'], details summary").filter(":enabled, summary, a").filter(":visible");
-				// const $controls = $w.$content.find(":tabbable"); // https://api.jqueryui.com/tabbable-selector/
-				// Radio buttons should be treated as a group with one tabstop.
-				// If there's no selected ("checked") radio, it should still visit the group,
-				// but if there is a selected radio in the group, it should skip all unselected radios in the group.
-				const radios = {}; // best radio found so far, per group
-				const to_skip = [];
-				for (const el of $controls) {
-					if (el.nodeName.toLowerCase() === "input" && el.type === "radio") {
-						if (radios[el.name]) {
-							if (el.checked) {
-								to_skip.push(radios[el.name]);
-								radios[el.name] = el;
-							} else {
-								to_skip.push(el);
-							}
-						} else {
-							radios[el.name] = el;
-						}
-					}
-				}
-				$controls = $controls.not(to_skip);
-				// debug viz:
-				// $controls.css({boxShadow: "0 0 2px 2px green"});
-				// $(to_skip).css({boxShadow: "0 0 2px 2px gray"})
+				const $controls = find_tabstops($w.$content);
 				if ($controls.length > 0) {
 					const focused_control_index = $controls.index($focused);
 					if (e.shiftKey) {
