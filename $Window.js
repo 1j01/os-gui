@@ -390,7 +390,7 @@ function $Window(options) {
 				// const $controls = $w.$content.find(":tabbable"); // https://api.jqueryui.com/tabbable-selector/
 				// Radio buttons should be treated as a group with one tabstop.
 				// If there's no selected ("checked") radio, it should still visit the group,
-				// but it should skip all unselected radios in that group if there is a selected radio in that group.
+				// but if there is a selected radio in the group, it should skip all unselected radios in the group.
 				const radios = {}; // best radio found so far, per group
 				const to_skip = [];
 				for (const el of $controls) {
@@ -410,7 +410,7 @@ function $Window(options) {
 				$controls = $controls.not(to_skip);
 				// debug viz:
 				// $controls.css({boxShadow: "0 0 2px 2px green"});
-				// $(toSkip).css({boxShadow: "0 0 2px 2px gray"})
+				// $(to_skip).css({boxShadow: "0 0 2px 2px gray"})
 				if ($controls.length > 0) {
 					const focused_control_index = $controls.index($focused);
 					if (e.shiftKey) {
