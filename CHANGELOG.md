@@ -38,6 +38,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - In demo: When loading a theme file, do not apply any styles if it is not a valid theme file.
 - For right-to-left languages, submenus are now opened with the left arrow key, matching the arrow direction shown, and menus are navigated with left/right arrow keys spatially (before it was swapped because the order of elements was reversed but the key bindings were not).
 - Titlebar gradient is flipped for RTL languages.
+- Submenus have correct RTL layout. (Top level menus were previously descendants of the window (so I didn't notice the problem), but now all menus are children of the document body, and `dir` attribute is propagated from the menu bar element's `direction` CSS property to the floating menus.)
 - Focused disabled menu items are distinguished from enabled menu items.
 
 </details>

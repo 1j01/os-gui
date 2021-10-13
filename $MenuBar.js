@@ -271,6 +271,8 @@ function MenuBar(menus) {
 					const open_submenu = () => {
 						submenu_popup_el.style.display = "";
 						submenu_popup_el.style.zIndex = get_new_menu_z_index();
+						submenu_popup_el.setAttribute("dir", get_direction());
+						
 						// console.log("open_submenu — submenu_popup_el.style.zIndex", submenu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
 						// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
 						$(submenu_popup_el).triggerHandler("update");
@@ -458,6 +460,7 @@ function MenuBar(menus) {
 			menu_button_el.setAttribute("aria-expanded", "true");
 			menu_popup_el.style.display = "";
 			menu_popup_el.style.zIndex = get_new_menu_z_index();
+			menu_popup_el.setAttribute("dir", get_direction());
 			// console.log("pointerdown (possibly simulated) — menu_popup_el.style.zIndex", menu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
 			// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
 			active_menu_index = Object.keys(menus).indexOf(menus_key);
