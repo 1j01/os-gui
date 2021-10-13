@@ -22,6 +22,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Changed
 - `parseThemeFileString` can now return `undefined` if the theme file is not valid.
 - HTML `dir` attribute / CSS `direction` property is now respected at the level of the window/menu bar, rather than just the document body, so you can have individual windows with different directions.
+- Menu bar's buttons and top level menus are no longer contained in a `<div class="menu-container">` element. Top level menus are now children of `<body>`, as submenus already were.
 
 ### Added
 - Window method `setDimensions({ innerWidth, innerHeight, outerWidth, outerHeight })` to set the size of the window.
