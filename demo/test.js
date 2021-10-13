@@ -20,13 +20,26 @@ const $app_window_1 = new $Window({ title: "Application Window", resizable: true
 $app_window_1.$content.append(`
 	<p>This is a window that can be moved around and resized.</p>
 `);
-const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true });
+const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_1 });
 $tool_window_1.$content.text("This is a tool window.");
-$app_window_1.$Button("Open Dialog", (e) => {
-	const $w = $Window({ title: "Talk Up", resizable: false, maximizeButton: false, minimizeButton: false });
-	$w.$content.html("<p>Let's have an honest dialog.</p>");
-	$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
-	e.preventDefault(); // kinda works even though it's an error haha... the error prevents code from running that closes the window
+const open_recursive_dialog = (x, y) => {
+	const $w = $Window({ title: "Recursive Dialog", resizable: false, maximizeButton: false, minimizeButton: false });
+	$w.$content.html("<p>I want more. More!</p>");
+	$w.$Button("Recurse", () => {
+		open_recursive_dialog(x + 20, y + 20);
+		x -= 40;
+		throw new Error("Don't close automatically please...");
+	}).focus().css({ width: 100 });
+	$w.$Button("Cancel", () => $w.close()).css({ width: 100 });
+	$w.css({
+		left: x,
+		top: y
+	});
+};
+
+$app_window_1.$Button("Recursive Dialog", (e) => {
+	open_recursive_dialog(innerWidth/2, innerHeight/2);
+	throw new Error("Don't close automatically please...");
 });
 
 // Test tabstop wrapping by creating many windows with different types of controls.
@@ -65,7 +78,7 @@ $app_window_1.$Button("Test Tabstop Wrapping", (e) => {
 			y += h + 10;
 		}
 	}
-	e.preventDefault(); // hack
+	throw new Error("Don't close automatically please...");
 });
 
 // Radio buttons should be treated as a group with one tabstop.
