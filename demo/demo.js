@@ -102,6 +102,7 @@ $(() => {
 		<div style='padding: 20px; background: var(--Window); color: var(--WindowText); user-select: text; cursor: text; flex: 1;'>
 			<p>This is the main application window.</p>
 			<p>It has a tool window that belongs to it, as well as a menu bar.</p>
+			<textarea>Test</textarea>
 		</div>
 	`);
 	fake_closing($app_window_2);

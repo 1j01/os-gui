@@ -47,7 +47,7 @@ function $Window(options) {
 		$w.addClass("component-window");
 	}
 
-	
+
 	setTimeout(() => {
 		if (get_direction() == "rtl") {
 			$w.addClass("rtl"); // for reversing the titlebar gradient
@@ -264,6 +264,17 @@ function $Window(options) {
 	};
 	// var focused = false;
 	var last_focused_control;
+	var last_focused_control_outside_window = document.activeElement;
+	$G.on("focusin", (e) => {
+		if (!(e.target instanceof HTMLElement)) {
+			return;
+		}
+		if (e.target.closest(".os-window") === $w[0]) {
+			// last_focused_control = e.target; // handled below
+		} else {
+			last_focused_control_outside_window = e.target;
+		}
+	});
 	$w.on("pointerdown refocus-window", (event) => {
 		$w.bringToFront();
 		// Test cases where it should refocus the last focused control in the window:
@@ -284,10 +295,19 @@ function $Window(options) {
 		// - Trying to select text
 
 		const formerly_focused = null; // event.relatedTarget doesn't exist, this isn't focusin/focus
+
+		// This is for when the window is closed, unrelated to the click.
+		console.log("formerly_focused:", formerly_focused, "within:", formerly_focused?.closest(".window"));
+		if (
+			(formerly_focused && formerly_focused.closest(".window") !== $w[0]) ||
+			(document.activeElement && document.activeElement.closest(".window") !== $w[0])
+		) {
+			last_focused_control_outside_window = formerly_focused || document.activeElement;
+		}
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
 		requestAnimationFrame(() => {
 			// console.log("did focus change?", { last_focused_control, formerly_focused, activeElement: document.activeElement, win_elem: $w[0]}, document.activeElement !== formerly_focused);
-			
+
 			// If something programmatically got focus, don't refocus.
 			if (
 				document.activeElement &&
@@ -774,8 +794,15 @@ function $Window(options) {
 		// Focus next-topmost window
 		// TODO: store the last focused control OUTSIDE the window, and restore it here,
 		// so that it works with not just other windows but also arbitrary controls outside of any window.
-		var $next_topmost = $($(".window:visible").toArray().sort((a, b) => b.style.zIndex - a.style.zIndex)[0]);
-		$next_topmost.triggerHandler("refocus-window");
+		// var $next_topmost = $(
+		// 	$(".window:visible").toArray()
+		// 		.sort((a, b) => b.style.zIndex - a.style.zIndex)
+		// 		.sort((a, b) => b.classList.contains("tool-window") - a.classList.contains("tool-window"))
+		// 	[0]
+		// );
+		// $next_topmost.triggerHandler("refocus-window");
+		last_focused_control_outside_window?.focus();
+		$(last_focused_control_outside_window).closest(".window")?.triggerHandler("refocus-window");
 	};
 	$w.closed = false;
 
