@@ -50,9 +50,9 @@ $app_window_1.$Button("Test Tabstop Wrapping", (e) => {
 	const h = 200;
 	for (const control_html of [
 		"<input type='text'/>",
-		"<input type='radio'/>(no name, pointless)",
-		"<input type='radio' name='radio-group-0'/>(named group of 1, pointless)",
-		"<input type='radio' name='radio-group-1'/><input type='radio' name='radio-group-1'/>(named group of 2)",
+		"<input type='radio'/>(no <code>name</code>, pointless)",
+		"<input type='radio' name='radio-group-1-0'/>(named group of 1, pointless)",
+		"<input type='radio' name='radio-group-1-1'/><input type='radio' name='radio-group-1-1'/>(named group of 2)",
 		"<input type='radio' name='radio-group-1-2'/><input type='radio' name='radio-group-1-2' checked/>(named group of 2)",
 		"<input type='radio' name='radio-group-1-3' checked/><input type='radio' name='radio-group-1-3'/>(named group of 2)",
 		"<input type='checkbox'/>",
