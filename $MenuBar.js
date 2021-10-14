@@ -198,7 +198,7 @@ function MenuBar(menus) {
 
 	// TODO: API for context menus (i.e. floating menu popups)
 	function MenuPopup(menu_items) {
-		const menu_popup_el = E("div", { class: "menu-popup" });
+		const menu_popup_el = E("div", { class: "menu-popup", id: `menu-popup-${Math.random().toString(36).substr(2, 9)}` });
 		const menu_popup_table_el = E("table", { class: "menu-popup-table" });
 		menu_popup_el.appendChild(menu_popup_table_el);
 
@@ -267,6 +267,7 @@ function MenuBar(menus) {
 
 					submenu_popups_by_menu_item_el.set(item_el, submenu_popup);
 					parent_item_el_by_popup_el.set(submenu_popup_el, item_el);
+					submenu_popup_el.dataset.semanticParent = menu_popup_el.id; // for $Window to understand the popup belongs to its window
 
 					const open_submenu = () => {
 						submenu_popup_el.style.display = "";
@@ -396,6 +397,8 @@ function MenuBar(menus) {
 		document.body.appendChild(menu_popup_el);
 		submenu_popups_by_menu_item_el.set(menu_button_el, menu_popup);
 		parent_item_el_by_popup_el.set(menu_popup_el, menu_button_el);
+		menu_button_el.id = `menu-button-${menus_key}-${Math.random().toString(36).substr(2, 9)}`;
+		menu_popup_el.dataset.semanticParent = menu_button_el.id; // for $Window to understand the popup belongs to its window
 
 		const update_position_from_containing_bounds = () => {
 			const rect = menu_button_el.getBoundingClientRect();
@@ -419,7 +422,7 @@ function MenuBar(menus) {
 
 		const menu_id = menus_key.replace("&", "").replace(/ /g, "-").toLowerCase();
 		menu_button_el.classList.add(`${menu_id}-menu-button`);
-		menu_popup_el.id = `${menu_id}-menu-popup-${Math.random().toString(36).substr(2, 9)}`;
+		// menu_popup_el.id = `${menu_id}-menu-popup-${Math.random().toString(36).substr(2, 9)}`; // id is created by MenuPopup and changing it breaks the data-semantic-parent relationship
 		menu_popup_el.style.display = "none";
 		menu_button_el.innerHTML = display_hotkey(menus_key);
 		menu_button_el.tabIndex = -1;

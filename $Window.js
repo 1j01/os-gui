@@ -48,6 +48,7 @@ function $Window(options) {
 	options = options || {};
 
 	var $w = $(E("div")).addClass("window os-window").appendTo("body");
+	$w[0].id = `os-window-${Math.random().toString(36).substr(2, 9)}`;
 	$w.$titlebar = $(E("div")).addClass("window-titlebar").appendTo($w);
 	$w.$title_area = $(E("div")).addClass("window-title-area").appendTo($w.$titlebar);
 	$w.$title = $(E("span")).addClass("window-title").appendTo($w.$title_area);
@@ -72,6 +73,7 @@ function $Window(options) {
 	}
 	if (options.parentWindow) {
 		options.parentWindow.addChildWindow($w);
+		$w[0].dataset.semanticParent = options.parentWindow[0].id;
 	}
 
 	var $component = options.$component;
@@ -177,21 +179,62 @@ function $Window(options) {
 		if (options.parentWindow) {
 			options.parentWindow.onFocus(showAsFocused);
 			options.parentWindow.onBlur(stopShowingAsFocused);
+			// TODO: also show as focused if focus is within the window
+
+			// initial state
+			// might need a setTimeout, idk...
+			if (document.activeElement && document.activeElement.closest(".window") == options.parentWindow[0]) {
+				showAsFocused();
+			}
 		} else {
 			// the browser window is the parent window
 			// show focus whenever the browser window is focused
 			$(window).on("focus", showAsFocused);
 			$(window).on("blur", stopShowingAsFocused);
+			// initial state
 			if (document.hasFocus()) {
 				showAsFocused();
 			}
 		}
 	} else {
-		$w.on("focusin", () => {
-			showAsFocused();
-			$w.bringToFront();
+		// global focusout is needed, to continue showing as focused while child windows or menus are focused
+		// global focusin is needed, to show as focused when a child window becomes focused
+		$G.on("focusin focusout", (event) => {
+			// For child windows and menu popups, follow "semantic parent" chain.
+			// Menu popups and child windows aren't descendants of the window they belong to,
+			// but should keep the window shown as focused.
+
+			let newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
+
+			if (!newlyFocused) {
+				stopShowingAsFocused();
+				return;
+			}
+			do {
+				// if (!newlyFocused?.closest) {
+				// 	console.warn("what is this?", newlyFocused);
+				// 	break;
+				// }
+				const waypoint = newlyFocused?.closest?.("[data-semantic-parent]");
+				if (waypoint) {
+					const id = waypoint.dataset.semanticParent;
+					newlyFocused = document.getElementById(id);
+					if (!newlyFocused) {
+						console.warn("semantic parent not found with id", id);
+						break;
+					}
+				} else {
+					break;
+				}
+			} while (true);
+			if (newlyFocused && newlyFocused.closest?.(".window") == $w[0]) {
+				showAsFocused();
+				$w.bringToFront();
+				return;
+			}
+			stopShowingAsFocused();
 		});
-		$w.on("focusout", stopShowingAsFocused);
+		// initial state is unfocused
 	}
 
 	$w.css("touch-action", "none");

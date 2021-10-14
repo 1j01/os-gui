@@ -148,7 +148,13 @@ $app_window_1.$content.append(`
 	<p>This is a window that can be moved around and resized.</p>
 `);
 const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_1 });
-$tool_window_1.$content.text("This is a tool window.");
+$tool_window_1.$content.append(`
+	<p>This tool window has controls in it:</p>
+	<input type="text" placeholder="Text input">
+	<button>Button</button>
+	<p>Test that focus is shown on both the tool window and the parent window when focus lies within the tool window.</p>
+	<p>Also, tool windows probably shouldn't focus controls automatically on click, they're mainly supposed to keep the parent focused.</p>
+`);
 $app_window_1.on("closed", () => {
 	$tool_window_1.close();
 });
