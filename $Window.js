@@ -813,6 +813,7 @@ function $Window(options) {
 		return $w;
 	};
 	$w.animateTitlebar = (from, to, callback = () => { }) => {
+		// flying titlebar animation
 		const $eye_leader = $w.$titlebar.clone(true);
 		$eye_leader.find("button").remove();
 		$eye_leader.appendTo("body");

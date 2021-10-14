@@ -262,7 +262,8 @@ body > .window-titlebar {
 	background: linear-gradient(to left, rgb(0, 0, 128) 0%, rgb(16, 132, 208) 100%);
 	background: linear-gradient(to left, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%);
 }
-.os-window:not(.tool-window) .window-titlebar {
+.os-window:not(.tool-window) .window-titlebar,
+body > .window-titlebar {
 	font-weight: bold;
 }
 .os-window:not(.focused) .window-titlebar {
