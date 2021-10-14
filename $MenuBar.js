@@ -98,7 +98,9 @@ function MenuBar(menus) {
 		// Close any rogue floating submenus
 		const popup_els = document.querySelectorAll(".menu-popup");
 		for (const popup_el of popup_els) {
-			popup_el.style.display = "none";
+			if (!window.debugKeepMenusOpen) {
+				popup_el.style.display = "none";
+			}
 		}
 	};
 
@@ -322,7 +324,9 @@ function MenuBar(menus) {
 						if (open_tid) { clearTimeout(open_tid); }
 						if (close_tid) { clearTimeout(close_tid); }
 						close_tid = setTimeout(() => {
-							submenu_popup_el.style.display = "none";
+							if (!window.debugKeepMenusOpen) {
+								submenu_popup_el.style.display = "none";
+							}
 						}, 200);
 					});
 					$(item_el).on("click pointerdown", open_submenu);
@@ -487,7 +491,9 @@ function MenuBar(menus) {
 			selecting_menus = false;
 
 			menu_button_el.classList.remove("active");
-			menu_popup_el.style.display = "none";
+			if (!window.debugKeepMenusOpen) {
+				menu_popup_el.style.display = "none";
+			}
 			menu_button_el.setAttribute("aria-expanded", "false");
 
 			$menus.triggerHandler("default-info");
