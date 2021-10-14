@@ -318,8 +318,12 @@ function MenuBar(menus) {
 						open_tid = setTimeout(open_submenu, 200);
 					});
 					$(item_el).add(submenu_popup_el).on("pointerout", () => {
-						// menu_popup_el.closest(".menu-container").querySelector(".menu-button").focus();
-						parent_item_el_by_popup_el.get(submenu_popup_el).focus(); // ????
+						parent_item_el_by_popup_el.get(submenu_popup_el).focus();
+						// @TODO: keep submenu open while mouse is outside any menus,
+						// close it when hovering a different higher level menu after a delay unless the mouse returns to the submenu
+						// Keep outer menu open as long as any submenus are open.
+						// Highlight the submenu-containing item while the submenu is open, unless hovering over a different higher level menu.
+						// Also submenus should get focus once they open (but not focus any item within). Or at least, down arrow should focus the first item once it's open, rather than moving in the outer menu.
 
 						if (open_tid) { clearTimeout(open_tid); }
 						if (close_tid) { clearTimeout(close_tid); }
@@ -359,9 +363,7 @@ function MenuBar(menus) {
 				$(item_el).on("pointerout", () => {
 					if (visible(item_el)) {
 						$menus.triggerHandler("info", "");
-						// may not exist for submenu popups
-						// const menu_button = menu_popup_el.closest(".menu-container")?.querySelector(".menu-button");
-						parent_item_el_by_popup_el.get(menu_popup_el)?.focus(); // maybe???
+						parent_item_el_by_popup_el.get(menu_popup_el)?.focus();
 					}
 				});
 
