@@ -149,9 +149,10 @@ $app_window_1.$content.append(`
 	<button id="open-recursive-dialog">Recursive Dialog</button>
 	<button id="test-tabstop-wrapping">Test Tabstop Wrapping</button>
 	<br>
+	<br>
 	<button id="test-programmatic-focus">Test programmatic focus (delayed)</button>
-	<button id="test-synthetic-pointerdown">Test synthetic pointerdown (delayed)</button>
-	<button id="test-synthetic-mousedown">Test synthetic mousedown (delayed)</button>
+	<br>
+	<br>
 `);
 const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_1 });
 $tool_window_1.$content.append(`
@@ -189,16 +190,24 @@ $app_window_1.find("#open-recursive-dialog").on("click", () => {
 $app_window_1.find("#test-programmatic-focus").on("click", () => {
 	setTimeout(() => $tool_window_1.focus(), 1000);
 });
-$app_window_1.find("#test-synthetic-pointerdown").on("click", () => {
-	setTimeout(() => {
-		$app_window_1.find("p").trigger("pointerdown");
-	}, 1000);
-});
-$app_window_1.find("#test-synthetic-mousedown").on("click", () => {
-	setTimeout(() => {
-		$app_window_1.find("p").trigger("mousedown");
-	}, 1000);
-});
+for (const trigger_style of ["jQuery", "native"]) {
+	for (const event_type of ["click", "pointerdown", "mousedown"]) {
+		$app_window_1.append(
+			$("<button>").text(
+				`Trigger ${event_type} (${trigger_style}, delayed)`
+			).click(() => {
+				setTimeout(() => {
+					if (trigger_style === "jQuery") {
+						$app_window_1.find("p").trigger(event_type);
+					} else {
+						$app_window_1.find("p")[0].dispatchEvent(new Event(event_type));
+					}
+				}, 1000);
+			})
+		);
+	}
+}
+
 $app_window_1.find("#test-tabstop-wrapping").on("click", () => {
 	// Test tabstop wrapping by creating many windows with different types of controls.
 	let x = 0;
