@@ -145,7 +145,13 @@ const menus = {
 const $app_window_1 = new $Window({ title: "Application Window", resizable: true });
 $app_window_1.$content.append(new MenuBar(menus).element);
 $app_window_1.$content.append(`
-	<p>This is a window that can be moved around and resized.</p>
+	<p>This is only some tests.</p>
+	<button id="open-recursive-dialog">Recursive Dialog</button>
+	<button id="test-tabstop-wrapping">Test Tabstop Wrapping</button>
+	<br>
+	<button id="test-programmatic-focus">Test programmatic focus (delayed)</button>
+	<button id="test-synthetic-pointerdown">Test synthetic pointerdown (delayed)</button>
+	<button id="test-synthetic-mousedown">Test synthetic mousedown (delayed)</button>
 `);
 const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_1 });
 $tool_window_1.$content.append(`
@@ -177,20 +183,24 @@ const open_recursive_dialog = (x, y) => {
 	});
 };
 
-$app_window_1.$Button("Recursive Dialog", (e) => {
-	open_recursive_dialog(innerWidth/2, innerHeight/2);
-	throw new Error("Don't close automatically please...");
+$app_window_1.find("#open-recursive-dialog").on("click", () => {
+	open_recursive_dialog(innerWidth / 2, innerHeight / 2);
 });
-
-$app_window_1.$Button("Test Focus", (e) => {
-	// $tool_window_1.focus();
+$app_window_1.find("#test-programmatic-focus").on("click", () => {
 	setTimeout(() => $tool_window_1.focus(), 1000);
-	
-	throw new Error("Don't close automatically please...");
 });
-
-// Test tabstop wrapping by creating many windows with different types of controls.
-$app_window_1.$Button("Test Tabstop Wrapping", (e) => {
+$app_window_1.find("#test-synthetic-pointerdown").on("click", () => {
+	setTimeout(() => {
+		$app_window_1.find("p").trigger("pointerdown");
+	}, 1000);
+});
+$app_window_1.find("#test-synthetic-mousedown").on("click", () => {
+	setTimeout(() => {
+		$app_window_1.find("p").trigger("mousedown");
+	}, 1000);
+});
+$app_window_1.find("#test-tabstop-wrapping").on("click", () => {
+	// Test tabstop wrapping by creating many windows with different types of controls.
 	let x = 0;
 	let y = 300;
 	const w = 200;
@@ -225,7 +235,6 @@ $app_window_1.$Button("Test Tabstop Wrapping", (e) => {
 			y += h + 10;
 		}
 	}
-	throw new Error("Don't close automatically please...");
 });
 
 // Radio buttons should be treated as a group with one tabstop.

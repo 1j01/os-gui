@@ -386,6 +386,8 @@ function $Window(options) {
 		//   - Open a dialog window from an app window that has a tool window, then close the dialog window
 		//     - @TODO: Even if the tool window has controls, it should focus the parent window, I think
 		// - Clicking on a control in the window should focus said control (perhaps by way of updating last_focused_control)
+		// - Clicking on a disabled control in the window should focus the window
+		//   @FIXME
 		// - Simulated clicks (important for JS Paint's eye gaze and speech recognition modes)
 		// - (@TODO: Should clicking a child window focus the parent window?)
 		// It should NOT refocus when:
