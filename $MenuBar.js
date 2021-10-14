@@ -288,11 +288,9 @@ function MenuBar(menus) {
 				if (item.submenu) {
 					item_el.classList.add("has-submenu");
 					submenu_area_el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="11" viewBox="0 0 10 11" style="fill:currentColor;display:inline-block;vertical-align:middle"><path d="M7.5 4.33L0 8.66L0 0z"/></svg>';
-					setTimeout(() => { // allow time for the menu to be added to the DOM so it can inherit `direction` CSS property if applicable
-						if (get_direction() === "rtl") {
-							submenu_area_el.querySelector("svg").style.transform = "scaleX(-1)";
-						}
-					}, 0);
+					$(menu_popup_el).on("update", () => {
+						submenu_area_el.querySelector("svg").style.transform = get_direction() === "rtl" ? "scaleX(-1)" : "";
+					});
 
 					const submenu_popup = MenuPopup(item.submenu);
 					submenu_popup_el = submenu_popup.element;
