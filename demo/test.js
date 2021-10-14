@@ -110,7 +110,9 @@ const $app_window_2 = new $Window({ title: "Selectable Text", resizable: true })
 $app_window_2.$content.append(`
 	<p style="user-select: text; cursor: text">You should be able to select text in this window.</p>
 	<p style="user-select: text; cursor: text">I also have a control that should be default-focused but not if you select text.</p>
-	<button>I should be default-focused</button>
+	<button>Button</button>
+	<button class="default">Default Button</button>
+	<button class="default" disabled>Disabled Default Button</button>
 	<p style="user-select: text; cursor: text">Make sure you test selecting text as the first thing you do upon loading the page.</p>
 `);
 $app_window_2.css({

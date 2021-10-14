@@ -313,7 +313,7 @@ function $Window(options) {
 			return;
 		}
 		const $tabstops = find_tabstops($w.$content);
-		const $default = $tabstops.find(".default");
+		const $default = $tabstops.filter(".default");
 		if ($default.length) {
 			$default.focus();
 			return;
