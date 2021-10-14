@@ -23,7 +23,127 @@ document.getElementById("no-focus-button").addEventListener("click", function (e
 // 	$('body, html').css('height', this.checked ? '100%' : '');
 // }).trigger('change');
 
+let disable_an_item = false;
+const menus = {
+	"&Dialogs": [
+		{
+			item: "&Generic",
+			action: () => {
+				const $w = $Window({ title: "Dialog", resizable: false, maximizeButton: false, minimizeButton: false });
+				$w.$content.html("<p>Hello world.</p>");
+				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
+			},
+			shortcut: "Ctrl+Boring",
+		},
+	],
+	"&Submenus": [
+		{
+			item: "&Physics",
+			submenu: [
+				{
+					item: "&Schrödinger's Checkbox",
+					checkbox: {
+						check: () => {
+							return Math.random() < 0.5;
+						}
+					}
+				},
+			]
+		},
+		{
+			item: "&Many Items",
+			submenu: new Array(100).fill(0).map((_, i) => ({
+				item: `Item ${i}`,
+				checkbox: {
+					check: function () { return this.pointless_checkbox_value; },
+					toggle: function () { this.pointless_checkbox_value = !this.pointless_checkbox_value; }
+				},
+				shortcut: `Ctrl+${i}`,
+			}))
+		},
+		{
+			item: "&Many Submenus",
+			submenu: new Array(100).fill(0).map((_, i) => ({
+				item: `Submenu ${i}`,
+				submenu: [
+					{
+						item: "We Need To Go Deeper",
+						submenu: [
+							{
+								item: "And We're Going Deeper",
+								// I was hoping to make this infinite, using a getter, but it tries to build an infinite menu up front
+								// (so I had to limit it)
+								// can't do something like http://orteil.dashnet.org/nested apparently (without more thought)
+								get submenu() {
+									function recursive_submenu(n) {
+										if (n > 5) {
+											return [
+												{
+													item: "Okay, that's deep enough",
+												}
+											];
+										}
+										return new Array(2).fill(0).map((_, i) => ({
+											item: `Recursion ${n} Submenu ${i}`,
+											get submenu() {
+												return recursive_submenu(n + 1);
+											}
+										}));
+									}
+									return recursive_submenu(1);
+								}
+							}
+						]
+					},
+					...new Array(100).fill(0).map((_, j) => ({
+						item: `Submenu ${i}.${j}`,
+						checkbox: {
+							check: function () { return this.pointless_checkbox_value; },
+							toggle: function () { this.pointless_checkbox_value = !this.pointless_checkbox_value; }
+						},
+						shortcut: `Ctrl+${i}.${j}`,
+					}))
+				]
+			}))
+		},
+	],
+	"&Enabledness": [
+		{
+			item: "No action",
+			shortcut: "Ctrl+Fake",
+		},
+		{
+			item: "Disabled",
+			enabled: false,
+			shortcut: "Ctrl+Fake",
+		},
+		{
+			item: "disabled: true?",
+			disabled: true,
+			shortcut: "Ctrl+Fake",
+		},
+		MENU_DIVIDER,
+		{
+			item: "Disable the below item",
+			checkbox: {
+				check: () => disable_an_item,
+				toggle: () => disable_an_item = !disable_an_item,
+			},
+			shortcut: "Ctrl+Fake",
+		},
+		{
+			item: "Conditionally disabled",
+			enabled: () => !disable_an_item,
+			shortcut: "Ctrl+Fake",
+		},
+	],
+	"&Help": new Array(100).fill(0).map((_, i) => ({
+		item: new Array(i+3).fill("A").join(""),
+	})),
+};
+
 const $app_window_1 = new $Window({ title: "Application Window", resizable: true });
+$app_window_1.$content.append(new MenuBar(menus).element);
 $app_window_1.$content.append(`
 	<p>This is a window that can be moved around and resized.</p>
 `);
@@ -31,6 +151,10 @@ const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, par
 $tool_window_1.$content.text("This is a tool window.");
 $app_window_1.on("closed", () => {
 	$tool_window_1.close();
+});
+$tool_window_1.css({
+	top: $app_window_1[0].offsetTop + $app_window_1[0].offsetHeight + 30,
+	left: $app_window_1[0].offsetLeft,
 });
 const open_recursive_dialog = (x, y) => {
 	const $w = $Window({ title: "Recursive Dialog", resizable: false, maximizeButton: false, minimizeButton: false });

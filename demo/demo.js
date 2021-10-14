@@ -48,7 +48,11 @@ const menus = {
 			submenu: new Array(100).fill(0).map((_, i) => ({
 				item: `Item ${i}`,
 				checkbox: {
-					check: () => i % 2 === 0,
+					check: function () {
+						this.pointless_checkbox_value = this.pointless_checkbox_value ?? Math.sin((i/5) ** 2) > 0;
+						return this.pointless_checkbox_value;
+					},
+					toggle: function () { this.pointless_checkbox_value = !this.pointless_checkbox_value; }
 				},
 				shortcut: `Ctrl+${i}`,
 			}))
@@ -70,9 +74,6 @@ const menus = {
 			shortcut: "Ctrl+V",
 		},
 	],
-	"&Help": new Array(100).fill(0).map((_, i) => ({
-		item: new Array(i+3).fill("A").join(""),
-	})),
 };
 // wait for page load (could alternatively just move the script so it executes after the elements are declared)
 $(() => {
