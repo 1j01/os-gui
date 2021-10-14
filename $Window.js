@@ -351,6 +351,10 @@ function $Window(options) {
 	var last_focused_control;
 
 	const refocus = () => {
+		if (options.toolWindow && options.parentWindow) {
+			options.parentWindow.triggerHandler("refocus-window");
+			return;
+		}
 		if (last_focused_control) {
 			last_focused_control.focus();
 			return;
@@ -363,10 +367,6 @@ function $Window(options) {
 		}
 		if ($tabstops.length) {
 			$tabstops[0].focus();
-			return;
-		}
-		if (options.parentWindow) {
-			options.parentWindow.triggerHandler("refocus-window");
 			return;
 		}
 		$w.$content.focus();
@@ -402,7 +402,7 @@ function $Window(options) {
 		// - Click on the window title bar
 		// - Closing a second window should focus the first window
 		//   - Open a dialog window from an app window that has a tool window, then close the dialog window
-		//     - @TODO: Even if the tool window has controls, it should focus the parent window, I think
+		//     - Even if the tool window has controls, it should focus the parent window, I think
 		// - Clicking on a control in the window should focus said control (perhaps by way of updating last_focused_control)
 		// - Clicking on a disabled control in the window should focus the window
 		//   - Make sure to test this with another window previously focused
@@ -886,8 +886,9 @@ function $Window(options) {
 		// and probably rename the "close" event
 
 		// Focus next-topmost window
-		// TODO: store the last focused control OUTSIDE the window, and restore it here,
-		// so that it works with not just other windows but also arbitrary controls outside of any window.
+		// TODO: for modal dialogs, store the last focused control outside the window upon opening,
+		// and restore it here, or if it's removed from the DOM, focus the owner window if there is one.
+		// Modal dialogs are not currently supported.
 		var $next_topmost = $($(".window:visible").toArray().sort((a, b) => b.style.zIndex - a.style.zIndex)[0]);
 		$next_topmost.triggerHandler("refocus-window");
 	};

@@ -213,11 +213,12 @@ Closes the window.
 
 #### `focus()`
 
-Tries to focus something within the window, in this order of priority:
+Tries to focus, in this order of priority:
+- If it's a tool window, the parent window
 - The last focused control within the window
 - A control with `class="default"`
-- If it's a tool window, the parent window
-- and otherwise the window itself (specifically `$window.$content`)
+- The first tabbable control within the window
+- The window itself (specifically `$window.$content`)
 
 #### `blur()`
 
