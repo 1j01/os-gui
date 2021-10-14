@@ -200,7 +200,10 @@ for (const trigger_style of ["jQuery", "native"]) {
 					if (trigger_style === "jQuery") {
 						$app_window_1.find("p").trigger(event_type);
 					} else {
-						$app_window_1.find("p")[0].dispatchEvent(new Event(event_type));
+						$app_window_1.find("p")[0].dispatchEvent(new Event(event_type, {
+							bubbles: true,
+							cancelable: true,
+						}));
 					}
 				}, 1000);
 			})

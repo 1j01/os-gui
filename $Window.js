@@ -376,7 +376,15 @@ function $Window(options) {
 		refocus();
 	});
 
-	$w.on("pointerdown", (event) => {
+	// redundant events are for handling synthetic events,
+	// which may be sent individually, rather than in tandem
+	$w.on("pointerdown mousedown", handle_pointer_activation);
+	// jQuery can't handle synthetic events, so we have to use addEventListener too
+	// https://jsfiddle.net/1j01/ndvwts9y/
+	$w[0].addEventListener("pointerdown", handle_pointer_activation);
+	$w[0].addEventListener("mousedown", handle_pointer_activation);
+
+	function handle_pointer_activation(event) {
 		$w.bringToFront();
 		// Test cases where it should refocus the last focused control in the window:
 		// - Click in the blank space of the window
@@ -434,7 +442,8 @@ function $Window(options) {
 			// Set focus to the last focused control, which should be updated if a click just occurred.
 			refocus();
 		});
-	});
+	}
+	
 	// Assumption: no control exists in the window before this "focusin" handler is set up,
 	// so any element.focus() will come after and trigger this handler.
 	$w.on("focusin", () => {
