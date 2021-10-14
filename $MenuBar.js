@@ -201,11 +201,12 @@ function MenuBar(menus) {
 				break;
 			case 27: // Escape
 				if (any_open_menus()) {
-					if (parent_item_el) {
+					// (@TODO: doesn't parent_item_el always exist?)
+					if (parent_item_el && parent_item_el !== menu_button_el) {
 						parent_item_el.focus();
 						active_menu_popup_el.style.display = "none";
 					} else {
-						// @TODO: is this a real case? parent_item_el might always exist since it can be a top level button
+						// close_menus takes care of releasing the pressed state of the button as well
 						close_menus();
 						menu_button_el.focus();
 					}
