@@ -158,9 +158,13 @@ function MenuBar(menus) {
 					// go to next/previous top level menu
 					const next_previous = ((get_direction() === "ltr") === right) ? "next" : "previous";
 					const target_button_el = menu_button_el[`${next_previous}ElementSibling`];
+					const menu_was_open = visible(menu_popup_el);
 					if (target_button_el) {
-						// @TODO: only if a menu was open
-						$(target_button_el).trigger("pointerdown");
+						if (menu_was_open) {
+							$(target_button_el).trigger("pointerdown");
+						} else {
+							target_button_el.focus();
+						}
 					}
 					e.preventDefault();
 					// @TODO: wrap around
@@ -467,6 +471,9 @@ function MenuBar(menus) {
 					maybe_toggle_menu("pointerdown");
 				}
 			}
+		});
+		$(menu_button_el).on("focus", () => {
+			active_menu_index = Object.keys(menus).indexOf(menus_key);
 		});
 		$(menu_button_el).on("pointerdown pointerover", e => {
 			maybe_toggle_menu(e.type);
