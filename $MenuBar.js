@@ -129,8 +129,6 @@ function MenuBar(menus) {
 		const parent_item_el = parent_item_el_by_popup_el.get(active_menu_popup_el);
 		const focused_item_el = menu_popup_el.querySelector(".menu-item:focus");
 
-		// @TODO: open menus also with Enter; Space opens system menu in Windows 98
-
 		switch (e.keyCode) {
 			case 37: // Left
 			case 39: // Right
@@ -163,6 +161,7 @@ function MenuBar(menus) {
 						if (menu_was_open) {
 							$(target_button_el).trigger("pointerdown");
 						} else {
+							$(menu_button_el).trigger("release");
 							target_button_el.focus();
 						}
 					}
@@ -210,6 +209,17 @@ function MenuBar(menus) {
 						close_menus();
 						menu_button_el.focus();
 					}
+					e.preventDefault();
+				}
+				break;
+			case 32: // Space
+				// opens system menu in Windows 98
+				// (at top level)
+				break;
+			case 13: // Enter
+				// Enter is handled elsewhere, except for top level buttons
+				if (menu_button_el === document.activeElement) {
+					maybe_toggle_menu("pointerdown");
 					e.preventDefault();
 				}
 				break;
@@ -273,6 +283,7 @@ function MenuBar(menus) {
 					checkbox_area_el.textContent = "✓";
 				}
 
+				let open_submenu, submenu_popup_el;
 				if (item.submenu) {
 					item_el.classList.add("has-submenu");
 					submenu_area_el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="11" viewBox="0 0 10 11" style="fill:currentColor;display:inline-block;vertical-align:middle"><path d="M7.5 4.33L0 8.66L0 0z"/></svg>';
@@ -283,7 +294,7 @@ function MenuBar(menus) {
 					}, 0);
 
 					const submenu_popup = MenuPopup(item.submenu);
-					const submenu_popup_el = submenu_popup.element;
+					submenu_popup_el = submenu_popup.element;
 					document.body.appendChild(submenu_popup_el);
 					submenu_popup_el.style.display = "none";
 
@@ -291,7 +302,7 @@ function MenuBar(menus) {
 					parent_item_el_by_popup_el.set(submenu_popup_el, item_el);
 					submenu_popup_el.dataset.semanticParent = menu_popup_el.id; // for $Window to understand the popup belongs to its window
 
-					const open_submenu = () => {
+					open_submenu = () => {
 						submenu_popup_el.style.display = "";
 						submenu_popup_el.style.zIndex = get_new_menu_z_index();
 						submenu_popup_el.setAttribute("dir", get_direction());
@@ -393,7 +404,14 @@ function MenuBar(menus) {
 					}
 					if (e.keyCode === 13) { // Enter
 						e.preventDefault();
-						item_action();
+						if (item.submenu) {
+							// this isn't part of item_action because it shouldn't happen on click
+							open_submenu();
+							// focus first item in submenu
+							submenu_popup_el.querySelector(".menu-item").focus();
+						} else {
+							item_action();
+						}
 					}
 				});
 
