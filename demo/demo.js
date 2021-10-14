@@ -9,6 +9,7 @@ const menus = {
 				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
 			},
 			shortcut: "Ctrl+O",
+			description: "Shows a silly dialog box.",
 		},
 		MENU_DIVIDER,
 		{
@@ -17,7 +18,8 @@ const menus = {
 				const $w = $Window({ title: "Membership Status", resizable: false, maximizeButton: false, minimizeButton: false });
 				$w.$content.html("<p>You have left the EU.</p>");
 				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
-			}
+			},
+			description: "Shows a stupid dialog box.",
 		}
 	],
 	"&View": [
@@ -28,7 +30,8 @@ const menus = {
 				toggle: () => {
 					nothingness_state = !nothingness_state;
 				}
-			}
+			},
+			description: "Tick a meaningless checkbox.",
 		},
 		{
 			item: "&Physics",
@@ -37,11 +40,15 @@ const menus = {
 					item: "&Schrödinger's Checkbox",
 					checkbox: {
 						check: () => {
-							return Math.random() < 0.5;
+							// this.cat_is_alive = this.cat_is_alive ?? Math.random() > 0.5;
+							// return this.cat_is_alive;
+							return Math.random() > 0.5;
 						}
-					}
+					},
+					description: "The checked state is indeterminate until observed.",
 				},
-			]
+			],
+			description: "Stupid physics joke.",
 		},
 		{
 			item: "&Many Items",
@@ -55,7 +62,8 @@ const menus = {
 					toggle: function () { this.pointless_checkbox_value = !this.pointless_checkbox_value; }
 				},
 				shortcut: `Ctrl+${i}`,
-			}))
+			})),
+			description: "Lots of items.",
 		},
 	],
 	"&Edit": [
@@ -67,11 +75,13 @@ const menus = {
 				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
 			},
 			shortcut: "Ctrl+C",
+			description: "Shows a pointless dialog.",
 		},
 		{
 			item: "Paste",
 			enabled: false,
 			shortcut: "Ctrl+V",
+			description: "This menu item is disabled.",
 		},
 	],
 };
@@ -93,18 +103,30 @@ $(() => {
 	fake_closing($tool_window_1);
 
 	const $app_window_2 = new $Window({ title: "Application Example", resizable: true });
-	$app_window_2.$content.prepend(new MenuBar(menus).element);
+	const app_window_2_menu_bar = new MenuBar(menus);
+	$app_window_2.$content.prepend(app_window_2_menu_bar.element);
 	$app_window_2.$content.css({
 		padding: 0,
 		display: "flex",
 		flexDirection: "column",
 	});
 	$app_window_2.$content.append(`
-		<div style='padding: 20px; background: var(--Window); color: var(--WindowText); user-select: text; cursor: text; flex: 1;'>
+		<div class="inset-deep" style="padding: 20px; background: var(--Window); color: var(--WindowText); user-select: text; cursor: text; flex: 1;">
 			<p>This is the main application window.</p>
 			<p>It has a tool window that belongs to it, as well as a menu bar.</p>
 		</div>
 	`);
+	const $status_bar = $("<div class='status-bar inset-shallow' style='height:1.5em;line-height:1.5em;font-size:12px;margin-top:2px;'>").appendTo($app_window_2.$content);
+	$(app_window_2_menu_bar.element).on("info", (event, info) => {
+		$status_bar.text(info);
+	});
+	function showDefaultStatus() {
+		$status_bar.text("I am a status bar. This is my default text.");
+	}
+	showDefaultStatus();
+	$(app_window_2_menu_bar.element).on("default-info", (event, info) => {
+		showDefaultStatus();
+	});
 	fake_closing($app_window_2);
 	const $tool_window_2 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_2 });
 	$tool_window_2.$content.text("This tool window is a child of the app window.");
