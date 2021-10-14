@@ -42,6 +42,13 @@ $app_window_1.$Button("Recursive Dialog", (e) => {
 	throw new Error("Don't close automatically please...");
 });
 
+$app_window_1.$Button("Test Focus", (e) => {
+	// $tool_window_1.focus();
+	setTimeout(() => $tool_window_1.focus(), 1000);
+	
+	throw new Error("Don't close automatically please...");
+});
+
 // Test tabstop wrapping by creating many windows with different types of controls.
 $app_window_1.$Button("Test Tabstop Wrapping", (e) => {
 	let x = 0;

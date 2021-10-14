@@ -162,6 +162,7 @@ function $Window(options) {
 		$focus_showers.addClass("focused");
 		window.focusedWindow = $w;
 		$event_target.triggerHandler("focus");
+		refocus();
 	};
 	$w.blur = () => {
 		if (window.focusedWindow !== $w) {
