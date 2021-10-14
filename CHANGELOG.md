@@ -15,6 +15,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Removed
 - `minWidth` option; use `minOuterWidth` instead.
 - `minHeight` option; use `minOuterHeight` instead.
+- global `window.focusedWindow` (not part of API)
 
 ### Deprecated
 - `$MenuBar(menus)`; use `new MenuBar(menus).element` instead. (jQuery is being phased out.)
@@ -25,7 +26,10 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Menu bar's buttons and top level menus are no longer contained in a `<div class="menu-container">` element. Top level menus are now children of `<body>`, as submenus already were.
 - Clicking on window will now focus not just the last focused element, but if there wasn't one, it will focus a control with `class="default"`, and if that doesn't exist, the first control, and if there's no controls, the window itself (specifically `$window.$content`) or a tool window's parent window.
 - `$window.focus()` now actually focuses something, rather than just bringing the window to the top and making it appear active. It will focus the last focused control within the window, or else a control with `class="default"`, or else, if it's a tool window, the parent window, and otherwise the window itself (specifically `$window.$content`).
+- `$window.blur()` now removes focus from any focused control within the window. If focus is outside the window, it's not changed.
 - Windows can now be positioned freely when the `<body>` element is smaller than the viewport. The boundary is considered to be the maximum of the document's scrollable area and the viewport.
+- Window focus is now based around DOM focus. Focusing a control within the window will automatically focus the window. Special logic for preventing blur for taskbars is removed. To prevent blur you must now listen for `mousedown` or `pointerdown` on your element and call `event.preventDefault()`, the standard way to prevent blur.
+- Tool windows that have no parent window are now shown as focused as long as the browser window is focused. This is useful for web applications where the browser window takes the place of the parent application window.
 
 ### Added
 - Window method `setDimensions({ innerWidth, innerHeight, outerWidth, outerHeight })` to set the size of the window.

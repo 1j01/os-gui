@@ -11,6 +11,13 @@ function update_full_height() {
 full_height_checkbox.addEventListener('change', update_full_height);
 update_full_height();
 
+document.getElementById("no-focus").addEventListener("mousedown", function (e) {
+	e.preventDefault();
+});
+document.getElementById("no-focus-button").addEventListener("click", function (e) {
+	e.target.textContent = "Clicked Button";
+});
+
 // $('#full-height-checkbox').change(function () {
 // 	console.log('full-height changed');
 // 	$('body, html').css('height', this.checked ? '100%' : '');
@@ -98,3 +105,15 @@ $app_window_1.$Button("Test Tabstop Wrapping", (e) => {
 // todo: test <label> surrounding or not surrounding <input> (do labels even factor in to tabstop wrapping?)
 // test hidden controls, disabled controls
 
+
+const $app_window_2 = new $Window({ title: "Selectable Text", resizable: true });
+$app_window_2.$content.append(`
+	<p style="user-select: text; cursor: text">You should be able to select text in this window.</p>
+	<p style="user-select: text; cursor: text">I also have a control that should be default-focused but not if you select text.</p>
+	<button>I should be default-focused</button>
+	<p style="user-select: text; cursor: text">Make sure you test selecting text as the first thing you do upon loading the page.</p>
+`);
+$app_window_2.css({
+	left: innerWidth * 0.3,
+	top: innerHeight * 0.75,
+});

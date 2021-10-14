@@ -65,6 +65,8 @@ function $Window(options) {
 		$w.$x = $(E("button")).addClass("window-close-button window-button").appendTo($w.$titlebar);
 	}
 	$w.$content = $(E("div")).addClass("window-content").appendTo($w);
+	$w.$content.attr("tabIndex", "-1");
+	$w.$content.css("outline", "none");
 	if (options.toolWindow) {
 		$w.addClass("tool-window");
 	}
@@ -81,7 +83,6 @@ function $Window(options) {
 		$w.addClass("component-window");
 	}
 
-	
 	setTimeout(() => {
 		if (get_direction() == "rtl") {
 			$w.addClass("rtl"); // for reversing the titlebar gradient
@@ -93,6 +94,8 @@ function $Window(options) {
 		return window.get_direction ? window.get_direction() : getComputedStyle($w[0]).direction;
 	}
 
+	// This is very silly, using jQuery's event handling to implement simpler event handling.
+	// But I'll implement it in a non-silly way at least when I remove jQuery. Maybe sooner.
 	const $event_target = $({});
 	const make_simple_listenable = (name) => {
 		return (callback) => {
@@ -141,51 +144,55 @@ function $Window(options) {
 	$w.setDimensions(options);
 
 	let child_$windows = [];
-	let $focus_showers = $w;
 	$w.addChildWindow = ($child_window) => {
 		child_$windows.push($child_window);
-		$focus_showers = $focus_showers.add($child_window);
+	};
+	const showAsFocused = () => {
+		if ($w.hasClass("focused")) {
+			return;
+		}
+		$w.addClass("focused");
+		$event_target.triggerHandler("focus");
+	};
+	const stopShowingAsFocused = () => {
+		if (!$w.hasClass("focused")) {
+			return;
+		}
+		$w.removeClass("focused");
+		$event_target.triggerHandler("blur");
 	};
 	$w.focus = () => {
-		if (options.parentWindow) {
-			// TODO: remove flicker of unfocused state (for both child and parent windows)
-			setTimeout((() => { // wait til after blur handler of parent window
-				options.parentWindow.focus();
-			}), 0);
-			return;
-		}
-		if (window.focusedWindow === $w) {
-			return;
-		}
-		window.focusedWindow && focusedWindow.blur();
+		// showAsFocused();	
 		$w.bringToFront();
-		$focus_showers.addClass("focused");
-		window.focusedWindow = $w;
-		$event_target.triggerHandler("focus");
 		refocus();
 	};
 	$w.blur = () => {
-		if (window.focusedWindow !== $w) {
-			return;
+		stopShowingAsFocused();
+		if (document.activeElement && document.activeElement.closest(".window") == $w[0]) {
+			document.activeElement.blur();
 		}
-		$focus_showers.removeClass("focused");
-		// TODO: document.activeElement && document.activeElement.blur()?
-		$event_target.triggerHandler("blur");
-
-		window.focusedWindow = null;
 	};
 
-	$w.on("focusin pointerdown", (e) => {
-		$w.focus();
-	});
-	$G.on("pointerdown", (e) => {
-		if (
-			e.target.closest(".os-window") !== $w[0] &&
-			!e.target.closest(".taskbar")
-		) {
-			$w.blur();
+	if (options.toolWindow) {
+		if (options.parentWindow) {
+			options.parentWindow.onFocus(showAsFocused);
+			options.parentWindow.onBlur(stopShowingAsFocused);
+		} else {
+			// the browser window is the parent window
+			// show focus whenever the browser window is focused
+			$(window).on("focus", showAsFocused);
+			$(window).on("blur", stopShowingAsFocused);
+			if (document.hasFocus()) {
+				showAsFocused();
+			}
 		}
-	});
+	} else {
+		$w.on("focusin", () => {
+			showAsFocused();
+			$w.bringToFront();
+		});
+		$w.on("focusout", stopShowingAsFocused);
+	}
 
 	$w.css("touch-action", "none");
 
@@ -319,12 +326,14 @@ function $Window(options) {
 			options.parentWindow.triggerHandler("refocus-window");
 			return;
 		}
-		$w.$content.attr("tabIndex", "-1");
-		$w.$content.css("outline", "none");
 		$w.$content.focus();
 	};
 
-	$w.on("pointerdown refocus-window", (event) => {
+	$w.on("refocus-window", () => {
+		refocus();
+	});
+
+	$w.on("pointerdown", (event) => {
 		$w.bringToFront();
 		// Test cases where it should refocus the last focused control in the window:
 		// - Click in the blank space of the window
@@ -347,12 +356,13 @@ function $Window(options) {
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
 		requestAnimationFrame(() => {
 			// console.log("did focus change?", { last_focused_control, formerly_focused, activeElement: document.activeElement, win_elem: $w[0]}, document.activeElement !== formerly_focused);
-			
+
 			// If something programmatically got focus, don't refocus.
 			if (
 				document.activeElement &&
 				document.activeElement !== document &&
 				document.activeElement !== document.body &&
+				document.activeElement !== $w.$content[0] &&
 				document.activeElement !== formerly_focused
 			) {
 				return;
@@ -364,6 +374,9 @@ function $Window(options) {
 			// This is a bit of a weird compromise, for now.
 			const target_style = getComputedStyle(event.target);
 			if (target_style.userSelect !== "none") {
+				// Immediately show the window as focused, just don't refocus a specific control.
+				$w.$content.focus();
+
 				$w.one("pointerup pointercancel", () => {
 					requestAnimationFrame(() => { // this seems to make it more reliable in regards to double clicking
 						if (!getSelection().toString().trim()) {
