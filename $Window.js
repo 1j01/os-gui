@@ -298,6 +298,31 @@ function $Window(options) {
 	};
 	// var focused = false;
 	var last_focused_control;
+
+	const refocus = () => {
+		if (last_focused_control) {
+			last_focused_control.focus();
+			return;
+		}
+		const $tabstops = find_tabstops($w.$content);
+		const $default = $tabstops.find(".default");
+		if ($default.length) {
+			$default.focus();
+			return;
+		}
+		if ($tabstops.length) {
+			$tabstops[0].focus();
+			return;
+		}
+		if (options.parentWindow) {
+			options.parentWindow.triggerHandler("refocus-window");
+			return;
+		}
+		$w.$content.attr("tabIndex", "-1");
+		$w.$content.css("outline", "none");
+		$w.$content.focus();
+	};
+
 	$w.on("pointerdown refocus-window", (event) => {
 		$w.bringToFront();
 		// Test cases where it should refocus the last focused control in the window:
@@ -333,14 +358,6 @@ function $Window(options) {
 			}
 
 			// focused = true;
-
-			const refocus = () => {
-				if (last_focused_control) {
-					last_focused_control.focus();
-				} else {
-					find_tabstops($w.$content).first().focus();
-				}
-			};
 
 			// If the element is selectable, wait until the click is done and see if anything was selected first.
 			// This is a bit of a weird compromise, for now.
