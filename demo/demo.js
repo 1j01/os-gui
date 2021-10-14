@@ -56,7 +56,7 @@ const menus = {
 				item: `Item ${i}`,
 				checkbox: {
 					check: function () {
-						this.pointless_checkbox_value = this.pointless_checkbox_value ?? Math.sin((i/5) ** 2) > 0;
+						this.pointless_checkbox_value = this.pointless_checkbox_value ?? Math.sin((i / 5) ** 2) > 0;
 						return this.pointless_checkbox_value;
 					},
 					toggle: function () { this.pointless_checkbox_value = !this.pointless_checkbox_value; }
@@ -203,15 +203,15 @@ $(() => {
 			console.log(makeThemeCSSFile(cssProperties));
 		}
 	}
-	$("html").on("dragover", (event)=> {
+	$("html").on("dragover", (event) => {
 		event.preventDefault();
 		event.stopPropagation();
 	});
-	$("html").on("dragleave", (event)=> {
+	$("html").on("dragleave", (event) => {
 		event.preventDefault();
 		event.stopPropagation();
 	});
-	$("html").on("drop", (event)=> {
+	$("html").on("drop", (event) => {
 		event.preventDefault();
 		event.stopPropagation();
 		const files = [...event.originalEvent.dataTransfer.files];

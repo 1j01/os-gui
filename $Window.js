@@ -395,7 +395,8 @@ function $Window(options) {
 		//     - @TODO: Even if the tool window has controls, it should focus the parent window, I think
 		// - Clicking on a control in the window should focus said control (perhaps by way of updating last_focused_control)
 		// - Clicking on a disabled control in the window should focus the window
-		//   @FIXME
+		//   - Make sure to test this with another window previously focused
+		//     @FIXME
 		// - Simulated clicks (important for JS Paint's eye gaze and speech recognition modes)
 		// - (@TODO: Should clicking a child window focus the parent window?)
 		// It should NOT refocus when:
@@ -443,7 +444,7 @@ function $Window(options) {
 			refocus();
 		});
 	}
-	
+
 	// Assumption: no control exists in the window before this "focusin" handler is set up,
 	// so any element.focus() will come after and trigger this handler.
 	$w.on("focusin", () => {

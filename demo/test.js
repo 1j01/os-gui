@@ -138,7 +138,7 @@ const menus = {
 		},
 	],
 	"&Help": new Array(100).fill(0).map((_, i) => ({
-		item: new Array(i+3).fill("A").join(""),
+		item: new Array(i + 3).fill("A").join(""),
 	})),
 };
 
