@@ -166,7 +166,7 @@ Creates a window component that can be dragged around and such, brought to the f
 
 `options.title`: Shortcut to set the window title initially.
 
-`options.icon`: Sets the icon of the window, assuming a global `TITLEBAR_ICON_SIZE` (which should generally be 16) and a global `$Icon` function which takes an icon identifier and size and returns an `img` (or other image-like element).
+`options.icon`: Sets the icon of the window, assuming a global `TITLEBAR_ICON_SIZE` (which should generally be 16) and a global `$Icon` function which takes an icon identifier and size and returns an `img` (or other image-like element). I know this API sucks, I'm going to change it, don't worry. See [Specifying Icons](#specifying-icons) for more details.
 
 `options.toolWindow`: If `true`, the window will be a tool window, which means it will not have a minimize or maximize button, and it will be shown as always focused by default. It will also have a smaller close button in the default styles.
 
@@ -198,27 +198,6 @@ Creates a window component that can be dragged around and such, brought to the f
 
 `options.constrainRect(rect, x_axis, y_axis)`: A function that can be used to constrain the window to a particular rectangle. Takes and returns a rectangle object with `x`, `y`, `width`, and `height` properties. `x_axis` and `y_axis` define what is being dragged `-1` for left and top, `1` for right and bottom, and `0` for middle. Note that the window will always be constrained to not move past the minimum width and height.
 
-```js
-// var DESKTOP_ICON_SIZE = 32;
-// var TASKBAR_ICON_SIZE = 16;
-var TITLEBAR_ICON_SIZE = 16; // required global (if using options.icon)
-
-function getIconPath(name, size){
-	return "/images/icons/" + name + "-" + size + "x" + size + ".png";
-}
-
-function $Icon(name, size){ // required global (if using options.icon)
-	var $img = $("<img class='icon'/>");
-	$img.attr({
-		draggable: false,
-		src: getIconPath(name, size),
-		width: size,
-		height: size,
-	});
-	return $img;
-}
-```
-
 \*Iframes require special handling. There's an `$IframeWindow` helper in [98](https://github.com/1j01/98), but a better approach would use composition rather than inheritance.
 (You could want multiple iframes in a window, or just an iframe with other content around it, maybe an iframe that sometimes exists or not!)
 
@@ -231,6 +210,18 @@ Sets the title, or if `text` isn't passed, returns the current title of the wind
 #### `close()`
 
 Closes the window.
+
+#### `focus()`
+
+Tries to focus something within the window, in this order of priority:
+- The last focused control within the window
+- A control with `class="default"`
+- If it's a tool window, the parent window
+- and otherwise the window itself (specifically `$window.$content`)
+
+#### `blur()`
+
+Removes focus from the window. If focus is outside the window, it is left unchanged.
 
 #### `center()`
 
@@ -292,6 +283,36 @@ This event is emitted when the window is closed. It cannot be prevented.
 #### Event: `window-drag-start`
 
 Can be used to prevent dragging a window, with `event.preventDefault()`.
+
+### Specifying Icons
+
+⚠️ Bad API!
+
+```js
+// var DESKTOP_ICON_SIZE = 32;
+// var TASKBAR_ICON_SIZE = 16;
+var TITLEBAR_ICON_SIZE = 16; // required global (if using options.icon)
+
+function getIconPath(name, size){
+	return "/images/icons/" + name + "-" + size + "x" + size + ".png";
+}
+
+function $Icon(name, size){ // required global (if using options.icon)
+	var $img = $("<img class='icon'/>");
+	$img.attr({
+		draggable: false,
+		src: getIconPath(name, size),
+		width: size,
+		height: size,
+	});
+	return $img;
+}
+
+$window = new $Window({
+	icon: "my-icon",
+});
+// this will load /images/icons/my-icon-16x16.png
+```
 
 ## License
 
