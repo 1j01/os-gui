@@ -22,6 +22,9 @@ $app_window_1.$content.append(`
 `);
 const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_1 });
 $tool_window_1.$content.text("This is a tool window.");
+$app_window_1.on("closed", () => {
+	$tool_window_1.close();
+});
 const open_recursive_dialog = (x, y) => {
 	const $w = $Window({ title: "Recursive Dialog", resizable: false, maximizeButton: false, minimizeButton: false });
 	$w.$content.html("<p>I want more. More!</p>");

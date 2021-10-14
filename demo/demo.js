@@ -108,7 +108,7 @@ $(() => {
 	const $tool_window_2 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_2 });
 	$tool_window_2.$content.text("This tool window is a child of the app window.");
 	fake_closing($tool_window_2);
-	$app_window_2.on("close", () => {
+	$app_window_2.on("closed", () => {
 		$tool_window_2.close();
 	});
 
@@ -146,6 +146,8 @@ $(() => {
 	function fake_closing($window) {
 		$window.on("close", (event) => {
 			event.preventDefault();
+			$window.triggerHandler("closed");
+			$window.closed = true;
 			$window.hide();
 			setTimeout(() => {
 				// Restore position
@@ -158,6 +160,8 @@ $(() => {
 				});
 				// Fade back in
 				$window.fadeIn();
+				// Ta-da! It was there all along!
+				$window.closed = false;
 			}, 1000);
 		});
 	}
