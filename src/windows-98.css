@@ -284,7 +284,8 @@ body > .window-titlebar {
 	/* @extend button.lightweight; */
 	background: var(--Menu);
 }
-.menu-button:hover {
+.menu-button:hover,
+.menu-button:focus {
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
 .menu-button:active,

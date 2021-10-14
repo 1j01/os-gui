@@ -114,18 +114,22 @@ function MenuBar(menus) {
 		}
 	};
 
+	const top_level_menus = [];
+	
 	// attached to menu bar and floating popups (which are not descendants of the menu bar)
 	function handleKeyDown(e) {
 		if (e.defaultPrevented) {
 			return;
 		}
 		const active_menu_popup_el = e.target.closest(".menu-popup");
-		const menu_button_el = e.target.closest(".menu-button") || menus_el.children[active_menu_index]; //menus_el.querySelector(".menu-button[aria-expanded='true']");
-		const button_menu_popup_el = document.getElementById(menu_button_el.getAttribute("aria-controls"));
-		// console.log("keydown", e.key, { target: e.target, active_menu_popup_el, button_menu_popup_el, menu_button_el });
-		const menu_popup_el = active_menu_popup_el || button_menu_popup_el;
+		const top_level_menu = top_level_menus[active_menu_index];
+		const { menu_button_el, maybe_toggle_menu } = top_level_menu;
+		// console.log("keydown", e.key, { target: e.target, active_menu_popup_el, top_level_menu });
+		const menu_popup_el = active_menu_popup_el || top_level_menu.menu_popup_el;
 		const parent_item_el = parent_item_el_by_popup_el.get(active_menu_popup_el);
 		const focused_item_el = menu_popup_el.querySelector(".menu-item:focus");
+
+		// @TODO: open menus also with Enter; Space opens system menu in Windows 98
 
 		switch (e.keyCode) {
 			case 37: // Left
@@ -155,9 +159,11 @@ function MenuBar(menus) {
 					const next_previous = ((get_direction() === "ltr") === right) ? "next" : "previous";
 					const target_button_el = menu_button_el[`${next_previous}ElementSibling`];
 					if (target_button_el) {
+						// @TODO: only if a menu was open
 						$(target_button_el).trigger("pointerdown");
 					}
 					e.preventDefault();
+					// @TODO: wrap around
 				}
 				break;
 			case 40: // Down
@@ -167,8 +173,9 @@ function MenuBar(menus) {
 						next_el = next_el.nextElementSibling;
 					}
 					next_el?.focus();
+					// @TODO: wrap around
 				} else {
-					$(menu_button_el).trigger("pointerdown");
+					maybe_toggle_menu("pointerdown");
 					menu_popup_el.querySelector(".menu-item").focus(); // first item
 				}
 				e.preventDefault();
@@ -180,8 +187,10 @@ function MenuBar(menus) {
 						prev_el = prev_el.previousElementSibling;
 					}
 					prev_el?.focus();
+					// @TODO: wrap around
 				} else {
-					$(menu_button_el).trigger("pointerdown"); // or maybe do nothing?
+					maybe_toggle_menu("pointerdown");
+					// @TODO: actually in Windows 98, it focuses the first item, not the last
 					const menu_items = menu_popup_el.querySelectorAll(".menu-item");
 					menu_items[menu_items.length - 1].focus(); // last item
 				}
@@ -189,7 +198,14 @@ function MenuBar(menus) {
 				break;
 			case 27: // Escape
 				if (any_open_menus()) {
-					close_menus();
+					if (parent_item_el) {
+						parent_item_el.focus();
+						active_menu_popup_el.style.display = "none";
+					} else {
+						// @TODO: is this a real case? parent_item_el might always exist since it can be a top level button
+						close_menus();
+						menu_button_el.focus();
+					}
 					e.preventDefault();
 				}
 				break;
@@ -448,15 +464,18 @@ function MenuBar(menus) {
 			if (e.altKey) {
 				if (String.fromCharCode(e.keyCode) === get_hotkey(menus_key)) {
 					e.preventDefault();
-					$(menu_button_el).trigger("pointerdown");
+					maybe_toggle_menu("pointerdown");
 				}
 			}
 		});
 		$(menu_button_el).on("pointerdown pointerover", e => {
-			if (e.type === "pointerover" && !selecting_menus) {
+			maybe_toggle_menu(e.type);
+		});
+		function maybe_toggle_menu(type) {
+			if (type === "pointerover" && !selecting_menus) {
 				return;
 			}
-			if (e.type !== "pointerover") {
+			if (type !== "pointerover") {
 				if (!menu_button_el.classList.contains("active")) {
 					this_click_opened_the_menu = true;
 				}
@@ -479,7 +498,7 @@ function MenuBar(menus) {
 			selecting_menus = true;
 
 			$menus.triggerHandler("info", "");
-		});
+		};
 		$(menu_button_el).on("pointerup", () => {
 			if (this_click_opened_the_menu) {
 				this_click_opened_the_menu = false;
@@ -499,6 +518,12 @@ function MenuBar(menus) {
 			menu_button_el.setAttribute("aria-expanded", "false");
 
 			$menus.triggerHandler("default-info");
+		});
+		top_level_menus.push({
+			menu_button_el,
+			menu_popup_el,
+			menus_key,
+			maybe_toggle_menu,
 		});
 	};
 	for (const menu_key in menus) {

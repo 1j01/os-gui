@@ -348,6 +348,8 @@ function $Window(options) {
 		}
 	};
 	// var focused = false;
+	// @TODO: rename last_focused_control and formerly_focused to be distict
+	// maybe last_focused_in_window and last_focused_anywhere
 	var last_focused_control;
 
 	const refocus = () => {
@@ -429,6 +431,11 @@ function $Window(options) {
 			) {
 				return;
 			}
+			// If menus got focus, don't refocus.
+			if (document.activeElement?.closest?.(".menus")) {
+				// console.log("click in menus");
+				return;
+			}
 
 			// focused = true;
 
@@ -475,6 +482,11 @@ function $Window(options) {
 
 	$w.on("keydown", (e) => {
 		if (e.ctrlKey || e.altKey || e.metaKey) {
+			return;
+		}
+		// console.log("keydown", e.key, e.target);
+		if (e.target.closest(".menus")) {
+			// console.log("keydown in menus");
 			return;
 		}
 		const $buttons = $w.$content.find("button");
