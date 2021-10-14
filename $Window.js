@@ -384,7 +384,17 @@ function $Window(options) {
 	$w[0].addEventListener("pointerdown", handle_pointer_activation);
 	$w[0].addEventListener("mousedown", handle_pointer_activation);
 
+	let formerly_focused;
+	// Assumption: focusin comes after pointerdown/mousedown
+	// This is probably guaranteed, because you can prevent the default of focusing from pointerdown/mousedown
+	$G.on("focusin", (e) => {
+		// why so many focusin events?...
+		// console.log("focusin", e.target);
+		formerly_focused = e.target;
+	});
+
 	function handle_pointer_activation(event) {
+		// console.log("handle_pointer_activation", event.type, event.target);
 		$w.bringToFront();
 		// Test cases where it should refocus the last focused control in the window:
 		// - Click in the blank space of the window
@@ -396,7 +406,6 @@ function $Window(options) {
 		// - Clicking on a control in the window should focus said control (perhaps by way of updating last_focused_control)
 		// - Clicking on a disabled control in the window should focus the window
 		//   - Make sure to test this with another window previously focused
-		//     @FIXME
 		// - Simulated clicks (important for JS Paint's eye gaze and speech recognition modes)
 		// - (@TODO: Should clicking a child window focus the parent window?)
 		// It should NOT refocus when:
@@ -406,7 +415,6 @@ function $Window(options) {
 		//   - Clicking a control that focuses something outside the window (I don't have an example)
 		// - Trying to select text
 
-		const formerly_focused = null; // event.relatedTarget doesn't exist, this isn't focusin/focus
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
 		requestAnimationFrame(() => {
 			// console.log("did focus change?", { last_focused_control, formerly_focused, activeElement: document.activeElement, win_elem: $w[0]}, document.activeElement !== formerly_focused);
