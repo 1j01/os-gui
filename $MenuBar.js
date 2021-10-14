@@ -153,20 +153,20 @@ function MenuBar(menus) {
 					active_menu_popup_el.style.display = "none";
 					e.preventDefault();
 				} else {
-					// go to next/previous top level menu
-					const next_previous = ((get_direction() === "ltr") === right) ? "next" : "previous";
-					const target_button_el = menu_button_el[`${next_previous}ElementSibling`];
+					// go to next/previous top level menu, wrapping around
+					// and open a new menu only if a menu was already open
 					const menu_was_open = visible(menu_popup_el);
-					if (target_button_el) {
-						if (menu_was_open) {
-							$(target_button_el).trigger("pointerdown");
-						} else {
-							$(menu_button_el).trigger("release");
-							target_button_el.focus();
-						}
+					const cycle_dir = ((get_direction() === "ltr") === right) ? 1 : -1;
+					const new_index = (active_menu_index + cycle_dir + top_level_menus.length) % top_level_menus.length;
+					const new_top_level_menu = top_level_menus[new_index];
+					const target_button_el = new_top_level_menu.menu_button_el;
+					if (menu_was_open) {
+						$(target_button_el).trigger("pointerdown");
+					} else {
+						$(menu_button_el).trigger("release");
+						target_button_el.focus();
 					}
 					e.preventDefault();
-					// @TODO: wrap around
 				}
 				break;
 			case 40: // Down
