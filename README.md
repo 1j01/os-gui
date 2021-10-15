@@ -52,7 +52,7 @@ The library is not yet provided as a bundle (single file).
 
 You can either 1. download the repository as a ZIP file, 2. clone the repository, or 3. install the library as an [npm package](https://www.npmjs.com/package/os-gui).
 
-You have to include scripts for the components you want to use (`$MenuBar.js` or `$Window.js`),
+You have to include scripts for the components you want to use (`MenuBar.js` or `$Window.js`),
 along with stylesheets for layout, a theme, and a color scheme.
 
 Make sure to use the compiled CSS files, not the source files.
@@ -68,7 +68,7 @@ In `<head>`:
 In `<head>` or `<body>`:
 ```html
 <script src="lib/jquery.js"></script>
-<script src="os-gui/$MenuBar.js"></script>
+<script src="os-gui/MenuBar.js"></script>
 <script src="os-gui/$Window.js"></script>
 ```
 
