@@ -88,7 +88,9 @@ function MenuBar(menus) {
 	// This is for exiting submenus.
 	const parent_item_el_by_popup_el = new Map();
 
-	const any_open_menus = () => !!document.querySelector(".menu-popup"); // @TODO: specific to this menu bar (note that popups are not descendants of the menu bar)
+	// @TODO: specific to this menu bar (note that popups are not descendants of the menu bar)
+	const any_open_menus = () => [...document.querySelectorAll(".menu-popup")].some(popup_el => visible(popup_el));
+	
 	const close_menus = () => {
 		for (const { menu_button_el } of top_level_menus) {
 			menu_button_el.dispatchEvent(new CustomEvent("release"), {});
