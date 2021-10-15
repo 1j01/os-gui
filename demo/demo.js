@@ -48,7 +48,7 @@ const menus = {
 					description: "The checked state is indeterminate until observed.",
 				},
 			],
-			description: "Stupid physics joke.",
+			description: "Contains a stupid physics joke.",
 		},
 		{
 			item: "&Many Items",
@@ -63,7 +63,7 @@ const menus = {
 				},
 				shortcut: `Ctrl+${i}`,
 			})),
-			description: "Lots of items.",
+			description: "Contains lots of items.",
 		},
 	],
 	"&Edit": [
