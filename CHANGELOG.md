@@ -35,9 +35,11 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Window method `setDimensions({ innerWidth, innerHeight, outerWidth, outerHeight })` to set the size of the window.
 - Window options `innerWidth`, `innerHeight`, `outerWidth`, `outerHeight` to set the initial size of the window.
 - Window options `minInnerWidth`, `minInnerHeight`, `minOuterWidth`, `minOuterHeight` to set the minimum size of the window.
-- Menus can now be closed with Escape.
-- Submenus can now be navigated with the arrow keys.
-- The default action of scrolling the page with arrow keys is now prevented when menus are focused.
+- Greatly improved menu navigation:
+  - Menus can now be opened with Enter and exited with Escape.
+  - Submenus can now be navigated with the arrow keys.
+  - Menus wrap around when navigating up and down or left and right.
+  - The default action of scrolling the page with arrow keys is now prevented when menus are focused.
 
 ### Fixed
 - Improved accuracy of the titlebar styles, especially for tool windows.
