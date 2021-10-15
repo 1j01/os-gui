@@ -18,8 +18,9 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - global `window.focusedWindow` (not part of API)
 
 ### Deprecated
-- `$MenuBar(menus)`; use `new MenuBar(menus).element` instead. jQuery is no longer used by the menu bar module.
-- extra parameter to menu bar's `info` event; use `event.detail.description` instead.
+- `$MenuBar.js`; use `MenuBar.js` instead. jQuery is no longer used by the menu bar module.
+- `$MenuBar(menus)`; use `new MenuBar(menus).element` instead.
+- The extra parameter to menu bar's `info` event; use `event.detail?.description` instead.
 
 ### Changed
 - `parseThemeFileString` can now return `undefined` if the theme file is not valid.
@@ -36,7 +37,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Window method `setDimensions({ innerWidth, innerHeight, outerWidth, outerHeight })` to set the size of the window.
 - Window options `innerWidth`, `innerHeight`, `outerWidth`, `outerHeight` to set the initial size of the window.
 - Window options `minInnerWidth`, `minInnerHeight`, `minOuterWidth`, `minOuterHeight` to set the minimum size of the window.
-- Menu bar's `info` event now has a `detail` object with `description` property, and it works with submenu items as well (previously items with submenus were assumed to not have descriptions).
+- Menu bar's `info` event now works with submenus as well. (Previously items that contain submenus were assumed to not have descriptions, simply because Paint's one submenu does not a have a description. But for instance Explorer has descriptions for all of its menus (except Favorites, which is a bit special, what with drag and drop and context menus and all.))
 - Greatly improved menu navigation:
   - Menus can now be opened with Enter and exited with Escape.
   - Pressing Escape an extra time will unfocus the menu bar, focusing the last focused control within the window.
