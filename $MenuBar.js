@@ -171,32 +171,19 @@ function MenuBar(menus) {
 				}
 				break;
 			case 40: // Down
-				if (menu_popup_el && visible(menu_popup_el) && focused_item_el) {
-					let next_el = focused_item_el.nextElementSibling;
-					while (next_el && !next_el.classList.contains("menu-item")) {
-						next_el = next_el.nextElementSibling;
-					}
-					next_el?.focus();
-					// @TODO: wrap around
-				} else {
-					maybe_toggle_menu("pointerdown");
-					menu_popup_el.querySelector(".menu-item").focus(); // first item
-				}
-				e.preventDefault();
-				break;
 			case 38: // Up
+				const down = e.keyCode === 40;
 				if (menu_popup_el && visible(menu_popup_el) && focused_item_el) {
-					let prev_el = focused_item_el.previousElementSibling;
-					while (prev_el && !prev_el.classList.contains("menu-item")) {
-						prev_el = prev_el.previousElementSibling;
-					}
-					prev_el?.focus();
-					// @TODO: wrap around
+					const cycle_dir = down ? 1 : -1;
+					const item_els = [...menu_popup_el.querySelectorAll(".menu-item")];
+					const from_index = item_els.indexOf(focused_item_el);
+					const to_index = (from_index + cycle_dir + item_els.length) % item_els.length;
+					const to_item_el = item_els[to_index];
+					to_item_el.focus();
 				} else {
 					maybe_toggle_menu("pointerdown");
-					// @TODO: actually in Windows 98, it focuses the first item, not the last
-					const menu_items = menu_popup_el.querySelectorAll(".menu-item");
-					menu_items[menu_items.length - 1].focus(); // last item
+					// focus first item in menu, even if you pressed Up
+					menu_popup_el.querySelector(".menu-item").focus();
 				}
 				e.preventDefault();
 				break;
