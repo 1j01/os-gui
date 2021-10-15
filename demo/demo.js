@@ -118,13 +118,15 @@ $(() => {
 	`);
 	const $status_bar = $("<div class='status-bar inset-shallow' style='height:1.5em;line-height:1.5em;font-size:12px;margin-top:2px;'>").appendTo($app_window_2.$content);
 	$(app_window_2_menu_bar.element).on("info", (event, info) => {
+		// info = `event.detail.description: ${event.detail.description}, jQuery second arg: ${info}`; // testing
+		info = event.detail.description; // new API
 		$status_bar.text(info);
 	});
 	function showDefaultStatus() {
 		$status_bar.text("I am a status bar. This is my default text.");
 	}
 	showDefaultStatus();
-	$(app_window_2_menu_bar.element).on("default-info", (event, info) => {
+	$(app_window_2_menu_bar.element).on("default-info", (event) => {
 		showDefaultStatus();
 	});
 	fake_closing($app_window_2);

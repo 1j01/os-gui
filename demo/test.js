@@ -1,15 +1,15 @@
 const full_height_checkbox = document.getElementById('full-height-checkbox');
+const rtl_checkbox = document.getElementById('rtl-checkbox');
 function update_full_height() {
-	if (full_height_checkbox.checked) {
-		document.body.style.height = "100%";
-		document.documentElement.style.height = "100%";
-	} else {
-		document.body.style.height = "";
-		document.documentElement.style.height = "";
-	}
+	document.body.style.height = document.documentElement.style.height = full_height_checkbox.checked ? "100%" : "";
+}
+function update_rtl() {
+	document.body.dir = rtl_checkbox.checked ? "rtl" : "ltr";
 }
 full_height_checkbox.addEventListener('change', update_full_height);
+rtl_checkbox.addEventListener('change', update_rtl);
 update_full_height();
+update_rtl();
 
 document.getElementById("no-focus").addEventListener("mousedown", function (e) {
 	e.preventDefault();

@@ -62,17 +62,13 @@ function get_new_menu_z_index() {
 	}
 	return (++internal_z_counter) + MAX_MENU_NESTING;
 }
-	
+
 function MenuBar(menus) {
 	if (!(this instanceof MenuBar)) {
 		return new MenuBar(menus);
 	}
 
-	const $ = jQuery;
-	const $G = $(self);
-
 	const menus_el = E("div", { class: "menus", "touch-action": "none" });
-	const $menus = $(menus_el);
 
 	// returns writing/layout direction, "ltr" or "rtl"
 	function get_direction() {
@@ -92,9 +88,11 @@ function MenuBar(menus) {
 	// This is for exiting submenus.
 	const parent_item_el_by_popup_el = new Map();
 
-	const any_open_menus = ()=> !!document.querySelector(".menu-popup"); // @TODO: specific to this menu bar (note that popups are not descendants of the menu bar)
+	const any_open_menus = () => !!document.querySelector(".menu-popup"); // @TODO: specific to this menu bar (note that popups are not descendants of the menu bar)
 	const close_menus = () => {
-		$(menus_el).find(".menu-button").trigger("release"); // using jQuery just for events system; @TODO: remove jQuery dependency
+		for (const { menu_button_el } of top_level_menus) {
+			menu_button_el.dispatchEvent(new CustomEvent("release"), {});
+		}
 		// Close any rogue floating submenus
 		const popup_els = document.querySelectorAll(".menu-popup");
 		for (const popup_el of popup_els) {
@@ -114,8 +112,26 @@ function MenuBar(menus) {
 		}
 	};
 
+	function send_info_event(item) {
+		// @TODO: in a future version, give the whole menu item definition (or null)
+		const description = item?.description || "";
+		if (window.jQuery) {
+			// old API (using jQuery's "extraParameters"), made forwards compatible with new API (event.detail)
+			const event = new window.jQuery.Event("info", { detail: { description } });
+			const extraParam = {
+				toString() {
+					console.warn("jQuery extra parameter for info event is deprecated, use event.detail instead");
+					return description;
+				},
+			};
+			window.jQuery(menus_el).trigger(event, extraParam);
+		} else {
+			menus_el.dispatchEvent(new CustomEvent("info", { detail: { description } }));
+		}
+	}
+
 	const top_level_menus = [];
-	
+
 	// attached to menu bar and floating popups (which are not descendants of the menu bar)
 	function handleKeyDown(e) {
 		if (e.defaultPrevented) {
@@ -138,7 +154,7 @@ function MenuBar(menus) {
 					(get_direction() === "ltr") === right
 				) {
 					// enter submenu
-					$(focused_item_el).trigger("click");
+					focused_item_el.dispatchEvent(new Event("click"));
 					// focus first item in submenu
 					const submenu_popup = submenu_popups_by_menu_item_el.get(focused_item_el);
 					submenu_popup.element.querySelector(".menu-item").focus();
@@ -164,7 +180,7 @@ function MenuBar(menus) {
 						new_top_level_menu.maybe_toggle_menu();
 						new_top_level_menu.menu_popup_el.querySelector(".menu-item").focus();
 					} else {
-						$(menu_button_el).trigger("release");
+						menu_button_el.dispatchEvent(new CustomEvent("release"), {});
 						target_button_el.focus();
 					}
 					e.preventDefault();
@@ -255,7 +271,7 @@ function MenuBar(menus) {
 
 				item_el._menu_item = item;
 
-				$(menu_popup_el).on("update", () => {
+				menu_popup_el.addEventListener("update", () => {
 					// item_el.disabled = is_disabled(item); // doesn't work, probably because it's a <tr>
 					if (is_disabled(item)) {
 						item_el.setAttribute("disabled", "");
@@ -266,8 +282,8 @@ function MenuBar(menus) {
 						checkbox_area_el.textContent = item.checkbox.check() ? "✓" : "";
 					}
 				});
-				$(item_el).on("pointerenter", () => {
-					$(menu_popup_el).triggerHandler("update");
+				item_el.addEventListener("pointerenter", () => {
+					menu_popup_el.dispatchEvent(new CustomEvent("update"), {}); // @TODO: why?
 					item_el.focus();
 				});
 
@@ -279,7 +295,7 @@ function MenuBar(menus) {
 				if (item.submenu) {
 					item_el.classList.add("has-submenu");
 					submenu_area_el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="11" viewBox="0 0 10 11" style="fill:currentColor;display:inline-block;vertical-align:middle"><path d="M7.5 4.33L0 8.66L0 0z"/></svg>';
-					$(menu_popup_el).on("update", () => {
+					menu_popup_el.addEventListener("update", () => {
 						submenu_area_el.querySelector("svg").style.transform = get_direction() === "rtl" ? "scaleX(-1)" : "";
 					});
 
@@ -301,10 +317,10 @@ function MenuBar(menus) {
 						submenu_popup_el.style.display = "";
 						submenu_popup_el.style.zIndex = get_new_menu_z_index();
 						submenu_popup_el.setAttribute("dir", get_direction());
-						
+
 						// console.log("open_submenu — submenu_popup_el.style.zIndex", submenu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
 						// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
-						$(submenu_popup_el).triggerHandler("update");
+						submenu_popup_el.dispatchEvent(new CustomEvent("update"), {});
 						const rect = item_el.getBoundingClientRect();
 						let submenu_popup_rect = submenu_popup_el.getBoundingClientRect();
 						submenu_popup_el.style.position = "absolute";
@@ -373,19 +389,20 @@ function MenuBar(menus) {
 					// @TODO: make this more robust in general! Make some automated tests.
 
 					let open_tid, close_tid;
-					$(item_el).add(submenu_popup_el).on("pointerenter", () => {
+					submenu_popup_el.addEventListener("pointerenter", () => {
 						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
 					});
-					$(item_el).on("pointerenter", () => {
+					item_el.addEventListener("pointerenter", () => {
+						// @TODO: don't cancel close timer? in Windows 98 it'll close after a delay even if you hover the parent menu item
 						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
-						// if (close_tid) { clearTimeout(close_tid); close_tid = null; }
+						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
 						open_tid = setTimeout(open_submenu, 501); // @HACK: slightly longer than close timer
 					});
-					$(item_el).on("pointerleave", () => {
+					item_el.addEventListener("pointerleave", () => {
 						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
 					});
-					$(menu_popup_el).on("pointerenter", (event) => {
+					menu_popup_el.addEventListener("pointerenter", (event) => {
 						// console.log(event.target.closest(".menu-item"));
 						if (event.target.closest(".menu-item") === item_el) {
 							return;
@@ -405,11 +422,12 @@ function MenuBar(menus) {
 						}
 					});
 					// keep submenu open while mouse is outside any parent menus
-					$(menu_popup_el).on("pointerleave", () => {
+					menu_popup_el.addEventListener("pointerleave", () => {
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
 					});
 
-					$(item_el).on("click pointerdown", open_submenu);
+					item_el.addEventListener("click", open_submenu);
+					item_el.addEventListener("pointerdown", open_submenu);
 				}
 
 				const item_action = () => {
@@ -417,33 +435,29 @@ function MenuBar(menus) {
 						if (item.checkbox.toggle) {
 							item.checkbox.toggle();
 						}
-						$(menu_popup_el).triggerHandler("update");
+						menu_popup_el.dispatchEvent(new CustomEvent("update"), {});
 					} else if (item.action) {
 						close_menus();
 						item.action();
 					}
 				};
-				$(item_el).on("pointerup", e => {
+				item_el.addEventListener("pointerup", e => {
 					if (e.pointerType === "mouse" && e.button !== 0) {
 						return;
 					}
 					item_action();
 				});
-				$(item_el).on("pointerenter", () => {
-					if (item.submenu) {
-						$menus.triggerHandler("info", "");
-					} else {
-						$menus.triggerHandler("info", item.description || "");
-					}
+				item_el.addEventListener("pointerenter", () => {
+					send_info_event(item);
 				});
-				$(item_el).on("pointerleave", () => {
+				item_el.addEventListener("pointerleave", () => {
 					if (visible(item_el)) {
-						$menus.triggerHandler("info", "");
+						send_info_event();
 						parent_item_el_by_popup_el.get(menu_popup_el)?.focus();
 					}
 				});
 
-				$(item_el).on("keydown", e => {
+				item_el.addEventListener("keydown", e => {
 					if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey) {
 						return;
 					}
@@ -460,13 +474,13 @@ function MenuBar(menus) {
 					}
 				});
 
-				$(menu_popup_el).on("keydown", e => {
+				menu_popup_el.addEventListener("keydown", e => {
 					if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey) {
 						return;
 					}
 					if (String.fromCharCode(e.keyCode) === get_hotkey(item.item)) {
 						e.preventDefault();
-						$(item_el).trigger("click");
+						item_el.dispatchEvent(new Event("click"));
 					}
 				});
 			}
@@ -505,8 +519,8 @@ function MenuBar(menus) {
 				menu_popup_el.style.left = "0px";
 			}
 		};
-		$G.on("resize", update_position_from_containing_bounds);
-		$(menu_popup_el).on("update", update_position_from_containing_bounds);
+		window.addEventListener("resize", update_position_from_containing_bounds);
+		menu_popup_el.addEventListener("update", update_position_from_containing_bounds);
 		// update_position_from_containing_bounds(); // will be called when the menu is opened
 
 		const menu_id = menus_key.replace("&", "").replace(/ /g, "-").toLowerCase();
@@ -515,13 +529,13 @@ function MenuBar(menus) {
 		menu_popup_el.style.display = "none";
 		menu_button_el.innerHTML = display_hotkey(menus_key);
 		menu_button_el.tabIndex = -1;
-		
+
 		menu_button_el.setAttribute("aria-haspopup", "true");
 		menu_button_el.setAttribute("aria-controls", menu_popup_el.id);
 
 		// @TODO: allow setting scope for alt shortcuts, like menuBar.setHotkeyScope(windowElement||window)
 		// and add a helper to $Window to set up a menu bar, like $window.setMenuBar(menuBar||null)
-		$G.on("keydown", e => {
+		window.addEventListener("keydown", e => {
 			if (e.ctrlKey || e.metaKey) { // Ctrl or Command held
 				if (e.keyCode !== 17 && e.keyCode !== 91 && e.keyCode !== 93 && e.keyCode !== 224) { // anything but Ctrl or Command pressed
 					close_menus();
@@ -535,10 +549,13 @@ function MenuBar(menus) {
 				}
 			}
 		});
-		$(menu_button_el).on("focus", () => {
+		menu_button_el.addEventListener("focus", () => {
 			active_menu_index = Object.keys(menus).indexOf(menus_key);
 		});
-		$(menu_button_el).on("pointerdown pointerenter", e => {
+		menu_button_el.addEventListener("pointerdown", e => {
+			maybe_toggle_menu(e.type);
+		});
+		menu_button_el.addEventListener("pointerenter", e => {
 			maybe_toggle_menu(e.type);
 		});
 		function maybe_toggle_menu(type) {
@@ -562,14 +579,13 @@ function MenuBar(menus) {
 			// console.log("pointerdown (possibly simulated) — menu_popup_el.style.zIndex", menu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
 			// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
 			active_menu_index = Object.keys(menus).indexOf(menus_key);
-			// menu_popup_el.dispatchEvent(new CustomEvent("update")); // TODO: do stuff like this, for example.
-			$(menu_popup_el).trigger("update");
+			menu_popup_el.dispatchEvent(new CustomEvent("update"), {});
 
 			selecting_menus = true;
 
-			$menus.triggerHandler("info", "");
+			send_info_event();
 		};
-		$(menu_button_el).on("pointerup", () => {
+		menu_button_el.addEventListener("pointerup", () => {
 			if (this_click_opened_the_menu) {
 				this_click_opened_the_menu = false;
 				return;
@@ -578,7 +594,7 @@ function MenuBar(menus) {
 				close_menus();
 			}
 		});
-		$(menu_button_el).on("release", () => {
+		menu_button_el.addEventListener("release", () => {
 			selecting_menus = false;
 
 			menu_button_el.classList.remove("active");
@@ -587,7 +603,7 @@ function MenuBar(menus) {
 			}
 			menu_button_el.setAttribute("aria-expanded", "false");
 
-			$menus.triggerHandler("default-info");
+			menus_el.dispatchEvent(new CustomEvent("default-info", {}));
 		});
 		top_level_menus.push({
 			menu_button_el,
@@ -600,7 +616,7 @@ function MenuBar(menus) {
 		make_menu_button(menu_key, menus[menu_key]);
 	}
 
-	$G.on("keydown", e => {
+	window.addEventListener("keydown", e => {
 		// close any errant menus
 		// taking care not to interfere with regular Escape key behavior
 		// @TODO: listen for menus_el removed from DOM, and close menus there
@@ -617,16 +633,15 @@ function MenuBar(menus) {
 			}
 		}
 	});
-	$G.on("blur", () => {
-		// window.console && console.log("blur", e.target, document.activeElement);
-		close_menus();
-	});
-	$G.on("pointerdown pointerup", e => {
-		if (!e.target.closest(".menus, .menu-popup")) {
-			// window.console && console.log(e.type, "occurred outside of menus (on ", e.target, ") so...");
+	window.addEventListener("blur", close_menus);
+	function close_menus_on_click_outside(event) {
+		if (!event.target.closest(".menus, .menu-popup")) {
+			// window.console && console.log(event.type, "occurred outside of menus (on ", event.target, ") so...");
 			close_menus();
 		}
-	});
+	}
+	window.addEventListener("pointerdown", close_menus_on_click_outside);
+	window.addEventListener("pointerup", close_menus_on_click_outside);
 
 	this.element = menus_el;
 }
