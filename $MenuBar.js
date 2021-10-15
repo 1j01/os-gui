@@ -162,6 +162,7 @@ function MenuBar(menus) {
 					const target_button_el = new_top_level_menu.menu_button_el;
 					if (menu_was_open) {
 						new_top_level_menu.maybe_toggle_menu("pointerdown");
+						new_top_level_menu.menu_popup_el.querySelector(".menu-item").focus();
 					} else {
 						$(menu_button_el).trigger("release");
 						target_button_el.focus();
@@ -221,6 +222,7 @@ function MenuBar(menus) {
 				// Enter is handled elsewhere, except for top level buttons
 				if (menu_button_el === document.activeElement) {
 					maybe_toggle_menu("pointerdown");
+					menu_popup_el.querySelector(".menu-item").focus(); // first item
 					e.preventDefault();
 				}
 				break;
