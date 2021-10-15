@@ -348,7 +348,7 @@ function $Window(options) {
 		}
 	};
 	// var focused = false;
-	// @TODO: rename last_focused_control and formerly_focused to be distict
+	// @TODO: rename last_focused_control and formerly_focused to be distinct
 	// maybe last_focused_in_window and last_focused_anywhere
 	var last_focused_control;
 
