@@ -39,6 +39,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Menu bar's `info` event now has a `detail` object with `description` property, and it works with submenu items as well (previously items with submenus were assumed to not have descriptions).
 - Greatly improved menu navigation:
   - Menus can now be opened with Enter and exited with Escape.
+  - Pressing Escape an extra time will unfocus the menu bar, focusing the last focused control within the window.
   - Submenus can now be navigated with the arrow keys.
   - Submenus stay open more easily. It's a little buggy still, but they're not constantly trying to close themselves on you.
   - Menus wrap around when navigating up and down or left and right.

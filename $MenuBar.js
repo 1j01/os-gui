@@ -217,6 +217,15 @@ function MenuBar(menus) {
 						menu_button_el.focus();
 					}
 					e.preventDefault();
+				} else {
+					const window_el = menus_el.closest(".window");
+					if (window_el) {
+						// refocus last focused control in window
+						// refocus-window should never focus the menu bar
+						// it stores the last focused control in the window and specifically not in the menus
+						window_el.dispatchEvent(new CustomEvent("refocus-window"));
+						e.preventDefault();
+					}
 				}
 				break;
 			case 32: // Space
