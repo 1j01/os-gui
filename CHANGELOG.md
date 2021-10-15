@@ -38,6 +38,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Greatly improved menu navigation:
   - Menus can now be opened with Enter and exited with Escape.
   - Submenus can now be navigated with the arrow keys.
+  - Submenus stay open more easily. It's a little buggy still, but they're not constantly trying to close themselves on you.
   - Menus wrap around when navigating up and down or left and right.
   - The default action of scrolling the page with arrow keys is now prevented when menus are focused.
 

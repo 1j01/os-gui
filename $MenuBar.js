@@ -226,6 +226,8 @@ function MenuBar(menus) {
 
 		menu_popup_el.addEventListener("keydown", handleKeyDown);
 
+		let submenus = [];
+
 		menu_items.forEach(item => {
 			const row_el = E("tr", { class: "menu-row" });
 			menu_popup_table_el.appendChild(row_el);
@@ -291,6 +293,11 @@ function MenuBar(menus) {
 					submenu_popup_el.dataset.semanticParent = menu_popup_el.id; // for $Window to understand the popup belongs to its window
 
 					open_submenu = () => {
+						if (submenu_popup_el.style.display !== "none") {
+							return;
+						}
+						close_submenus_at_this_level();
+
 						submenu_popup_el.style.display = "";
 						submenu_popup_el.style.zIndex = get_new_menu_z_index();
 						submenu_popup_el.setAttribute("dir", get_direction());
@@ -326,32 +333,82 @@ function MenuBar(menus) {
 							}
 						}
 					};
+
+					function close_submenu() {
+						submenu_popup_el.style.display = "none";
+						item_el.setAttribute("aria-expanded", "false");
+						if (submenu_popup_el._submenus) {
+							for (const submenu of submenu_popup_el._submenus) {
+								submenu.close_submenu();
+							}
+						}
+					}
+
+					submenus.push({
+						item_el,
+						submenu_popup_el,
+						open_submenu,
+						close_submenu,
+					});
+					menu_popup_el._submenus = submenus;
+					menu_popup_el._close_submenus = close_submenus_at_this_level;
+
+					function close_submenus_at_this_level() {
+						for (const submenu of submenus) {
+							submenu.close_submenu();
+						}
+					}
+
+					// It should close when hovering a different higher level menu
+					// after a delay, unless the mouse returns to the submenu.
+					// If you return the mouse from a submenu into its parent
+					// *directly onto the parent menu item*, it stays open, but if you cross other menu items
+					// in the parent menu, (@TODO:) it'll close after the delay even if you land on the parent menu item.
+					// @TODO: Highlight the submenu-containing item while the submenu is open,
+					// unless hovering a different item at that level (one highlight per level max).
+					// @TODO: once a submenu opens (completing its animation if it has one),
+					// - up/down should navigate the submenu (although it should not show as focused right away)
+					//   - the rule is probably: up/down navigate the bottom-most submenu always (as long as it's not animating)
+					// - the submenu cancels its closing timeout (if you've moved outside all menus, say)
+					// @TODO: make this more robust in general! Make some automated tests.
+
 					let open_tid, close_tid;
 					$(item_el).add(submenu_popup_el).on("pointerenter", () => {
-						if (open_tid) { clearTimeout(open_tid); }
-						if (close_tid) { clearTimeout(close_tid); }
+						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
+						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
 					});
 					$(item_el).on("pointerenter", () => {
-						if (open_tid) { clearTimeout(open_tid); }
-						if (close_tid) { clearTimeout(close_tid); }
-						open_tid = setTimeout(open_submenu, 200);
+						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
+						// if (close_tid) { clearTimeout(close_tid); close_tid = null; }
+						open_tid = setTimeout(open_submenu, 501); // @HACK: slightly longer than close timer
 					});
-					$(item_el).add(submenu_popup_el).on("pointerleave", () => {
-						parent_item_el_by_popup_el.get(submenu_popup_el).focus();
-						// @TODO: keep submenu open while mouse is outside any menus,
-						// close it when hovering a different higher level menu after a delay unless the mouse returns to the submenu
-						// Keep outer menu open as long as any submenus are open.
-						// Highlight the submenu-containing item while the submenu is open, unless hovering over a different higher level menu.
-						// Also submenus should get focus once they open (but not focus any item within). Or at least, down arrow should focus the first item once it's open, rather than moving in the outer menu.
-
-						if (open_tid) { clearTimeout(open_tid); }
-						if (close_tid) { clearTimeout(close_tid); }
-						close_tid = setTimeout(() => {
-							if (!window.debugKeepMenusOpen) {
-								submenu_popup_el.style.display = "none";
+					$(item_el).on("pointerleave", () => {
+						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
+					});
+					$(menu_popup_el).on("pointerenter", (event) => {
+						// console.log(event.target.closest(".menu-item"));
+						if (event.target.closest(".menu-item") === item_el) {
+							return;
+						}
+						if (!close_tid) {
+							// This is a little confusing, with timers per-item...
+							// @TODO: try doing this with just one or two timers.
+							// if (submenus.some(submenu => submenu.submenu_popup_el.style.display !== "none")) {
+							if (submenu_popup_el.style.display !== "none") {
+								close_tid = setTimeout(() => {
+									if (!window.debugKeepMenusOpen) {
+										// close_submenu();
+										close_submenus_at_this_level();
+									}
+								}, 500);
 							}
-						}, 200);
+						}
 					});
+					// keep submenu open while mouse is outside any parent menus
+					$(menu_popup_el).on("pointerleave", () => {
+						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
+					});
+
 					$(item_el).on("click pointerdown", open_submenu);
 				}
 
