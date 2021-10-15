@@ -87,21 +87,33 @@ In `<head>` or `<body>`:
 ### Button styles
 
 Button styles are applied to `button` elements globally.
-(And if you ever want to reset it, note that you have to get rid of the pseudo element `::after` as well.)
+(And if you ever want to reset it, note that you have to get rid of the pseudo element `::after` as well. @TODO: scope CSS)
 
-You can have the depressed (held down) style stay using `.selected`
+#### Toggle Buttons
+To make a toggle button, add the `.toggle` class to the button.
+Make it show as pressed with the `.selected` class. (@TODO: rename this `.pressed`)
+
+You should use the styles together with semantic `aria-pressed`, `aria-haspopup`, or `aria-expanded` attributes as appropriate.
+
+#### Default Buttons
+You can show button is the default action by adding `.default` to the button.
+Note that in Windows 98, this style moves from button to button depending on the focus.
+A rule of thumb is that it should be on the button that will trigger with Enter. 
+
+#### Disabled Buttons
+You can disable a button by adding the standard `disabled` attribute to the button.
 
 ### Scrollbar styles
 
 Scrollbar styles are applied globally, but they have a `-webkit-` prefix, so they'll only work in "webkit-based" browsers, generally, like Chrome, Safari, and Opera.
 
-(Can be overridden with `::-webkit-scrollbar` and related selectors (but not easily reset to the browser default, unless `-webkit-appearance: scrollbar` works)
+(Can be overridden with `::-webkit-scrollbar` and related selectors (but not easily reset to the browser default, unless `-webkit-appearance: scrollbar` works... @TODO: scope CSS)
 
 ### Selection styles
 
 Selection styles are applied globally.
 
-(Can be overridden with `::selection` (but not easily reset to the browser default... unless with `unset` - but that's not very clean; there should be a better way to scope where the selection styles apply, like maybe a `.os-gui` class...))
+(Can be overridden with `::selection` (but not easily reset to the browser default... unless with `unset`? @TODO: scope CSS)
 
 ### `MenuBar(menus)`
 
