@@ -161,7 +161,7 @@ function MenuBar(menus) {
 					const new_top_level_menu = top_level_menus[new_index];
 					const target_button_el = new_top_level_menu.menu_button_el;
 					if (menu_was_open) {
-						$(target_button_el).trigger("pointerdown");
+						new_top_level_menu.maybe_toggle_menu("pointerdown");
 					} else {
 						$(menu_button_el).trigger("release");
 						target_button_el.focus();
