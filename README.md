@@ -42,19 +42,21 @@ See [a demo online here](https://1j01.github.io/os-gui/demo/)
 
 ## Requirements
 
-This library currently requires [jQuery](https://jquery.com/), or, almost certainly it would work with [zepto.js](http://zeptojs.com/) as well.
+This library currently requires [jQuery](https://jquery.com/) for the windowing implementation.
+Menu bars do not require jQuery.
 
 
 ## Setup
 
-The library is not yet provided as a bundle.
+The library is not yet provided as a bundle (single file).
 
-You have to include `$MenuBar.js` or `$Window.js` specifically, as required,
-along with stylesheets for layout and a theme and a color scheme.
+You can either 1. download the repository as a ZIP file, 2. clone the repository, or 3. install the library as an [npm package](https://www.npmjs.com/package/os-gui).
 
-You can download the repo contents as a ZIP file in the "Clone or download" dropdown on GitHub.
+You have to include scripts for the components you want to use (`$MenuBar.js` or `$Window.js`),
+along with stylesheets for layout, a theme, and a color scheme.
 
-You need to follow the development instructions, and use the *compiled CSS files*, not the source.
+Make sure to use the compiled CSS files, not the source files.
+<!-- If you're not installing with `npm`, you'll have to build the library yourself. See [Development](#development) below. -->
 
 In `<head>`:
 ```html
@@ -85,7 +87,7 @@ In `<head>` or `<body>`:
 ### Button styles
 
 Button styles are applied to `button` elements globally.
-And to reset it, you have to get rid of the pseudo element `::after` as well.
+(And if you ever want to reset it, note that you have to get rid of the pseudo element `::after` as well.)
 
 You can have the depressed (held down) style stay using `.selected`
 
@@ -93,13 +95,13 @@ You can have the depressed (held down) style stay using `.selected`
 
 Scrollbar styles are applied globally, but they have a `-webkit-` prefix, so they'll only work in "webkit-based" browsers, generally, like Chrome, Safari, and Opera.
 
-Can be overridden with `::-webkit-scrollbar` and related selectors (but not easily reset to the browser default, unless `-webkit-appearance: scrollbar` works)
+(Can be overridden with `::-webkit-scrollbar` and related selectors (but not easily reset to the browser default, unless `-webkit-appearance: scrollbar` works)
 
 ### Selection styles
 
 Selection styles are applied globally.
 
-Can be overridden with `::selection` (but not easily reset to the browser default... unless with `unset` - but that's not very clean; there should be a better way to scope where the selection styles apply, like maybe a `.os-gui` class)
+(Can be overridden with `::selection` (but not easily reset to the browser default... unless with `unset` - but that's not very clean; there should be a better way to scope where the selection styles apply, like maybe a `.os-gui` class...))
 
 ### `MenuBar(menus)`
 
@@ -114,29 +116,35 @@ See examples in the [demo code](./demo/demo.js).
 #### Event: `info`
 
 Can be used to implement a status bar.
-A description is provided when rolling over menu items that specify a `description`, via an extra parameter to the event handler. For example:
+A description is provided as `event.detail.description` when rolling over menu items that specify a `description`. For example:
 
 ```js
-$(menubar.element).on("info", (event, description)=> {
-	$status.text(description);
+menubar.element.addEventListener("info", (event)=> {
+	statusBar.textContent = event.detail?.description || "";
 });
 ```
 
 #### Event: `default-info`
 
-Should be used to reset a status bar, if present, to blank or a default message.
+Signals that a status bar should be reset to blank or a default message.
 
 ```js
-$(menubar.element).on("default-info", ()=> {
-	$status.text("");
-	// or
-	$status.text("For Help, click Help Topics on the Help Menu.");
+menubar.element.addEventListener("default-info", (event)=> {
+	statusBar.textContent = "";
+
+	// or:
+	statusBar.textContent = "For Help, click Help Topics on the Help Menu.";
 	// like in MS Paint (and JS Paint)
-	// or perhaps even
-	$status.html("For Help, <a href='docs'>click here</a>");
-	// Note that a link could only work for the default text;
-	// for menu item descriptions the message in the status bar is transient;
-	// you wouldn't be able to reach it while its shown to click on it.
+
+	// or:
+	statusBar.textContent = "For Help, press F1.";
+	// like WordPad
+
+	// or perhaps even:
+	statusBar.innerHTML = "For Help, <a href='docs'>click here</a>";
+	// Note that a link is not a common pattern, and it could only work for the default text;
+	// for menu item descriptions the message in the status bar is transient, so
+	// you wouldn't be able to reach it to click on it.
 });
 ```
 
@@ -146,13 +154,13 @@ Menu item specifications are either `MENU_DIVIDER` - a constant indicating a hor
 
 * `item`: a label for the item
 * `shortcut` (optional): a keyboard shortcut for the item, like "Ctrl+A"; this is not functionally implemented, you'll need to listen for the shortcut yourself!
-* `action` (optional): a function to execute when the item is clicked (can only specify either `action` or `checkbox)
+* `action` (optional): a function to execute when the item is clicked (can only specify either `action` or `checkbox`)
 * `checkbox` (optional): an object specifying that this item should behave as a checkbox.
-Property `check` of this object should be a function that *checks* if the checkbox should be checked or not and returns `true` for checked and `false` for unchecked. What a cutesy name; it should be changed; `isChecked` would be better.
+Property `check` of this object should be a function that *checks* if the checkbox should be checked or not and returns `true` for checked and `false` for unchecked. What a cutesy name.
 Property `toggle` should be a function that toggles the state of the option, however you're storing it; called when clicked.
-* `enabled` (optional): can be `false` to unconditionally disable the item, or a function that determines whether the item should be enabled, returning `true` for enabled, `false` for disabled.
+* `enabled` (optional): can be `false` to unconditionally disable the item, or a function that determines whether the item should be enabled, returning `true` to enable the item, `false` to disable.
 * `submenu` (optional): an array of menu item specifications to create a submenu
-* `description`: for implementing a status bar; an event is emitted, called `info`, when rolling over the item with this description, provided as a jQuery "extra parameter"
+* `description`: for implementing a status bar; an [`info` event](#event-info) is emitted when rolling over the item with this description
 
 ### Menu hotkeys
 
