@@ -107,7 +107,7 @@ const menus = {
 			}))
 		},
 	],
-	"&Enabledness": [
+	"&Enabled": [
 		{
 			item: "No action",
 			shortcut: "Ctrl+Fake",
