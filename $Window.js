@@ -481,6 +481,9 @@ function $Window(options) {
 	// });
 
 	$w.on("keydown", (e) => {
+		if (e.isDefaultPrevented()) {
+			return;
+		}
 		if (e.ctrlKey || e.altKey || e.metaKey) {
 			return;
 		}
