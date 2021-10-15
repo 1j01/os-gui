@@ -161,7 +161,7 @@ function MenuBar(menus) {
 					const new_top_level_menu = top_level_menus[new_index];
 					const target_button_el = new_top_level_menu.menu_button_el;
 					if (menu_was_open) {
-						new_top_level_menu.maybe_toggle_menu("pointerdown");
+						new_top_level_menu.maybe_toggle_menu();
 						new_top_level_menu.menu_popup_el.querySelector(".menu-item").focus();
 					} else {
 						$(menu_button_el).trigger("release");
@@ -181,7 +181,7 @@ function MenuBar(menus) {
 					const to_item_el = item_els[to_index];
 					to_item_el.focus();
 				} else {
-					maybe_toggle_menu("pointerdown");
+					maybe_toggle_menu();
 					// focus first item in menu, even if you pressed Up
 					menu_popup_el.querySelector(".menu-item").focus();
 				}
@@ -208,7 +208,7 @@ function MenuBar(menus) {
 			case 13: // Enter
 				// Enter is handled elsewhere, except for top level buttons
 				if (menu_button_el === document.activeElement) {
-					maybe_toggle_menu("pointerdown");
+					maybe_toggle_menu();
 					menu_popup_el.querySelector(".menu-item").focus(); // first item
 					e.preventDefault();
 				}
@@ -472,7 +472,7 @@ function MenuBar(menus) {
 			if (e.altKey) {
 				if (String.fromCharCode(e.keyCode) === get_hotkey(menus_key)) {
 					e.preventDefault();
-					maybe_toggle_menu("pointerdown");
+					maybe_toggle_menu();
 				}
 			}
 		});
