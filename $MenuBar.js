@@ -541,9 +541,21 @@ function MenuBar(menus) {
 		make_menu_button(menu_key, menus[menu_key]);
 	}
 
-	$G.on("keypress", e => {
-		if (e.keyCode === 27) { // Esc
-			close_menus();
+	$G.on("keydown", e => {
+		// close any errant menus
+		// taking care not to interfere with regular Escape key behavior
+		// @TODO: listen for menus_el removed from DOM, and close menus there
+		if (
+			!document.activeElement ||
+			!document.activeElement.closest || // window or document
+			!document.activeElement.closest(".menus, .menu-popup")
+		) {
+			if (e.keyCode === 27) { // Escape
+				if (any_open_menus()) {
+					close_menus();
+					e.preventDefault();
+				}
+			}
 		}
 	});
 	$G.on("blur", () => {

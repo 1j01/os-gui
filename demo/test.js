@@ -150,7 +150,8 @@ $app_window_1.$content.append(`
 	<button id="test-tabstop-wrapping">Test Tabstop Wrapping</button>
 	<br>
 	<br>
-	<button id="test-programmatic-focus">Test programmatic focus (delayed)</button>
+	<button id="test-delayed-focus">Focus (delayed)</button>
+	<button id="test-delayed-close">Close (delayed)</button>
 	<br>
 	<br>
 `);
@@ -164,10 +165,6 @@ $tool_window_1.$content.append(`
 `);
 $app_window_1.on("closed", () => {
 	$tool_window_1.close();
-});
-$tool_window_1.css({
-	top: $app_window_1[0].offsetTop + $app_window_1[0].offsetHeight + 30,
-	left: $app_window_1[0].offsetLeft,
 });
 const open_recursive_dialog = (x, y) => {
 	const $w = $Window({ title: "Recursive Dialog", resizable: false, maximizeButton: false, minimizeButton: false });
@@ -187,8 +184,11 @@ const open_recursive_dialog = (x, y) => {
 $app_window_1.find("#open-recursive-dialog").on("click", () => {
 	open_recursive_dialog(innerWidth / 2, innerHeight / 2);
 });
-$app_window_1.find("#test-programmatic-focus").on("click", () => {
+$app_window_1.find("#test-delayed-focus").on("click", () => {
 	setTimeout(() => $tool_window_1.focus(), 1000);
+});
+$app_window_1.find("#test-delayed-close").on("click", () => {
+	setTimeout(() => $app_window_1.close(), 1000);
 });
 for (const trigger_style of ["jQuery", "native"]) {
 	for (const event_type of ["click", "pointerdown", "mousedown"]) {
@@ -247,6 +247,12 @@ $app_window_1.find("#test-tabstop-wrapping").on("click", () => {
 			y += h + 10;
 		}
 	}
+});
+
+$app_window_1.center();
+$tool_window_1.css({
+	top: $app_window_1[0].offsetTop + $app_window_1[0].offsetHeight + 30,
+	left: $app_window_1[0].offsetLeft,
 });
 
 // Radio buttons should be treated as a group with one tabstop.
