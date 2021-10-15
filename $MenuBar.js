@@ -264,7 +264,7 @@ function MenuBar(menus) {
 						checkbox_area_el.textContent = item.checkbox.check() ? "✓" : "";
 					}
 				});
-				$(item_el).on("pointerover", () => {
+				$(item_el).on("pointerenter", () => {
 					$(menu_popup_el).triggerHandler("update");
 					item_el.focus();
 				});
@@ -325,16 +325,16 @@ function MenuBar(menus) {
 						}
 					};
 					let open_tid, close_tid;
-					$(item_el).add(submenu_popup_el).on("pointerover", () => {
+					$(item_el).add(submenu_popup_el).on("pointerenter", () => {
 						if (open_tid) { clearTimeout(open_tid); }
 						if (close_tid) { clearTimeout(close_tid); }
 					});
-					$(item_el).on("pointerover", () => {
+					$(item_el).on("pointerenter", () => {
 						if (open_tid) { clearTimeout(open_tid); }
 						if (close_tid) { clearTimeout(close_tid); }
 						open_tid = setTimeout(open_submenu, 200);
 					});
-					$(item_el).add(submenu_popup_el).on("pointerout", () => {
+					$(item_el).add(submenu_popup_el).on("pointerleave", () => {
 						parent_item_el_by_popup_el.get(submenu_popup_el).focus();
 						// @TODO: keep submenu open while mouse is outside any menus,
 						// close it when hovering a different higher level menu after a delay unless the mouse returns to the submenu
@@ -370,14 +370,14 @@ function MenuBar(menus) {
 					}
 					item_action();
 				});
-				$(item_el).on("pointerover", () => {
+				$(item_el).on("pointerenter", () => {
 					if (item.submenu) {
 						$menus.triggerHandler("info", "");
 					} else {
 						$menus.triggerHandler("info", item.description || "");
 					}
 				});
-				$(item_el).on("pointerout", () => {
+				$(item_el).on("pointerleave", () => {
 					if (visible(item_el)) {
 						$menus.triggerHandler("info", "");
 						parent_item_el_by_popup_el.get(menu_popup_el)?.focus();
@@ -479,14 +479,14 @@ function MenuBar(menus) {
 		$(menu_button_el).on("focus", () => {
 			active_menu_index = Object.keys(menus).indexOf(menus_key);
 		});
-		$(menu_button_el).on("pointerdown pointerover", e => {
+		$(menu_button_el).on("pointerdown pointerenter", e => {
 			maybe_toggle_menu(e.type);
 		});
 		function maybe_toggle_menu(type) {
-			if (type === "pointerover" && !selecting_menus) {
+			if (type === "pointerenter" && !selecting_menus) {
 				return;
 			}
-			if (type !== "pointerover") {
+			if (type !== "pointerenter") {
 				if (!menu_button_el.classList.contains("active")) {
 					this_click_opened_the_menu = true;
 				}
