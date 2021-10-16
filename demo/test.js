@@ -306,6 +306,8 @@ $app_window_3.find("iframe").attr("srcdoc", `
 	<textarea>Text Area</textarea>
 	<iframe class="inset-deep" srcdoc='<p>Nested iframe!</p><button>Button</button>' style="width: 200px; height: 100px;"></iframe>
 	<p>You should also be able to select text in this window.</p>
+	<link rel="stylesheet" href="../build/layout.css">
+	<link rel="stylesheet" href="../build/windows-98.css">
 `).css({
 	boxSizing: "border-box",
 	display: "flex",
