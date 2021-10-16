@@ -587,7 +587,7 @@ function MenuBar(menus) {
 				}
 				return;
 			}
-			if (e.altKey) {
+			if (e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey) { // Alt held
 				if (String.fromCharCode(e.keyCode) === get_hotkey(menus_key)) {
 					e.preventDefault();
 					maybe_toggle_menu();
