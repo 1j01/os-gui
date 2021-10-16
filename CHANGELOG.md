@@ -12,7 +12,11 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
-Nothing here yet.
+### Fixed
+- Ability to use `MenuBar` without `$Window.js` (`TypeError: Assignment to constant variable.`)
+- Handle `document.body` not existing if you create a MenuBar before DOMContentLoaded
+- Compatibility with older jQuery
+- Removed some redundant event listeners
 
 </details>
 
