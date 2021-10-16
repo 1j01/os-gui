@@ -5,7 +5,8 @@ function E(t) {
 	return document.createElement(t);
 }
 
-function find_tabstops($el) {
+function find_tabstops(container_el) {
+	const $el = $(container_el);
 	// This function finds focusable controls, but not necessarily all of them;
 	// for radio elements, it only gives one: either the checked one, or the first one if none are checked.
 
@@ -478,23 +479,28 @@ function $Window(options) {
 		}
 	};
 	// var focused = false;
-	// @TODO: rename last_focused_control and formerly_focused to be distinct
-	// maybe last_focused_in_window and last_focused_anywhere
-	var last_focused_control;
-	var last_focused_control_in_iframe;
 
-	const refocus = () => {
-		if (last_focused_control) {
-			last_focused_control.focus();
-			if (last_focused_control.tagName === "IFRAME") {
+	// Keep track of last focused elements per container,
+	// where containers include:
+	// - window (global focus tracking)
+	// - $w.$content[0] (window local, for restoring focus when refocusing window)
+	// - any iframes that are same-origin (for restoring focus when refocusing window)
+	var last_focus_by_container = new Map();
+
+	const refocus = (container_el = $w.$content[0]) => {
+		const last_focus = last_focus_by_container.get(container_el);
+		if (last_focus) {
+			last_focus.focus();
+			if (last_focus.tagName === "IFRAME") {
 				try {
-					last_focused_control_in_iframe.focus();
+					refocus(last_focus);
 				} catch (e) {
+					console.debug(e);
 				}
 			}
 			return;
 		}
-		const $tabstops = find_tabstops($w.$content);
+		const $tabstops = find_tabstops(container_el);
 		const $default = $tabstops.filter(".default");
 		if ($default.length) {
 			$default.focus();
@@ -508,7 +514,14 @@ function $Window(options) {
 			options.parentWindow.triggerHandler("refocus-window");
 			return;
 		}
-		$w.$content.focus();
+		container_el.focus();
+		if (container_el.tagName === "IFRAME") {
+			try {
+				refocus(container_el.contentDocument.body);
+			} catch (e) {
+				console.debug(e);
+			}
+		}
 	};
 
 	$w.on("refocus-window", () => {
@@ -611,12 +624,12 @@ function $Window(options) {
 			$.contains($w.$content[0], document.activeElement) &&
 			!document.activeElement.closest(".menus")
 		) {
-			last_focused_control = document.activeElement;
-			if (last_focused_control.tagName === "IFRAME") {
+			last_focus_by_container.set($w.$content[0], document.activeElement);
+			if (document.activeElement.tagName === "IFRAME") {
 				try {
-					last_focused_control_in_iframe = last_focused_control.contentDocument.activeElement;
+					last_focus_by_container.set(document.activeElement, document.activeElement.contentDocument.activeElement);
 				} catch (e) {
-					console.error(e);
+					console.debug(e);
 				}
 			}
 		}
@@ -683,7 +696,7 @@ function $Window(options) {
 				break;
 			case 9: { // Tab
 				// wrap around when tabbing through controls in a window
-				const $controls = find_tabstops($w.$content);
+				const $controls = find_tabstops($w.$content[0]);
 				if ($controls.length > 0) {
 					const focused_control_index = $controls.index($focused);
 					if (e.shiftKey) {
