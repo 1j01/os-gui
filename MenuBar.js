@@ -179,8 +179,7 @@ function MenuBar(menus) {
 					const new_top_level_menu = top_level_menus[new_index];
 					const target_button_el = new_top_level_menu.menu_button_el;
 					if (menu_was_open) {
-						new_top_level_menu.open_top_level_menu();
-						new_top_level_menu.menu_popup_el.querySelector(".menu-item").focus();
+						new_top_level_menu.open_top_level_menu("keydown");
 					} else {
 						menu_button_el.dispatchEvent(new CustomEvent("release"), {});
 						target_button_el.focus();
@@ -199,9 +198,7 @@ function MenuBar(menus) {
 					const to_item_el = item_els[to_index];
 					to_item_el.focus();
 				} else {
-					open_top_level_menu();
-					// focus first item in menu, even if you pressed Up
-					menu_popup_el.querySelector(".menu-item").focus();
+					open_top_level_menu("keydown");
 				}
 				e.preventDefault();
 				break;
@@ -244,8 +241,7 @@ function MenuBar(menus) {
 			case 13: // Enter
 				// Enter is handled elsewhere, except for top level buttons
 				if (menu_button_el === document.activeElement) {
-					open_top_level_menu();
-					menu_popup_el.querySelector(".menu-item").focus(); // first item
+					open_top_level_menu("keydown");
 					e.preventDefault();
 				}
 				break;
@@ -590,7 +586,7 @@ function MenuBar(menus) {
 			if (e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey) { // Alt held
 				if (String.fromCharCode(e.keyCode) === get_hotkey(menus_key)) {
 					e.preventDefault();
-					open_top_level_menu();
+					open_top_level_menu("keydown");
 				}
 			}
 		});
@@ -628,6 +624,10 @@ function MenuBar(menus) {
 			selecting_menus = true;
 
 			send_info_event();
+
+			if (type === "keydown") {
+				menu_popup_el.querySelector(".menu-item")?.focus();
+			}
 		};
 		menu_button_el.addEventListener("pointerup", () => {
 			if (this_click_opened_the_menu) {
