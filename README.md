@@ -10,7 +10,7 @@ See the [demos](https://1j01.github.io/os-gui/demo/) for more information.
 
 ## Features
 
-- Menu bars, with support for checkbox items, disabled states, and at least partial support for submenus
+- Menu bars, with support for checkbox items, disabled states, and submenus
 
 - App windows which you can drag around, maximize, minimize, close, and resize
 
@@ -43,7 +43,9 @@ See [a demo online here](https://1j01.github.io/os-gui/demo/)
 ## Requirements
 
 This library currently requires [jQuery](https://jquery.com/) for the windowing implementation.
-Menu bars do not require jQuery.
+Menu bars do **not** require jQuery.
+
+(Eventually I want to have no dependencies. So far I've removed jQuery from the menu code...)
 
 
 ## Setup
@@ -67,8 +69,9 @@ In `<head>`:
 
 In `<head>` or `<body>`:
 ```html
-<script src="lib/jquery.js"></script>
 <script src="os-gui/MenuBar.js"></script>
+
+<script src="lib/jquery.js"></script> <!-- required by $Window.js -->
 <script src="os-gui/$Window.js"></script>
 ```
 
@@ -99,6 +102,10 @@ You should use the styles together with semantic `aria-pressed`, `aria-haspopup`
 You can show button is the default action by adding `.default` to the button.
 Note that in Windows 98, this style moves from button to button depending on the focus.
 A rule of thumb is that it should be on the button that will trigger with Enter. 
+
+#### Lightweight Buttons
+You can make a lightweight button by adding `.lightweight` to the button.
+Lightweight buttons are subtle and have no border until hover.
 
 #### Disabled Buttons
 You can disable a button by adding the standard `disabled` attribute to the button.
@@ -250,7 +257,9 @@ Removes focus from the window. If focus is outside the window, it is left unchan
 #### `center()`
 
 Centers the window in the page.
-You should call this after creating the contents of the window, and either rendering all of it, or determining its size.
+You should call this after the contents of the window is fully rendered, or you've set a fixed size for the window.
+
+If you have images in the window, wait for them to load before showing and centering the window, or define a fixed size for the images.
 
 #### `applyBounds()`
 
@@ -269,29 +278,37 @@ Brings the window to the front by setting its `z-index` to larger than any `z-in
 
 Sets the size of the window. Pass `{ innerWidth, innerHeight }` to specify the size in terms of the window content, or `{ outerWidth, outerHeight }` to specify the size including the window frame.
 
-*(This may be expanded in the future to allow setting the position as well.)*
+*(This may be expanded in the future to allow setting the position as well...)*
 
 #### `$Button(text, action)`
 
 Creates a button in the window's content area.
+It automatically closes the window when clicked. There's no (good) way to prevent this, as it's intended only for dialogs.
 
+If you need any other behavior, just create a `<button>` and add it to the window's content area.
+
+Returns a jQuery object.
 #### `$content`
 
+*jQuery object.*  
 Where you can append contents to the window.
 
 #### `$titlebar`
 
+*jQuery object.*  
 The titlebar of the window, including the title, window buttons, and possibly an icon.
 
 #### `$title`
 
+*jQuery object.*  
 The title portion of the titlebar.
 
 #### `$x`
 
+*jQuery object.*  
 The close button.
 
-#### `closed`
+#### Event: `closed`
 
 Whether the window has been closed.
 
@@ -310,7 +327,7 @@ Can be used to prevent dragging a window, with `event.preventDefault()`.
 
 ### Specifying Icons
 
-⚠️ Bad API!
+⚠️ Bad API! Pointlessly indirect! ⚠️
 
 ```js
 // var DESKTOP_ICON_SIZE = 32;
