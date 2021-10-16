@@ -178,7 +178,7 @@ Property `toggle` should be a function that toggles the state of the option, how
 
 Menus can be navigated using the first letter of the menu item, or if you place `&` in front of a letter in the menu item, it will be used as the hotkey.
 
-For menu button hotkeys, you need to press Alt, and for menu item hotkeys you must press the key directly.
+For menu button hotkeys, you need to press Alt, and within menu popups you must press the key directly. Alt will close the menus.
 
 If there are multiple menu items with the same hotkey, it will cycle between them without activating them.
 You should try to make the hotkeys unique, including between hotkeys and first letters of menu items without defined hotkeys.

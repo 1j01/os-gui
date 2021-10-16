@@ -228,6 +228,15 @@ function MenuBar(menus) {
 					}
 				}
 				break;
+			case 18: // Alt
+				// close all menus and refocus the last focused control in the window
+				close_menus();
+				const window_el = menus_el.closest(".window");
+				if (window_el) {
+					window_el.dispatchEvent(new CustomEvent("refocus-window"));
+				}
+				e.preventDefault();
+				break;
 			case 32: // Space
 				// opens system menu in Windows 98
 				// (at top level)
