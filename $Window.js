@@ -479,10 +479,11 @@ function $Window(options) {
 	// redundant events are for handling synthetic events,
 	// which may be sent individually, rather than in tandem
 	$w.on("pointerdown mousedown", handle_pointer_activation);
-	// jQuery can't handle synthetic events, so we have to use addEventListener too
-	// https://jsfiddle.net/1j01/ndvwts9y/
-	$w[0].addEventListener("pointerdown", handle_pointer_activation);
-	$w[0].addEventListener("mousedown", handle_pointer_activation);
+	// Note that jQuery treats some events differently, and can't listen for some synthetic events
+	// but pointerdown and mousedown seem to be supported. That said, if you trigger() either,
+	// addEventListener() handlers will not be called. So if I remove the dependency on jQuery,
+	// it will not be possible to listen for some .trigger() events.
+	// https://jsfiddle.net/1j01/ndvwts9y/1/
 
 	let formerly_focused;
 	// Assumption: focusin comes after pointerdown/mousedown
