@@ -230,6 +230,16 @@ function $Window(options) {
 
 			let newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
 
+			// Iframes have weird behavior with focusin/focusout, so we need to check for iframes.
+			if (
+				document.activeElement &&
+				document.activeElement.tagName === "IFRAME" &&
+				event.type === "focusout" &&
+				!newlyFocused // doesn't exist for security reasons in this case
+			) {
+				newlyFocused = document.activeElement;
+			}
+
 			if (!newlyFocused) {
 				stopShowingAsFocused();
 				return;
