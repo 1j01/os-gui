@@ -481,10 +481,17 @@ function $Window(options) {
 	// @TODO: rename last_focused_control and formerly_focused to be distinct
 	// maybe last_focused_in_window and last_focused_anywhere
 	var last_focused_control;
+	var last_focused_control_in_iframe;
 
 	const refocus = () => {
 		if (last_focused_control) {
 			last_focused_control.focus();
+			if (last_focused_control.tagName === "IFRAME") {
+				try {
+					last_focused_control_in_iframe.focus();
+				} catch (e) {
+				}
+			}
 			return;
 		}
 		const $tabstops = find_tabstops($w.$content);
@@ -605,6 +612,13 @@ function $Window(options) {
 			!document.activeElement.closest(".menus")
 		) {
 			last_focused_control = document.activeElement;
+			if (last_focused_control.tagName === "IFRAME") {
+				try {
+					last_focused_control_in_iframe = last_focused_control.contentDocument.activeElement;
+				} catch (e) {
+					console.error(e);
+				}
+			}
 		}
 	});
 	// $w.on("focusout", ()=> {
