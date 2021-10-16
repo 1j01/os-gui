@@ -192,7 +192,7 @@ $app_window_1.find("#test-delayed-close").on("click", () => {
 });
 for (const trigger_style of ["jQuery", "native"]) {
 	for (const event_type of ["click", "pointerdown", "mousedown"]) {
-		$app_window_1.append(
+		$app_window_1.$content.append(
 			$("<button>").text(
 				`Trigger ${event_type} (${trigger_style}, delayed)`
 			).click(() => {
@@ -206,7 +206,8 @@ for (const trigger_style of ["jQuery", "native"]) {
 						}));
 					}
 				}, 1000);
-			})
+			}),
+			"<br>",
 		);
 	}
 }
