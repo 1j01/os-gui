@@ -398,7 +398,8 @@ body > .window-titlebar {
 .window-maximize-button {
 	background-position: calc(-1 * 13px - 1px) 0px;
 }
-.maximized .window-maximize-button {
+.maximized .window-maximize-button,
+.minimized-without-taskbar .window-maximize-button {
 	background-position: calc(-2 * 13px - 1px) 0px;
 }
 .window-minimize-button {
@@ -411,7 +412,8 @@ body > .window-titlebar {
 .window-maximize-button:enabled:hover:active {
 	background-position: calc(-1 * 13px - 0px) 1px;
 }
-.maximized .window-maximize-button:enabled:hover:active {
+.maximized .window-maximize-button:enabled:hover:active,
+.minimized-without-taskbar .window-maximize-button:enabled:hover:active {
 	background-position: calc(-2 * 13px - 0px) 1px;
 }
 .window-minimize-button:enabled:hover:active {

@@ -44,6 +44,8 @@ var $G = $(window);
 
 $Window.Z_INDEX = 5;
 
+var next_minimized_x = 0; // for if there's no taskbar
+
 function $Window(options) {
 	options = options || {};
 
@@ -243,18 +245,107 @@ function $Window(options) {
 		$w.close();
 	});
 
+	let before_minimize;
 	$w.minimize = () => {
 		if ($w.is(":visible")) {
-			const $task = $w.task.$task;
-			const before_rect = $w.$titlebar[0].getBoundingClientRect();
-			const after_rect = $task[0].getBoundingClientRect();
-			$w.animateTitlebar(before_rect, after_rect, () => {
-				$w.hide();
-				$w.blur();
-			});
+			if ($w.task) {
+				const $task = $w.task.$task;
+				const before_rect = $w.$titlebar[0].getBoundingClientRect();
+				const after_rect = $task[0].getBoundingClientRect();
+				$w.animateTitlebar(before_rect, after_rect, () => {
+					$w.hide();
+					$w.blur();
+				});
+			} else {
+				// no taskbar
+
+				// @TODO: make this metrically similar to what Windows 98 does
+				// @TODO: DRY! This is copied heavily from maximize()
+				// @TODO: should it show a maximize icon instead of an overlap icon if
+				// it's minimized and was maximized and thus will maximize when restoring,
+				// OR should it not maximize but restore the unmaximized state?
+				// @TODO: free up "slots" when unminimizing
+				// (need an array instead of a counter for available positions)
+
+				let to_x = $w._minimized_x || next_minimized_x || 10;
+				const to_width = 150;
+				const spacing = 10;
+				if ($w.hasClass("minimized-without-taskbar")) {
+					// unminimizing
+				} else {
+					// minimizing
+					$w._minimized_x = to_x;
+					next_minimized_x = to_x + to_width + spacing;
+					$w.blur();
+				}
+				const titlebar_height = $w.$titlebar.outerHeight();
+				const instantly_minimize = () => {
+					before_minimize = {
+						position: $w.css("position"),
+						left: $w.css("left"),
+						top: $w.css("top"),
+						width: $w.css("width"),
+						height: $w.css("height"),
+					};
+
+					$w.addClass("minimized-without-taskbar");
+					if ($w.hasClass("maximized")) {
+						$w.removeClass("maximized");
+						$w.addClass("was-maximized");
+					}
+					$w.css({
+						position: "fixed",
+						top: `calc(100% - ${titlebar_height + 5}px)`,
+						left: to_x,
+						width: to_width,
+						height: titlebar_height,
+					});
+				};
+				const instantly_unminimize = () => {
+					$w.removeClass("minimized-without-taskbar");
+					if ($w.hasClass("was-maximized")) {
+						$w.removeClass("was-maximized");
+						$w.addClass("maximized");
+					}
+					$w.css({ width: "", height: "" });
+					if (before_minimize) {
+						$w.css({
+							position: before_minimize.position,
+							left: before_minimize.left,
+							top: before_minimize.top,
+							width: before_minimize.width,
+							height: before_minimize.height,
+						});
+					}
+				};
+
+				const before_rect = $w.$titlebar[0].getBoundingClientRect();
+				let after_rect;
+				$w.css("transform", "");
+				if ($w.hasClass("minimized-without-taskbar")) {
+					instantly_unminimize();
+					after_rect = $w.$titlebar[0].getBoundingClientRect();
+					instantly_minimize();
+				} else {
+					instantly_minimize();
+					after_rect = $w.$titlebar[0].getBoundingClientRect();
+					instantly_unminimize();
+				}
+				$w.animateTitlebar(before_rect, after_rect, () => {
+					if ($w.hasClass("minimized-without-taskbar")) {
+						instantly_unminimize();
+					} else {
+						instantly_minimize();
+					}
+				});
+			}
 		}
 	};
 	$w.unminimize = () => {
+		if ($w.hasClass("minimized-without-taskbar")) {
+			$w.minimize();
+			return;
+		}
 		if ($w.is(":hidden")) {
 			const $task = $w.task.$task;
 			const before_rect = $task[0].getBoundingClientRect();
@@ -271,6 +362,10 @@ function $Window(options) {
 
 	let before_maximize;
 	$w.$maximize?.on("click", () => {
+		if ($w.hasClass("minimized-without-taskbar")) {
+			$w.minimize();
+			return;
+		}
 
 		const instantly_maximize = () => {
 			before_maximize = {
