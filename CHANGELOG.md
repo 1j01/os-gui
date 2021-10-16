@@ -17,6 +17,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Handle `document.body` not existing if you create a MenuBar before DOMContentLoaded
 - Compatibility with older jQuery
 - Removed some redundant event listeners
+- More elements are considered tabbable (`object`, `embed`, `video`, `audio`, `iframe`, `[contenteditable]`)
 
 </details>
 

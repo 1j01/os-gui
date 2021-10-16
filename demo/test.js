@@ -231,8 +231,14 @@ $app_window_1.find("#test-tabstop-wrapping").on("click", () => {
 		"<button>button</button>",
 		"<a href='#'>link</a>",
 		"<div>no controls</div>", // not a control :)
-		"<div tabIndex='-1'>tabIndex=-1</div>",
-		"<div tabIndex='0'>tabIndex=0</div>",
+		"<div tabIndex='-1'>tabIndex=-1 (not tabbable)</div>",
+		"<div tabIndex='0'>tabIndex=0 (tabbable)</div>",
+		"<div contenteditable='true'>contenteditable=true</div><br><div contenteditable='true'>another contenteditable=true</div>",
+		"<div contenteditable='false'>contenteditable=false (not tabbable)</div>",
+		"<div contenteditable='plaintext-only'>contenteditable=plaintext-only</div><br><div contenteditable='plaintext-only'>another contenteditable=plaintext-only</div>",
+		"<div tabIndex='-1' contenteditable='true'>tabIndex=-1, contenteditable=true (not tabbable)</div>",
+		"<audio controls></audio>",
+		"<video controls></video>",
 	]) {
 		const $w = $Window({ title: "Tabstop Wrapping", resizable: false, maximizeButton: false, minimizeButton: false });
 		$w.$content.html(`
@@ -240,7 +246,9 @@ $app_window_1.find("#test-tabstop-wrapping").on("click", () => {
 			${control_html}
 			<h2 style="font-size: 1em">Last Control</h2>
 			${control_html.replace(/radio-group-1/g, "radio-group-2")}
-		`);
+		`).css({
+			overflow: "auto",
+		});
 		$w.css({ left: x, top: y, width: w, height: h });
 		x += w + 10;
 		if (x > innerWidth - w) {
@@ -276,4 +284,31 @@ $app_window_2.$content.append(`
 $app_window_2.css({
 	left: innerWidth * 0.3,
 	top: innerHeight * 0.75,
+});
+
+
+const $app_window_3 = new $Window({ title: "Iframe Window", resizable: true });
+$app_window_3.$content.append(new MenuBar(menus).element);
+$app_window_3.$content.append(`
+	<iframe class="inset-deep"></iframe>
+`);
+$app_window_3.find("iframe").attr("srcdoc", `
+	<p>This is an iframe test.</p>
+	<p>You should be able to focus controls, and restore focus when focusing the window.</p>
+	<p>Focus should be restored after selecting menu items.</p>
+	<button>Button</button>
+	<textarea>Text Area</textarea>
+	<p>You should also be able to select text in this window.</p>
+`).css({
+	boxSizing: "border-box",
+	display: "flex",
+	width: "100%",
+	height: "100%",
+});
+$app_window_3.css({
+	left: innerWidth * 0.7,
+	top: innerHeight * 0.75,
+});
+$app_window_3.$content.css({
+	paddingTop: "2px",
 });
