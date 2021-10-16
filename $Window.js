@@ -226,11 +226,9 @@ function $Window(options) {
 		// global focusout is needed, to continue showing as focused while child windows or menus are focused
 		// also for iframes, where we don't get focusin
 		// global focusin is needed, to show as focused when a child window becomes focused
-		$G.on("focusin focusout", (event) => {
-			// For child windows and menu popups, follow "semantic parent" chain.
-			// Menu popups and child windows aren't descendants of the window they belong to,
-			// but should keep the window shown as focused.
-
+		window.addEventListener("focusin", handle_focus_in_out);
+		window.addEventListener("focusout", handle_focus_in_out);
+		function handle_focus_in_out(event) {
 			let newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
 
 			// Iframes have weird behavior with focusin/focusout, so we need to check for iframes.
@@ -250,6 +248,7 @@ function $Window(options) {
 							last_focus_by_container.set(iframe, newlyFocused);
 						};
 						iframe.contentDocument.addEventListener("focusin", iframe_update_focus);
+						iframe.contentDocument.addEventListener("focusout", iframe_update_focus);
 						onfocusin_by_container.set(iframe, iframe_update_focus);
 					}
 				} catch (e) {
@@ -261,6 +260,9 @@ function $Window(options) {
 				stopShowingAsFocused();
 				return;
 			}
+			// For child windows and menu popups, follow "semantic parent" chain.
+			// Menu popups and child windows aren't descendants of the window they belong to,
+			// but should keep the window shown as focused.
 			do {
 				// if (!newlyFocused?.closest) {
 				// 	console.warn("what is this?", newlyFocused);

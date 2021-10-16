@@ -304,6 +304,7 @@ $app_window_3.find("iframe").attr("srcdoc", `
 	<p>Focus should be restored after selecting menu items.</p>
 	<button>Button</button>
 	<textarea>Text Area</textarea>
+	<iframe class="inset-deep" srcdoc='<p>Nested iframe!</p><button>Button</button>' style="width: 200px; height: 100px;"></iframe>
 	<p>You should also be able to select text in this window.</p>
 `).css({
 	boxSizing: "border-box",
