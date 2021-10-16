@@ -304,17 +304,24 @@ $app_window_3.find("iframe").attr("srcdoc", `
 	<p>Focus should be restored after selecting menu items.</p>
 	<button>Button</button>
 	<textarea>Text Area</textarea>
+	<iframe class="inset-deep" srcdoc='<p>Nested iframe!</p><button>Button</button>' style="width: 200px; height: 100px;"></iframe>
 	<p>You should also be able to select text in this window.</p>
+	<link rel="stylesheet" href="../build/layout.css">
+	<link rel="stylesheet" href="../build/windows-98.css">
 `).css({
 	boxSizing: "border-box",
 	display: "flex",
-	width: "100%",
-	height: "100%",
+	flex: 1,
+	margin: 30,
 });
 $app_window_3.css({
-	left: innerWidth * 0.7,
-	top: innerHeight * 0.75,
+	left: innerWidth * 0.2,
+	top: innerHeight * 0.3,
+	width: 500,
+	height: 400,
 });
 $app_window_3.$content.css({
 	paddingTop: "2px",
+	display: "flex",
+	flexDirection: "column",
 });

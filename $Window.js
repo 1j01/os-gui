@@ -1,17 +1,33 @@
 ((exports) => {
 
 // TODO: E\("([a-z]+)"\) -> "<$1>" or get rid of jQuery as a dependency
-function E(t) {
-	return document.createElement(t);
+function E(tagName) {
+	return document.createElement(tagName);
 }
 
-function find_tabstops($el) {
+function element_to_string(element) {
+	// returns a CSS-selector-like string for the given element
+	// if (element instanceof Element) { // doesn't work with different window.Element from iframes
+	if (element && "tagName" in element) {
+		return element.tagName.toLowerCase() +
+			(element.id ? "#" + element.id : "") +
+			(element.className ? "." + element.className.split(" ").join(".") : "");
+	} else if (element) {
+		return element.constructor.name;
+	} else {
+		return `${element}`;
+	}
+}
+
+function find_tabstops(container_el) {
+	const $el = $(container_el);
 	// This function finds focusable controls, but not necessarily all of them;
 	// for radio elements, it only gives one: either the checked one, or the first one if none are checked.
 
 	// Note: for audio[controls], Chrome at least has two tabstops (the audio element and three dots menu button).
 	// It might be possible to detect this in the shadow DOM, I don't know, I haven't worked with the shadow DOM.
 	// But it might be more reliable to make a dummy tabstop element to detect when you tab out of the first/last element.
+	// Also for iframes!
 	// Assuming that doesn't mess with screen readers.
 	// Right now you can't tab to the three dots menu if it's the last element.
 	// @TODO: see what ally.js does. Does it handle audio[controls]? https://allyjs.io/api/query/tabsequence.html
@@ -221,43 +237,217 @@ function $Window(options) {
 			}
 		}
 	} else {
-		// global focusout is needed, to continue showing as focused while child windows or menus are focused
-		// global focusin is needed, to show as focused when a child window becomes focused
-		$G.on("focusin focusout", (event) => {
-			// For child windows and menu popups, follow "semantic parent" chain.
-			// Menu popups and child windows aren't descendants of the window they belong to,
-			// but should keep the window shown as focused.
+		// global focusout is needed, to continue showing as focused while child windows or menu popups are focused (@TODO: Is this redundant with focusin?)
+		// global focusin is needed, to show as focused when a child window becomes focused (when perhaps nothing was focused before, so no focusout event)
+		// global blur is needed, to show as focused when an iframe gets focus, because focusin/out doesn't fire at all in that case
+		// global focus is needed, to stop showing as focused when an iframe loses focus
+		// pretty ridiculous!!
+		// but it still doesn't handle the case where the browser window is not focused, and the user clicks an iframe directly.
+		// for that, we need to listen inside the iframe, because no events are fired at all outside in that case,
+		// and :focus/:focus-within doesn't work with iframes so we can't even do a hack with transitionstart.
 
-			let newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
+		// console.log("adding global focusin/focusout/blur/focus for window", $w[0].id);
+		const global_focus_update_handler = make_focus_in_out_handler($w[0], true); // must be $w and not $content so semantic parent chain works, with [data-semantic-parent] pointing to the window not the content
+		window.addEventListener("focusin", global_focus_update_handler);
+		window.addEventListener("focusout", global_focus_update_handler);
+		window.addEventListener("blur", global_focus_update_handler);
+		window.addEventListener("focus", global_focus_update_handler);
 
-			if (!newlyFocused) {
-				stopShowingAsFocused();
-				return;
-			}
-			do {
-				// if (!newlyFocused?.closest) {
-				// 	console.warn("what is this?", newlyFocused);
-				// 	break;
-				// }
-				const waypoint = newlyFocused?.closest?.("[data-semantic-parent]");
-				if (waypoint) {
-					const id = waypoint.dataset.semanticParent;
-					newlyFocused = document.getElementById(id);
-					if (!newlyFocused) {
-						console.warn("semantic parent not found with id", id);
-						break;
+		function setupIframe(iframe) {
+			if (!focus_update_handlers_by_container.has(iframe)) {
+				const iframe_update_focus = make_focus_in_out_handler(iframe, false);
+				// this also operates as a flag to prevent multiple handlers from being added, or waiting for the iframe to load duplicately
+				focus_update_handlers_by_container.set(iframe, iframe_update_focus);
+
+				setTimeout(() => { // for iframe src to be set? Note try INSIDE setTimeout, not OUTSIDE.
+					try {
+						const wait_for_iframe_load = (callback) => {
+							// Note: error may occur accessing iframe.contentDocument; this must be handled by the caller.
+							// This function must access it synchronously, to allow the caller to handle the error.
+							if (iframe.contentDocument.readyState == "complete") {
+								callback();
+							} else {
+								// iframe.contentDocument.addEventListener("readystatechange", () => {
+								// 	if (iframe.contentDocument.readyState == "complete") {
+								// 		callback();
+								// 	}
+								// });
+								setTimeout(() => {
+									wait_for_iframe_load(callback);
+								}, 100);
+							}
+						};
+						wait_for_iframe_load(() => {
+							// console.log("adding focusin/focusout/blur/focus for iframe", iframe);
+							iframe.contentWindow.addEventListener("focusin", iframe_update_focus);
+							iframe.contentWindow.addEventListener("focusout", iframe_update_focus);
+							iframe.contentWindow.addEventListener("blur", iframe_update_focus);
+							iframe.contentWindow.addEventListener("focus", iframe_update_focus);
+							observeIframes(iframe.contentDocument);
+						});
+					} catch (error) {
+						console.error(error);
 					}
-				} else {
-					break;
-				}
-			} while (true);
-			if (newlyFocused && newlyFocused.closest?.(".window") == $w[0]) {
-				showAsFocused();
-				$w.bringToFront();
-				return;
+				}, 100);
 			}
-			stopShowingAsFocused();
-		});
+		}
+
+		function observeIframes(container_node) {
+			const observer = new MutationObserver((mutations) => {
+				for (const mutation of mutations) {
+					for (const node of mutation.addedNodes) {
+						if (node.tagName == "IFRAME") {
+							setupIframe(node);
+						}
+					}
+				}
+			});
+			observer.observe(container_node, { childList: true, subtree: true });
+			// needed in recursive calls (for iframes inside iframes)
+			// (for the window, it shouldn't be able to have iframes yet)
+			for (const iframe of container_node.querySelectorAll("iframe")) {
+				setupIframe(iframe);
+			}
+		}
+
+		observeIframes($w.$content[0]);
+		
+		function make_focus_in_out_handler(logical_container_el, is_root) {
+			// In case of iframes, logical_container_el is the iframe, and container_node is the iframe's contentDocument.
+			// container_node is not a parameter here because it can change over time, may be an empty document before the iframe is loaded.
+
+			return function handle_focus_in_out(event) {
+				const container_node = logical_container_el.tagName == "IFRAME" ? logical_container_el.contentDocument : logical_container_el;
+				const document = container_node.ownerDocument ?? container_node;
+				// is this equivalent?
+				// const document = logical_container_el.tagName == "IFRAME" ? logical_container_el.contentDocument : logical_container_el.ownerDocument;
+
+				// console.log(`handling ${event.type} for container`, container_el);
+				let newly_focused = event ? (event.type === "focusout" || event.type === "blur") ? event.relatedTarget : event.target : document.activeElement;
+				if (event?.type === "blur") {
+					newly_focused = null; // only handle iframe
+				}
+
+				// console.log(`[${$w.title()}] (is_root=${is_root})`, `newly_focused is (preliminarily)`, element_to_string(newly_focused), `\nlogical_container_el`, logical_container_el, `\ncontainer_node`, container_node, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
+
+				// Iframes are stingy about focus events, so we need to check if focus is actually within an iframe.
+				if (
+					document.activeElement &&
+					document.activeElement.tagName === "IFRAME" &&
+					(event?.type === "focusout" || event?.type === "blur") &&
+					!newly_focused // doesn't exist for security reasons in this case
+				) {
+					newly_focused = document.activeElement;
+					// console.log(`[${$w.title()}] (is_root=${is_root})`, `newly_focused is (actually)`, element_to_string(newly_focused));
+				}
+
+				const outside_or_at_exactly =
+					!newly_focused ||
+					// contains() only works with DOM nodes (elements and documents), not window objects.
+					// Since container_node is a DOM node, it will never have a Window inside of it (ignoring iframes).
+					newly_focused.window === newly_focused || // is a Window object (cross-frame test)
+					!container_node.contains(newly_focused); // Note: node.contains(node) === true
+				const firmly_outside = outside_or_at_exactly && container_node !== newly_focused;
+
+				// console.log(`[${$w.title()}] (is_root=${is_root})`, `outside_or_at_exactly=${outside_or_at_exactly}`, `firmly_outside=${firmly_outside}`);
+				if (firmly_outside && is_root) {
+					stopShowingAsFocused();
+				}
+				if (
+					!outside_or_at_exactly &&
+					newly_focused.tagName !== "HTML" &&
+					newly_focused.tagName !== "BODY" &&
+					newly_focused !== container_node &&
+					!newly_focused.matches(".window-content") &&
+					!newly_focused.closest(".menus") &&
+					!newly_focused.closest(".window-titlebar")
+				) {
+					last_focus_by_container.set(logical_container_el, newly_focused); // overwritten for iframes below
+					debug_focus_tracking(document, container_node, newly_focused, is_root);
+				}
+
+				if (
+					!outside_or_at_exactly &&
+					newly_focused.tagName === "IFRAME"
+				) {
+					const iframe = newly_focused;
+					// console.log("iframe", iframe, onfocusin_by_container.has(iframe));
+					try {
+						const focus_in_iframe = iframe.contentDocument.activeElement;
+						if (
+							focus_in_iframe &&
+							focus_in_iframe.tagName !== "HTML" &&
+							focus_in_iframe.tagName !== "BODY" &&
+							!focus_in_iframe.closest(".menus")
+						) {
+							// last_focus_by_container.set(logical_container_el, iframe); // done above
+							last_focus_by_container.set(iframe, focus_in_iframe);
+							debug_focus_tracking(iframe.contentDocument, iframe.contentDocument, focus_in_iframe, is_root);
+						}
+					} catch (e) {
+						console.warn("OS-GUI can't access iframe", e);
+						// @TODO: only generate this error once, and say why it's trying to access the iframe
+					}
+				}
+
+
+				// For child windows and menu popups, follow "semantic parent" chain.
+				// Menu popups and child windows aren't descendants of the window they belong to,
+				// but should keep the window shown as focused.
+				// (In principle this could be useful for focus tracking,
+				// but right now it's only for child windows and menu popups, which should not be tracked for refocus,
+				// so I'm doing this after last_focus_by_container.set for now anyway.)
+				if (is_root) {
+					do {
+						// if (!newly_focused?.closest) {
+						// 	console.warn("what is this?", newly_focused);
+						// 	break;
+						// }
+						const waypoint = newly_focused?.closest?.("[data-semantic-parent]");
+						if (waypoint) {
+							const id = waypoint.dataset.semanticParent;
+							const parent = waypoint.ownerDocument.getElementById(id);
+							// console.log("following semantic parent, from", newly_focused, "\nto", parent, "\nvia", waypoint);
+							newly_focused = parent;
+							if (!parent) {
+								console.warn("semantic parent not found with id", id);
+								break;
+							}
+						} else {
+							break;
+						}
+					} while (true);
+				}
+
+				// Note: allowing showing window as focused from listeners inside iframe (non-root) too,
+				// in order to handle clicking an iframe when the browser window was not previously focused (e.g. after reload)
+				if (
+					newly_focused &&
+					newly_focused.window !== newly_focused && // cross-frame test for Window object
+					container_node.contains(newly_focused)
+				) {
+					showAsFocused();
+					$w.bringToFront();
+					if (!is_root) {
+						// trigger focusin events for iframes
+						// @TODO: probably don't need showAsFocused() here since it'll be handled externally,
+						// and might not need a lot of other logic frankly if I'm simulating focusin events
+						let el = logical_container_el;
+						while (el) {
+							// console.log("dispatching focusin event for", el);
+							el.dispatchEvent(new Event("focusin", {
+								bubbles: true,
+								target: el,
+								view: el.ownerDocument.defaultView,
+							}));
+							el = el.currentView?.frameElement;
+						}
+					}
+				} else if (is_root) {
+					stopShowingAsFocused();
+				}
+			}
+		}
 		// initial state is unfocused
 	}
 
@@ -467,31 +657,126 @@ function $Window(options) {
 			$childWindow.bringToFront();
 		}
 	};
-	// var focused = false;
-	// @TODO: rename last_focused_control and formerly_focused to be distinct
-	// maybe last_focused_in_window and last_focused_anywhere
-	var last_focused_control;
 
-	const refocus = () => {
-		if (last_focused_control) {
-			last_focused_control.focus();
+	// Keep track of last focused elements per container,
+	// where containers include:
+	// - window (global focus tracking)
+	// - $w[0] (window-local, for restoring focus when refocusing window)
+	// - any iframes that are same-origin (for restoring focus when refocusing window)
+	// @TODO: share this Map between all windows? but clean it up when destroying windows
+	var last_focus_by_container = new Map();
+	var focus_update_handlers_by_container = new Map();
+	var debug_svg_by_container = new Map();
+
+	const debug_focus_tracking = (document, container_el, descendant_el, is_root) => {
+		if (!$Window.DEBUG_FOCUS) {
 			return;
 		}
-		const $tabstops = find_tabstops($w.$content);
+		let svg = debug_svg_by_container.get(container_el);
+		if (!svg) {
+			svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+			svg.style.position = "fixed";
+			svg.style.top = "0";
+			svg.style.left = "0";
+			svg.style.width = "100%";
+			svg.style.height = "100%";
+			svg.style.pointerEvents = "none";
+			svg.style.zIndex = "100000000";
+			debug_svg_by_container.set(container_el, svg);
+			document.body.appendChild(svg);
+		}
+		while (svg.lastChild) {
+			svg.removeChild(svg.lastChild);
+		}
+		const descendant_rect = descendant_el.getBoundingClientRect?.() ?? { left: 0, top: 0, width: innerWidth, height: innerHeight, right: innerWidth, bottom: innerHeight };
+		const container_rect = container_el.getBoundingClientRect?.() ?? { left: 0, top: 0, width: innerWidth, height: innerHeight, right: innerWidth, bottom: innerHeight };
+		// draw rectangles
+		for (const rect of [descendant_rect, container_rect]) {
+			const rect_el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+			rect_el.setAttribute("x", rect.left);
+			rect_el.setAttribute("y", rect.top);
+			rect_el.setAttribute("width", rect.width);
+			rect_el.setAttribute("height", rect.height);
+			rect_el.setAttribute("stroke", rect === descendant_rect ? "#f44" : "#f44");
+			rect_el.setAttribute("stroke-width", "2");
+			rect_el.setAttribute("fill", "none");
+			if (!is_root) {
+				rect_el.setAttribute("stroke-dasharray", "5,5");
+			}
+			svg.appendChild(rect_el);
+			const text_el = document.createElementNS("http://www.w3.org/2000/svg", "text");
+			text_el.setAttribute("x", rect.left);
+			text_el.setAttribute("y", rect.top + (rect === descendant_rect ? 20 : 0)); // align container text on outside, descendant text on inside
+			text_el.setAttribute("fill", rect === descendant_rect ? "#f44" : "aqua");
+			text_el.setAttribute("font-size", "20");
+			text_el.style.textShadow = "1px 1px 1px black, 0 0 10px black";
+			text_el.textContent = element_to_string(rect === descendant_rect ? descendant_el : container_el);
+			svg.appendChild(text_el);
+		}
+		// draw lines connecting the two rects
+		const lines = [
+			[descendant_rect.left, descendant_rect.top, container_rect.left, container_rect.top],
+			[descendant_rect.right, descendant_rect.top, container_rect.right, container_rect.top],
+			[descendant_rect.left, descendant_rect.bottom, container_rect.left, container_rect.bottom],
+			[descendant_rect.right, descendant_rect.bottom, container_rect.right, container_rect.bottom],
+		];
+		for (const line of lines) {
+			const line_el = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			line_el.setAttribute("x1", line[0]);
+			line_el.setAttribute("y1", line[1]);
+			line_el.setAttribute("x2", line[2]);
+			line_el.setAttribute("y2", line[3]);
+			line_el.setAttribute("stroke", "green");
+			line_el.setAttribute("stroke-width", "2");
+			svg.appendChild(line_el);
+		}
+	}
+
+
+	const refocus = (container_el = $w.$content[0]) => {
+		const logical_container_el = container_el.matches(".window-content") ? $w[0] : container_el;
+		const last_focus = last_focus_by_container.get(logical_container_el);
+		if (last_focus) {
+			last_focus.focus();
+			if (last_focus.tagName === "IFRAME") {
+				try {
+					refocus(last_focus);
+				} catch (e) {
+					console.warn("OS-GUI can't access iframe", e);
+				}
+			}
+			return;
+		}
+		const $tabstops = find_tabstops(container_el);
 		const $default = $tabstops.filter(".default");
 		if ($default.length) {
 			$default.focus();
 			return;
 		}
 		if ($tabstops.length) {
-			$tabstops[0].focus();
+			if ($tabstops[0].tagName === "IFRAME") {
+				try {
+					refocus($tabstops[0]); // not .contentDocument.body because we want the container tracked by last_focus_by_container
+				} catch (e) {
+					console.warn("OS-GUI can't access iframe", e);
+				}
+			} else {
+				$tabstops[0].focus();
+			}
 			return;
 		}
 		if (options.parentWindow) {
 			options.parentWindow.triggerHandler("refocus-window");
 			return;
 		}
-		$w.$content.focus();
+		container_el.focus();
+		if (container_el.tagName === "IFRAME") {
+			try {
+				refocus(container_el.contentDocument.body);
+			} catch (e) {
+				console.warn("OS-GUI can't access iframe", e);
+			}
+		}
 	};
 
 	$w.on("refocus-window", () => {
@@ -507,13 +792,11 @@ function $Window(options) {
 	// it will not be possible to listen for some .trigger() events.
 	// https://jsfiddle.net/1j01/ndvwts9y/1/
 
-	let formerly_focused;
 	// Assumption: focusin comes after pointerdown/mousedown
 	// This is probably guaranteed, because you can prevent the default of focusing from pointerdown/mousedown
 	$G.on("focusin", (e) => {
-		// why so many focusin events?...
-		// console.log("focusin", e.target);
-		formerly_focused = e.target;
+		last_focus_by_container.set(window, e.target);
+		// debug_focus_tracking(document, window, e.target);
 	});
 
 	function handle_pointer_activation(event) {
@@ -528,9 +811,6 @@ function $Window(options) {
 		//   - Open a dialog window from an app window that has a tool window, then close the dialog window
 		//     - @TODO: Even if the tool window has controls, it should focus the parent window, I think
 		// - Clicking on a control in the window should focus said control
-		//   - @Note: because this works by updating last_focused_control,
-		//     this doesn't work for controls that are not in the window content
-		//     (for example if you accidentally append buttons to the window element itself)
 		// - Clicking on a disabled control in the window should focus the window
 		//   - Make sure to test this with another window previously focused
 		// - Simulated clicks (important for JS Paint's eye gaze and speech recognition modes)
@@ -541,10 +821,15 @@ function $Window(options) {
 		//   - Using the keyboard to focus something outside the window, such as a menu popup
 		//   - Clicking a control that focuses something outside the window (I don't have an example)
 		// - Trying to select text
+		// Also:
+		// - Clicking title bar button should not show a focus ring, or store it as the last focused control.
+		//   It should keep focus on whatever was focused before the title bar button was clicked.
 
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
 		requestAnimationFrame(() => {
-			// console.log("did focus change?", { last_focused_control, formerly_focused, activeElement: document.activeElement, win_elem: $w[0]}, document.activeElement !== formerly_focused);
+			const last_focus_global = last_focus_by_container.get(window);
+			// const last_focus_in_window = last_focus_by_container.get($w.$content[0]);
+			// console.log("did focus change?", { last_focus_in_window, last_focus_global, activeElement: document.activeElement, win_elem: $w[0]}, document.activeElement !== last_focus_global);
 
 			// If something programmatically got focus, don't refocus.
 			if (
@@ -552,7 +837,7 @@ function $Window(options) {
 				document.activeElement !== document &&
 				document.activeElement !== document.body &&
 				document.activeElement !== $w.$content[0] &&
-				document.activeElement !== formerly_focused
+				document.activeElement !== last_focus_global
 			) {
 				return;
 			}
@@ -561,8 +846,6 @@ function $Window(options) {
 				// console.log("click in menus");
 				return;
 			}
-
-			// focused = true;
 
 			// If the element is selectable, wait until the click is done and see if anything was selected first.
 			// This is a bit of a weird compromise, for now.
@@ -584,26 +867,6 @@ function $Window(options) {
 			refocus();
 		});
 	}
-
-	// Assumption: no control exists in the window before this "focusin" handler is set up,
-	// so any element.focus() will come after and trigger this handler.
-	$w.on("focusin", () => {
-		// focused = true;
-		if (
-			document.activeElement &&
-			$.contains($w.$content[0], document.activeElement) &&
-			!document.activeElement.closest(".menus")
-		) {
-			last_focused_control = document.activeElement;
-		}
-	});
-	// $w.on("focusout", ()=> {
-	// 	requestAnimationFrame(()=> {
-	// 		if (!document.activeElement || !$.contains($w[0], document.activeElement)) {
-	// 			focused = false;
-	// 		}
-	// 	});
-	// });
 
 	$w.on("keydown", (e) => {
 		if (e.isDefaultPrevented()) {
@@ -659,7 +922,7 @@ function $Window(options) {
 				break;
 			case 9: { // Tab
 				// wrap around when tabbing through controls in a window
-				const $controls = find_tabstops($w.$content);
+				const $controls = find_tabstops($w.$content[0]);
 				if ($controls.length > 0) {
 					const focused_control_index = $controls.index($focused);
 					if (e.shiftKey) {
@@ -1023,9 +1286,10 @@ function $Window(options) {
 		// TODO: change usages of "close" to "closed" where appropriate
 		// and probably rename the "close" event
 
+		// TODO: support modals, which should focus what was focused before the modal was opened.
+		// (Note: must consider the element being removed from the DOM, or hidden, or made un-focusable)
+		
 		// Focus next-topmost window
-		// TODO: store the last focused control OUTSIDE the window, and restore it here,
-		// so that it works with not just other windows but also arbitrary controls outside of any window.
 		var $next_topmost = $($(".window:visible").toArray().sort((a, b) => b.style.zIndex - a.style.zIndex)[0]);
 		$next_topmost.triggerHandler("refocus-window");
 	};
