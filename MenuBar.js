@@ -53,7 +53,7 @@ const MENU_DIVIDER = "MENU_DIVIDER";
 
 const MAX_MENU_NESTING = 1000;
 
-const internal_z_counter = 1;
+let internal_z_counter = 1;
 function get_new_menu_z_index() {
 	// integrate with the OS window z-indexes, if applicable
 	// but don't depend on $Window existing, the modules should be independent
