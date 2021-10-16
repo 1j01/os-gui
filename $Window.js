@@ -13,6 +13,7 @@ function find_tabstops(container_el) {
 	// Note: for audio[controls], Chrome at least has two tabstops (the audio element and three dots menu button).
 	// It might be possible to detect this in the shadow DOM, I don't know, I haven't worked with the shadow DOM.
 	// But it might be more reliable to make a dummy tabstop element to detect when you tab out of the first/last element.
+	// Also for iframes!
 	// Assuming that doesn't mess with screen readers.
 	// Right now you can't tab to the three dots menu if it's the last element.
 	// @TODO: see what ally.js does. Does it handle audio[controls]? https://allyjs.io/api/query/tabsequence.html
@@ -223,6 +224,7 @@ function $Window(options) {
 		}
 	} else {
 		// global focusout is needed, to continue showing as focused while child windows or menus are focused
+		// also for iframes, where we don't get focusin
 		// global focusin is needed, to show as focused when a child window becomes focused
 		$G.on("focusin focusout", (event) => {
 			// For child windows and menu popups, follow "semantic parent" chain.
@@ -238,7 +240,21 @@ function $Window(options) {
 				event.type === "focusout" &&
 				!newlyFocused // doesn't exist for security reasons in this case
 			) {
-				newlyFocused = document.activeElement;
+				const iframe = document.activeElement;
+				newlyFocused = iframe;
+				try {
+					last_focus_by_container.set(iframe, iframe.contentDocument.activeElement);
+					if (!onfocusin_by_container.has(iframe)) {
+						const iframe_update_focus = (event) => {
+							const newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
+							last_focus_by_container.set(iframe, newlyFocused);
+						};
+						iframe.contentDocument.addEventListener("focusin", iframe_update_focus);
+						onfocusin_by_container.set(iframe, iframe_update_focus);
+					}
+				} catch (e) {
+					console.debug(e);
+				}
 			}
 
 			if (!newlyFocused) {
@@ -485,7 +501,9 @@ function $Window(options) {
 	// - window (global focus tracking)
 	// - $w.$content[0] (window local, for restoring focus when refocusing window)
 	// - any iframes that are same-origin (for restoring focus when refocusing window)
+	// @TODO: share this Map between all windows? but clean it up when destroying windows
 	var last_focus_by_container = new Map();
+	var onfocusin_by_container = new Map();
 
 	const refocus = (container_el = $w.$content[0]) => {
 		const last_focus = last_focus_by_container.get(container_el);
@@ -507,7 +525,15 @@ function $Window(options) {
 			return;
 		}
 		if ($tabstops.length) {
-			$tabstops[0].focus();
+			if ($tabstops[0].tagName === "IFRAME") {
+				try {
+					refocus($tabstops[0]); // not .contentDocument.body because we want the container tracked by last_focus_by_container
+				} catch (e) {
+					console.debug(e);
+				}
+			} else {
+				$tabstops[0].focus();
+			}
 			return;
 		}
 		if (options.parentWindow) {
@@ -537,13 +563,12 @@ function $Window(options) {
 	// it will not be possible to listen for some .trigger() events.
 	// https://jsfiddle.net/1j01/ndvwts9y/1/
 
-	let formerly_focused;
 	// Assumption: focusin comes after pointerdown/mousedown
 	// This is probably guaranteed, because you can prevent the default of focusing from pointerdown/mousedown
 	$G.on("focusin", (e) => {
 		// why so many focusin events?...
 		// console.log("focusin", e.target);
-		formerly_focused = e.target;
+		last_focus_by_container.set(window, e.target);
 	});
 
 	function handle_pointer_activation(event) {
@@ -558,7 +583,7 @@ function $Window(options) {
 		//   - Open a dialog window from an app window that has a tool window, then close the dialog window
 		//     - @TODO: Even if the tool window has controls, it should focus the parent window, I think
 		// - Clicking on a control in the window should focus said control
-		//   - @Note: because this works by updating last_focused_control,
+		//   - @Note: because this works by storing the last focused element in the window content (during the click gesture),
 		//     this doesn't work for controls that are not in the window content
 		//     (for example if you accidentally append buttons to the window element itself)
 		// - Clicking on a disabled control in the window should focus the window
@@ -574,7 +599,9 @@ function $Window(options) {
 
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
 		requestAnimationFrame(() => {
-			// console.log("did focus change?", { last_focused_control, formerly_focused, activeElement: document.activeElement, win_elem: $w[0]}, document.activeElement !== formerly_focused);
+			const last_focus_global = last_focus_by_container.get(window);
+			// const last_focus_in_window = last_focus_by_container.get($w.$content[0]);
+			// console.log("did focus change?", { last_focus_in_window, last_focus_global, activeElement: document.activeElement, win_elem: $w[0]}, document.activeElement !== last_focus_global);
 
 			// If something programmatically got focus, don't refocus.
 			if (
@@ -582,7 +609,7 @@ function $Window(options) {
 				document.activeElement !== document &&
 				document.activeElement !== document.body &&
 				document.activeElement !== $w.$content[0] &&
-				document.activeElement !== formerly_focused
+				document.activeElement !== last_focus_global
 			) {
 				return;
 			}
@@ -625,13 +652,6 @@ function $Window(options) {
 			!document.activeElement.closest(".menus")
 		) {
 			last_focus_by_container.set($w.$content[0], document.activeElement);
-			if (document.activeElement.tagName === "IFRAME") {
-				try {
-					last_focus_by_container.set(document.activeElement, document.activeElement.contentDocument.activeElement);
-				} catch (e) {
-					console.debug(e);
-				}
-			}
 		}
 	});
 	// $w.on("focusout", ()=> {
