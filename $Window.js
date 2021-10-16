@@ -402,6 +402,7 @@ function $Window(options) {
 		// - Click in the blank space of the window
 		//   - Click in blank space again now that something's focused
 		// - Click on the window title bar
+		//   - Click on title bar buttons
 		// - Closing a second window should focus the first window
 		//   - Open a dialog window from an app window that has a tool window, then close the dialog window
 		//     - @TODO: Even if the tool window has controls, it should focus the parent window, I think
@@ -616,11 +617,7 @@ function $Window(options) {
 	$w.$titlebar.on("mousedown", "button", (e) => {
 		// prevent focus ring on titlebar buttons
 		setTimeout(() => {
-			if (last_focused_control) {
-				last_focused_control.focus();
-			} else {
-				document.activeElement.blur()
-			}
+			refocus();
 		}, 0);
 	});
 	$w.$titlebar.on("pointerdown", (e) => {
