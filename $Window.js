@@ -226,67 +226,72 @@ function $Window(options) {
 		// global focusout is needed, to continue showing as focused while child windows or menus are focused
 		// also for iframes, where we don't get focusin
 		// global focusin is needed, to show as focused when a child window becomes focused
-		window.addEventListener("focusin", handle_focus_in_out);
-		window.addEventListener("focusout", handle_focus_in_out);
-		function handle_focus_in_out(event) {
-			let newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
+		window.addEventListener("focusin", make_focus_in_out_handler($w.$content[0], true));
+		window.addEventListener("focusout", make_focus_in_out_handler($w.$content[0], true));
+		function make_focus_in_out_handler(container_el, is_root) {
+			return function handle_focus_in_out(event) {
+				let newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
 
-			// Iframes have weird behavior with focusin/focusout, so we need to check for iframes.
-			if (
-				document.activeElement &&
-				document.activeElement.tagName === "IFRAME" &&
-				event.type === "focusout" &&
-				!newlyFocused // doesn't exist for security reasons in this case
-			) {
-				const iframe = document.activeElement;
-				newlyFocused = iframe;
-				try {
-					last_focus_by_container.set(iframe, iframe.contentDocument.activeElement);
-					if (!onfocusin_by_container.has(iframe)) {
-						const iframe_update_focus = (event) => {
-							const newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
-							last_focus_by_container.set(iframe, newlyFocused);
-						};
-						iframe.contentDocument.addEventListener("focusin", iframe_update_focus);
-						iframe.contentDocument.addEventListener("focusout", iframe_update_focus);
-						onfocusin_by_container.set(iframe, iframe_update_focus);
+				last_focus_by_container.set(container_el, newlyFocused); // overwritten for iframes below
+
+				// Iframes have weird behavior with focusin/focusout, so we need to check for iframes.
+				if (
+					document.activeElement &&
+					document.activeElement.tagName === "IFRAME" &&
+					event.type === "focusout" &&
+					!newlyFocused // doesn't exist for security reasons in this case
+				) {
+					const iframe = document.activeElement;
+					newlyFocused = iframe;
+					try {
+						last_focus_by_container.set(iframe, iframe.contentDocument.activeElement);
+						if (!onfocusin_by_container.has(iframe)) {
+							const iframe_update_focus = make_focus_in_out_handler(iframe, false);
+							iframe.contentDocument.addEventListener("focusin", iframe_update_focus);
+							iframe.contentDocument.addEventListener("focusout", iframe_update_focus);
+							onfocusin_by_container.set(iframe, iframe_update_focus);
+						}
+					} catch (e) {
+						console.debug(e);
 					}
-				} catch (e) {
-					console.debug(e);
 				}
-			}
 
-			if (!newlyFocused) {
-				stopShowingAsFocused();
-				return;
-			}
-			// For child windows and menu popups, follow "semantic parent" chain.
-			// Menu popups and child windows aren't descendants of the window they belong to,
-			// but should keep the window shown as focused.
-			do {
-				// if (!newlyFocused?.closest) {
-				// 	console.warn("what is this?", newlyFocused);
-				// 	break;
-				// }
-				const waypoint = newlyFocused?.closest?.("[data-semantic-parent]");
-				if (waypoint) {
-					const id = waypoint.dataset.semanticParent;
-					newlyFocused = document.getElementById(id);
-					if (!newlyFocused) {
-						console.warn("semantic parent not found with id", id);
+				if (!is_root) {
+					return; // the rest of the logic is for the window and not nested iframes
+				}
+
+				if (!newlyFocused) {
+					stopShowingAsFocused();
+					return;
+				}
+				// For child windows and menu popups, follow "semantic parent" chain.
+				// Menu popups and child windows aren't descendants of the window they belong to,
+				// but should keep the window shown as focused.
+				do {
+					// if (!newlyFocused?.closest) {
+					// 	console.warn("what is this?", newlyFocused);
+					// 	break;
+					// }
+					const waypoint = newlyFocused?.closest?.("[data-semantic-parent]");
+					if (waypoint) {
+						const id = waypoint.dataset.semanticParent;
+						newlyFocused = document.getElementById(id);
+						if (!newlyFocused) {
+							console.warn("semantic parent not found with id", id);
+							break;
+						}
+					} else {
 						break;
 					}
-				} else {
-					break;
+				} while (true);
+				if (newlyFocused && newlyFocused.closest?.(".window") == $w[0]) {
+					showAsFocused();
+					$w.bringToFront();
+					return;
 				}
-			} while (true);
-			if (newlyFocused && newlyFocused.closest?.(".window") == $w[0]) {
-				showAsFocused();
-				$w.bringToFront();
-				return;
+				stopShowingAsFocused();
 			}
-			stopShowingAsFocused();
-		});
+		}
 		// initial state is unfocused
 	}
 
