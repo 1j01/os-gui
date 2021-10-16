@@ -44,7 +44,7 @@ var $G = $(window);
 
 $Window.Z_INDEX = 5;
 
-var next_minimized_x = 0; // for if there's no taskbar
+var minimize_slots = []; // for if there's no taskbar
 
 function $Window(options) {
 	options = options || {};
@@ -264,20 +264,23 @@ function $Window(options) {
 				// @TODO: should it show a maximize icon instead of an overlap icon if
 				// it's minimized and was maximized and thus will maximize when restoring,
 				// OR should it not maximize but restore the unmaximized state?
-				// @TODO: free up "slots" when unminimizing
-				// (need an array instead of a counter for available positions)
 
-				let to_x = $w._minimized_x || next_minimized_x || 10;
 				const to_width = 150;
 				const spacing = 10;
 				if ($w.hasClass("minimized-without-taskbar")) {
 					// unminimizing
+					minimize_slots[$w._minimize_slot_index] = null;
 				} else {
 					// minimizing
-					$w._minimized_x = to_x;
-					next_minimized_x = to_x + to_width + spacing;
+					let i = 0;
+					while (minimize_slots[i]) {
+						i++;
+					}
+					$w._minimize_slot_index = i;
+					minimize_slots[i] = $w;
 					$w.blur();
 				}
+				const to_x = $w._minimize_slot_index * (to_width + spacing) + 10;
 				const titlebar_height = $w.$titlebar.outerHeight();
 				const instantly_minimize = () => {
 					before_minimize = {
