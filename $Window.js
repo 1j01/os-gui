@@ -278,7 +278,6 @@ function $Window(options) {
 					}
 					$w._minimize_slot_index = i;
 					minimize_slots[i] = $w;
-					$w.blur();
 				}
 				const to_x = $w._minimize_slot_index * (to_width + spacing) + 10;
 				const titlebar_height = $w.$titlebar.outerHeight();
@@ -339,6 +338,7 @@ function $Window(options) {
 						instantly_unminimize();
 					} else {
 						instantly_minimize();
+						$w.blur();
 					}
 				});
 			}
