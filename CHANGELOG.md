@@ -40,6 +40,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Menu bar's `info` event now works with submenus as well. (Previously items that contain submenus were assumed to not have descriptions, simply because Paint's one submenu does not a have a description. But for instance Explorer has descriptions for all of its menus (except Favorites, which is a bit special, what with drag and drop and context menus and all.))
 - Greatly improved menu navigation:
   - Menus can now be opened with Enter and exited with Escape.
+  - Menus can now be navigated with accelerators, and the first letters of items without accelerators defined.
   - Pressing Escape an extra time will unfocus the menu bar, focusing the last focused control within the window.
   - Submenus can now be navigated with the arrow keys.
   - Submenus stay open more easily. It's a little buggy still, but they're not constantly trying to close themselves on you.

@@ -240,6 +240,41 @@ function MenuBar(menus) {
 					e.preventDefault();
 				}
 				break;
+			default:
+				// handle accelerators and first-letter navigation
+				const key = String.fromCharCode(e.keyCode).toLowerCase();
+				const item_els = [...menu_popup_el.querySelectorAll(".menu-item")];
+				const item_els_by_accelerator = {};
+				for (const item_el of item_els) {
+					const accelerator = item_el.querySelector(".menu-hotkey");
+					const accelerator_key = (accelerator ? accelerator.textContent : item_el.querySelector(".menu-item-label").textContent[0]).toLowerCase();
+					item_els_by_accelerator[accelerator_key] = item_els_by_accelerator[accelerator_key] || [];
+					item_els_by_accelerator[accelerator_key].push(item_el);
+				}
+				const matching_item_els = item_els_by_accelerator[key] || [];
+				if (matching_item_els.length) {
+					if (matching_item_els.length === 1) {
+						// it's unambiguous, go ahead and activate it
+						const menu_item_el = matching_item_els[0];
+						menu_item_el.dispatchEvent(new Event("pointerenter"));
+						menu_item_el.dispatchEvent(new Event("pointerdown"));
+						menu_item_el.dispatchEvent(new Event("click"));
+						menu_item_el.dispatchEvent(new Event("pointerup"));
+						e.preventDefault();
+					} else {
+						// cycle the menu items that match the key
+						let index = matching_item_els.indexOf(focused_item_el);
+						if (index === -1) {
+							index = 0;
+						} else {
+							index = (index + 1) % matching_item_els.length;
+						}
+						const menu_item_el = matching_item_els[index];
+						menu_item_el.focus();
+						e.preventDefault();
+					}
+				}
+				break;
 		}
 	}
 
@@ -482,16 +517,6 @@ function MenuBar(menus) {
 						} else {
 							item_action();
 						}
-					}
-				});
-
-				menu_popup_el.addEventListener("keydown", e => {
-					if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey) {
-						return;
-					}
-					if (String.fromCharCode(e.keyCode) === get_hotkey(item.item)) {
-						e.preventDefault();
-						item_el.dispatchEvent(new Event("click"));
 					}
 				});
 			}

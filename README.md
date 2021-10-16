@@ -176,9 +176,13 @@ Property `toggle` should be a function that toggles the state of the option, how
 
 ### Menu hotkeys
 
-In menu and menu item names, you can place `&` before letters to indicate menu-level-scoped hotkeys (which should be unique to that level of the menu, i.e. the menubar or the contents of a particular submenu).
+Menus can be navigated using the first letter of the menu item, or if you place `&` in front of a letter in the menu item, it will be used as the hotkey.
 
-But these are **not functionally implemented!**
+For menu button hotkeys, you need to press Alt, and for menu item hotkeys you must press the key directly.
+
+If there are multiple menu items with the same hotkey, it will cycle between them without activating them.
+You should try to make the hotkeys unique, including between hotkeys and first letters of menu items without defined hotkeys.
+(This behavior is observed in Windows 98's Explorer's Favorites menu, where you can make bookmarks that match other accelerators or menu items.)
 
 ### `$Window(options)`
 
