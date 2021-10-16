@@ -352,7 +352,7 @@ function MenuBar(menus) {
 
 					const submenu_popup = MenuPopup(item.submenu);
 					submenu_popup_el = submenu_popup.element;
-					document.body.appendChild(submenu_popup_el);
+					document.body?.appendChild(submenu_popup_el);
 					submenu_popup_el.style.display = "none";
 
 					submenu_popups_by_menu_item_el.set(item_el, submenu_popup);
@@ -368,6 +368,9 @@ function MenuBar(menus) {
 						submenu_popup_el.style.display = "";
 						submenu_popup_el.style.zIndex = get_new_menu_z_index();
 						submenu_popup_el.setAttribute("dir", get_direction());
+						if (!submenu_popup_el.parentElement) {
+							document.body.appendChild(submenu_popup_el);
+						}
 
 						// console.log("open_submenu — submenu_popup_el.style.zIndex", submenu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
 						// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
@@ -538,7 +541,7 @@ function MenuBar(menus) {
 
 		const menu_popup = MenuPopup(menu_items);
 		const menu_popup_el = menu_popup.element;
-		document.body.appendChild(menu_popup_el);
+		document.body?.appendChild(menu_popup_el);
 		submenu_popups_by_menu_item_el.set(menu_button_el, menu_popup);
 		parent_item_el_by_popup_el.set(menu_popup_el, menu_button_el);
 		menu_button_el.id = `menu-button-${menus_key}-${Math.random().toString(36).substr(2, 9)}`;
@@ -616,6 +619,9 @@ function MenuBar(menus) {
 			menu_popup_el.style.display = "";
 			menu_popup_el.style.zIndex = get_new_menu_z_index();
 			menu_popup_el.setAttribute("dir", get_direction());
+			if (!menu_popup_el.parentElement) {
+				document.body.appendChild(menu_popup_el);
+			}
 			// console.log("pointerdown (possibly simulated) — menu_popup_el.style.zIndex", menu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
 			// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
 			active_menu_index = Object.keys(menus).indexOf(menus_key);
