@@ -228,11 +228,16 @@ function $Window(options) {
 		// global focusin is needed, to show as focused when a child window becomes focused
 		window.addEventListener("focusin", make_focus_in_out_handler($w.$content[0], true));
 		window.addEventListener("focusout", make_focus_in_out_handler($w.$content[0], true));
-		function make_focus_in_out_handler(container_el, is_root) {
+		function make_focus_in_out_handler(container_el) {
+			const is_root = container_el.ownerDocument === document;
 			return function handle_focus_in_out(event) {
+				const document = container_el.tagName == "IFRAME" ? container_el.contentDocument : container_el.ownerDocument;
+
+				// console.log(`handling ${event.type} for container`, container_el);
 				let newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
 
-				last_focus_by_container.set(container_el, newlyFocused); // overwritten for iframes below
+
+				// console.log(`newlyFocused is`, newlyFocused?.tagName, `\ncontainer_el`, container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
 
 				// Iframes have weird behavior with focusin/focusout, so we need to check for iframes.
 				if (
@@ -241,18 +246,25 @@ function $Window(options) {
 					event.type === "focusout" &&
 					!newlyFocused // doesn't exist for security reasons in this case
 				) {
-					const iframe = document.activeElement;
-					newlyFocused = iframe;
+					newlyFocused = document.activeElement;
+				}
+				last_focus_by_container.set(container_el, newlyFocused); // overwritten for iframes below
+
+				if (newlyFocused?.tagName === "IFRAME") {
+					const iframe = newlyFocused;
+					console.log("iframe", iframe, onfocusin_by_container.has(iframe));
 					try {
 						last_focus_by_container.set(iframe, iframe.contentDocument.activeElement);
 						if (!onfocusin_by_container.has(iframe)) {
+							console.log("adding onfocusin/out for iframe");
 							const iframe_update_focus = make_focus_in_out_handler(iframe, false);
 							iframe.contentDocument.addEventListener("focusin", iframe_update_focus);
 							iframe.contentDocument.addEventListener("focusout", iframe_update_focus);
 							onfocusin_by_container.set(iframe, iframe_update_focus);
 						}
 					} catch (e) {
-						console.debug(e);
+						console.warn("OS-GUI can't access iframe", e);
+						// @TODO: only generate this error once
 					}
 				}
 
@@ -520,7 +532,7 @@ function $Window(options) {
 				try {
 					refocus(last_focus);
 				} catch (e) {
-					console.debug(e);
+					console.warn("OS-GUI can't access iframe", e);
 				}
 			}
 			return;
@@ -536,7 +548,7 @@ function $Window(options) {
 				try {
 					refocus($tabstops[0]); // not .contentDocument.body because we want the container tracked by last_focus_by_container
 				} catch (e) {
-					console.debug(e);
+					console.warn("OS-GUI can't access iframe", e);
 				}
 			} else {
 				$tabstops[0].focus();
@@ -552,7 +564,7 @@ function $Window(options) {
 			try {
 				refocus(container_el.contentDocument.body);
 			} catch (e) {
-				console.debug(e);
+				console.warn("OS-GUI can't access iframe", e);
 			}
 		}
 	};
