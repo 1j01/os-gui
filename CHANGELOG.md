@@ -12,6 +12,12 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+Nothing here yet.
+
+</details>
+
+## [0.4.0] - 2021-10-15
+
 ### Removed
 - `minWidth` option; use `minOuterWidth` instead.
 - `minHeight` option; use `minOuterHeight` instead.
@@ -57,8 +63,6 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Titlebar gradient is flipped for RTL languages.
 - Submenus have correct RTL layout. (Top level menus were previously descendants of the window (so I didn't notice the problem), but now all menus are children of the document body, and `dir` attribute is propagated from the menu bar element's `direction` CSS property to the floating menus.)
 - Focused disabled menu items are distinguished from enabled menu items.
-
-</details>
 
 ## [0.3.0] - 2021-09-04
 
@@ -129,7 +133,8 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Window component is now an app window instead of a tool window, to aid reintegration with 98.js.org; jspaint will come later.
 - Window component is styled with `.os-window` now, altho it includes both classes `os-window` and `window`.
 
-[Unreleased]: https://github.com/1j01/os-gui/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/1j01/os-gui/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/1j01/os-gui/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/1j01/os-gui/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/1j01/os-gui/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/1j01/os-gui/compare/v0.2.0...v0.2.1
