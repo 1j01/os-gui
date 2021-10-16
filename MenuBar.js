@@ -141,7 +141,7 @@ function MenuBar(menus) {
 		}
 		const active_menu_popup_el = e.target.closest(".menu-popup");
 		const top_level_menu = top_level_menus[active_menu_index];
-		const { menu_button_el, maybe_open_top_level_menu } = top_level_menu;
+		const { menu_button_el, open_top_level_menu } = top_level_menu;
 		// console.log("keydown", e.key, { target: e.target, active_menu_popup_el, top_level_menu });
 		const menu_popup_el = active_menu_popup_el || top_level_menu.menu_popup_el;
 		const parent_item_el = parent_item_el_by_popup_el.get(active_menu_popup_el);
@@ -179,7 +179,7 @@ function MenuBar(menus) {
 					const new_top_level_menu = top_level_menus[new_index];
 					const target_button_el = new_top_level_menu.menu_button_el;
 					if (menu_was_open) {
-						new_top_level_menu.maybe_open_top_level_menu();
+						new_top_level_menu.open_top_level_menu();
 						new_top_level_menu.menu_popup_el.querySelector(".menu-item").focus();
 					} else {
 						menu_button_el.dispatchEvent(new CustomEvent("release"), {});
@@ -199,7 +199,7 @@ function MenuBar(menus) {
 					const to_item_el = item_els[to_index];
 					to_item_el.focus();
 				} else {
-					maybe_open_top_level_menu();
+					open_top_level_menu();
 					// focus first item in menu, even if you pressed Up
 					menu_popup_el.querySelector(".menu-item").focus();
 				}
@@ -244,7 +244,7 @@ function MenuBar(menus) {
 			case 13: // Enter
 				// Enter is handled elsewhere, except for top level buttons
 				if (menu_button_el === document.activeElement) {
-					maybe_open_top_level_menu();
+					open_top_level_menu();
 					menu_popup_el.querySelector(".menu-item").focus(); // first item
 					e.preventDefault();
 				}
@@ -590,7 +590,7 @@ function MenuBar(menus) {
 			if (e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey) { // Alt held
 				if (String.fromCharCode(e.keyCode) === get_hotkey(menus_key)) {
 					e.preventDefault();
-					maybe_open_top_level_menu();
+					open_top_level_menu();
 				}
 			}
 		});
@@ -598,15 +598,14 @@ function MenuBar(menus) {
 			active_menu_index = Object.keys(menus).indexOf(menus_key);
 		});
 		menu_button_el.addEventListener("pointerdown", e => {
-			maybe_open_top_level_menu(e.type);
+			open_top_level_menu(e.type);
 		});
 		menu_button_el.addEventListener("pointerenter", e => {
-			maybe_open_top_level_menu(e.type);
-		});
-		function maybe_open_top_level_menu(type = "other") {
-			if (type === "pointerenter" && !selecting_menus) {
-				return;
+			if (selecting_menus) {
+				open_top_level_menu(e.type);
 			}
+		});
+		function open_top_level_menu(type = "other") {
 			if (type !== "pointerenter") {
 				if (!menu_button_el.classList.contains("active")) {
 					this_click_opened_the_menu = true;
@@ -654,7 +653,7 @@ function MenuBar(menus) {
 			menu_button_el,
 			menu_popup_el,
 			menus_key,
-			maybe_open_top_level_menu,
+			open_top_level_menu,
 		});
 	};
 	for (const menu_key in menus) {
