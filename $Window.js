@@ -19,7 +19,7 @@ function find_tabstops($el) {
 	// but if there is a selected radio in the group, it should skip all unselected radios in the group.
 	const radios = {}; // best radio found so far, per group
 	const to_skip = [];
-	for (const el of $controls) {
+	for (const el of $controls.toArray()) {
 		if (el.nodeName.toLowerCase() === "input" && el.type === "radio") {
 			if (radios[el.name]) {
 				if (el.checked) {
