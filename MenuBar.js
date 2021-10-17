@@ -79,6 +79,8 @@ function MenuBar(menus) {
 
 	const top_level_menus = [];
 	let top_level_menu_index = -1; // index of the top level menu that's most recently open
+	let active_menu_popup; // most nested open MenuPopup
+	const menu_popup_by_el = new WeakMap(); // maps DOM elements to MenuPopup instances
 
 	// There can be multiple menu bars instantiated from the same menu definitions,
 	// so this can't be a map of menu item to submenu, it has to be of menu item ELEMENTS to submenu.
@@ -101,6 +103,7 @@ function MenuBar(menus) {
 		for (const popup_el of popup_els) {
 			if (!window.debugKeepMenusOpen) {
 				popup_el.style.display = "none";
+				popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 			}
 		}
 	};
@@ -140,26 +143,25 @@ function MenuBar(menus) {
 			return;
 		}
 		const active_menu_popup_el = e.target.closest(".menu-popup");
+		const active_menu_popup = active_menu_popup_el && menu_popup_by_el.get(active_menu_popup_el);
 		const top_level_menu = top_level_menus[top_level_menu_index];
 		const { menu_button_el, open_top_level_menu } = top_level_menu;
-		// console.log("keydown", e.key, { target: e.target, active_menu_popup_el, top_level_menu });
 		const menu_popup_el = active_menu_popup_el || top_level_menu.menu_popup_el;
 		const parent_item_el = parent_item_el_by_popup_el.get(active_menu_popup_el);
-		const focused_item_el = menu_popup_el.querySelector(".menu-item:focus");
+		const highlighted_item_el = menu_popup_el.querySelector(".menu-item.highlight");
+
+		// console.log("keydown", e.key, { target: e.target, active_menu_popup_el, top_level_menu, menu_popup_el, parent_item_el, highlighted_item_el });
 
 		switch (e.keyCode) {
 			case 37: // Left
 			case 39: // Right
 				const right = e.keyCode === 39;
 				if (
-					focused_item_el?.classList.contains("has-submenu") &&
+					highlighted_item_el?.classList.contains("has-submenu") &&
 					(get_direction() === "ltr") === right
 				) {
 					// enter submenu
-					focused_item_el.dispatchEvent(new Event("click"));
-					// focus first item in submenu
-					const submenu_popup = submenu_popups_by_menu_item_el.get(focused_item_el);
-					submenu_popup.element.querySelector(".menu-item").focus();
+					highlighted_item_el.dispatchEvent(new Event("click"));
 					e.preventDefault();
 				} else if (
 					parent_item_el &&
@@ -167,10 +169,13 @@ function MenuBar(menus) {
 					(get_direction() === "ltr") !== right
 				) {
 					// exit submenu
-					parent_item_el.focus();
+					// @TODO: debug?
+					// active_menu_popup.parentMenuPopup.element.focus({ preventScroll: true });
+					parent_item_el.closest(".menu-popup").focus({ preventScroll: true });
 					active_menu_popup_el.style.display = "none";
+					active_menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 					e.preventDefault();
-				} else {
+				} else if (highlighted_item_el || !active_menu_popup) {
 					// go to next/previous top level menu, wrapping around
 					// and open a new menu only if a menu was already open
 					const menu_was_open = visible(menu_popup_el);
@@ -182,21 +187,28 @@ function MenuBar(menus) {
 						new_top_level_menu.open_top_level_menu("keydown");
 					} else {
 						menu_button_el.dispatchEvent(new CustomEvent("release"), {});
-						target_button_el.focus();
+						target_button_el.focus({ preventScroll: true });
 					}
 					e.preventDefault();
-				}
+				} // else:
+				// if there's no highlighted item, the user may be expecting to enter the menu even though it's already open,
+				// so it makes sense to do nothing (as Windows 98 does) and not go to the next/previous menu
+				// (although highlighting the first item might be nicer...)
 				break;
 			case 40: // Down
 			case 38: // Up
 				const down = e.keyCode === 40;
-				if (menu_popup_el && visible(menu_popup_el) && focused_item_el) {
+				// if (menu_popup_el && visible(menu_popup_el) && highlighted_item_el) {
+				if (active_menu_popup) {
 					const cycle_dir = down ? 1 : -1;
 					const item_els = [...menu_popup_el.querySelectorAll(".menu-item")];
-					const from_index = item_els.indexOf(focused_item_el);
+					const from_index = item_els.indexOf(highlighted_item_el);
 					const to_index = (from_index + cycle_dir + item_els.length) % item_els.length;
+					// @TODO: could do this like set_highlight(to_index) and avoid looping to remove class
+					// I suppose I could also do querySelector(".menu-item.highlight"), but I could avoid querySelector entirely the other way
 					const to_item_el = item_els[to_index];
-					to_item_el.focus();
+					active_menu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
+					to_item_el.classList.add("highlight");
 				} else {
 					open_top_level_menu("keydown");
 				}
@@ -206,12 +218,13 @@ function MenuBar(menus) {
 				if (any_open_menus()) {
 					// (@TODO: doesn't parent_item_el always exist?)
 					if (parent_item_el && parent_item_el !== menu_button_el) {
-						parent_item_el.focus();
+						active_menu_popup.parentMenuPopup.element.focus({ preventScroll: true });
 						active_menu_popup_el.style.display = "none";
+						active_menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 					} else {
 						// close_menus takes care of releasing the pressed state of the button as well
 						close_menus();
-						menu_button_el.focus();
+						menu_button_el.focus({ preventScroll: true });
 					}
 					e.preventDefault();
 				} else {
@@ -239,9 +252,11 @@ function MenuBar(menus) {
 				// (at top level)
 				break;
 			case 13: // Enter
-				// Enter is handled elsewhere, except for top level buttons
 				if (menu_button_el === document.activeElement) {
 					open_top_level_menu("keydown");
+					e.preventDefault();
+				} else {
+					highlighted_item_el.dispatchEvent(new CustomEvent("activate-menu-item"), {});
 					e.preventDefault();
 				}
 				break;
@@ -268,14 +283,15 @@ function MenuBar(menus) {
 						e.preventDefault();
 					} else {
 						// cycle the menu items that match the key
-						let index = matching_item_els.indexOf(focused_item_el);
+						let index = matching_item_els.indexOf(highlighted_item_el);
 						if (index === -1) {
 							index = 0;
 						} else {
 							index = (index + 1) % matching_item_els.length;
 						}
 						const menu_item_el = matching_item_els[index];
-						menu_item_el.focus();
+						active_menu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
+						menu_item_el.classList.add("highlight");
 						e.preventDefault();
 					}
 				}
@@ -286,14 +302,33 @@ function MenuBar(menus) {
 	menus_el.addEventListener("keydown", handleKeyDown);
 
 	// TODO: API for context menus (i.e. floating menu popups)
-	function MenuPopup(menu_items) {
-		const menu_popup_el = E("div", { class: "menu-popup", id: `menu-popup-${Math.random().toString(36).substr(2, 9)}` });
+	function MenuPopup(menu_items, { parentMenuPopup } = {}) {
+		this.parentMenuPopup = parentMenuPopup;
+		this.menuItems = menu_items;
+
+		const menu_popup_el = E("div", { class: "menu-popup", id: `menu-popup-${Math.random().toString(36).substr(2, 9)}`, tabIndex: "-1" });
+		menu_popup_el.style.outline = "none";
 		const menu_popup_table_el = E("table", { class: "menu-popup-table" });
 		menu_popup_el.appendChild(menu_popup_table_el);
 
-		menu_popup_el.addEventListener("keydown", handleKeyDown);
+		this.element = menu_popup_el;
+		menu_popup_by_el.set(menu_popup_el, this);
 
 		let submenus = [];
+
+		menu_popup_el.addEventListener("keydown", handleKeyDown);
+
+		menu_popup_el.addEventListener("pointerleave", () => {
+			// unhighlight the highlighted item, then if there's a submenu popup, highlight the item for that
+			menu_popup_el.querySelector(".menu-item.highlight")?.classList.remove("highlight");
+			for (const submenu of submenus) {
+				if (visible(submenu.submenu_popup_el)) {
+					submenu.item_el.classList.add("highlight");
+					break;
+				}
+			}
+		});
+
 
 		menu_items.forEach(item => {
 			const row_el = E("tr", { class: "menu-row" });
@@ -306,7 +341,6 @@ function MenuBar(menus) {
 			} else {
 				const item_el = row_el;
 				item_el.classList.add("menu-item");
-				item_el.setAttribute("tabIndex", -1);
 				const checkbox_area_el = E("td", { class: "menu-item-checkbox-area" });
 				const label_el = E("td", { class: "menu-item-label" });
 				const shortcut_el = E("td", { class: "menu-item-shortcut" });
@@ -335,7 +369,8 @@ function MenuBar(menus) {
 				});
 				item_el.addEventListener("pointerenter", () => {
 					menu_popup_el.dispatchEvent(new CustomEvent("update"), {}); // @TODO: why?
-					item_el.focus();
+					menu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
+					item_el.classList.add("highlight");
 				});
 
 				if (item.checkbox) {
@@ -350,16 +385,17 @@ function MenuBar(menus) {
 						submenu_area_el.querySelector("svg").style.transform = get_direction() === "rtl" ? "scaleX(-1)" : "";
 					});
 
-					const submenu_popup = MenuPopup(item.submenu);
+					const submenu_popup = new MenuPopup(item.submenu, { parentMenuPopup: this });
 					submenu_popup_el = submenu_popup.element;
 					document.body?.appendChild(submenu_popup_el);
 					submenu_popup_el.style.display = "none";
+					submenu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 
 					submenu_popups_by_menu_item_el.set(item_el, submenu_popup);
 					parent_item_el_by_popup_el.set(submenu_popup_el, item_el);
 					submenu_popup_el.dataset.semanticParent = menu_popup_el.id; // for $Window to understand the popup belongs to its window
 
-					open_submenu = () => {
+					open_submenu = (highlight_first = true) => {
 						if (submenu_popup_el.style.display !== "none") {
 							return;
 						}
@@ -375,6 +411,11 @@ function MenuBar(menus) {
 						// console.log("open_submenu — submenu_popup_el.style.zIndex", submenu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
 						// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
 						submenu_popup_el.dispatchEvent(new CustomEvent("update"), {});
+						// submenu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
+						if (highlight_first) {
+							submenu_popup_el.querySelector(".menu-item").classList.add("highlight");
+						}
+
 						const rect = item_el.getBoundingClientRect();
 						let submenu_popup_rect = submenu_popup_el.getBoundingClientRect();
 						submenu_popup_el.style.position = "absolute";
@@ -402,10 +443,14 @@ function MenuBar(menus) {
 								}
 							}
 						}
+
+						submenu_popup_el.focus({ preventScroll: true });
+						active_menu_popup = submenu_popup;
 					};
 
 					function close_submenu() {
 						submenu_popup_el.style.display = "none";
+						submenu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 						item_el.setAttribute("aria-expanded", "false");
 						if (submenu_popup_el._submenus) {
 							for (const submenu of submenu_popup_el._submenus) {
@@ -427,6 +472,7 @@ function MenuBar(menus) {
 						for (const submenu of submenus) {
 							submenu.close_submenu();
 						}
+						menu_popup_el.focus({ preventScroll: true });
 					}
 
 					// It should close when hovering a different higher level menu
@@ -451,7 +497,9 @@ function MenuBar(menus) {
 						// @TODO: don't cancel close timer? in Windows 98 it'll close after a delay even if you hover the parent menu item
 						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
-						open_tid = setTimeout(open_submenu, 501); // @HACK: slightly longer than close timer
+						open_tid = setTimeout(() => {
+							open_submenu(false);
+						}, 501); // @HACK: slightly longer than close timer so it doesn't close immediately
 					});
 					item_el.addEventListener("pointerleave", () => {
 						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
@@ -480,8 +528,8 @@ function MenuBar(menus) {
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
 					});
 
-					item_el.addEventListener("click", open_submenu);
-					item_el.addEventListener("pointerdown", open_submenu);
+					item_el.addEventListener("click", () => { open_submenu(true); });
+					item_el.addEventListener("pointerdown", () => { open_submenu(true); });
 				}
 
 				const item_action = () => {
@@ -495,6 +543,9 @@ function MenuBar(menus) {
 						item.action();
 					}
 				};
+				// unlike click, this allows gliding to a menu item and releasing to activate it
+				// @TODO: can I support .click() as well? maybe do .click() here if it wouldn't otherwise be handled?
+				// stopImmediatePropagation/preventDefault might help? setTimeout could do the trick in a pinch
 				item_el.addEventListener("pointerup", e => {
 					if (e.pointerType === "mouse" && e.button !== 0) {
 						return;
@@ -507,30 +558,20 @@ function MenuBar(menus) {
 				item_el.addEventListener("pointerleave", () => {
 					if (visible(item_el)) {
 						send_info_event();
-						parent_item_el_by_popup_el.get(menu_popup_el)?.focus();
 					}
 				});
-
-				item_el.addEventListener("keydown", e => {
-					if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey) {
-						return;
-					}
-					if (e.keyCode === 13) { // Enter
-						e.preventDefault();
-						if (item.submenu) {
-							// this isn't part of item_action because it shouldn't happen on click
-							open_submenu();
-							// focus first item in submenu
-							submenu_popup_el.querySelector(".menu-item").focus();
-						} else {
-							item_action();
-						}
+				// I'd like to make this just "click", but don't want duplicate events
+				item_el.addEventListener("activate-menu-item", e => {
+					if (item.submenu) {
+						// this isn't part of item_action because it shouldn't happen on click
+						// (...um, because it's redundant with the click event?)
+						open_submenu(true);
+					} else {
+						item_action();
 					}
 				});
 			}
 		});
-
-		return { element: menu_popup_el };
 	}
 
 	let this_click_opened_the_menu = false;
@@ -539,7 +580,7 @@ function MenuBar(menus) {
 
 		menus_el.appendChild(menu_button_el);
 
-		const menu_popup = MenuPopup(menu_items);
+		const menu_popup = new MenuPopup(menu_items);
 		const menu_popup_el = menu_popup.element;
 		document.body?.appendChild(menu_popup_el);
 		submenu_popups_by_menu_item_el.set(menu_button_el, menu_popup);
@@ -571,6 +612,7 @@ function MenuBar(menus) {
 		menu_button_el.classList.add(`${menu_id}-menu-button`);
 		// menu_popup_el.id = `${menu_id}-menu-popup-${Math.random().toString(36).substr(2, 9)}`; // id is created by MenuPopup and changing it breaks the data-semantic-parent relationship
 		menu_popup_el.style.display = "none";
+		menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 		menu_button_el.innerHTML = display_hotkey(menus_key);
 		menu_button_el.tabIndex = -1;
 
@@ -613,7 +655,6 @@ function MenuBar(menus) {
 
 			close_menus();
 
-			menu_button_el.focus();
 			menu_button_el.classList.add("active");
 			menu_button_el.setAttribute("aria-expanded", "true");
 			menu_popup_el.style.display = "";
@@ -631,8 +672,11 @@ function MenuBar(menus) {
 
 			send_info_event();
 
+			menu_popup_el.focus({ preventScroll: true });
+			active_menu_popup = menu_popup;
+
 			if (type === "keydown") {
-				menu_popup_el.querySelector(".menu-item")?.focus();
+				menu_popup_el.querySelector(".menu-item").classList.add("highlight");
 			}
 		};
 		menu_button_el.addEventListener("pointerup", () => {
@@ -650,6 +694,7 @@ function MenuBar(menus) {
 			menu_button_el.classList.remove("active");
 			if (!window.debugKeepMenusOpen) {
 				menu_popup_el.style.display = "none";
+				menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 			}
 			menu_button_el.setAttribute("aria-expanded", "false");
 

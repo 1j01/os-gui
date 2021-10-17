@@ -14,10 +14,15 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Fixed
 - Ability to use `MenuBar` without `$Window.js` (`TypeError: Assignment to constant variable.`)
-- Handle `document.body` not existing if you create a MenuBar before DOMContentLoaded
+- Handle `document.body` not existing if you create a `MenuBar` before `DOMContentLoaded`
 - Compatibility with older jQuery
 - Removed some redundant event listeners
 - More elements are considered tabbable (`object`, `embed`, `video`, `audio`, `iframe`, `[contenteditable]`)
+- Greatly improved performance while hovering menu items! Focus is now only set on the menu popup, not the menu item.
+
+### Changed
+- Menu items that have a submenu open are now highlighted unless another item is hovered at that level.
+- If you hover to open a submenu, and then press right (in LTR layout), it will no longer go to the next top level menu. The submenu is already focused, so you can use up/down to navigate it.
 
 </details>
 
