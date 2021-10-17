@@ -354,8 +354,6 @@ function MenuBar(menus) {
 				label_el.innerHTML = display_hotkey(item.item);
 				shortcut_el.textContent = item.shortcut;
 
-				item_el._menu_item = item;
-
 				menu_popup_el.addEventListener("update", () => {
 					// item_el.disabled = is_disabled(item); // doesn't work, probably because it's a <tr>
 					if (is_disabled(item)) {
