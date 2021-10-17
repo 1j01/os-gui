@@ -77,7 +77,8 @@ function MenuBar(menus) {
 
 	let selecting_menus = false; // state where you can glide between menus without clicking
 
-	let active_menu_index = -1; // index of the top level menu that's most recently open
+	const top_level_menus = [];
+	let top_level_menu_index = -1; // index of the top level menu that's most recently open
 
 	// There can be multiple menu bars instantiated from the same menu definitions,
 	// so this can't be a map of menu item to submenu, it has to be of menu item ELEMENTS to submenu.
@@ -132,7 +133,6 @@ function MenuBar(menus) {
 		}
 	}
 
-	const top_level_menus = [];
 
 	// attached to menu bar and floating popups (which are not descendants of the menu bar)
 	function handleKeyDown(e) {
@@ -140,7 +140,7 @@ function MenuBar(menus) {
 			return;
 		}
 		const active_menu_popup_el = e.target.closest(".menu-popup");
-		const top_level_menu = top_level_menus[active_menu_index];
+		const top_level_menu = top_level_menus[top_level_menu_index];
 		const { menu_button_el, open_top_level_menu } = top_level_menu;
 		// console.log("keydown", e.key, { target: e.target, active_menu_popup_el, top_level_menu });
 		const menu_popup_el = active_menu_popup_el || top_level_menu.menu_popup_el;
@@ -175,7 +175,7 @@ function MenuBar(menus) {
 					// and open a new menu only if a menu was already open
 					const menu_was_open = visible(menu_popup_el);
 					const cycle_dir = ((get_direction() === "ltr") === right) ? 1 : -1;
-					const new_index = (active_menu_index + cycle_dir + top_level_menus.length) % top_level_menus.length;
+					const new_index = (top_level_menu_index + cycle_dir + top_level_menus.length) % top_level_menus.length;
 					const new_top_level_menu = top_level_menus[new_index];
 					const target_button_el = new_top_level_menu.menu_button_el;
 					if (menu_was_open) {
@@ -594,7 +594,7 @@ function MenuBar(menus) {
 			}
 		});
 		menu_button_el.addEventListener("focus", () => {
-			active_menu_index = Object.keys(menus).indexOf(menus_key);
+			top_level_menu_index = Object.keys(menus).indexOf(menus_key);
 		});
 		menu_button_el.addEventListener("pointerdown", e => {
 			open_top_level_menu(e.type);
@@ -624,7 +624,7 @@ function MenuBar(menus) {
 			}
 			// console.log("pointerdown (possibly simulated) — menu_popup_el.style.zIndex", menu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
 			// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
-			active_menu_index = Object.keys(menus).indexOf(menus_key);
+			top_level_menu_index = Object.keys(menus).indexOf(menus_key);
 			menu_popup_el.dispatchEvent(new CustomEvent("update"), {});
 
 			selecting_menus = true;
