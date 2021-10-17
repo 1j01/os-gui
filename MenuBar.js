@@ -103,7 +103,7 @@ function MenuBar(menus) {
 		for (const popup_el of popup_els) {
 			if (!window.debugKeepMenusOpen) {
 				popup_el.style.display = "none";
-				popup_el.querySelectorAll(".menu-item").forEach((el)=> el.classList.remove("highlight"));
+				popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 			}
 		}
 	};
@@ -173,7 +173,7 @@ function MenuBar(menus) {
 					// active_menu_popup.parentMenuPopup.element.focus({ preventScroll: true });
 					parent_item_el.closest(".menu-popup").focus({ preventScroll: true });
 					active_menu_popup_el.style.display = "none";
-					active_menu_popup_el.querySelectorAll(".menu-item").forEach((el)=> el.classList.remove("highlight"));
+					active_menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 					e.preventDefault();
 				} else {
 					// go to next/previous top level menu, wrapping around
@@ -216,7 +216,7 @@ function MenuBar(menus) {
 					if (parent_item_el && parent_item_el !== menu_button_el) {
 						active_menu_popup.parentMenuPopup.element.focus({ preventScroll: true });
 						active_menu_popup_el.style.display = "none";
-						active_menu_popup_el.querySelectorAll(".menu-item").forEach((el)=> el.classList.remove("highlight"));
+						active_menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 					} else {
 						// close_menus takes care of releasing the pressed state of the button as well
 						close_menus();
@@ -309,7 +309,7 @@ function MenuBar(menus) {
 
 		this.element = menu_popup_el;
 		menu_popup_by_el.set(menu_popup_el, this);
-		
+
 		let submenus = [];
 
 		menu_popup_el.addEventListener("keydown", handleKeyDown);
@@ -385,13 +385,13 @@ function MenuBar(menus) {
 					submenu_popup_el = submenu_popup.element;
 					document.body?.appendChild(submenu_popup_el);
 					submenu_popup_el.style.display = "none";
-					submenu_popup_el.querySelectorAll(".menu-item").forEach((el)=> el.classList.remove("highlight"));
+					submenu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 
 					submenu_popups_by_menu_item_el.set(item_el, submenu_popup);
 					parent_item_el_by_popup_el.set(submenu_popup_el, item_el);
 					submenu_popup_el.dataset.semanticParent = menu_popup_el.id; // for $Window to understand the popup belongs to its window
 
-					open_submenu = () => {
+					open_submenu = (highlight_first = true) => {
 						if (submenu_popup_el.style.display !== "none") {
 							return;
 						}
@@ -408,7 +408,9 @@ function MenuBar(menus) {
 						// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
 						submenu_popup_el.dispatchEvent(new CustomEvent("update"), {});
 						// submenu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
-						submenu_popup_el.querySelector(".menu-item").classList.add("highlight");
+						if (highlight_first) {
+							submenu_popup_el.querySelector(".menu-item").classList.add("highlight");
+						}
 
 						const rect = item_el.getBoundingClientRect();
 						let submenu_popup_rect = submenu_popup_el.getBoundingClientRect();
@@ -444,7 +446,7 @@ function MenuBar(menus) {
 
 					function close_submenu() {
 						submenu_popup_el.style.display = "none";
-						submenu_popup_el.querySelectorAll(".menu-item").forEach((el)=> el.classList.remove("highlight"));
+						submenu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 						item_el.setAttribute("aria-expanded", "false");
 						if (submenu_popup_el._submenus) {
 							for (const submenu of submenu_popup_el._submenus) {
@@ -491,7 +493,9 @@ function MenuBar(menus) {
 						// @TODO: don't cancel close timer? in Windows 98 it'll close after a delay even if you hover the parent menu item
 						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
-						open_tid = setTimeout(open_submenu, 501); // @HACK: slightly longer than close timer so it doesn't close immediately
+						open_tid = setTimeout(() => {
+							open_submenu(false);
+						}, 501); // @HACK: slightly longer than close timer so it doesn't close immediately
 					});
 					item_el.addEventListener("pointerleave", () => {
 						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
@@ -520,8 +524,8 @@ function MenuBar(menus) {
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
 					});
 
-					item_el.addEventListener("click", open_submenu);
-					item_el.addEventListener("pointerdown", open_submenu);
+					item_el.addEventListener("click", () => { open_submenu(true); });
+					item_el.addEventListener("pointerdown", () => { open_submenu(true); });
 				}
 
 				const item_action = () => {
@@ -557,7 +561,7 @@ function MenuBar(menus) {
 					if (item.submenu) {
 						// this isn't part of item_action because it shouldn't happen on click
 						// (...um, because it's redundant with the click event?)
-						open_submenu();
+						open_submenu(true);
 					} else {
 						item_action();
 					}
@@ -604,7 +608,7 @@ function MenuBar(menus) {
 		menu_button_el.classList.add(`${menu_id}-menu-button`);
 		// menu_popup_el.id = `${menu_id}-menu-popup-${Math.random().toString(36).substr(2, 9)}`; // id is created by MenuPopup and changing it breaks the data-semantic-parent relationship
 		menu_popup_el.style.display = "none";
-		menu_popup_el.querySelectorAll(".menu-item").forEach((el)=> el.classList.remove("highlight"));
+		menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 		menu_button_el.innerHTML = display_hotkey(menus_key);
 		menu_button_el.tabIndex = -1;
 
@@ -686,7 +690,7 @@ function MenuBar(menus) {
 			menu_button_el.classList.remove("active");
 			if (!window.debugKeepMenusOpen) {
 				menu_popup_el.style.display = "none";
-				menu_popup_el.querySelectorAll(".menu-item").forEach((el)=> el.classList.remove("highlight"));
+				menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 			}
 			menu_button_el.setAttribute("aria-expanded", "false");
 
