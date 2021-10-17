@@ -84,10 +84,10 @@ function MenuBar(menus) {
 	// so this can't be a map of menu item to submenu, it has to be of menu item ELEMENTS to submenu.
 	// (or you know, it could work totally differently, this is just one way obviously)
 	// This is for entering submenus.
-	const submenu_popups_by_menu_item_el = new Map();
+	const submenu_popups_by_menu_item_el = new WeakMap();
 
 	// This is for exiting submenus.
-	const parent_item_el_by_popup_el = new Map();
+	const parent_item_el_by_popup_el = new WeakMap();
 
 	// @TODO: specific to this menu bar (note that popups are not descendants of the menu bar)
 	const any_open_menus = () => [...document.querySelectorAll(".menu-popup")].some(popup_el => visible(popup_el));
