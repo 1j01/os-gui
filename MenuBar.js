@@ -68,7 +68,12 @@ function MenuBar(menus) {
 		return new MenuBar(menus);
 	}
 
-	const menus_el = E("div", { class: "menus", "touch-action": "none" });
+	const menus_el = E("div", {
+		class: "menus",
+		"touch-action": "none",
+		role: "menubar",
+		"aria-label": "Application Menu",
+	});
 
 	// returns writing/layout direction, "ltr" or "rtl"
 	function get_direction() {
@@ -99,11 +104,19 @@ function MenuBar(menus) {
 			menu_button_el.dispatchEvent(new CustomEvent("release"), {});
 		}
 		// Close any rogue floating submenus
+		// @TODO: eventually this code should be removed
+		// it's here pretty much "just in case"
 		const popup_els = document.querySelectorAll(".menu-popup");
 		for (const popup_el of popup_els) {
 			if (!window.debugKeepMenusOpen) {
 				popup_el.style.display = "none";
 				popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
+				popup_el.removeAttribute("aria-activedescendant");
+				const parent_item_el = parent_item_el_by_popup_el.get(popup_el);
+				if (parent_item_el) {
+					parent_item_el.classList.remove("highlight");
+					parent_item_el.setAttribute("aria-expanded", "false");
+				}
 			}
 		}
 	};
@@ -174,6 +187,9 @@ function MenuBar(menus) {
 					parent_item_el.closest(".menu-popup").focus({ preventScroll: true });
 					active_menu_popup_el.style.display = "none";
 					active_menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
+					active_menu_popup_el.removeAttribute("aria-activedescendant");
+					parent_item_el.setAttribute("aria-expanded", "false");
+					// @TODO: simplify with something like active_menu_popup.close()
 					e.preventDefault();
 				} else if (highlighted_item_el || !active_menu_popup) {
 					// go to next/previous top level menu, wrapping around
@@ -204,11 +220,12 @@ function MenuBar(menus) {
 					const item_els = [...menu_popup_el.querySelectorAll(".menu-item")];
 					const from_index = item_els.indexOf(highlighted_item_el);
 					const to_index = (from_index + cycle_dir + item_els.length) % item_els.length;
-					// @TODO: could do this like set_highlight(to_index) and avoid looping to remove class
-					// I suppose I could also do querySelector(".menu-item.highlight"), but I could avoid querySelector entirely the other way
+					// @TODO: could do this like set_highlight(to_index) and avoid querying and looping to remove class
+					// (I could also do querySelector(".menu-item.highlight"), but I could avoid querySelector entirely the other way)
 					const to_item_el = item_els[to_index];
 					active_menu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
 					to_item_el.classList.add("highlight");
+					active_menu_popup_el.setAttribute("aria-activedescendant", to_item_el.id);
 				} else {
 					open_top_level_menu("keydown");
 				}
@@ -221,6 +238,8 @@ function MenuBar(menus) {
 						active_menu_popup.parentMenuPopup.element.focus({ preventScroll: true });
 						active_menu_popup_el.style.display = "none";
 						active_menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
+						active_menu_popup_el.removeAttribute("aria-activedescendant");
+						parent_item_el.setAttribute("aria-expanded", "false");
 					} else {
 						// close_menus takes care of releasing the pressed state of the button as well
 						close_menus();
@@ -292,6 +311,7 @@ function MenuBar(menus) {
 						const menu_item_el = matching_item_els[index];
 						active_menu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
 						menu_item_el.classList.add("highlight");
+						active_menu_popup_el.setAttribute("aria-activedescendant", menu_item_el.id);
 						e.preventDefault();
 					}
 				}
@@ -306,7 +326,12 @@ function MenuBar(menus) {
 		this.parentMenuPopup = parentMenuPopup;
 		this.menuItems = menu_items;
 
-		const menu_popup_el = E("div", { class: "menu-popup", id: `menu-popup-${Math.random().toString(36).substr(2, 9)}`, tabIndex: "-1" });
+		const menu_popup_el = E("div", {
+			class: "menu-popup",
+			id: `menu-popup-${Math.random().toString(36).substr(2, 9)}`,
+			tabIndex: "-1",
+			role: "menu",
+		});
 		menu_popup_el.style.outline = "none";
 		const menu_popup_table_el = E("table", { class: "menu-popup-table" });
 		menu_popup_el.appendChild(menu_popup_table_el);
@@ -321,9 +346,12 @@ function MenuBar(menus) {
 		menu_popup_el.addEventListener("pointerleave", () => {
 			// unhighlight the highlighted item, then if there's a submenu popup, highlight the item for that
 			menu_popup_el.querySelector(".menu-item.highlight")?.classList.remove("highlight");
+			menu_popup_el.removeAttribute("aria-activedescendant");
+			// could use aria-expanded for selecting this
 			for (const submenu of submenus) {
 				if (visible(submenu.submenu_popup_el)) {
 					submenu.item_el.classList.add("highlight");
+					menu_popup_el.setAttribute("aria-activedescendant", submenu.item_el.id);
 					break;
 				}
 			}
@@ -336,11 +364,15 @@ function MenuBar(menus) {
 			if (item === MENU_DIVIDER) {
 				const td_el = E("td", { colspan: 4 });
 				const hr_el = E("hr", { class: "menu-hr" });
+				hr_el.setAttribute("role", "separator"); // is this necessary? and would setting it on row_el be good/bad?
 				td_el.appendChild(hr_el);
 				row_el.appendChild(td_el);
 			} else {
 				const item_el = row_el;
 				item_el.classList.add("menu-item");
+				item_el.id = `menu-item-${Math.random().toString(36).substr(2, 9)}`;
+				item_el.tabIndex = -1; // may be needed for aria-activedescendant in some browsers?
+				item_el.setAttribute("role", item.checkbox ? "menuitemcheckbox" : "menuitem");
 				const checkbox_area_el = E("td", { class: "menu-item-checkbox-area" });
 				const label_el = E("td", { class: "menu-item-label" });
 				const shortcut_el = E("td", { class: "menu-item-shortcut" });
@@ -358,17 +390,22 @@ function MenuBar(menus) {
 					// item_el.disabled = is_disabled(item); // doesn't work, probably because it's a <tr>
 					if (is_disabled(item)) {
 						item_el.setAttribute("disabled", "");
+						item_el.setAttribute("aria-disabled", "true");
 					} else {
 						item_el.removeAttribute("disabled");
+						item_el.removeAttribute("aria-disabled");
 					}
 					if (item.checkbox && item.checkbox.check) {
-						checkbox_area_el.textContent = item.checkbox.check() ? "✓" : "";
+						const checked = item.checkbox.check();
+						checkbox_area_el.textContent = checked ? "✓" : ""; // @TODO: SVG check mark
+						item_el.setAttribute("aria-checked", checked ? "true" : "false");
 					}
 				});
 				item_el.addEventListener("pointerenter", () => {
 					menu_popup_el.dispatchEvent(new CustomEvent("update"), {}); // @TODO: why?
 					menu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
 					item_el.classList.add("highlight");
+					menu_popup_el.setAttribute("aria-activedescendant", item_el.id);
 				});
 
 				if (item.checkbox) {
@@ -387,17 +424,26 @@ function MenuBar(menus) {
 					submenu_popup_el = submenu_popup.element;
 					document.body?.appendChild(submenu_popup_el);
 					submenu_popup_el.style.display = "none";
-					submenu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
+					// submenu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
+
+					item_el.setAttribute("aria-haspopup", "true");
+					item_el.setAttribute("aria-expanded", "false");
+					item_el.setAttribute("aria-controls", submenu_popup_el.id);
 
 					submenu_popups_by_menu_item_el.set(item_el, submenu_popup);
 					parent_item_el_by_popup_el.set(submenu_popup_el, item_el);
 					submenu_popup_el.dataset.semanticParent = menu_popup_el.id; // for $Window to understand the popup belongs to its window
+					menu_popup_el.setAttribute("aria-owns", `${menu_popup_el.getAttribute("aria-owns") || ""} ${submenu_popup_el}`);
+					submenu_popup_el.setAttribute("aria-labelledby", item_el.id);
+
 
 					open_submenu = (highlight_first = true) => {
 						if (submenu_popup_el.style.display !== "none") {
 							return;
 						}
 						close_submenus_at_this_level();
+
+						item_el.setAttribute("aria-expanded", "true");
 
 						submenu_popup_el.style.display = "";
 						submenu_popup_el.style.zIndex = get_new_menu_z_index();
@@ -412,6 +458,9 @@ function MenuBar(menus) {
 						// submenu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
 						if (highlight_first) {
 							submenu_popup_el.querySelector(".menu-item").classList.add("highlight");
+							submenu_popup_el.setAttribute("aria-activedescendant", submenu_popup_el.querySelector(".menu-item").id);
+						} else {
+							submenu_popup_el.removeAttribute("aria-activedescendant");
 						}
 
 						const rect = item_el.getBoundingClientRect();
@@ -449,6 +498,7 @@ function MenuBar(menus) {
 					function close_submenu() {
 						submenu_popup_el.style.display = "none";
 						submenu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
+						submenu_popup_el.removeAttribute("aria-activedescendant");
 						item_el.setAttribute("aria-expanded", "false");
 						if (submenu_popup_el._submenus) {
 							for (const submenu of submenu_popup_el._submenus) {
@@ -574,7 +624,12 @@ function MenuBar(menus) {
 
 	let this_click_opened_the_menu = false;
 	const make_menu_button = (menus_key, menu_items) => {
-		const menu_button_el = E("div", { class: "menu-button", "aria-expanded": "false" });
+		const menu_button_el = E("div", {
+			class: "menu-button",
+			"aria-expanded": "false",
+			"aria-haspopup": "true",
+			role: "menuitem",
+		});
 
 		menus_el.appendChild(menu_button_el);
 
@@ -585,6 +640,9 @@ function MenuBar(menus) {
 		parent_item_el_by_popup_el.set(menu_popup_el, menu_button_el);
 		menu_button_el.id = `menu-button-${menus_key}-${Math.random().toString(36).substr(2, 9)}`;
 		menu_popup_el.dataset.semanticParent = menu_button_el.id; // for $Window to understand the popup belongs to its window
+		menu_button_el.setAttribute("aria-controls", menu_popup_el.id);
+		menu_popup_el.setAttribute("aria-labelledby", menu_button_el.id);
+		menus_el.setAttribute("aria-owns", `${menus_el.getAttribute("aria-owns") || ""} ${menu_popup_el}`);
 
 		const update_position_from_containing_bounds = () => {
 			const rect = menu_button_el.getBoundingClientRect();
@@ -675,6 +733,7 @@ function MenuBar(menus) {
 
 			if (type === "keydown") {
 				menu_popup_el.querySelector(".menu-item").classList.add("highlight");
+				menu_popup_el.setAttribute("aria-activedescendant", menu_popup_el.querySelector(".menu-item").id);
 			}
 		};
 		menu_button_el.addEventListener("pointerup", () => {
@@ -693,8 +752,9 @@ function MenuBar(menus) {
 			if (!window.debugKeepMenusOpen) {
 				menu_popup_el.style.display = "none";
 				menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
+				menu_button_el.setAttribute("aria-expanded", "false");
+				menu_popup_el.removeAttribute("aria-activedescendant");
 			}
-			menu_button_el.setAttribute("aria-expanded", "false");
 
 			menus_el.dispatchEvent(new CustomEvent("default-info", {}));
 		});
