@@ -175,7 +175,7 @@ function MenuBar(menus) {
 					active_menu_popup_el.style.display = "none";
 					active_menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 					e.preventDefault();
-				} else {
+				} else if (highlighted_item_el) {
 					// go to next/previous top level menu, wrapping around
 					// and open a new menu only if a menu was already open
 					const menu_was_open = visible(menu_popup_el);
@@ -190,12 +190,16 @@ function MenuBar(menus) {
 						target_button_el.focus({ preventScroll: true });
 					}
 					e.preventDefault();
-				}
+				} // else:
+				// if there's no highlighted item, the user may be expecting to enter the menu even though it's already open,
+				// so it makes sense to do nothing (as Windows 98 does) and not go to the next/previous menu
+				// (although highlighting the first item might be nicer...)
 				break;
 			case 40: // Down
 			case 38: // Up
 				const down = e.keyCode === 40;
-				if (menu_popup_el && visible(menu_popup_el) && highlighted_item_el) {
+				// if (menu_popup_el && visible(menu_popup_el) && highlighted_item_el) {
+				if (active_menu_popup) {
 					const cycle_dir = down ? 1 : -1;
 					const item_els = [...menu_popup_el.querySelectorAll(".menu-item")];
 					const from_index = item_els.indexOf(highlighted_item_el);
