@@ -175,7 +175,7 @@ function MenuBar(menus) {
 					active_menu_popup_el.style.display = "none";
 					active_menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 					e.preventDefault();
-				} else if (highlighted_item_el) {
+				} else if (highlighted_item_el || !active_menu_popup) {
 					// go to next/previous top level menu, wrapping around
 					// and open a new menu only if a menu was already open
 					const menu_was_open = visible(menu_popup_el);
