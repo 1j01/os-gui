@@ -248,9 +248,11 @@ function MenuBar(menus) {
 				// (at top level)
 				break;
 			case 13: // Enter
-				// Enter is handled elsewhere, except for top level buttons
 				if (menu_button_el === document.activeElement) {
 					open_top_level_menu("keydown");
+					e.preventDefault();
+				} else {
+					highlighted_item_el.dispatchEvent(new CustomEvent("activate-menu-item"), {});
 					e.preventDefault();
 				}
 				break;
@@ -489,7 +491,7 @@ function MenuBar(menus) {
 						// @TODO: don't cancel close timer? in Windows 98 it'll close after a delay even if you hover the parent menu item
 						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
-						open_tid = setTimeout(open_submenu, 501); // @HACK: slightly longer than close timer
+						open_tid = setTimeout(open_submenu, 501); // @HACK: slightly longer than close timer so it doesn't close immediately
 					});
 					item_el.addEventListener("pointerleave", () => {
 						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
@@ -533,6 +535,9 @@ function MenuBar(menus) {
 						item.action();
 					}
 				};
+				// unlike click, this allows gliding to a menu item and releasing to activate it
+				// @TODO: can I support .click() as well? maybe do .click() here if it wouldn't otherwise be handled?
+				// stopImmediatePropagation/preventDefault might help? setTimeout could do the trick in a pinch
 				item_el.addEventListener("pointerup", e => {
 					if (e.pointerType === "mouse" && e.button !== 0) {
 						return;
@@ -547,19 +552,14 @@ function MenuBar(menus) {
 						send_info_event();
 					}
 				});
-
-				item_el.addEventListener("keydown", e => {
-					if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey) {
-						return;
-					}
-					if (e.keyCode === 13) { // Enter
-						e.preventDefault();
-						if (item.submenu) {
-							// this isn't part of item_action because it shouldn't happen on click
-							open_submenu();
-						} else {
-							item_action();
-						}
+				// I'd like to make this just "click", but don't want duplicate events
+				item_el.addEventListener("activate-menu-item", e => {
+					if (item.submenu) {
+						// this isn't part of item_action because it shouldn't happen on click
+						// (...um, because it's redundant with the click event?)
+						open_submenu();
+					} else {
+						item_action();
 					}
 				});
 			}
