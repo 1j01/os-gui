@@ -490,12 +490,12 @@ body > .window-titlebar {
 	text-shadow: 0.8px 0.8px 0px rgb(255, 255, 255);
 	text-shadow: 0.8px 0.8px 0px var(--ButtonHilight);
 }
-.menu-item:focus:not([disabled]),
+.menu-item.highlight:not([disabled]),
 .menu-item.active:not([disabled]) {
 	color: rgb(255, 255, 255);
 	color: var(--HilightText);
 }
-.menu-item:focus,
+.menu-item.highlight,
 .menu-item.active {
 	background: rgb(0, 0, 128);
 	background: var(--Hilight);
