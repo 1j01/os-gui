@@ -373,6 +373,9 @@ function MenuBar(menus) {
 				item_el.id = `menu-item-${Math.random().toString(36).substr(2, 9)}`;
 				item_el.tabIndex = -1; // may be needed for aria-activedescendant in some browsers?
 				item_el.setAttribute("role", item.checkbox ? "menuitemcheckbox" : "menuitem");
+				if (item.description) {
+					item_el.setAttribute("aria-description", item.description);
+				}
 				const checkbox_area_el = E("td", { class: "menu-item-checkbox-area" });
 				const label_el = E("td", { class: "menu-item-label" });
 				const shortcut_el = E("td", { class: "menu-item-shortcut" });
