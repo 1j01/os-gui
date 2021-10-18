@@ -460,6 +460,7 @@ function MenuBar(menus) {
 						submenu_popup_el.dispatchEvent(new CustomEvent("update"), {});
 						// submenu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
 						if (highlight_first) {
+							submenu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
 							submenu_popup_el.querySelector(".menu-item").classList.add("highlight");
 							submenu_popup_el.setAttribute("aria-activedescendant", submenu_popup_el.querySelector(".menu-item").id);
 						} else {
@@ -735,6 +736,7 @@ function MenuBar(menus) {
 			active_menu_popup = menu_popup;
 
 			if (type === "keydown") {
+				menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 				menu_popup_el.querySelector(".menu-item").classList.add("highlight");
 				menu_popup_el.setAttribute("aria-activedescendant", menu_popup_el.querySelector(".menu-item").id);
 			}
