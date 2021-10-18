@@ -79,12 +79,15 @@ function $Window(options) {
 	}
 	if (options.minimizeButton !== false) {
 		$w.$minimize = $(E("button")).addClass("window-minimize-button window-button").appendTo($w.$titlebar);
+		$w.$minimize.attr("aria-label", "Minimize window"); // @TODO: for taskbarless minimized windows, "restore"
 	}
 	if (options.maximizeButton !== false) {
 		$w.$maximize = $(E("button")).addClass("window-maximize-button window-button").appendTo($w.$titlebar);
+		$w.$maximize.attr("aria-label", "Maximize or restore window"); // @TODO: specific text for the state
 	}
 	if (options.closeButton !== false) {
 		$w.$x = $(E("button")).addClass("window-close-button window-button").appendTo($w.$titlebar);
+		$w.$x.attr("aria-label", "Close window");
 	}
 	$w.$content = $(E("div")).addClass("window-content").appendTo($w);
 	$w.$content.attr("tabIndex", "-1");
