@@ -224,20 +224,26 @@
 					<td><code>&lt;button class="default"&gt;Default button&lt;/button&gt;</code></td>
 					<td>
 						The default action that will be triggered if you hit Enter.
-						The default should change to whatever button you tab to, or if you tab to another control in a form, return to the default default button.
-						<!-- This style is also shown when a focused button becomes disabled... and you can even get it <a href="https://i.imgur.com/WICAL98.png">where it shows two buttons with the so-called "default" style</a> (neither disabled!).
-						The real default, <em>OK</em>, will apply, not <em>Apply</em> (when you hit Enter).) -->
+						The default should change to whatever button you tab to, or if you tab to another control in a form, return to the original default button.
+						<!-- This style is also shown when a focused button becomes disabled... and you can even get it
+							<a href="https://i.imgur.com/WICAL98.png">where it shows two buttons with the so-called "default" style</a>
+							(neither disabled!).
+							<em>OK</em>, will apply, not <em>Apply</em> (when you hit Enter).
+							Well, actually OK <em>does</em> apply, so maybe it's an intentional choice...
+						-->
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<button class="toggle selected" id="demo-toggle-button">Toggle button</button>
+						<button class="toggle selected" aria-pressed="true" id="demo-toggle-button">Toggle button</button>
 					</td>
 					<td>
-						<code>&lt;button class="toggle selected"&gt;Toggle button&lt;/button&gt;</code>
+						<code>&lt;button class="toggle selected" aria-pressed="true"&gt;Toggle button&lt;/button&gt;</code>
 					</td>
 					<td>
-						Toggle the <code>selected</code> class when clicked.
+						Add the <code>selected</code> class to show the button as pressed.
+						Include the <code>toggle</code> class to make it a toggle button.
+						You should also provide <code>aria-pressed</code> or <code>aria-expanded</code> attributes as appropriate.
 						Examples: Start button, taskbar buttons, List/Details buttons in file open/save dialogs.
 						Tool buttons in Paint look a bit different.
 					</td>

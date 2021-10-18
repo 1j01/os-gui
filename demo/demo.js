@@ -194,6 +194,7 @@ $(() => {
 	// Handle toggle buttons
 	$("button.toggle").on("click", (e) => {
 		$(e.target).toggleClass("selected");
+		$(e.target).attr("aria-pressed", $(e.target).hasClass("selected"));
 	});
 
 	// Load themes on drag and drop (.theme/.themepack files)

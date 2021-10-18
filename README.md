@@ -96,7 +96,7 @@ Button styles are applied to `button` elements globally.
 To make a toggle button, add the `.toggle` class to the button.
 Make it show as pressed with the `.selected` class. (@TODO: rename this `.pressed`)
 
-You should use the styles together with semantic `aria-pressed`, `aria-haspopup`, or `aria-expanded` attributes as appropriate.
+You should use the styles together with semantic `aria-pressed`, `aria-haspopup`, and/or `aria-expanded` attributes as appropriate.
 
 #### Default Buttons
 You can show button is the default action by adding `.default` to the button.
