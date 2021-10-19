@@ -34,9 +34,9 @@ function index_of_hotkey(text) {
 // function has_hotkey(text) {
 // 	return index_of_hotkey(text) !== -1;
 // }
-// function remove_hotkey(text) {
-// 	return text.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
-// }
+function remove_hotkey(text) {
+	return text.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
+}
 function display_hotkey(text) {
 	// TODO: use a more general term like .hotkey or .accelerator?
 	return text.replace(/([^&]|^)&([^&\s])/, "$1<span class='menu-hotkey'>$2</span>").replace(/&&/g, "&");
@@ -373,6 +373,13 @@ function MenuBar(menus) {
 				item_el.id = `menu-item-${Math.random().toString(36).substr(2, 9)}`;
 				item_el.tabIndex = -1; // may be needed for aria-activedescendant in some browsers?
 				item_el.setAttribute("role", item.checkbox ? "menuitemcheckbox" : "menuitem");
+				// prevent announcing the SHORTCUT (distinct from the hotkey, which would already not be announced unless it's e.g. a translated string like "새로 만들기 (&N)")
+				// remove_hotkey so it doesn't announce an ampersand
+				item_el.setAttribute("aria-label", remove_hotkey(item.label || item.item));
+				// include the shortcut semantically; if you want to display the shortcut differently than aria-keyshortcuts syntax,
+				// provide both ariaKeyShortcuts and shortcutLabel (old API: shortcut)
+				item_el.setAttribute("aria-keyshortcuts", item.ariaKeyShortcuts || item.shortcut || item.shortcutLabel);
+
 				if (item.description) {
 					item_el.setAttribute("aria-description", item.description);
 				}
@@ -386,7 +393,7 @@ function MenuBar(menus) {
 				item_el.appendChild(shortcut_el);
 				item_el.appendChild(submenu_area_el);
 
-				label_el.innerHTML = display_hotkey(item.item);
+				label_el.innerHTML = display_hotkey(item.label || item.item);
 				shortcut_el.textContent = item.shortcut;
 
 				menu_popup_el.addEventListener("update", () => {
