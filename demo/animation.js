@@ -171,3 +171,6 @@ const animate = () => {
 	}
 };
 animate();
+
+// The clip-path only makes sense if the document is not scrolled.
+addEventListener("scroll", () => scrollTo(0, 0));
