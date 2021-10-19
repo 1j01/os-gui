@@ -170,14 +170,34 @@
 			<br>
 			<br>
 			<h2><a id="components"></a>MenuBar</h2>
+			<p>
+				The MenuBar component is an application menu bar. It supports command menu items, checkbox menu items, and submenus.
+				It works with screen readers, and is keyboard/mouse/touch accessible.
+				You can jump to menu items by pressing the first letter of the item's label, or if defined, an accelerator key.
+				Accelerators are defined in the item's label by putting an ampersand (<code>&amp;</code>) before the letter.
+			</p>
 			<div>
 				<div id="menubar-example" style="height: 21px;"></div>
 			</div>
 			<h2>Application Window</h2>
+			<p>
+				Application windows are windows that can be dragged around, closed, minimized, and are usually resizable and maximizable.
+			</p>
+			<p>
+				Windows 98's flying titlebar animation is implemented for maximizing, minimizing, and restoring.
+			</p>
+			<p>
+				Even without defining a taskbar, app windows can be minimized.
+				It works similarly to how it does in Windows 98 if you end the Explorer task.
+			</p>
 			<div>
 				<div id="app-window-example" style="height: 135px;"></div>
 			</div>
 			<h2>Tool Window</h2>
+			<p>
+				Tool windows have a smaller titlebar, and are generally not resizable, maximizable, or minimizable.
+				They share their focus with the application window they're in, at least visually.
+			</p>
 			<p>
 				Tool windows that have no parent window are shown as focused as long as the browser window is focused.
 				This is useful for web applications where the browser window takes the place of the application window.
@@ -194,7 +214,7 @@
 				<div id="tool-window-2-positioner" style="position: absolute; left: 400px; top: 30px;"></div>
 			</div>
 			<h2>Right-To-Left Support</h2>
-			<p>OS-GUI supports right-to-left languages with a flipped layout.</p>
+			<p>OS-GUI supports right-to-left languages with a flipped layout. Keyboard navigation is flipped appropriately (for entering/exiting submenus).</p>
 			<p>You can specify the standard HTML attribute
 				<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir"><code>dir="rtl"</code></a>
 				or CSS property
@@ -281,6 +301,16 @@
 				</tr>
 			</table>
 			<h2>Scrollbars</h2>
+			<p>
+				Scrollbars are automatically styled in webkit-based/blink-based browsers (Chrome/Chromium/Opera/Edge, etc.),
+				but for Firefox you could use <a href="https://kingsora.github.io/OverlayScrollbars/#!overview">OverlayScrollbars</a>
+				or perhaps <a href="https://grsmto.github.io/simplebar/">SimpleBar</a>.
+			</p>
+			<p>
+				The triangle graphics are rendered dynamically based on the theme colors and <code>--scrollbar-size</code> CSS variable.
+				To update the graphics, you need to call <code>applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), element)</code>,
+				but graphics are prerendered at a default size in each theme's CSS file, so you shouldn't have to worry about it.
+			</p>
 			<div id="scrollbar-demos" style="height: 270px;">
 				<div class="scrollbar-demo">
 					<div class="scrollbar-button decrement horizontal" style="display: inline-block;"></div><div class="scrollbar-button increment horizontal" style="display: inline-block;"></div>
