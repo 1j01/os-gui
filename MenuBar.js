@@ -21,7 +21,7 @@ function uid() {
 	// Note: Math.random().toString(36).slice(2) can give empty string
 	return (uid_counter++).toString(36) + Math.random().toString(36).slice(2);
 }
-	
+
 // straight from jQuery; @TODO: do something simpler
 function visible(elem) {
 	return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
@@ -182,7 +182,7 @@ function MenuBar(menus) {
 					(get_direction() === "ltr") === right
 				) {
 					// enter submenu
-					highlighted_item_el.dispatchEvent(new Event("click"));
+					highlighted_item_el.dispatchEvent(new CustomEvent("activate-menu-item"), {});
 					e.preventDefault();
 				} else if (
 					parent_item_el &&
@@ -301,10 +301,7 @@ function MenuBar(menus) {
 					if (matching_item_els.length === 1) {
 						// it's unambiguous, go ahead and activate it
 						const menu_item_el = matching_item_els[0];
-						menu_item_el.dispatchEvent(new Event("pointerenter"));
-						menu_item_el.dispatchEvent(new Event("pointerdown"));
-						menu_item_el.dispatchEvent(new Event("click"));
-						menu_item_el.dispatchEvent(new Event("pointerup"));
+						menu_item_el.dispatchEvent(new CustomEvent("activate-menu-item", {}));
 						e.preventDefault();
 					} else {
 						// cycle the menu items that match the key
@@ -625,8 +622,8 @@ function MenuBar(menus) {
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
 					});
 
-					item_el.addEventListener("click", () => { open_submenu(true); });
-					item_el.addEventListener("pointerdown", () => { open_submenu(true); });
+					item_el.addEventListener("click", () => { open_submenu(false); });
+					item_el.addEventListener("pointerdown", () => { open_submenu(false); });
 				}
 
 				const item_action = () => {
