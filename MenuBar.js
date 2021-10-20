@@ -182,9 +182,7 @@ function MenuBar(menus) {
 					(get_direction() === "ltr") !== right
 				) {
 					// exit submenu
-					// @TODO: debug?
-					// active_menu_popup.parentMenuPopup.element.focus({ preventScroll: true });
-					parent_item_el.closest(".menu-popup").focus({ preventScroll: true });
+					active_menu_popup.parentMenuPopup.element.focus({ preventScroll: true });
 					active_menu_popup_el.style.display = "none";
 					active_menu_popup.highlight(-1);
 					parent_item_el.setAttribute("aria-expanded", "false");
