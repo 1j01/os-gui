@@ -395,6 +395,14 @@ function MenuBar(menus) {
 				hr_el.setAttribute("role", "separator"); // is this necessary? and would setting it on row_el be good/bad?
 				td_el.appendChild(hr_el);
 				row_el.appendChild(td_el);
+				// Favorites menu behavior:
+				// hr_el.addEventListener("click", () => {
+				// 	this.highlight(-1);
+				// });
+				// Normal menu behavior:
+				hr_el.addEventListener("pointerenter", () => {
+					this.highlight(-1);
+				});
 			} else {
 				const item_el = row_el;
 				item_el.classList.add("menu-item");
