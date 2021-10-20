@@ -502,7 +502,7 @@ function MenuBar(menus) {
 							send_info_event(submenu_popup.menuItems[0]);
 						} else {
 							submenu_popup.highlight(-1);
-							send_info_event();
+							// send_info_event(); // no, keep the status bar text!
 						}
 
 						const rect = item_el.getBoundingClientRect();
@@ -765,7 +765,7 @@ function MenuBar(menus) {
 				menu_popup.highlight(0);
 				send_info_event(menu_popup.menuItems[0]);
 			} else {
-				send_info_event();
+				send_info_event(); // @TODO: allow descriptions on top level menus
 			}
 		};
 		menu_button_el.addEventListener("pointerup", () => {
