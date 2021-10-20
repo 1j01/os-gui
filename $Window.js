@@ -234,7 +234,7 @@ function $Window(options) {
 			const is_root = container_el.tagName !== "IFRAME";
 
 			return function handle_focus_in_out(event) {
-				const document = container_el.tagName == "IFRAME" ? container_el.contentDocument : container_el.ownerDocument;
+				// const document = container_el.tagName == "IFRAME" ? container_el.contentDocument : container_el.ownerDocument; // not needed, I think
 
 				// console.log(`handling ${event.type} for container`, container_el);
 				let newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
@@ -251,13 +251,27 @@ function $Window(options) {
 				) {
 					newlyFocused = document.activeElement;
 				}
-				last_focus_by_container.set(container_el, newlyFocused); // overwritten for iframes below
+				if (
+					newlyFocused &&
+					newlyFocused.tagName !== "HTML" &&
+					newlyFocused.tagName !== "BODY" &&
+					newlyFocused !== container_el
+				) {
+					last_focus_by_container.set(container_el, newlyFocused); // overwritten for iframes below
+				}
 
 				if (newlyFocused?.tagName === "IFRAME") {
 					const iframe = newlyFocused;
-					console.log("iframe", iframe, onfocusin_by_container.has(iframe));
+					// console.log("iframe", iframe, onfocusin_by_container.has(iframe));
 					try {
-						last_focus_by_container.set(iframe, iframe.contentDocument.activeElement);
+						if (
+							iframe.contentDocument.activeElement &&
+							iframe.contentDocument.activeElement.tagName !== "HTML" &&
+							iframe.contentDocument.activeElement.tagName !== "BODY" &&
+							iframe.contentDocument.activeElement !== container_el
+						) {
+							last_focus_by_container.set(iframe, iframe.contentDocument.activeElement);
+						}
 						if (!onfocusin_by_container.has(iframe)) {
 							console.log("adding onfocusin/out for iframe");
 							const iframe_update_focus = make_focus_in_out_handler(iframe, false);
@@ -673,7 +687,10 @@ function $Window(options) {
 			$.contains($w.$content[0], document.activeElement) &&
 			!document.activeElement.closest(".menus")
 		) {
+			console.log("old", last_focus_by_container.get($w.$content[0]));
 			last_focus_by_container.set($w.$content[0], document.activeElement);
+			console.log("new", last_focus_by_container.get($w.$content[0]));
+			console.log("last_focus_by_container", last_focus_by_container);
 		}
 	});
 	// $w.on("focusout", ()=> {
