@@ -463,8 +463,11 @@ function MenuBar(menus) {
 					this.highlight(item_index);
 					send_info_event(item);
 				});
-				item_el.addEventListener("pointerleave", () => {
-					if (visible(item_el)) {
+				item_el.addEventListener("pointerleave", (event) => {
+					if (
+						visible(item_el) && // not "left" due to closing
+						event.pointerType !== "touch" // not "left" as in finger lifting off
+					) {
 						send_info_event();
 					}
 				});
