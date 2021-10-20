@@ -480,9 +480,13 @@ body > .window-titlebar {
 	color: rgb(0, 0, 0);
 	color: var(--MenuText);
 }
+.menu-popup td {
+    padding: 0 1px;
+}
 .menu-item {
 	padding: 1px 3px;
 	margin: 2px;
+	height: 17px;
 }
 .menu-item[disabled] {
 	color: rgb(128, 128, 128);
@@ -511,7 +515,9 @@ body > .window-titlebar {
 	border-top: 1px solid var(--ButtonShadow);
 	border-bottom: 1px solid rgb(255, 255, 255);
 	border-bottom: 1px solid var(--ButtonHilight);
-	margin: 0px 2px;
+	margin: 0;
+	margin-top: 3px;
+	margin-bottom: 4px;
 }
 .menu-hotkey {
 	text-decoration: underline;

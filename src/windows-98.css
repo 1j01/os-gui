@@ -303,9 +303,13 @@ body > .window-titlebar {
 	background: var(--Menu);
 	color: var(--MenuText);
 }
+.menu-popup td {
+    padding: 0 1px;
+}
 .menu-item {
 	padding: 1px 3px;
 	margin: 2px;
+	height: 17px;
 }
 .menu-item[disabled] {
 	color: var(--GrayText);
@@ -328,7 +332,9 @@ body > .window-titlebar {
 	border: 0;
 	border-top: 1px solid var(--ButtonShadow);
 	border-bottom: 1px solid var(--ButtonHilight);
-	margin: 0px 2px;
+	margin: 0;
+	margin-top: 3px;
+	margin-bottom: 4px;
 }
 .menu-hotkey {
 	text-decoration: underline;

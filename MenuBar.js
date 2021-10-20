@@ -392,7 +392,9 @@ function MenuBar(menus) {
 			if (item === MENU_DIVIDER) {
 				const td_el = E("td", { colspan: 4 });
 				const hr_el = E("hr", { class: "menu-hr" });
-				hr_el.setAttribute("role", "separator"); // is this necessary? and would setting it on row_el be good/bad?
+				// hr_el.setAttribute("role", "separator"); // this is the implicit ARIA role for <hr>
+				// and setting it on the <tr> might cause problems due to multiple elements with the role
+				// hopefully it's fine that the semantic <hr> is nested?
 				td_el.appendChild(hr_el);
 				row_el.appendChild(td_el);
 				// Favorites menu behavior:
