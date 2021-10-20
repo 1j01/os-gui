@@ -26,6 +26,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - If you hover to open a submenu, and then press right (in LTR layout, or left in RTL),
   it will no longer go to the next top level menu. The submenu is already focused, so you can use up/down to navigate it.
 - SVG is now used for checkbox menu items, instead of text.
+- SVG for submenu arrow is now more accurate to Windows 98.
 
 ### Added
 - Menu bars are now screen-reader-friendly!

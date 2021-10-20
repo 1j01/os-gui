@@ -490,7 +490,13 @@ function MenuBar(menus) {
 				let open_submenu, submenu_popup_el;
 				if (item.submenu) {
 					item_el.classList.add("has-submenu");
-					submenu_area_el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="11" viewBox="0 0 10 11" style="fill:currentColor;display:inline-block;vertical-align:middle"><path d="M7.5 4.33L0 8.66L0 0z"/></svg>';
+					submenu_area_el.innerHTML = `
+						<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"
+							style="fill:currentColor;display:inline-block;vertical-align:middle"
+						>
+							<path d="m6 4 4 4-4 4z"/>
+						</svg>
+					`;
 					menu_popup_el.addEventListener("update", () => {
 						submenu_area_el.querySelector("svg").style.transform = get_direction() === "rtl" ? "scaleX(-1)" : "";
 					});
