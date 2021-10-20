@@ -186,8 +186,7 @@ function MenuBar(menus) {
 					// active_menu_popup.parentMenuPopup.element.focus({ preventScroll: true });
 					parent_item_el.closest(".menu-popup").focus({ preventScroll: true });
 					active_menu_popup_el.style.display = "none";
-					active_menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
-					active_menu_popup_el.removeAttribute("aria-activedescendant");
+					active_menu_popup.highlight(-1);
 					parent_item_el.setAttribute("aria-expanded", "false");
 					// @TODO: simplify with something like active_menu_popup.close()
 					e.preventDefault();
@@ -220,12 +219,9 @@ function MenuBar(menus) {
 					const item_els = [...menu_popup_el.querySelectorAll(".menu-item")];
 					const from_index = item_els.indexOf(highlighted_item_el);
 					const to_index = (from_index + cycle_dir + item_els.length) % item_els.length;
-					// @TODO: could do this like set_highlight(to_index) and avoid querying and looping to remove class
-					// (I could also do querySelector(".menu-item.highlight"), but I could avoid querySelector entirely the other way)
 					const to_item_el = item_els[to_index];
-					active_menu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
-					to_item_el.classList.add("highlight");
-					active_menu_popup_el.setAttribute("aria-activedescendant", to_item_el.id);
+					// active_menu_popup.highlight(to_index); // wouldn't work because it doesn't include separators
+					active_menu_popup.highlight(to_item_el);
 				} else {
 					open_top_level_menu("keydown");
 				}
@@ -237,8 +233,7 @@ function MenuBar(menus) {
 					if (parent_item_el && parent_item_el !== menu_button_el) {
 						active_menu_popup.parentMenuPopup.element.focus({ preventScroll: true });
 						active_menu_popup_el.style.display = "none";
-						active_menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
-						active_menu_popup_el.removeAttribute("aria-activedescendant");
+						active_menu_popup.highlight(-1);
 						parent_item_el.setAttribute("aria-expanded", "false");
 					} else {
 						// close_menus takes care of releasing the pressed state of the button as well
@@ -309,9 +304,8 @@ function MenuBar(menus) {
 							index = (index + 1) % matching_item_els.length;
 						}
 						const menu_item_el = matching_item_els[index];
-						active_menu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
-						menu_item_el.classList.add("highlight");
-						active_menu_popup_el.setAttribute("aria-activedescendant", menu_item_el.id);
+						// active_menu_popup.highlight(index); // would very much not work
+						active_menu_popup.highlight(menu_item_el);
 						e.preventDefault();
 					}
 				}
@@ -325,6 +319,7 @@ function MenuBar(menus) {
 	function MenuPopup(menu_items, { parentMenuPopup } = {}) {
 		this.parentMenuPopup = parentMenuPopup;
 		this.menuItems = menu_items;
+		this.itemElements = [];
 
 		const menu_popup_el = E("div", {
 			class: "menu-popup",
@@ -344,19 +339,36 @@ function MenuBar(menus) {
 		menu_popup_el.addEventListener("keydown", handleKeyDown);
 
 		menu_popup_el.addEventListener("pointerleave", () => {
-			// unhighlight the highlighted item, then if there's a submenu popup, highlight the item for that
-			menu_popup_el.querySelector(".menu-item.highlight")?.classList.remove("highlight");
-			menu_popup_el.removeAttribute("aria-activedescendant");
-			// could use aria-expanded for selecting this
+			// if there's a submenu popup, highlight the item for that, otherwise nothing
+
+			// could use aria-expanded for selecting this, alternatively
 			for (const submenu of submenus) {
 				if (visible(submenu.submenu_popup_el)) {
-					submenu.item_el.classList.add("highlight");
-					menu_popup_el.setAttribute("aria-activedescendant", submenu.item_el.id);
-					break;
+					this.highlight(submenu.item_el);
+					return;
 				}
 			}
+			this.highlight(-1);
 		});
 
+		let last_item_el;
+		this.highlight = (index_or_element) => { // index includes separators
+			let item_el = index_or_element;
+			if (typeof index_or_element === "number") {
+				item_el = this.itemElements[index_or_element];
+			}
+			if (last_item_el && last_item_el !== item_el) {
+				last_item_el.classList.remove("highlight");
+			}
+			if (item_el) {
+				item_el.classList.add("highlight");
+				menu_popup_el.setAttribute("aria-activedescendant", item_el.id);
+				last_item_el = item_el;
+			} else {
+				menu_popup_el.removeAttribute("aria-activedescendant");
+				last_item_el = null;
+			}
+		};
 
 		if (menu_items.length === 0) {
 			menu_items = [{
@@ -365,8 +377,9 @@ function MenuBar(menus) {
 			}];
 		}
 
-		menu_items.forEach(item => {
+		menu_items.forEach((item, item_index) => {
 			const row_el = E("tr", { class: "menu-row" });
+			this.itemElements.push(row_el);
 			menu_popup_table_el.appendChild(row_el);
 			if (item === MENU_DIVIDER) {
 				const td_el = E("td", { colspan: 4 });
@@ -420,9 +433,7 @@ function MenuBar(menus) {
 				});
 				item_el.addEventListener("pointerenter", () => {
 					menu_popup_el.dispatchEvent(new CustomEvent("update"), {}); // @TODO: why?
-					menu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
-					item_el.classList.add("highlight");
-					menu_popup_el.setAttribute("aria-activedescendant", item_el.id);
+					this.highlight(item_index);
 				});
 
 				if (item.checkbox) {
@@ -441,7 +452,6 @@ function MenuBar(menus) {
 					submenu_popup_el = submenu_popup.element;
 					document.body?.appendChild(submenu_popup_el);
 					submenu_popup_el.style.display = "none";
-					// submenu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 
 					item_el.setAttribute("aria-haspopup", "true");
 					item_el.setAttribute("aria-expanded", "false");
@@ -472,13 +482,10 @@ function MenuBar(menus) {
 						// console.log("open_submenu — submenu_popup_el.style.zIndex", submenu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
 						// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
 						submenu_popup_el.dispatchEvent(new CustomEvent("update"), {});
-						// submenu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
 						if (highlight_first) {
-							submenu_popup_el.querySelectorAll(".menu-item").forEach(el => el.classList.remove("highlight"));
-							submenu_popup_el.querySelector(".menu-item").classList.add("highlight");
-							submenu_popup_el.setAttribute("aria-activedescendant", submenu_popup_el.querySelector(".menu-item").id);
+							submenu_popup.highlight(0);
 						} else {
-							submenu_popup_el.removeAttribute("aria-activedescendant");
+							submenu_popup.highlight(-1);
 						}
 
 						const rect = item_el.getBoundingClientRect();
@@ -515,8 +522,7 @@ function MenuBar(menus) {
 
 					function close_submenu() {
 						submenu_popup_el.style.display = "none";
-						submenu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
-						submenu_popup_el.removeAttribute("aria-activedescendant");
+						submenu_popup.highlight(-1);
 						item_el.setAttribute("aria-expanded", "false");
 						if (submenu_popup_el._submenus) {
 							for (const submenu of submenu_popup_el._submenus) {
@@ -686,7 +692,6 @@ function MenuBar(menus) {
 		menu_button_el.classList.add(`${menu_id}-menu-button`);
 		// menu_popup_el.id = `${menu_id}-menu-popup-${Math.random().toString(36).substr(2, 9)}`; // id is created by MenuPopup and changing it breaks the data-semantic-parent relationship
 		menu_popup_el.style.display = "none";
-		menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
 		menu_button_el.innerHTML = display_hotkey(menus_key);
 		menu_button_el.tabIndex = -1;
 
@@ -750,9 +755,7 @@ function MenuBar(menus) {
 			active_menu_popup = menu_popup;
 
 			if (type === "keydown") {
-				menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
-				menu_popup_el.querySelector(".menu-item").classList.add("highlight");
-				menu_popup_el.setAttribute("aria-activedescendant", menu_popup_el.querySelector(".menu-item").id);
+				menu_popup.highlight(0);
 			}
 		};
 		menu_button_el.addEventListener("pointerup", () => {
@@ -770,9 +773,8 @@ function MenuBar(menus) {
 			menu_button_el.classList.remove("active");
 			if (!window.debugKeepMenusOpen) {
 				menu_popup_el.style.display = "none";
-				menu_popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
+				menu_popup.highlight(-1);
 				menu_button_el.setAttribute("aria-expanded", "false");
-				menu_popup_el.removeAttribute("aria-activedescendant");
 			}
 
 			menus_el.dispatchEvent(new CustomEvent("default-info", {}));
