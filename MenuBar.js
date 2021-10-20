@@ -431,9 +431,21 @@ function MenuBar(menus) {
 						item_el.setAttribute("aria-checked", checked ? "true" : "false");
 					}
 				});
+				// You may ask, why not call `send_info_event` in `highlight`?
+				// Consider the case where you hover to open a menu, and it sets highlight to none,
+				// it shouldn't reset the status bar. It needs to be more based on the pointer and keyboard interactions directly.
+				// *Maybe* it could be a parameter (to `highlight`) if that's really helpful, but it's probably not.
+				// *Maybe* it could look at more of the overall state within `highlight`,
+				// but could it distinguish hovering an outer vs an inner item if two are highlighted?
 				item_el.addEventListener("pointerenter", () => {
 					menu_popup_el.dispatchEvent(new CustomEvent("update"), {}); // @TODO: why?
 					this.highlight(item_index);
+					send_info_event(item);
+				});
+				item_el.addEventListener("pointerleave", () => {
+					if (visible(item_el)) {
+						send_info_event();
+					}
 				});
 
 				if (item.checkbox) {
@@ -623,14 +635,6 @@ function MenuBar(menus) {
 						return;
 					}
 					item_action();
-				});
-				item_el.addEventListener("pointerenter", () => {
-					send_info_event(item);
-				});
-				item_el.addEventListener("pointerleave", () => {
-					if (visible(item_el)) {
-						send_info_event();
-					}
 				});
 				// I'd like to make this just "click", but don't want duplicate events
 				item_el.addEventListener("activate-menu-item", e => {
