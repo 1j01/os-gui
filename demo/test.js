@@ -62,8 +62,14 @@ const menus = {
 			}))
 		},
 		{
+			item: "&No Items",
+			submenu: [],
+		},
+		{
 			item: "&Many Submenus",
-			submenu: new Array(100).fill(0).map((_, i) => ({
+			// this can get very slow to load with a lot of submenus, because it creates the DOM structure for the entire thing
+			// so I've limited it for now, maybe later we can make it render as needed, perhaps optionally; I'm not sure of the implications on accessibility
+			submenu: new Array(3).fill(0).map((_, i) => ({
 				item: `Submenu ${i}`,
 				submenu: [
 					{

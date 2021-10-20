@@ -358,6 +358,13 @@ function MenuBar(menus) {
 		});
 
 
+		if (menu_items.length === 0) {
+			menu_items = [{
+				label: "(Empty)",
+				enabled: false,
+			}];
+		}
+
 		menu_items.forEach(item => {
 			const row_el = E("tr", { class: "menu-row" });
 			menu_popup_table_el.appendChild(row_el);
