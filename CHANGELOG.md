@@ -25,6 +25,9 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Menu items that have a submenu open are now highlighted unless another item is hovered at that level.
 - If you hover to open a submenu, and then press right (in LTR layout), it will no longer go to the next top level menu. The submenu is already focused, so you can use up/down to navigate it.
 
+### Added
+- `info` events (for status bar updates) are now given when using the arrow keys to navigate.
+
 </details>
 
 ## [0.4.0] - 2021-10-15
