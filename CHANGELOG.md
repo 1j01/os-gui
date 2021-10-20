@@ -19,11 +19,13 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Removed some redundant event listeners
 - More elements are considered tabbable (`object`, `embed`, `video`, `audio`, `iframe`, `[contenteditable]`)
 - Greatly improved performance while hovering menu items! Focus is now only set on the menu popup, not the menu item.
+- Menu item height no longer changes based on checkbox state
 
 ### Changed
 - Menu items that have a submenu open are now highlighted unless another item is hovered at that level.
 - If you hover to open a submenu, and then press right (in LTR layout, or left in RTL),
   it will no longer go to the next top level menu. The submenu is already focused, so you can use up/down to navigate it.
+- SVG is now used for checkbox menu items, instead of text.
 
 ### Added
 - Menu bars are now screen-reader-friendly!

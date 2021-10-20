@@ -443,7 +443,10 @@ function MenuBar(menus) {
 					}
 					if (item.checkbox && item.checkbox.check) {
 						const checked = item.checkbox.check();
-						checkbox_area_el.textContent = checked ? "✓" : ""; // @TODO: SVG check mark
+						// @TODO: use CSS for checkmark icon so it can be styled per theme
+						// checkbox_area_el.classList.toggle("checked", checked);
+						// use visibility rather than display so it doesn't affect item height
+						checkbox_area_el.querySelector("svg").style.visibility = checked ? "visible" : "hidden";
 						item_el.setAttribute("aria-checked", checked ? "true" : "false");
 					}
 				});
@@ -465,8 +468,24 @@ function MenuBar(menus) {
 				});
 
 				if (item.checkbox) {
-					checkbox_area_el.textContent = "✓";
+					checkbox_area_el.innerHTML = `
+						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
+							style="fill:currentColor;display:inline-block;vertical-align:middle"
+						>
+							<path d="M5 7v3l2 2 5-5V4L7 9Z"/>
+						</svg>
+					`;
 				}
+				// @TODO: radio menu item support
+				// if (item.radio) {
+				// 	checkbox_area_el.innerHTML = `
+				// 		<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
+				// 			style="fill:currentColor;display:inline-block;vertical-align:middle"
+				// 		>
+				// 			<circle cx="8" cy="8" r="3"/>
+				// 		</svg>
+				// 	`;
+				// }
 
 				let open_submenu, submenu_popup_el;
 				if (item.submenu) {
