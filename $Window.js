@@ -854,6 +854,8 @@ function $Window(options) {
 				resize_pointer_y = e.clientY;
 				resize_pointer_id = e.pointerId;
 
+				$handle[0].setPointerCapture(resize_pointer_id); // keeps cursor consistent when mouse moves over other elements
+
 				// handle_pointermove(e); // was useful for checking that the offset is correct (should not do anything, if it's correct!)
 			});
 			function handle_pointermove(e) {
