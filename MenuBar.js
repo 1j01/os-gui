@@ -14,6 +14,14 @@ function E(nodeName, attrs) {
 	return el;
 }
 
+let uid_counter = 0;
+function uid() {
+	// make id from counter (guaranteeing page-local uniqueness)
+	// and random base 36 number (making it look random, so there's no temptation to use it as a sequence)
+	// Note: Math.random().toString(36).slice(2) can give empty string
+	return (uid_counter++).toString(36) + Math.random().toString(36).slice(2);
+}
+	
 // straight from jQuery; @TODO: do something simpler
 function visible(elem) {
 	return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
@@ -326,7 +334,7 @@ function MenuBar(menus) {
 
 		const menu_popup_el = E("div", {
 			class: "menu-popup",
-			id: `menu-popup-${Math.random().toString(36).substr(2, 9)}`,
+			id: `menu-popup-${uid()}`,
 			tabIndex: "-1",
 			role: "menu",
 		});
@@ -393,7 +401,7 @@ function MenuBar(menus) {
 			} else {
 				const item_el = row_el;
 				item_el.classList.add("menu-item");
-				item_el.id = `menu-item-${Math.random().toString(36).substr(2, 9)}`;
+				item_el.id = `menu-item-${uid()}`;
 				item_el.tabIndex = -1; // may be needed for aria-activedescendant in some browsers?
 				item_el.setAttribute("role", item.checkbox ? "menuitemcheckbox" : "menuitem");
 				// prevent announcing the SHORTCUT (distinct from the hotkey, which would already not be announced unless it's e.g. a translated string like "새로 만들기 (&N)")
@@ -671,7 +679,7 @@ function MenuBar(menus) {
 		document.body?.appendChild(menu_popup_el);
 		submenu_popups_by_menu_item_el.set(menu_button_el, menu_popup);
 		parent_item_el_by_popup_el.set(menu_popup_el, menu_button_el);
-		menu_button_el.id = `menu-button-${menus_key}-${Math.random().toString(36).substr(2, 9)}`;
+		menu_button_el.id = `menu-button-${menus_key}-${uid()}`;
 		menu_popup_el.dataset.semanticParent = menu_button_el.id; // for $Window to understand the popup belongs to its window
 		menu_button_el.setAttribute("aria-controls", menu_popup_el.id);
 		menu_popup_el.setAttribute("aria-labelledby", menu_button_el.id);
@@ -699,7 +707,7 @@ function MenuBar(menus) {
 
 		const menu_id = menus_key.replace("&", "").replace(/ /g, "-").toLowerCase();
 		menu_button_el.classList.add(`${menu_id}-menu-button`);
-		// menu_popup_el.id = `${menu_id}-menu-popup-${Math.random().toString(36).substr(2, 9)}`; // id is created by MenuPopup and changing it breaks the data-semantic-parent relationship
+		// menu_popup_el.id = `${menu_id}-menu-popup-${uid()}`; // id is created by MenuPopup and changing it breaks the data-semantic-parent relationship
 		menu_popup_el.style.display = "none";
 		menu_button_el.innerHTML = display_hotkey(menus_key);
 		menu_button_el.tabIndex = -1;
