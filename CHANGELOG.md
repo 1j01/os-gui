@@ -21,12 +21,14 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Greatly improved performance while hovering menu items! Focus is now only set on the menu popup, not the menu item.
 
 ### Changed
-- Menu bars are now screen-reader-friendly
 - Menu items that have a submenu open are now highlighted unless another item is hovered at that level.
-- If you hover to open a submenu, and then press right (in LTR layout), it will no longer go to the next top level menu. The submenu is already focused, so you can use up/down to navigate it.
+- If you hover to open a submenu, and then press right (in LTR layout, or left in RTL),
+  it will no longer go to the next top level menu. The submenu is already focused, so you can use up/down to navigate it.
 
 ### Added
-- `info` events (for status bar updates) are now given when using the arrow keys to navigate.
+- Menu bars are now screen-reader-friendly!
+- `info` events (for status bar updates) are now sent when using the arrow keys to navigate.
+- If a submenu is empty, it is shown with "(Empty)", grayed out.
 
 </details>
 
