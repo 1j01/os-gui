@@ -229,7 +229,10 @@ function $Window(options) {
 		window.addEventListener("focusin", make_focus_in_out_handler($w.$content[0], true));
 		window.addEventListener("focusout", make_focus_in_out_handler($w.$content[0], true));
 		function make_focus_in_out_handler(container_el) {
-			const is_root = container_el.ownerDocument === document;
+			// const is_root = container_el.ownerDocument === document; // WRONG!
+			// document is actually the iframe's document when the listener is inside the iframe
+			const is_root = container_el.tagName !== "IFRAME";
+
 			return function handle_focus_in_out(event) {
 				const document = container_el.tagName == "IFRAME" ? container_el.contentDocument : container_el.ownerDocument;
 
