@@ -15,16 +15,26 @@
 		// if (e.target === last_cursor_el && !auto_cursor) {
 		// 	return;
 		// }
-		if (last_cursor_el) {
+		if (last_cursor_el && last_cursor_el !== e.target) {
 			last_cursor_el.style.cursor = original_cursor;
 		}
 		last_cursor_el = e.target;
 		original_cursor = e.target.style.cursor; // not computed style, so it resets naturally
 		const computed_style = getComputedStyle(e.target);
-		let cursor = computed_style.cursor;
+		// Note: computed styles are live, not snapshot-like
+		const computed_cursor = computed_style.cursor;
+		let cursor = computed_cursor;
 		// console.log(cursor);
 
+
+		if (cursor.match(/var\(--cursor-/)) {
+			console.log("cursor is already themed");
+			return;
+		}
+
+		console.log("cursor", cursor, `cursor.startsWith("url")`, cursor.startsWith("url"));
 		if (cursor.startsWith("url")) {
+			console.log("cursor is a URL, ignoring");
 			return;
 		}
 		
@@ -77,15 +87,21 @@
 			// console.log("auto ->", cursor);
 		}
 
-		// @TODO: why is CSS variable not working?
+		// @TODO: why is CSS variable for cursor, and fallback cursor value not working?
 		// cursor = `var(--cursor-${cursor}, ${cursor}), ${cursor}`;
+		// cursor = `var(--cursor-${cursor}, ${cursor})`;
+		// cursor = `var(--cursor-${cursor})`;
 		const var_val = computed_style.getPropertyValue(`--cursor-${cursor}`);
 		if (var_val) {
 			// cursor = var_val;
 			cursor = `${var_val}, ${cursor}`;
 		}
-		e.target.style.cursor = cursor;
-		// console.log(cursor);
+		if (e.target.style.cursor !== cursor) {
+			console.log("changing style.cursor from", e.target.style.cursor, "to", cursor);
+			e.target.style.cursor = cursor;
+			console.log("computed from", computed_cursor/*, "->", cursor*/);
+			console.log("computed to", computed_style.cursor);
+		}
 	};
 
 	function enableCursorTheming() {
