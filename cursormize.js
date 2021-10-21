@@ -77,7 +77,15 @@
 			// console.log("auto ->", cursor);
 		}
 
-		cursor = `var(--cursor-${cursor}), ${cursor}`;
+		// @TODO: why is CSS variable not working?
+		// cursor = `var(--cursor-${cursor}, ${cursor}), ${cursor}`;
+		const var_val = computed_style.getPropertyValue(`--cursor-${cursor}`);
+		if (var_val) {
+			// cursor = var_val;
+			cursor = `${var_val}, ${cursor}`;
+		}
+		e.target.style.cursor = cursor;
+		// console.log(cursor);
 	};
 
 	function enableCursorTheming() {

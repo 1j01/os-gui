@@ -235,4 +235,8 @@ $(() => {
 	$(".scrollbar-demo").each((index, element) => {
 		applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), element);
 	});
+
+	// Enable cursor theming
+	console.log(cursormize);
+	cursormize.enableCursorTheming();
 });
