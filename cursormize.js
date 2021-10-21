@@ -87,15 +87,14 @@
 			// console.log("auto ->", cursor);
 		}
 
-		// @TODO: why is CSS variable for cursor, and fallback cursor value not working?
-		// cursor = `var(--cursor-${cursor}, ${cursor}), ${cursor}`;
+		cursor = `var(--cursor-${cursor}, ${cursor}), ${cursor}`;
 		// cursor = `var(--cursor-${cursor}, ${cursor})`;
 		// cursor = `var(--cursor-${cursor})`;
-		const var_val = computed_style.getPropertyValue(`--cursor-${cursor}`);
-		if (var_val) {
-			// cursor = var_val;
-			cursor = `${var_val}, ${cursor}`;
-		}
+		// const var_val = computed_style.getPropertyValue(`--cursor-${cursor}`);
+		// if (var_val) {
+		// 	// cursor = var_val;
+		// 	cursor = `${var_val}, ${cursor}`;
+		// }
 		if (e.target.style.cursor !== cursor) {
 			console.log("changing style.cursor from", e.target.style.cursor, "to", cursor);
 			e.target.style.cursor = cursor;
