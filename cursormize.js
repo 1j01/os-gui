@@ -1,11 +1,12 @@
-
-function enableCursorTheming() {
+((exports) => {
+	// TODO: also test/handle scroll event, elements being removed, pointer capture, etc.
+	
 	let last_cursor_el = null;
 	let original_cursor = null;
 	let debug_rect_els = [];
 	let debug = false;
-	// TODO: also handle scroll, elements being removed, pointer capture, etc.
-	addEventListener("mousemove", (e) => {
+
+	const onMouseMove = (e) => {
 		for (const debug_rect_el of debug_rect_els) {
 			debug_rect_el.remove();
 		}
@@ -77,5 +78,25 @@ function enableCursorTheming() {
 		}
 
 		cursor = `var(--cursor-${cursor}), ${cursor}`;
-	});
-};
+	};
+
+	function enableCursorTheming() {
+		addEventListener("mousemove", onMouseMove);
+	}
+	function disableCursorTheming() {
+		removeEventListener("mousemove", onMouseMove);
+		if (last_cursor_el) {
+			last_cursor_el.style.cursor = original_cursor;
+		}
+		last_cursor_el = null;
+		original_cursor = null;
+		for (const debug_rect_el of debug_rect_els) {
+			debug_rect_el.remove();
+		}
+		debug_rect_els.length = 0;
+	}
+
+	exports.enableCursorTheming = enableCursorTheming;
+	exports.disableCursorTheming = disableCursorTheming;
+
+})(window.cursormize = {});
