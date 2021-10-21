@@ -1,6 +1,25 @@
 
 @import url("windows-default.css");
 
+:root {
+	--cursor-default: url("./cursors/arrow_m.cur"); /* , default */
+	cursorult: url("./cursors/arrow_m.cur");
+	--cursor-pointer: url("./cursors/hand.cur"); /* , pointer */
+	cursorter: url("./cursors/hand.cur");
+	--cursor-move: url("./cursors/move_m.cur"); /* , move */
+	cursor: url("./cursors/move_m.cur");
+	--cursor-progress: url("./cursors/wait_m.cur"); /* , progress */
+	cursorress: url("./cursors/wait_m.cur");
+	--cursor-wait: url("./cursors/busy_m.cur"); /* , wait */
+	cursor: url("./cursors/busy_m.cur");
+	--cursor-text: url("./cursors/beam_m.cur"); /* , text */
+	cursor: url("./cursors/beam_m.cur");
+	/* Testing: */
+	/* --cursor-default: move;
+	--cursor-pointer: wait;
+	--cursor-text: pointer; */
+}
+
 %checkerboard {
 	background: var(--checker) repeat;
 	image-rendering: pixelated;
