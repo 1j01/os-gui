@@ -45,6 +45,19 @@
 	--WindowText: rgb(0, 0, 0);
 }
 
+:root {
+	--cursor-default: url("../src/cursors/arrow_m.cur"); /* , default */
+	--cursor-pointer: url("../src/cursors/hand.cur"); /* , pointer */
+	--cursor-move: url("../src/cursors/move_m.cur"); /* , move */
+	--cursor-progress: url("../src/cursors/wait_m.cur"); /* , progress */
+	--cursor-wait: url("../src/cursors/busy_m.cur"); /* , wait */
+	--cursor-text: url("../src/cursors/beam_m.cur"); /* , text */
+	/* Testing: */
+	/* --cursor-default: move;
+	--cursor-pointer: wait;
+	--cursor-text: pointer; */
+}
+
 .inset-deep {
 	border-style: solid;
 	border-width: 1px;
