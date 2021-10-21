@@ -18,14 +18,16 @@
 		if (last_cursor_el && last_cursor_el !== e.target) {
 			last_cursor_el.style.cursor = original_cursor;
 		}
-		last_cursor_el = e.target;
-		original_cursor = e.target.style.cursor; // not computed style, so it resets naturally
+		if (last_cursor_el !== e.target) {
+			last_cursor_el = e.target;
+			original_cursor = e.target.style.cursor; // not computed style, so it can be reset properly
+		}
+		last_cursor_el.style.cursor = original_cursor;
 		const computed_style = getComputedStyle(e.target);
 		// Note: computed styles are live, not snapshot-like
 		const computed_cursor = computed_style.cursor;
 		let cursor = computed_cursor;
 		// console.log(cursor);
-
 
 		if (cursor.match(/var\(--cursor-/)) {
 			console.log("cursor is already themed");
