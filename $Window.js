@@ -1,8 +1,22 @@
 ((exports) => {
 
 // TODO: E\("([a-z]+)"\) -> "<$1>" or get rid of jQuery as a dependency
-function E(t) {
-	return document.createElement(t);
+function E(tagName) {
+	return document.createElement(tagName);
+}
+
+function element_to_string(element) {
+	// returns a CSS-selector-like string for the given element
+	// if (element instanceof Element) { // doesn't work with different window.Element from iframes
+	if (element && "tagName" in element) {
+		return element.tagName.toLowerCase() +
+			(element.id ? "#" + element.id : "") +
+			(element.className ? "." + element.className.split(" ").join(".") : "");
+	} else if (element) {
+		return element.constructor.name;
+	} else {
+		return `${element}`;
+	}
 }
 
 function find_tabstops(container_el) {
@@ -226,7 +240,7 @@ function $Window(options) {
 		// global focusout is needed, to continue showing as focused while child windows or menus are focused
 		// also for iframes, where we don't get focusin
 		// global focusin is needed, to show as focused when a child window becomes focused
-		console.log("adding global focusin/focusout/blur for window", $w[0].id);
+		// console.log("adding global focusin/focusout/blur for window", $w[0].id);
 		window.addEventListener("focusin", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 		window.addEventListener("focusout", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 		window.addEventListener("blur", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
@@ -244,7 +258,7 @@ function $Window(options) {
 					newlyFocused = null; // only handle iframe
 				}
 
-				console.log(`newlyFocused is`, newlyFocused?.tagName ?? newlyFocused ? newlyFocused.constructor.name : newlyFocused, `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
+				console.log(`newlyFocused is (preliminarily)`, element_to_string(newlyFocused), `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
 
 				// Iframes have weird behavior with focusin/focusout, so we need to check for iframes.
 				if (
@@ -254,7 +268,7 @@ function $Window(options) {
 					!newlyFocused // doesn't exist for security reasons in this case
 				) {
 					newlyFocused = document.activeElement;
-					console.log(`newlyFocused is now`, newlyFocused?.tagName ?? newlyFocused ? newlyFocused.constructor.name : newlyFocused);
+					console.log(`newlyFocused is now considered to be`, element_to_string(newlyFocused));
 				}
 				if (!newlyFocused || !dom_container_el.contains(newlyFocused)) {
 					if (is_root) {
@@ -581,7 +595,7 @@ function $Window(options) {
 		descendant_rect_el.setAttribute("y", descendant_rect.top);
 		descendant_rect_el.setAttribute("width", descendant_rect.width);
 		descendant_rect_el.setAttribute("height", descendant_rect.height);
-		descendant_rect_el.setAttribute("stroke", "red");
+		descendant_rect_el.setAttribute("stroke", "#f44");
 		descendant_rect_el.setAttribute("stroke-width", "2");
 		descendant_rect_el.setAttribute("fill", "none");
 		container_rect_el.setAttribute("x", container_rect.left);
@@ -600,18 +614,18 @@ function $Window(options) {
 		descendant_el_label_el = document.createElementNS("http://www.w3.org/2000/svg", "text");
 		descendant_el_label_el.setAttribute("x", descendant_rect.left);
 		descendant_el_label_el.setAttribute("y", descendant_rect.top);
-		descendant_el_label_el.setAttribute("fill", "red");
+		descendant_el_label_el.setAttribute("fill", "#f44");
 		descendant_el_label_el.setAttribute("font-size", "20");
-		descendant_el_label_el.style.textShadow = "1px 1px 1px black";
-		descendant_el_label_el.textContent = "tagName" in descendant_el ? `${descendant_el.tagName}.${descendant_el.className.replace(/\s/g, ".")}` : descendant_el.constructor.name;
+		descendant_el_label_el.style.textShadow = "1px 1px 1px black, 0 0 10px black";
+		descendant_el_label_el.textContent = element_to_string(descendant_el);
 		svg.appendChild(descendant_el_label_el);
 		container_el_label_el = document.createElementNS("http://www.w3.org/2000/svg", "text");
 		container_el_label_el.setAttribute("x", container_rect.left);
 		container_el_label_el.setAttribute("y", container_rect.top + 20);
 		container_el_label_el.setAttribute("fill", "aqua");
 		container_el_label_el.setAttribute("font-size", "20");
-		container_el_label_el.style.textShadow = "1px 1px 1px black";
-		container_el_label_el.textContent = "tagName" in container_el ? `${container_el.tagName}.${container_el.className.replace(/\s/g, ".")}` : container_el.constructor.name;
+		container_el_label_el.style.textShadow = "1px 1px 1px black, 0 0 10px black";
+		container_el_label_el.textContent = element_to_string(container_el);
 		svg.appendChild(container_el_label_el);
 		// draw lines connecting the two rects
 		const lines = [
