@@ -234,13 +234,13 @@ function $Window(options) {
 			// NOTE: `document` is actually the iframe's document when the listener is inside the iframe
 
 			return function handle_focus_in_out(event) {
-				// const document = container_el.tagName == "IFRAME" ? container_el.contentDocument : container_el.ownerDocument; // not needed, I think
+				const document = dom_container_el.ownerDocument ?? dom_container_el; // is this needed?
 
 				// console.log(`handling ${event.type} for container`, container_el);
 				let newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
 
 
-				// console.log(`newlyFocused is`, newlyFocused?.tagName, `\ncontainer_el`, container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
+				console.log(`newlyFocused is`, newlyFocused?.tagName, `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
 
 				// Iframes have weird behavior with focusin/focusout, so we need to check for iframes.
 				if (
