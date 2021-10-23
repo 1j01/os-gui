@@ -226,7 +226,7 @@ function $Window(options) {
 		// global focusout is needed, to continue showing as focused while child windows or menus are focused
 		// also for iframes, where we don't get focusin
 		// global focusin is needed, to show as focused when a child window becomes focused
-		console.log("adding global focusin/focusout for window", $w[0].id);
+		console.log("adding global focusin/focusout/blur for window", $w[0].id);
 		window.addEventListener("focusin", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 		window.addEventListener("focusout", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 		window.addEventListener("blur", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
@@ -286,10 +286,11 @@ function $Window(options) {
 							debug_focus_tracking(iframe.contentDocument, iframe, iframe.contentDocument.activeElement, is_root);
 						}
 						if (!focus_update_handlers_by_container.has(iframe)) {
-							console.log("adding onfocusin/out for iframe");
+							console.log("adding focusin/focusout/blur for iframe");
 							const iframe_update_focus = make_focus_in_out_handler(iframe, iframe.contentDocument, false);
 							iframe.contentWindow.addEventListener("focusin", iframe_update_focus);
 							iframe.contentWindow.addEventListener("focusout", iframe_update_focus);
+							iframe.contentWindow.addEventListener("blur", iframe_update_focus);
 							focus_update_handlers_by_container.set(iframe, iframe_update_focus);
 						}
 					} catch (e) {
