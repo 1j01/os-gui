@@ -226,12 +226,12 @@ function $Window(options) {
 		// global focusout is needed, to continue showing as focused while child windows or menus are focused
 		// also for iframes, where we don't get focusin
 		// global focusin is needed, to show as focused when a child window becomes focused
-		window.addEventListener("focusin", make_focus_in_out_handler($w.$content[0], true));
-		window.addEventListener("focusout", make_focus_in_out_handler($w.$content[0], true));
-		function make_focus_in_out_handler(container_el) {
-			// const is_root = container_el.ownerDocument === document; // WRONG!
-			// document is actually the iframe's document when the listener is inside the iframe
-			const is_root = container_el.tagName !== "IFRAME";
+		window.addEventListener("focusin", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
+		window.addEventListener("focusout", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
+		function make_focus_in_out_handler(logical_container_el, dom_container_el, is_root) {
+			// In case of iframes, logical_container_el is the iframe, and dom_container_el is the iframe's contentDocument.
+
+			// NOTE: `document` is actually the iframe's document when the listener is inside the iframe
 
 			return function handle_focus_in_out(event) {
 				// const document = container_el.tagName == "IFRAME" ? container_el.contentDocument : container_el.ownerDocument; // not needed, I think
@@ -251,7 +251,7 @@ function $Window(options) {
 				) {
 					newlyFocused = document.activeElement;
 				}
-				if (!newlyFocused || !container_el.contains(newlyFocused)) {
+				if (!newlyFocused || !dom_container_el.contains(newlyFocused)) {
 					if (is_root) {
 						stopShowingAsFocused();
 					}
@@ -261,10 +261,10 @@ function $Window(options) {
 					newlyFocused &&
 					newlyFocused.tagName !== "HTML" &&
 					newlyFocused.tagName !== "BODY" &&
-					newlyFocused !== container_el
+					newlyFocused !== dom_container_el
 				) {
-					last_focus_by_container.set(container_el, newlyFocused); // overwritten for iframes below
-					debug_focus_tracking(document, container_el, newlyFocused);
+					last_focus_by_container.set(logical_container_el, newlyFocused); // overwritten for iframes below
+					debug_focus_tracking(document, dom_container_el, newlyFocused, is_root);
 				}
 
 				if (newlyFocused?.tagName === "IFRAME") {
@@ -275,17 +275,17 @@ function $Window(options) {
 							iframe.contentDocument.activeElement &&
 							iframe.contentDocument.activeElement.tagName !== "HTML" &&
 							iframe.contentDocument.activeElement.tagName !== "BODY" &&
-							iframe.contentDocument.activeElement !== container_el
+							iframe.contentDocument.activeElement !== dom_container_el // ?
 						) {
 							last_focus_by_container.set(iframe, iframe.contentDocument.activeElement);
-							debug_focus_tracking(iframe.contentDocument, iframe, iframe.contentDocument.activeElement);
+							debug_focus_tracking(iframe.contentDocument, iframe, iframe.contentDocument.activeElement, is_root);
 						}
-						if (!onfocusin_by_container.has(iframe)) {
+						if (!focus_update_handlers_by_container.has(iframe)) {
 							console.log("adding onfocusin/out for iframe");
-							const iframe_update_focus = make_focus_in_out_handler(iframe, false);
-							iframe.contentDocument.addEventListener("focusin", iframe_update_focus);
-							iframe.contentDocument.addEventListener("focusout", iframe_update_focus);
-							onfocusin_by_container.set(iframe, iframe_update_focus);
+							const iframe_update_focus = make_focus_in_out_handler(iframe, iframe.contentDocument, false);
+							iframe.contentWindow.addEventListener("focusin", iframe_update_focus);
+							iframe.contentWindow.addEventListener("focusout", iframe_update_focus);
+							focus_update_handlers_by_container.set(iframe, iframe_update_focus);
 						}
 					} catch (e) {
 						console.warn("OS-GUI can't access iframe", e);
@@ -544,10 +544,10 @@ function $Window(options) {
 	// - any iframes that are same-origin (for restoring focus when refocusing window)
 	// @TODO: share this Map between all windows? but clean it up when destroying windows
 	var last_focus_by_container = new Map();
-	var onfocusin_by_container = new Map();
+	var focus_update_handlers_by_container = new Map();
 	var debug_svg_by_container = new Map();
 
-	const debug_focus_tracking = (document, container_el, descendant_el) => {
+	const debug_focus_tracking = (document, container_el, descendant_el, is_root) => {
 		// if (!$Window.DEBUG_FOCUS) {
 		// 	return;
 		// }
@@ -582,9 +582,13 @@ function $Window(options) {
 		container_rect_el.setAttribute("y", container_rect.top);
 		container_rect_el.setAttribute("width", container_rect.width);
 		container_rect_el.setAttribute("height", container_rect.height);
-		container_rect_el.setAttribute("stroke", "blue");
+		container_rect_el.setAttribute("stroke", "aqua");
 		container_rect_el.setAttribute("stroke-width", "2");
 		container_rect_el.setAttribute("fill", "none");
+		if (!is_root) {
+			descendant_rect_el.setAttribute("stroke-dasharray", "5,5");
+			container_rect_el.setAttribute("stroke-dasharray", "5,5");
+		}
 		svg.appendChild(descendant_rect_el);
 		svg.appendChild(container_rect_el);
 		descendant_el_label_el = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -598,9 +602,9 @@ function $Window(options) {
 		container_el_label_el = document.createElementNS("http://www.w3.org/2000/svg", "text");
 		container_el_label_el.setAttribute("x", container_rect.left);
 		container_el_label_el.setAttribute("y", container_rect.top + 20);
-		container_el_label_el.setAttribute("fill", "blue");
+		container_el_label_el.setAttribute("fill", "aqua");
 		container_el_label_el.setAttribute("font-size", "20");
-		descendant_el_label_el.style.textShadow = "1px 1px 1px black";
+		container_el_label_el.style.textShadow = "1px 1px 1px black";
 		container_el_label_el.textContent = "tagName" in container_el ? `${container_el.tagName}.${container_el.className.replace(/\s/g, ".")}` : container_el.constructor.name;
 		svg.appendChild(container_el_label_el);
 		// draw lines connecting the two rects
