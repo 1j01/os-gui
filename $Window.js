@@ -258,6 +258,7 @@ function $Window(options) {
 					newlyFocused !== container_el
 				) {
 					last_focus_by_container.set(container_el, newlyFocused); // overwritten for iframes below
+					debug_focus_tracking(document, container_el, newlyFocused);
 				}
 
 				if (newlyFocused?.tagName === "IFRAME") {
@@ -271,6 +272,7 @@ function $Window(options) {
 							iframe.contentDocument.activeElement !== container_el
 						) {
 							last_focus_by_container.set(iframe, iframe.contentDocument.activeElement);
+							debug_focus_tracking(document, iframe.contentDocument, iframe.contentDocument.activeElement);
 						}
 						if (!onfocusin_by_container.has(iframe)) {
 							console.log("adding onfocusin/out for iframe");
@@ -284,6 +286,7 @@ function $Window(options) {
 						// @TODO: only generate this error once
 					}
 				}
+
 
 				if (!is_root) {
 					return; // the rest of the logic is for the window and not nested iframes
@@ -540,6 +543,67 @@ function $Window(options) {
 	// @TODO: share this Map between all windows? but clean it up when destroying windows
 	var last_focus_by_container = new Map();
 	var onfocusin_by_container = new Map();
+	var debug_svg_by_container = new Map();
+
+	const debug_focus_tracking = (document, container_el, descendant_el) => {
+		// if (!$Window.DEBUG_FOCUS) {
+		// 	return;
+		// }
+		let svg = debug_svg_by_container.get(container_el);
+		if (!svg) {
+			svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+			svg.style.position = "absolute";
+			svg.style.top = "0";
+			svg.style.left = "0";
+			svg.style.width = "100%";
+			svg.style.height = "100%";
+			svg.style.pointerEvents = "none";
+			svg.style.zIndex = "1000";
+			debug_svg_by_container.set(container_el, svg);
+		}
+		while (svg.lastChild) {
+			svg.removeChild(svg.lastChild);
+		}
+		const descendant_rect = descendant_el.getBoundingClientRect?.() ?? { left: 0, top: 0, width: innerWidth, height: innerHeight, right: innerWidth, bottom: innerHeight };
+		const container_rect = container_el.getBoundingClientRect?.() ?? { left: 0, top: 0, width: innerWidth, height: innerHeight, right: innerWidth, bottom: innerHeight };
+		const descendant_rect_el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+		const container_rect_el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+		descendant_rect_el.setAttribute("x", descendant_rect.left);
+		descendant_rect_el.setAttribute("y", descendant_rect.top);
+		descendant_rect_el.setAttribute("width", descendant_rect.width);
+		descendant_rect_el.setAttribute("height", descendant_rect.height);
+		descendant_rect_el.setAttribute("stroke", "red");
+		descendant_rect_el.setAttribute("stroke-width", "2");
+		descendant_rect_el.setAttribute("fill", "none");
+		container_rect_el.setAttribute("x", container_rect.left);
+		container_rect_el.setAttribute("y", container_rect.top);
+		container_rect_el.setAttribute("width", container_rect.width);
+		container_rect_el.setAttribute("height", container_rect.height);
+		container_rect_el.setAttribute("stroke", "blue");
+		container_rect_el.setAttribute("stroke-width", "2");
+		container_rect_el.setAttribute("fill", "none");
+		svg.appendChild(descendant_rect_el);
+		svg.appendChild(container_rect_el);
+		// draw lines connecting the two rects
+		const lines = [
+			[descendant_rect.left, descendant_rect.top, container_rect.left, container_rect.top],
+			[descendant_rect.right, descendant_rect.top, container_rect.right, container_rect.top],
+			[descendant_rect.left, descendant_rect.bottom, container_rect.left, container_rect.bottom],
+			[descendant_rect.right, descendant_rect.bottom, container_rect.right, container_rect.bottom],
+		];
+		for (const line of lines) {
+			const line_el = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			line_el.setAttribute("x1", line[0]);
+			line_el.setAttribute("y1", line[1]);
+			line_el.setAttribute("x2", line[2]);
+			line_el.setAttribute("y2", line[3]);
+			line_el.setAttribute("stroke", "green");
+			line_el.setAttribute("stroke-width", "2");
+			svg.appendChild(line_el);
+		}
+		document.body.appendChild(svg);
+	}
+
 
 	const refocus = (container_el = $w.$content[0]) => {
 		const last_focus = last_focus_by_container.get(container_el);
@@ -605,6 +669,7 @@ function $Window(options) {
 		// why so many focusin events?...
 		// console.log("focusin", e.target);
 		last_focus_by_container.set(window, e.target);
+		debug_focus_tracking(document, window, e.target);
 	});
 
 	function handle_pointer_activation(event) {
@@ -689,6 +754,7 @@ function $Window(options) {
 		) {
 			console.log("old", last_focus_by_container.get($w.$content[0]));
 			last_focus_by_container.set($w.$content[0], document.activeElement);
+			debug_focus_tracking(document, $w.$content[0], document.activeElement);
 			console.log("new", last_focus_by_container.get($w.$content[0]));
 			console.log("last_focus_by_container", last_focus_by_container);
 		}
