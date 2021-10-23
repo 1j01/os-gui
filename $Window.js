@@ -558,8 +558,9 @@ function $Window(options) {
 			svg.style.width = "100%";
 			svg.style.height = "100%";
 			svg.style.pointerEvents = "none";
-			svg.style.zIndex = "1000";
+			svg.style.zIndex = "100000000";
 			debug_svg_by_container.set(container_el, svg);
+			document.body.appendChild(svg);
 		}
 		while (svg.lastChild) {
 			svg.removeChild(svg.lastChild);
@@ -584,6 +585,22 @@ function $Window(options) {
 		container_rect_el.setAttribute("fill", "none");
 		svg.appendChild(descendant_rect_el);
 		svg.appendChild(container_rect_el);
+		descendant_el_label_el = document.createElementNS("http://www.w3.org/2000/svg", "text");
+		descendant_el_label_el.setAttribute("x", descendant_rect.left);
+		descendant_el_label_el.setAttribute("y", descendant_rect.top);
+		descendant_el_label_el.setAttribute("fill", "red");
+		descendant_el_label_el.setAttribute("font-size", "20");
+		descendant_el_label_el.style.textShadow = "1px 1px 1px black";
+		descendant_el_label_el.textContent = "tagName" in descendant_el ? `${descendant_el.tagName}.${descendant_el.className.replace(/\s/g, ".")}` : descendant_el.constructor.name;
+		svg.appendChild(descendant_el_label_el);
+		container_el_label_el = document.createElementNS("http://www.w3.org/2000/svg", "text");
+		container_el_label_el.setAttribute("x", container_rect.left);
+		container_el_label_el.setAttribute("y", container_rect.top + 20);
+		container_el_label_el.setAttribute("fill", "blue");
+		container_el_label_el.setAttribute("font-size", "20");
+		descendant_el_label_el.style.textShadow = "1px 1px 1px black";
+		container_el_label_el.textContent = "tagName" in container_el ? `${container_el.tagName}.${container_el.className.replace(/\s/g, ".")}` : container_el.constructor.name;
+		svg.appendChild(container_el_label_el);
 		// draw lines connecting the two rects
 		const lines = [
 			[descendant_rect.left, descendant_rect.top, container_rect.left, container_rect.top],
@@ -601,7 +618,6 @@ function $Window(options) {
 			line_el.setAttribute("stroke-width", "2");
 			svg.appendChild(line_el);
 		}
-		document.body.appendChild(svg);
 	}
 
 
