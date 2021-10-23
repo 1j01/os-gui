@@ -272,7 +272,7 @@ function $Window(options) {
 							iframe.contentDocument.activeElement !== container_el
 						) {
 							last_focus_by_container.set(iframe, iframe.contentDocument.activeElement);
-							debug_focus_tracking(document, iframe.contentDocument, iframe.contentDocument.activeElement);
+							debug_focus_tracking(iframe.contentDocument, iframe, iframe.contentDocument.activeElement);
 						}
 						if (!onfocusin_by_container.has(iframe)) {
 							console.log("adding onfocusin/out for iframe");
