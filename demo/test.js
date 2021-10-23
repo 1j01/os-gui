@@ -315,8 +315,10 @@ $app_window_3.find("iframe").attr("srcdoc", `
 	height: "100%",
 });
 $app_window_3.css({
-	left: innerWidth * 0.7,
-	top: innerHeight * 0.75,
+	left: innerWidth * 0.2,
+	top: innerHeight * 0.3,
+	width: 500,
+	height: 400,
 });
 $app_window_3.$content.css({
 	paddingTop: "2px",
