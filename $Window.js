@@ -226,8 +226,10 @@ function $Window(options) {
 		// global focusout is needed, to continue showing as focused while child windows or menus are focused
 		// also for iframes, where we don't get focusin
 		// global focusin is needed, to show as focused when a child window becomes focused
+		console.log("adding global focusin/focusout for window", $w[0].id);
 		window.addEventListener("focusin", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 		window.addEventListener("focusout", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
+		window.addEventListener("blur", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 		function make_focus_in_out_handler(logical_container_el, dom_container_el, is_root) {
 			// In case of iframes, logical_container_el is the iframe, and dom_container_el is the iframe's contentDocument.
 
@@ -238,24 +240,27 @@ function $Window(options) {
 
 				// console.log(`handling ${event.type} for container`, container_el);
 				let newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
+				if (event.type === "blur") {
+					newlyFocused = null; // only handle iframe
+				}
 
-
-				console.log(`newlyFocused is`, newlyFocused?.tagName, `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
+				console.log(`newlyFocused is`, newlyFocused?.tagName ?? newlyFocused ? newlyFocused.constructor.name : newlyFocused, `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
 
 				// Iframes have weird behavior with focusin/focusout, so we need to check for iframes.
 				if (
 					document.activeElement &&
 					document.activeElement.tagName === "IFRAME" &&
-					event.type === "focusout" &&
+					(event.type === "focusout" || event.type === "blur") &&
 					!newlyFocused // doesn't exist for security reasons in this case
 				) {
 					newlyFocused = document.activeElement;
+					console.log(`newlyFocused is now`, newlyFocused?.tagName ?? newlyFocused ? newlyFocused.constructor.name : newlyFocused);
 				}
 				if (!newlyFocused || !dom_container_el.contains(newlyFocused)) {
 					if (is_root) {
 						stopShowingAsFocused();
 					}
-					return;
+					return; // must not track focus of anything outside the container
 				}
 				if (
 					newlyFocused &&
@@ -691,7 +696,7 @@ function $Window(options) {
 		// why so many focusin events?...
 		// console.log("focusin", e.target);
 		last_focus_by_container.set(window, e.target);
-		debug_focus_tracking(document, window, e.target);
+		// debug_focus_tracking(document, window, e.target);
 	});
 
 	function handle_pointer_activation(event) {
