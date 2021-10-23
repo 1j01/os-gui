@@ -238,12 +238,15 @@ function $Window(options) {
 		}
 	} else {
 		// global focusout is needed, to continue showing as focused while child windows or menus are focused
-		// also for iframes, where we don't get focusin
 		// global focusin is needed, to show as focused when a child window becomes focused
-		// console.log("adding global focusin/focusout/blur for window", $w[0].id);
+		// global blur is needed, to show as focused when an iframe gets focus, because focusin/out doesn't fire at all in that case
+		// global focus is needed, to stop showing as focused when an iframe loses focus
+		// pretty ridiculous!!
+		// console.log("adding global focusin/focusout/blur/focus for window", $w[0].id);
 		window.addEventListener("focusin", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 		window.addEventListener("focusout", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 		window.addEventListener("blur", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
+		window.addEventListener("focus", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 		function make_focus_in_out_handler(logical_container_el, dom_container_el, is_root) {
 			// In case of iframes, logical_container_el is the iframe, and dom_container_el is the iframe's contentDocument.
 
@@ -258,9 +261,9 @@ function $Window(options) {
 					newlyFocused = null; // only handle iframe
 				}
 
-				console.log(`newlyFocused is (preliminarily)`, element_to_string(newlyFocused), `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
+				console.log(`is_root=${is_root}`, `newlyFocused is (preliminarily)`, element_to_string(newlyFocused), `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
 
-				// Iframes have weird behavior with focusin/focusout, so we need to check for iframes.
+				// Iframes are stingy about focus events, so we need to check if focus is actually within an iframe.
 				if (
 					document.activeElement &&
 					document.activeElement.tagName === "IFRAME" &&
@@ -268,9 +271,17 @@ function $Window(options) {
 					!newlyFocused // doesn't exist for security reasons in this case
 				) {
 					newlyFocused = document.activeElement;
-					console.log(`newlyFocused is now considered to be`, element_to_string(newlyFocused));
+					console.log(`is_root=${is_root}`, `newlyFocused is now considered to be`, element_to_string(newlyFocused));
 				}
-				if (!newlyFocused || !dom_container_el.contains(newlyFocused)) {
+				if (
+					!newlyFocused ||
+					// contains() only works with DOM elements and documents, not window objects
+					// document/window never needs to be tracked as focused, because it's the root and not something to refocus
+					newlyFocused.window === newlyFocused.self || // is a Window object (cross-frame test)
+					newlyFocused.nodeName === "#document" || // is a Document object (cross-frame test)
+					dom_container_el === newlyFocused || // want to track focus WITHIN the container (node.contains(node) === true)
+					!dom_container_el.contains(newlyFocused)
+				) {
 					if (is_root) {
 						stopShowingAsFocused();
 					}
@@ -300,11 +311,12 @@ function $Window(options) {
 							debug_focus_tracking(iframe.contentDocument, iframe, iframe.contentDocument.activeElement, is_root);
 						}
 						if (!focus_update_handlers_by_container.has(iframe)) {
-							console.log("adding focusin/focusout/blur for iframe");
+							console.log(`is_root=${is_root}`, "adding focusin/focusout/blur/focus for iframe");
 							const iframe_update_focus = make_focus_in_out_handler(iframe, iframe.contentDocument, false);
 							iframe.contentWindow.addEventListener("focusin", iframe_update_focus);
 							iframe.contentWindow.addEventListener("focusout", iframe_update_focus);
 							iframe.contentWindow.addEventListener("blur", iframe_update_focus);
+							iframe.contentWindow.addEventListener("focus", iframe_update_focus);
 							focus_update_handlers_by_container.set(iframe, iframe_update_focus);
 						}
 					} catch (e) {

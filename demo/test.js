@@ -296,7 +296,7 @@ $app_window_2.css({
 const $app_window_3 = new $Window({ title: "Iframe Window", resizable: true });
 $app_window_3.$content.append(new MenuBar(menus).element);
 $app_window_3.$content.append(`
-	<iframe class="inset-deep" style="margin: 15px"></iframe>
+	<iframe class="inset-deep"></iframe>
 `);
 $app_window_3.find("iframe").attr("srcdoc", `
 	<p>This is an iframe test.</p>
@@ -311,8 +311,8 @@ $app_window_3.find("iframe").attr("srcdoc", `
 `).css({
 	boxSizing: "border-box",
 	display: "flex",
-	width: "100%",
-	height: "100%",
+	flex: 1,
+	margin: 30,
 });
 $app_window_3.css({
 	left: innerWidth * 0.2,
@@ -322,4 +322,6 @@ $app_window_3.css({
 });
 $app_window_3.$content.css({
 	paddingTop: "2px",
+	display: "flex",
+	flexDirection: "column",
 });
