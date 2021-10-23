@@ -296,7 +296,7 @@ $app_window_2.css({
 const $app_window_3 = new $Window({ title: "Iframe Window", resizable: true });
 $app_window_3.$content.append(new MenuBar(menus).element);
 $app_window_3.$content.append(`
-	<iframe class="inset-deep"></iframe>
+	<iframe class="inset-deep" style="margin: 15px"></iframe>
 `);
 $app_window_3.find("iframe").attr("srcdoc", `
 	<p>This is an iframe test.</p>

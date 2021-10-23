@@ -251,6 +251,12 @@ function $Window(options) {
 				) {
 					newlyFocused = document.activeElement;
 				}
+				if (!newlyFocused || !container_el.contains(newlyFocused)) {
+					if (is_root) {
+						stopShowingAsFocused();
+					}
+					return;
+				}
 				if (
 					newlyFocused &&
 					newlyFocused.tagName !== "HTML" &&
@@ -292,10 +298,6 @@ function $Window(options) {
 					return; // the rest of the logic is for the window and not nested iframes
 				}
 
-				if (!newlyFocused) {
-					stopShowingAsFocused();
-					return;
-				}
 				// For child windows and menu popups, follow "semantic parent" chain.
 				// Menu popups and child windows aren't descendants of the window they belong to,
 				// but should keep the window shown as focused.
@@ -768,11 +770,11 @@ function $Window(options) {
 			$.contains($w.$content[0], document.activeElement) &&
 			!document.activeElement.closest(".menus")
 		) {
-			console.log("old", last_focus_by_container.get($w.$content[0]));
-			last_focus_by_container.set($w.$content[0], document.activeElement);
-			debug_focus_tracking(document, $w.$content[0], document.activeElement);
-			console.log("new", last_focus_by_container.get($w.$content[0]));
-			console.log("last_focus_by_container", last_focus_by_container);
+			// console.log("old", last_focus_by_container.get($w.$content[0]));
+			// last_focus_by_container.set($w.$content[0], document.activeElement);
+			// debug_focus_tracking(document, $w.$content[0], document.activeElement);
+			// console.log("new", last_focus_by_container.get($w.$content[0]));
+			// console.log("last_focus_by_container", last_focus_by_container);
 		}
 	});
 	// $w.on("focusout", ()=> {
