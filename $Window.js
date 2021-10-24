@@ -314,13 +314,15 @@ function $Window(options) {
 
 		observeIframes($w.$content[0]);
 		
-		function make_focus_in_out_handler(logical_container_el, dom_container_el, is_root) {
-			// In case of iframes, logical_container_el is the iframe, and dom_container_el is the iframe's contentDocument.
+		function make_focus_in_out_handler(logical_container_el, is_root) {
+			// In case of iframes, logical_container_el is the iframe, and container_node is the iframe's contentDocument.
 
-			// NOTE: `document` is actually the iframe's document when the listener is inside the iframe
+			console.log("make_focus_in_out_handler", logical_container_el, is_root);
 
 			return function handle_focus_in_out(event) {
-				const document = dom_container_el.ownerDocument ?? dom_container_el; // is this needed?
+				const container_node = logical_container_el.tagName == "IFRAME" ? logical_container_el.contentDocument : logical_container_el;
+				// NOTE: `document` is actually the iframe's document when the listener is inside the iframe (maybe?)
+				const document = container_node.ownerDocument ?? container_node; // is this needed?
 
 				// console.log(`handling ${event.type} for container`, container_el);
 				let newly_focused = event ? (event.type === "focusout" || event.type === "blur") ? event.relatedTarget : event.target : document.activeElement;
@@ -328,7 +330,7 @@ function $Window(options) {
 					newly_focused = null; // only handle iframe
 				}
 
-				console.log(`[${$w.title()}] (is_root=${is_root})`, `newly_focused is (preliminarily)`, element_to_string(newly_focused), `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
+				console.log(`[${$w.title()}] (is_root=${is_root})`, `newly_focused is (preliminarily)`, element_to_string(newly_focused), `\nlogical_container_el`, logical_container_el, `\ncontainer_node`, container_node, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
 
 				// Iframes are stingy about focus events, so we need to check if focus is actually within an iframe.
 				if (
@@ -344,10 +346,10 @@ function $Window(options) {
 				const outside_or_at_exactly =
 					!newly_focused ||
 					// contains() only works with DOM nodes (elements and documents), not window objects.
-					// Since dom_container_el is a DOM node, it will never have a Window inside of it (ignoring iframes).
+					// Since container_node is a DOM node, it will never have a Window inside of it (ignoring iframes).
 					newly_focused.window === newly_focused || // is a Window object (cross-frame test)
-					!dom_container_el.contains(newly_focused); // Note: node.contains(node) === true
-				const firmly_outside = outside_or_at_exactly && dom_container_el !== newly_focused;
+					!container_node.contains(newly_focused); // Note: node.contains(node) === true
+				const firmly_outside = outside_or_at_exactly && container_node !== newly_focused;
 
 				console.log(`[${$w.title()}] (is_root=${is_root})`, `outside_or_at_exactly=${outside_or_at_exactly}`, `firmly_outside=${firmly_outside}`);
 				if (firmly_outside && is_root) {
@@ -358,10 +360,10 @@ function $Window(options) {
 					newly_focused &&
 					newly_focused.tagName !== "HTML" &&
 					newly_focused.tagName !== "BODY" &&
-					newly_focused !== dom_container_el
+					newly_focused !== container_node
 				) {
 					last_focus_by_container.set(logical_container_el, newly_focused); // overwritten for iframes below
-					debug_focus_tracking(document, dom_container_el, newly_focused, is_root);
+					debug_focus_tracking(document, container_node, newly_focused, is_root);
 				}
 
 				if (
