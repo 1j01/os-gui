@@ -361,7 +361,8 @@ function $Window(options) {
 					!outside_or_at_exactly &&
 					newly_focused.tagName !== "HTML" &&
 					newly_focused.tagName !== "BODY" &&
-					newly_focused !== container_node
+					newly_focused !== container_node &&
+					!newly_focused.closest(".menus")
 				) {
 					last_focus_by_container.set(logical_container_el, newly_focused); // overwritten for iframes below
 					debug_focus_tracking(document, container_node, newly_focused, is_root);
@@ -378,7 +379,8 @@ function $Window(options) {
 						if (
 							focus_in_iframe &&
 							focus_in_iframe.tagName !== "HTML" &&
-							focus_in_iframe.tagName !== "BODY"
+							focus_in_iframe.tagName !== "BODY" &&
+							!focus_in_iframe.closest(".menus")
 						) {
 							// last_focus_by_container.set(logical_container_el, iframe); // done above
 							last_focus_by_container.set(iframe, focus_in_iframe);
@@ -650,7 +652,6 @@ function $Window(options) {
 			$childWindow.bringToFront();
 		}
 	};
-	// var focused = false;
 
 	// Keep track of last focused elements per container,
 	// where containers include:
@@ -857,8 +858,6 @@ function $Window(options) {
 				return;
 			}
 
-			// focused = true;
-
 			// If the element is selectable, wait until the click is done and see if anything was selected first.
 			// This is a bit of a weird compromise, for now.
 			const target_style = getComputedStyle(event.target);
@@ -879,30 +878,6 @@ function $Window(options) {
 			refocus();
 		});
 	}
-
-	// Assumption: no control exists in the window before this "focusin" handler is set up,
-	// so any element.focus() will come after and trigger this handler.
-	$w.on("focusin", () => {
-		// focused = true;
-		if (
-			document.activeElement &&
-			$.contains($w.$content[0], document.activeElement) &&
-			!document.activeElement.closest(".menus")
-		) {
-			// console.log("old", last_focus_by_container.get($w.$content[0]));
-			// last_focus_by_container.set($w.$content[0], document.activeElement);
-			// debug_focus_tracking(document, $w.$content[0], document.activeElement);
-			// console.log("new", last_focus_by_container.get($w.$content[0]));
-			// console.log("last_focus_by_container", last_focus_by_container);
-		}
-	});
-	// $w.on("focusout", ()=> {
-	// 	requestAnimationFrame(()=> {
-	// 		if (!document.activeElement || !$.contains($w[0], document.activeElement)) {
-	// 			focused = false;
-	// 		}
-	// 	});
-	// });
 
 	$w.on("keydown", (e) => {
 		if (e.isDefaultPrevented()) {
@@ -1325,6 +1300,7 @@ function $Window(options) {
 		// Focus next-topmost window
 		// TODO: store the last focused control OUTSIDE the window, and restore it here,
 		// so that it works with not just other windows but also arbitrary controls outside of any window.
+		// Well, maybe just for modals, which aren't supported yet.
 		var $next_topmost = $($(".window:visible").toArray().sort((a, b) => b.style.zIndex - a.style.zIndex)[0]);
 		$next_topmost.triggerHandler("refocus-window");
 	};
