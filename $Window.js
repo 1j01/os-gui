@@ -247,7 +247,7 @@ function $Window(options) {
 		// and :focus/:focus-within doesn't work with iframes so we can't even do a hack with transitionstart.
 
 		console.log("adding global focusin/focusout/blur/focus for window", $w[0].id);
-		const global_focus_update_handler = make_focus_in_out_handler($w.$content[0], $w.$content[0], true);
+		const global_focus_update_handler = make_focus_in_out_handler($w.$content[0], true);
 		window.addEventListener("focusin", global_focus_update_handler);
 		window.addEventListener("focusout", global_focus_update_handler);
 		window.addEventListener("blur", global_focus_update_handler);
@@ -257,7 +257,7 @@ function $Window(options) {
 			// console.log("setupIframe", iframe);
 			if (!focus_update_handlers_by_container.has(iframe)) {
 				// console.log("setting up iframe", iframe);
-				const iframe_update_focus = make_focus_in_out_handler(iframe, iframe.contentDocument, false);
+				const iframe_update_focus = make_focus_in_out_handler(iframe, false);
 				// this also operates as a flag to prevent multiple handlers from being added, or waiting for the iframe to load duplicately
 				focus_update_handlers_by_container.set(iframe, iframe_update_focus);
 
@@ -316,13 +316,15 @@ function $Window(options) {
 		
 		function make_focus_in_out_handler(logical_container_el, is_root) {
 			// In case of iframes, logical_container_el is the iframe, and container_node is the iframe's contentDocument.
+			// container_node is not a parameter here because it can change over time, may be an empty document before the iframe is loaded.
 
-			console.log("make_focus_in_out_handler", logical_container_el, is_root);
+			// console.log("make_focus_in_out_handler", logical_container_el, is_root);
 
 			return function handle_focus_in_out(event) {
 				const container_node = logical_container_el.tagName == "IFRAME" ? logical_container_el.contentDocument : logical_container_el;
-				// NOTE: `document` is actually the iframe's document when the listener is inside the iframe (maybe?)
-				const document = container_node.ownerDocument ?? container_node; // is this needed?
+				const document = container_node.ownerDocument ?? container_node;
+				// is this equivalent?
+				// const document = logical_container_el.tagName == "IFRAME" ? logical_container_el.contentDocument : logical_container_el.ownerDocument;
 
 				// console.log(`handling ${event.type} for container`, container_el);
 				let newly_focused = event ? (event.type === "focusout" || event.type === "blur") ? event.relatedTarget : event.target : document.activeElement;
@@ -357,7 +359,6 @@ function $Window(options) {
 				}
 				if (
 					!outside_or_at_exactly &&
-					newly_focused &&
 					newly_focused.tagName !== "HTML" &&
 					newly_focused.tagName !== "BODY" &&
 					newly_focused !== container_node
@@ -368,7 +369,7 @@ function $Window(options) {
 
 				if (
 					!outside_or_at_exactly &&
-					newly_focused?.tagName === "IFRAME"
+					newly_focused.tagName === "IFRAME"
 				) {
 					const iframe = newly_focused;
 					// console.log("iframe", iframe, onfocusin_by_container.has(iframe));
@@ -417,12 +418,27 @@ function $Window(options) {
 				}
 				// Note: allowing showing window as focused from inside iframe (non-root) too,
 				// in order to handle clicking an iframe when the browser window was not previously focused (e.g. after reload)
-				if (newly_focused && newly_focused.closest?.(".window") == $w[0]) {
+				if (!firmly_outside) {
 					showAsFocused();
 					$w.bringToFront();
-					return;
+					if (!is_root) {
+						// trigger focusin events for iframes
+						// @TODO: probably don't need showAsFocused() here since it'll be handled externally,
+						// and might not need a lot of other logic frankly if I'm simulating focusin events
+						let el = logical_container_el;
+						while (el) {
+							console.log("dispatching focusin event for", el);
+							el.dispatchEvent(new Event("focusin", {
+								bubbles: true,
+								target: el,
+								view: el.ownerDocument.defaultView,
+							}));
+							el = el.currentView?.frameElement;
+						}
+					}
+				} else if (is_root) {
+					stopShowingAsFocused();
 				}
-				stopShowingAsFocused();
 			}
 		}
 		// initial state is unfocused
