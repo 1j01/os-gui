@@ -405,7 +405,7 @@ function $Window(options) {
 						if (waypoint) {
 							const id = waypoint.dataset.semanticParent;
 							const parent = waypoint.ownerDocument.getElementById(id);
-							console.log("following semantic parent, from", newly_focused, "\nto", parent, "\nvia", waypoint);
+							// console.log("following semantic parent, from", newly_focused, "\nto", parent, "\nvia", waypoint);
 							newly_focused = parent;
 							if (!parent) {
 								console.warn("semantic parent not found with id", id);
