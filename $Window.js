@@ -262,8 +262,6 @@ function $Window(options) {
 
 				try {
 					const wait_for_iframe_load = (callback) => {
-						debugger; // this makes it work (if the devtools are open); it's a heisenbug.
-						
 						// Note: error may occur accessing iframe.contentDocument; this must be handled by the caller.
 						// This function must access it synchronously, to allow the caller to handle the error.
 						if (iframe.contentDocument.readyState == "complete") {
@@ -384,33 +382,33 @@ function $Window(options) {
 				}
 
 
-				if (!is_root) {
-					return; // the rest of the logic is for the window and not nested iframes
-					// (semantic parent stuff in principle could make sense for focus tracking,
-					// but right now it's used only for menus which shouldn't be tracked for refocusing
-					// and which can close easily for that matter.)
-				}
-
 				// For child windows and menu popups, follow "semantic parent" chain.
 				// Menu popups and child windows aren't descendants of the window they belong to,
 				// but should keep the window shown as focused.
-				do {
-					// if (!newly_focused?.closest) {
-					// 	console.warn("what is this?", newly_focused);
-					// 	break;
-					// }
-					const waypoint = newly_focused?.closest?.("[data-semantic-parent]");
-					if (waypoint) {
-						const id = waypoint.dataset.semanticParent;
-						newly_focused = document.getElementById(id);
-						if (!newly_focused) {
-							console.warn("semantic parent not found with id", id);
+				// (In principle this could be useful for focus tracking,
+				// but right now it's only for child windows and menu popups, which should not be tracked for refocus,
+				// so I'm doing this after last_focus_by_container.set for now anyway.)
+				if (is_root) {
+					do {
+						// if (!newly_focused?.closest) {
+						// 	console.warn("what is this?", newly_focused);
+						// 	break;
+						// }
+						const waypoint = newly_focused?.closest?.("[data-semantic-parent]");
+						if (waypoint) {
+							const id = waypoint.dataset.semanticParent;
+							newly_focused = document.getElementById(id);
+							if (!newly_focused) {
+								console.warn("semantic parent not found with id", id);
+								break;
+							}
+						} else {
 							break;
 						}
-					} else {
-						break;
-					}
-				} while (true);
+					} while (true);
+				}
+				// Note: allowing showing window as focused from inside iframe (non-root) too,
+				// in order to handle clicking an iframe when the browser window was not previously focused (e.g. after reload)
 				if (newly_focused && newly_focused.closest?.(".window") == $w[0]) {
 					showAsFocused();
 					$w.bringToFront();
