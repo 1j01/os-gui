@@ -254,7 +254,7 @@ function $Window(options) {
 			if (event.target.tagName == "IFRAME") {
 				if (event.target.matches(":focus-within")) {
 					console.log("transitionstart: iframe is focused");
-					make_focus_in_out_handler($w.$content[0], event.target, true)({);
+					make_focus_in_out_handler($w.$content[0], event.target, true)({ target: event.target, type: "focusin" });
 				}
 			}
 		});
