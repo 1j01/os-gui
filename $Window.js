@@ -256,7 +256,7 @@ function $Window(options) {
 				const document = dom_container_el.ownerDocument ?? dom_container_el; // is this needed?
 
 				// console.log(`handling ${event.type} for container`, container_el);
-				let newlyFocused = event.type === "focusout" ? event.relatedTarget : event.target;
+				let newlyFocused = (event.type === "focusout" || event.type === "focus") ? event.relatedTarget : event.target;
 				if (event.type === "blur") {
 					newlyFocused = null; // only handle iframe
 				}
@@ -277,7 +277,7 @@ function $Window(options) {
 				const outside_or_at_exactly =
 					!newlyFocused ||
 					// contains() only works with DOM nodes (elements and documents), not window objects.
-					// Since dom_container_el is a DOM node, it will never have a Window inside of it.
+					// Since dom_container_el is a DOM node, it will never have a Window inside of it (ignoring iframes).
 					newlyFocused.window === newlyFocused.self || // is a Window object (cross-frame test)
 					!dom_container_el.contains(newlyFocused); // Note: node.contains(node) === true
 				const firmly_outside = outside_or_at_exactly && dom_container_el !== newlyFocused;
