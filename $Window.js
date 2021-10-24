@@ -278,7 +278,7 @@ function $Window(options) {
 					!newlyFocused ||
 					// contains() only works with DOM nodes (elements and documents), not window objects.
 					// Since dom_container_el is a DOM node, it will never have a Window inside of it (ignoring iframes).
-					newlyFocused.window === newlyFocused.self || // is a Window object (cross-frame test)
+					newlyFocused.window === newlyFocused || // is a Window object (cross-frame test)
 					!dom_container_el.contains(newlyFocused); // Note: node.contains(node) === true
 				const firmly_outside = outside_or_at_exactly && dom_container_el !== newlyFocused;
 
