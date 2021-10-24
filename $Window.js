@@ -260,31 +260,36 @@ function $Window(options) {
 				// this also operates as a flag to prevent multiple handlers from being added, or waiting for the iframe to load duplicately
 				focus_update_handlers_by_container.set(iframe, iframe_update_focus);
 
-				try {
-					const wait_for_iframe_load = (callback) => {
-						// Note: error may occur accessing iframe.contentDocument; this must be handled by the caller.
-						// This function must access it synchronously, to allow the caller to handle the error.
-						if (iframe.contentDocument.readyState == "complete") {
-							callback();
-						} else {
-							iframe.contentDocument.addEventListener("readystatechange", () => {
-								if (iframe.contentDocument.readyState == "complete") {
-									callback();
-								}
-							});
-						}
-					};
-					wait_for_iframe_load(() => {
-						console.log("adding focusin/focusout/blur/focus for iframe", iframe);
-						iframe.contentWindow.addEventListener("focusin", iframe_update_focus);
-						iframe.contentWindow.addEventListener("focusout", iframe_update_focus);
-						iframe.contentWindow.addEventListener("blur", iframe_update_focus);
-						iframe.contentWindow.addEventListener("focus", iframe_update_focus);
-						observeIframes(iframe.contentDocument);
-					});
-				} catch (error) {
-					console.error(error);
-				}
+				setTimeout(() => { // for iframe src to be set? Note try INSIDE setTimeout, not OUTSIDE.
+					try {
+						const wait_for_iframe_load = (callback) => {
+							// Note: error may occur accessing iframe.contentDocument; this must be handled by the caller.
+							// This function must access it synchronously, to allow the caller to handle the error.
+							if (iframe.contentDocument.readyState == "complete") {
+								callback();
+							} else {
+								// iframe.contentDocument.addEventListener("readystatechange", () => {
+								// 	if (iframe.contentDocument.readyState == "complete") {
+								// 		callback();
+								// 	}
+								// });
+								setTimeout(() => {
+									wait_for_iframe_load(callback);
+								}, 100);
+							}
+						};
+						wait_for_iframe_load(() => {
+							console.log("adding focusin/focusout/blur/focus for iframe", iframe);
+							iframe.contentWindow.addEventListener("focusin", iframe_update_focus);
+							iframe.contentWindow.addEventListener("focusout", iframe_update_focus);
+							iframe.contentWindow.addEventListener("blur", iframe_update_focus);
+							iframe.contentWindow.addEventListener("focus", iframe_update_focus);
+							observeIframes(iframe.contentDocument);
+						});
+					} catch (error) {
+						console.error(error);
+					}
+				}, 100);
 			}
 		}
 
