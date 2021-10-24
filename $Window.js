@@ -304,14 +304,15 @@ function $Window(options) {
 					const iframe = newlyFocused;
 					// console.log("iframe", iframe, onfocusin_by_container.has(iframe));
 					try {
+						const focus_in_iframe = iframe.contentDocument.activeElement;
 						if (
-							iframe.contentDocument.activeElement &&
-							iframe.contentDocument.activeElement.tagName !== "HTML" &&
-							iframe.contentDocument.activeElement.tagName !== "BODY" &&
-							iframe.contentDocument.activeElement !== dom_container_el // ?
+							focus_in_iframe &&
+							focus_in_iframe.tagName !== "HTML" &&
+							focus_in_iframe.tagName !== "BODY" &&
+							focus_in_iframe !== dom_container_el // ?
 						) {
-							last_focus_by_container.set(iframe, iframe.contentDocument.activeElement);
-							debug_focus_tracking(iframe.contentDocument, iframe.contentDocument, iframe.contentDocument.activeElement, is_root);
+							last_focus_by_container.set(iframe, focus_in_iframe);
+							debug_focus_tracking(iframe.contentDocument, iframe.contentDocument, focus_in_iframe, is_root);
 						}
 						if (!focus_update_handlers_by_container.has(iframe)) {
 							console.log(`[${$w.title()}] (is_root=${is_root})`, "adding focusin/focusout/blur/focus for iframe");
