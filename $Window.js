@@ -247,7 +247,7 @@ function $Window(options) {
 		// and :focus/:focus-within doesn't work with iframes so we can't even do a hack with transitionstart.
 
 		// console.log("adding global focusin/focusout/blur/focus for window", $w[0].id);
-		const global_focus_update_handler = make_focus_in_out_handler($w.$content[0], true);
+		const global_focus_update_handler = make_focus_in_out_handler($w[0], true); // must be $w and not $content so semantic parent chain works, with [data-semantic-parent] pointing to the window not the content
 		window.addEventListener("focusin", global_focus_update_handler);
 		window.addEventListener("focusout", global_focus_update_handler);
 		window.addEventListener("blur", global_focus_update_handler);
@@ -317,8 +317,6 @@ function $Window(options) {
 		function make_focus_in_out_handler(logical_container_el, is_root) {
 			// In case of iframes, logical_container_el is the iframe, and container_node is the iframe's contentDocument.
 			// container_node is not a parameter here because it can change over time, may be an empty document before the iframe is loaded.
-
-			// console.log("make_focus_in_out_handler", logical_container_el, is_root);
 
 			return function handle_focus_in_out(event) {
 				const container_node = logical_container_el.tagName == "IFRAME" ? logical_container_el.contentDocument : logical_container_el;
@@ -408,8 +406,10 @@ function $Window(options) {
 						const waypoint = newly_focused?.closest?.("[data-semantic-parent]");
 						if (waypoint) {
 							const id = waypoint.dataset.semanticParent;
-							newly_focused = document.getElementById(id);
-							if (!newly_focused) {
+							const parent = waypoint.ownerDocument.getElementById(id);
+							console.log("following semantic parent, from", newly_focused, "\nto", parent, "\nvia", waypoint);
+							newly_focused = parent;
+							if (!parent) {
 								console.warn("semantic parent not found with id", id);
 								break;
 							}
@@ -418,9 +418,21 @@ function $Window(options) {
 						}
 					} while (true);
 				}
+
 				// Note: allowing showing window as focused from inside iframe (non-root) too,
 				// in order to handle clicking an iframe when the browser window was not previously focused (e.g. after reload)
-				if (!firmly_outside) {
+
+				// if (!firmly_outside) {
+				console.log(
+					newly_focused,
+					newly_focused.window !== newly_focused, // cross-frame test for Window object
+					container_node.contains(newly_focused)
+				);
+				if (
+					newly_focused &&
+					newly_focused.window !== newly_focused && // cross-frame test for Window object
+					container_node.contains(newly_focused)
+				) {
 					showAsFocused();
 					$w.bringToFront();
 					if (!is_root) {
