@@ -308,9 +308,9 @@ function $Window(options) {
 						if (
 							focus_in_iframe &&
 							focus_in_iframe.tagName !== "HTML" &&
-							focus_in_iframe.tagName !== "BODY" &&
-							focus_in_iframe !== dom_container_el // ?
+							focus_in_iframe.tagName !== "BODY"
 						) {
+							// last_focus_by_container.set(logical_container_el, iframe); // done above
 							last_focus_by_container.set(iframe, focus_in_iframe);
 							debug_focus_tracking(iframe.contentDocument, iframe.contentDocument, focus_in_iframe, is_root);
 						}
