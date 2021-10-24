@@ -242,11 +242,22 @@ function $Window(options) {
 		// global blur is needed, to show as focused when an iframe gets focus, because focusin/out doesn't fire at all in that case
 		// global focus is needed, to stop showing as focused when an iframe loses focus
 		// pretty ridiculous!!
+		// but we're not done yet.
+		// transitionstart is needed, to detect when an iframe is clicked before the document was ever focused!
 		// console.log("adding global focusin/focusout/blur/focus for window", $w[0].id);
 		window.addEventListener("focusin", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 		window.addEventListener("focusout", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 		window.addEventListener("blur", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 		window.addEventListener("focus", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
+		$w.$content[0].addEventListener("transitionstart", (event) => {
+			console.log("transitionstart", event);
+			if (event.target.tagName == "IFRAME") {
+				if (event.target.matches(":focus-within")) {
+					console.log("transitionstart: iframe is focused");
+					make_focus_in_out_handler($w.$content[0], event.target, true)({);
+				}
+			}
+		});
 		function make_focus_in_out_handler(logical_container_el, dom_container_el, is_root) {
 			// In case of iframes, logical_container_el is the iframe, and dom_container_el is the iframe's contentDocument.
 
@@ -261,7 +272,7 @@ function $Window(options) {
 					newly_focused = null; // only handle iframe
 				}
 
-				console.log(`[${$w.title()}] (is_root=${is_root})`, `newlyFocused is (preliminarily)`, element_to_string(newly_focused), `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
+				// console.log(`[${$w.title()}] (is_root=${is_root})`, `newlyFocused is (preliminarily)`, element_to_string(newly_focused), `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
 
 				// Iframes are stingy about focus events, so we need to check if focus is actually within an iframe.
 				if (
@@ -271,7 +282,7 @@ function $Window(options) {
 					!newly_focused // doesn't exist for security reasons in this case
 				) {
 					newly_focused = document.activeElement;
-					console.log(`[${$w.title()}] (is_root=${is_root})`, `newlyFocused is (actually)`, element_to_string(newly_focused));
+					// console.log(`[${$w.title()}] (is_root=${is_root})`, `newlyFocused is (actually)`, element_to_string(newly_focused));
 				}
 
 				const outside_or_at_exactly =
@@ -282,7 +293,7 @@ function $Window(options) {
 					!dom_container_el.contains(newly_focused); // Note: node.contains(node) === true
 				const firmly_outside = outside_or_at_exactly && dom_container_el !== newly_focused;
 
-				console.log(`[${$w.title()}] (is_root=${is_root})`, `outside_or_at_exactly=${outside_or_at_exactly}`, `firmly_outside=${firmly_outside}`);
+				// console.log(`[${$w.title()}] (is_root=${is_root})`, `outside_or_at_exactly=${outside_or_at_exactly}`, `firmly_outside=${firmly_outside}`);
 				if (firmly_outside && is_root) {
 					stopShowingAsFocused();
 				}
@@ -315,7 +326,7 @@ function $Window(options) {
 							debug_focus_tracking(iframe.contentDocument, iframe.contentDocument, focus_in_iframe, is_root);
 						}
 						if (!focus_update_handlers_by_container.has(iframe)) {
-							console.log(`[${$w.title()}] (is_root=${is_root})`, "adding focusin/focusout/blur/focus for iframe");
+							// console.log(`[${$w.title()}] (is_root=${is_root})`, "adding focusin/focusout/blur/focus for iframe");
 							const iframe_update_focus = make_focus_in_out_handler(iframe, iframe.contentDocument, false);
 							iframe.contentWindow.addEventListener("focusin", iframe_update_focus);
 							iframe.contentWindow.addEventListener("focusout", iframe_update_focus);

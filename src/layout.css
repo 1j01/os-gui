@@ -26,6 +26,23 @@
     contain: layout paint;
 }
 
+.window-content iframe {
+	transition: text-shadow 0.1s, word-spacing 0.1s
+}
+.window-content:focus-within iframe {
+	border: 5px solid #ff0000;
+	/* Hack: using a CSS transition to get a transitionstart event in lieu
+	of any real focus events for iframes in case that the browser window
+	is not focused and you click on an iframe */
+	/* Using a property that should have no visible effect; given that it's an iframe,
+	text-based properties should not be inherited */
+	text-shadow: 1px 1px 1px #000;
+}
+.window-content:not(:focus-within) iframe {
+	word-spacing: 1px
+}
+
+
 .os-window .window-titlebar,
 body > .window-titlebar {
 	display: flex;
