@@ -254,9 +254,7 @@ function $Window(options) {
 		window.addEventListener("focus", global_focus_update_handler);
 
 		function setupIframe(iframe) {
-			// console.log("setupIframe", iframe);
 			if (!focus_update_handlers_by_container.has(iframe)) {
-				// console.log("setting up iframe", iframe);
 				const iframe_update_focus = make_focus_in_out_handler(iframe, false);
 				// this also operates as a flag to prevent multiple handlers from being added, or waiting for the iframe to load duplicately
 				focus_update_handlers_by_container.set(iframe, iframe_update_focus);
@@ -419,15 +417,8 @@ function $Window(options) {
 					} while (true);
 				}
 
-				// Note: allowing showing window as focused from inside iframe (non-root) too,
+				// Note: allowing showing window as focused from listeners inside iframe (non-root) too,
 				// in order to handle clicking an iframe when the browser window was not previously focused (e.g. after reload)
-
-				// if (!firmly_outside) {
-				console.log(
-					newly_focused,
-					newly_focused.window !== newly_focused, // cross-frame test for Window object
-					container_node.contains(newly_focused)
-				);
 				if (
 					newly_focused &&
 					newly_focused.window !== newly_focused && // cross-frame test for Window object
