@@ -667,9 +667,9 @@ function $Window(options) {
 	var debug_svg_by_container = new Map();
 
 	const debug_focus_tracking = (document, container_el, descendant_el, is_root) => {
-		// if (!$Window.DEBUG_FOCUS) {
-		// 	return;
-		// }
+		if (!$Window.DEBUG_FOCUS) {
+			return;
+		}
 		let svg = debug_svg_by_container.get(container_el);
 		if (!svg) {
 			svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
