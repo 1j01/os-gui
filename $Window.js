@@ -253,13 +253,17 @@ function $Window(options) {
 		window.addEventListener("focus", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
 
 		function setupIframe(iframe) {
+			// console.log("setupIframe", iframe);
 			if (!focus_update_handlers_by_container.has(iframe)) {
+				// console.log("setting up iframe", iframe);
 				const iframe_update_focus = make_focus_in_out_handler(iframe, iframe.contentDocument, false);
 				// this also operates as a flag to prevent multiple handlers from being added, or waiting for the iframe to load duplicately
 				focus_update_handlers_by_container.set(iframe, iframe_update_focus);
 
 				try {
 					const wait_for_iframe_load = (callback) => {
+						debugger; // this makes it work (if the devtools are open); it's a heisenbug.
+						
 						// Note: error may occur accessing iframe.contentDocument; this must be handled by the caller.
 						// This function must access it synchronously, to allow the caller to handle the error.
 						if (iframe.contentDocument.readyState == "complete") {
