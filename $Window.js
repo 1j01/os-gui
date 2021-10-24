@@ -256,7 +256,7 @@ function $Window(options) {
 				const document = dom_container_el.ownerDocument ?? dom_container_el; // is this needed?
 
 				// console.log(`handling ${event.type} for container`, container_el);
-				let newly_focused = (event.type === "focusout" || event.type === "focus") ? event.relatedTarget : event.target;
+				let newly_focused = (event.type === "focusout" || event.type === "blur") ? event.relatedTarget : event.target;
 				if (event.type === "blur") {
 					newly_focused = null; // only handle iframe
 				}
