@@ -271,23 +271,23 @@ function $Window(options) {
 					!newlyFocused // doesn't exist for security reasons in this case
 				) {
 					newlyFocused = document.activeElement;
-					console.log(`is_root=${is_root}`, `newlyFocused is now considered to be`, element_to_string(newlyFocused));
+					console.log(`is_root=${is_root}`, `newlyFocused is (actually)`, element_to_string(newlyFocused));
 				}
-				if (
+
+				const outside_or_at_exactly =
 					!newlyFocused ||
-					// contains() only works with DOM elements and documents, not window objects
-					// document/window never needs to be tracked as focused, because it's the root and not something to refocus
+					// contains() only works with DOM nodes (elements and documents), not window objects.
+					// Since dom_container_el is a DOM node, it will never have a Window inside of it.
 					newlyFocused.window === newlyFocused.self || // is a Window object (cross-frame test)
-					newlyFocused.nodeName === "#document" || // is a Document object (cross-frame test)
-					dom_container_el === newlyFocused || // want to track focus WITHIN the container (node.contains(node) === true)
-					!dom_container_el.contains(newlyFocused)
-				) {
-					if (is_root) {
-						stopShowingAsFocused();
-					}
-					return; // must not track focus of anything outside the container
+					!dom_container_el.contains(newlyFocused); // Note: node.contains(node) === true
+				const firmly_outside = outside_or_at_exactly && dom_container_el !== newlyFocused;
+
+				console.log(`is_root=${is_root}`, `outside_or_at_exactly=${outside_or_at_exactly}`, `firmly_outside=${firmly_outside}`);
+				if (firmly_outside && is_root) {
+					stopShowingAsFocused();
 				}
 				if (
+					!outside_or_at_exactly &&
 					newlyFocused &&
 					newlyFocused.tagName !== "HTML" &&
 					newlyFocused.tagName !== "BODY" &&
@@ -297,7 +297,10 @@ function $Window(options) {
 					debug_focus_tracking(document, dom_container_el, newlyFocused, is_root);
 				}
 
-				if (newlyFocused?.tagName === "IFRAME") {
+				if (
+					!outside_or_at_exactly &&
+					newlyFocused?.tagName === "IFRAME"
+				) {
 					const iframe = newlyFocused;
 					// console.log("iframe", iframe, onfocusin_by_container.has(iframe));
 					try {
@@ -328,6 +331,9 @@ function $Window(options) {
 
 				if (!is_root) {
 					return; // the rest of the logic is for the window and not nested iframes
+					// (semantic parent stuff in principle could make sense for focus tracking,
+					// but right now it's used only for menus which shouldn't be tracked for refocusing
+					// and which can close easily for that matter.)
 				}
 
 				// For child windows and menu popups, follow "semantic parent" chain.
