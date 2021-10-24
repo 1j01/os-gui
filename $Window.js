@@ -247,10 +247,11 @@ function $Window(options) {
 		// and :focus/:focus-within doesn't work with iframes so we can't even do a hack with transitionstart.
 
 		console.log("adding global focusin/focusout/blur/focus for window", $w[0].id);
-		window.addEventListener("focusin", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
-		window.addEventListener("focusout", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
-		window.addEventListener("blur", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
-		window.addEventListener("focus", make_focus_in_out_handler($w.$content[0], $w.$content[0], true));
+		const global_focus_update_handler = make_focus_in_out_handler($w.$content[0], $w.$content[0], true);
+		window.addEventListener("focusin", global_focus_update_handler);
+		window.addEventListener("focusout", global_focus_update_handler);
+		window.addEventListener("blur", global_focus_update_handler);
+		window.addEventListener("focus", global_focus_update_handler);
 
 		function setupIframe(iframe) {
 			// console.log("setupIframe", iframe);
