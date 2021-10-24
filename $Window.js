@@ -311,7 +311,7 @@ function $Window(options) {
 							iframe.contentDocument.activeElement !== dom_container_el // ?
 						) {
 							last_focus_by_container.set(iframe, iframe.contentDocument.activeElement);
-							debug_focus_tracking(iframe.contentDocument, iframe, iframe.contentDocument.activeElement, is_root);
+							debug_focus_tracking(iframe.contentDocument, iframe.contentDocument, iframe.contentDocument.activeElement, is_root);
 						}
 						if (!focus_update_handlers_by_container.has(iframe)) {
 							console.log(`[${$w.title()}] (is_root=${is_root})`, "adding focusin/focusout/blur/focus for iframe");
