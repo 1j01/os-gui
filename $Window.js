@@ -256,31 +256,31 @@ function $Window(options) {
 				const document = dom_container_el.ownerDocument ?? dom_container_el; // is this needed?
 
 				// console.log(`handling ${event.type} for container`, container_el);
-				let newlyFocused = (event.type === "focusout" || event.type === "focus") ? event.relatedTarget : event.target;
+				let newly_focused = (event.type === "focusout" || event.type === "focus") ? event.relatedTarget : event.target;
 				if (event.type === "blur") {
-					newlyFocused = null; // only handle iframe
+					newly_focused = null; // only handle iframe
 				}
 
-				console.log(`[${$w.title()}] (is_root=${is_root})`, `newlyFocused is (preliminarily)`, element_to_string(newlyFocused), `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
+				console.log(`[${$w.title()}] (is_root=${is_root})`, `newlyFocused is (preliminarily)`, element_to_string(newly_focused), `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
 
 				// Iframes are stingy about focus events, so we need to check if focus is actually within an iframe.
 				if (
 					document.activeElement &&
 					document.activeElement.tagName === "IFRAME" &&
 					(event.type === "focusout" || event.type === "blur") &&
-					!newlyFocused // doesn't exist for security reasons in this case
+					!newly_focused // doesn't exist for security reasons in this case
 				) {
-					newlyFocused = document.activeElement;
-					console.log(`[${$w.title()}] (is_root=${is_root})`, `newlyFocused is (actually)`, element_to_string(newlyFocused));
+					newly_focused = document.activeElement;
+					console.log(`[${$w.title()}] (is_root=${is_root})`, `newlyFocused is (actually)`, element_to_string(newly_focused));
 				}
 
 				const outside_or_at_exactly =
-					!newlyFocused ||
+					!newly_focused ||
 					// contains() only works with DOM nodes (elements and documents), not window objects.
 					// Since dom_container_el is a DOM node, it will never have a Window inside of it (ignoring iframes).
-					newlyFocused.window === newlyFocused || // is a Window object (cross-frame test)
-					!dom_container_el.contains(newlyFocused); // Note: node.contains(node) === true
-				const firmly_outside = outside_or_at_exactly && dom_container_el !== newlyFocused;
+					newly_focused.window === newly_focused || // is a Window object (cross-frame test)
+					!dom_container_el.contains(newly_focused); // Note: node.contains(node) === true
+				const firmly_outside = outside_or_at_exactly && dom_container_el !== newly_focused;
 
 				console.log(`[${$w.title()}] (is_root=${is_root})`, `outside_or_at_exactly=${outside_or_at_exactly}`, `firmly_outside=${firmly_outside}`);
 				if (firmly_outside && is_root) {
@@ -288,20 +288,20 @@ function $Window(options) {
 				}
 				if (
 					!outside_or_at_exactly &&
-					newlyFocused &&
-					newlyFocused.tagName !== "HTML" &&
-					newlyFocused.tagName !== "BODY" &&
-					newlyFocused !== dom_container_el
+					newly_focused &&
+					newly_focused.tagName !== "HTML" &&
+					newly_focused.tagName !== "BODY" &&
+					newly_focused !== dom_container_el
 				) {
-					last_focus_by_container.set(logical_container_el, newlyFocused); // overwritten for iframes below
-					debug_focus_tracking(document, dom_container_el, newlyFocused, is_root);
+					last_focus_by_container.set(logical_container_el, newly_focused); // overwritten for iframes below
+					debug_focus_tracking(document, dom_container_el, newly_focused, is_root);
 				}
 
 				if (
 					!outside_or_at_exactly &&
-					newlyFocused?.tagName === "IFRAME"
+					newly_focused?.tagName === "IFRAME"
 				) {
-					const iframe = newlyFocused;
+					const iframe = newly_focused;
 					// console.log("iframe", iframe, onfocusin_by_container.has(iframe));
 					try {
 						const focus_in_iframe = iframe.contentDocument.activeElement;
@@ -345,11 +345,11 @@ function $Window(options) {
 					// 	console.warn("what is this?", newlyFocused);
 					// 	break;
 					// }
-					const waypoint = newlyFocused?.closest?.("[data-semantic-parent]");
+					const waypoint = newly_focused?.closest?.("[data-semantic-parent]");
 					if (waypoint) {
 						const id = waypoint.dataset.semanticParent;
-						newlyFocused = document.getElementById(id);
-						if (!newlyFocused) {
+						newly_focused = document.getElementById(id);
+						if (!newly_focused) {
 							console.warn("semantic parent not found with id", id);
 							break;
 						}
@@ -357,7 +357,7 @@ function $Window(options) {
 						break;
 					}
 				} while (true);
-				if (newlyFocused && newlyFocused.closest?.(".window") == $w[0]) {
+				if (newly_focused && newly_focused.closest?.(".window") == $w[0]) {
 					showAsFocused();
 					$w.bringToFront();
 					return;
