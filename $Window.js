@@ -246,7 +246,7 @@ function $Window(options) {
 		// for that, we need to listen inside the iframe, because no events are fired at all outside in that case,
 		// and :focus/:focus-within doesn't work with iframes so we can't even do a hack with transitionstart.
 
-		console.log("adding global focusin/focusout/blur/focus for window", $w[0].id);
+		// console.log("adding global focusin/focusout/blur/focus for window", $w[0].id);
 		const global_focus_update_handler = make_focus_in_out_handler($w.$content[0], true);
 		window.addEventListener("focusin", global_focus_update_handler);
 		window.addEventListener("focusout", global_focus_update_handler);
@@ -280,7 +280,7 @@ function $Window(options) {
 							}
 						};
 						wait_for_iframe_load(() => {
-							console.log("adding focusin/focusout/blur/focus for iframe", iframe);
+							// console.log("adding focusin/focusout/blur/focus for iframe", iframe);
 							iframe.contentWindow.addEventListener("focusin", iframe_update_focus);
 							iframe.contentWindow.addEventListener("focusout", iframe_update_focus);
 							iframe.contentWindow.addEventListener("blur", iframe_update_focus);
@@ -332,7 +332,7 @@ function $Window(options) {
 					newly_focused = null; // only handle iframe
 				}
 
-				console.log(`[${$w.title()}] (is_root=${is_root})`, `newly_focused is (preliminarily)`, element_to_string(newly_focused), `\nlogical_container_el`, logical_container_el, `\ncontainer_node`, container_node, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
+				// console.log(`[${$w.title()}] (is_root=${is_root})`, `newly_focused is (preliminarily)`, element_to_string(newly_focused), `\nlogical_container_el`, logical_container_el, `\ncontainer_node`, container_node, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
 
 				// Iframes are stingy about focus events, so we need to check if focus is actually within an iframe.
 				if (
@@ -342,7 +342,7 @@ function $Window(options) {
 					!newly_focused // doesn't exist for security reasons in this case
 				) {
 					newly_focused = document.activeElement;
-					console.log(`[${$w.title()}] (is_root=${is_root})`, `newly_focused is (actually)`, element_to_string(newly_focused));
+					// console.log(`[${$w.title()}] (is_root=${is_root})`, `newly_focused is (actually)`, element_to_string(newly_focused));
 				}
 
 				const outside_or_at_exactly =
@@ -353,7 +353,7 @@ function $Window(options) {
 					!container_node.contains(newly_focused); // Note: node.contains(node) === true
 				const firmly_outside = outside_or_at_exactly && container_node !== newly_focused;
 
-				console.log(`[${$w.title()}] (is_root=${is_root})`, `outside_or_at_exactly=${outside_or_at_exactly}`, `firmly_outside=${firmly_outside}`);
+				// console.log(`[${$w.title()}] (is_root=${is_root})`, `outside_or_at_exactly=${outside_or_at_exactly}`, `firmly_outside=${firmly_outside}`);
 				if (firmly_outside && is_root) {
 					stopShowingAsFocused();
 				}
@@ -429,7 +429,7 @@ function $Window(options) {
 						// and might not need a lot of other logic frankly if I'm simulating focusin events
 						let el = logical_container_el;
 						while (el) {
-							console.log("dispatching focusin event for", el);
+							// console.log("dispatching focusin event for", el);
 							el.dispatchEvent(new Event("focusin", {
 								bubbles: true,
 								target: el,
@@ -804,8 +804,6 @@ function $Window(options) {
 	// Assumption: focusin comes after pointerdown/mousedown
 	// This is probably guaranteed, because you can prevent the default of focusing from pointerdown/mousedown
 	$G.on("focusin", (e) => {
-		// why so many focusin events?...
-		// console.log("focusin", e.target);
 		last_focus_by_container.set(window, e.target);
 		// debug_focus_tracking(document, window, e.target);
 	});
