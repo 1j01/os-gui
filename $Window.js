@@ -325,7 +325,7 @@ function $Window(options) {
 						}
 					} catch (e) {
 						console.warn("OS-GUI can't access iframe", e);
-						// @TODO: only generate this error once
+						// @TODO: only generate this error once, and say why it's trying to access the iframe
 					}
 				}
 
