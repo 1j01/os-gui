@@ -26,6 +26,12 @@
     contain: layout paint;
 }
 
+iframe:focus {
+	border: 50px solid #f00;
+}
+iframe:focus-within {
+	border: 50px solid #0f0;
+}
 .window-content iframe {
 	transition: text-shadow 0.1s, word-spacing 0.1s
 }
