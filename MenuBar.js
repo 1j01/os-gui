@@ -518,7 +518,7 @@ function MenuBar(menus) {
 					submenu_popups_by_menu_item_el.set(item_el, submenu_popup);
 					parent_item_el_by_popup_el.set(submenu_popup_el, item_el);
 					submenu_popup_el.dataset.semanticParent = menu_popup_el.id; // for $Window to understand the popup belongs to its window
-					menu_popup_el.setAttribute("aria-owns", `${menu_popup_el.getAttribute("aria-owns") || ""} ${submenu_popup_el}`);
+					menu_popup_el.setAttribute("aria-owns", `${menu_popup_el.getAttribute("aria-owns") || ""} ${submenu_popup_el.id}`);
 					submenu_popup_el.setAttribute("aria-labelledby", item_el.id);
 
 
@@ -718,7 +718,7 @@ function MenuBar(menus) {
 		menu_popup_el.dataset.semanticParent = menu_button_el.id; // for $Window to understand the popup belongs to its window
 		menu_button_el.setAttribute("aria-controls", menu_popup_el.id);
 		menu_popup_el.setAttribute("aria-labelledby", menu_button_el.id);
-		menus_el.setAttribute("aria-owns", `${menus_el.getAttribute("aria-owns") || ""} ${menu_popup_el}`);
+		menus_el.setAttribute("aria-owns", `${menus_el.getAttribute("aria-owns") || ""} ${menu_popup_el.id}`);
 
 		const update_position_from_containing_bounds = () => {
 			const rect = menu_button_el.getBoundingClientRect();
