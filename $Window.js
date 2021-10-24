@@ -688,44 +688,29 @@ function $Window(options) {
 		}
 		const descendant_rect = descendant_el.getBoundingClientRect?.() ?? { left: 0, top: 0, width: innerWidth, height: innerHeight, right: innerWidth, bottom: innerHeight };
 		const container_rect = container_el.getBoundingClientRect?.() ?? { left: 0, top: 0, width: innerWidth, height: innerHeight, right: innerWidth, bottom: innerHeight };
-		const descendant_rect_el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		const container_rect_el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		descendant_rect_el.setAttribute("x", descendant_rect.left);
-		descendant_rect_el.setAttribute("y", descendant_rect.top);
-		descendant_rect_el.setAttribute("width", descendant_rect.width);
-		descendant_rect_el.setAttribute("height", descendant_rect.height);
-		descendant_rect_el.setAttribute("stroke", "#f44");
-		descendant_rect_el.setAttribute("stroke-width", "2");
-		descendant_rect_el.setAttribute("fill", "none");
-		container_rect_el.setAttribute("x", container_rect.left);
-		container_rect_el.setAttribute("y", container_rect.top);
-		container_rect_el.setAttribute("width", container_rect.width);
-		container_rect_el.setAttribute("height", container_rect.height);
-		container_rect_el.setAttribute("stroke", "aqua");
-		container_rect_el.setAttribute("stroke-width", "2");
-		container_rect_el.setAttribute("fill", "none");
-		if (!is_root) {
-			descendant_rect_el.setAttribute("stroke-dasharray", "5,5");
-			container_rect_el.setAttribute("stroke-dasharray", "5,5");
+		// draw rectangles
+		for (const rect of [descendant_rect, container_rect]) {
+			const rect_el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+			rect_el.setAttribute("x", rect.left);
+			rect_el.setAttribute("y", rect.top);
+			rect_el.setAttribute("width", rect.width);
+			rect_el.setAttribute("height", rect.height);
+			rect_el.setAttribute("stroke", rect === descendant_rect ? "#f44" : "#f44");
+			rect_el.setAttribute("stroke-width", "2");
+			rect_el.setAttribute("fill", "none");
+			if (!is_root) {
+				rect_el.setAttribute("stroke-dasharray", "5,5");
+			}
+			svg.appendChild(rect_el);
+			const text_el = document.createElementNS("http://www.w3.org/2000/svg", "text");
+			text_el.setAttribute("x", rect.left);
+			text_el.setAttribute("y", rect.top + (rect === descendant_rect ? 20 : 0)); // align container text on outside, descendant text on inside
+			text_el.setAttribute("fill", rect === descendant_rect ? "#f44" : "aqua");
+			text_el.setAttribute("font-size", "20");
+			text_el.style.textShadow = "1px 1px 1px black, 0 0 10px black";
+			text_el.textContent = element_to_string(rect === descendant_rect ? descendant_el : container_el);
+			svg.appendChild(text_el);
 		}
-		svg.appendChild(descendant_rect_el);
-		svg.appendChild(container_rect_el);
-		descendant_el_label_el = document.createElementNS("http://www.w3.org/2000/svg", "text");
-		descendant_el_label_el.setAttribute("x", descendant_rect.left);
-		descendant_el_label_el.setAttribute("y", descendant_rect.top);
-		descendant_el_label_el.setAttribute("fill", "#f44");
-		descendant_el_label_el.setAttribute("font-size", "20");
-		descendant_el_label_el.style.textShadow = "1px 1px 1px black, 0 0 10px black";
-		descendant_el_label_el.textContent = element_to_string(descendant_el);
-		svg.appendChild(descendant_el_label_el);
-		container_el_label_el = document.createElementNS("http://www.w3.org/2000/svg", "text");
-		container_el_label_el.setAttribute("x", container_rect.left);
-		container_el_label_el.setAttribute("y", container_rect.top + 20);
-		container_el_label_el.setAttribute("fill", "aqua");
-		container_el_label_el.setAttribute("font-size", "20");
-		container_el_label_el.style.textShadow = "1px 1px 1px black, 0 0 10px black";
-		container_el_label_el.textContent = element_to_string(container_el);
-		svg.appendChild(container_el_label_el);
 		// draw lines connecting the two rects
 		const lines = [
 			[descendant_rect.left, descendant_rect.top, container_rect.left, container_rect.top],
