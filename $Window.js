@@ -659,7 +659,7 @@ function $Window(options) {
 	// Keep track of last focused elements per container,
 	// where containers include:
 	// - window (global focus tracking)
-	// - $w.$content[0] (window local, for restoring focus when refocusing window)
+	// - $w[0] (window-local, for restoring focus when refocusing window)
 	// - any iframes that are same-origin (for restoring focus when refocusing window)
 	// @TODO: share this Map between all windows? but clean it up when destroying windows
 	var last_focus_by_container = new Map();
