@@ -261,7 +261,7 @@ function $Window(options) {
 					newlyFocused = null; // only handle iframe
 				}
 
-				console.log(`is_root=${is_root}`, `newlyFocused is (preliminarily)`, element_to_string(newlyFocused), `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
+				console.log(`[${$w.title()}] (is_root=${is_root})`, `newlyFocused is (preliminarily)`, element_to_string(newlyFocused), `\nlogical_container_el`, logical_container_el, `\ndom_container_el`, dom_container_el, `\ndocument.activeElement`, document.activeElement, `\ndocument.hasFocus()`, document.hasFocus(), `\ndocument`, document);
 
 				// Iframes are stingy about focus events, so we need to check if focus is actually within an iframe.
 				if (
@@ -271,7 +271,7 @@ function $Window(options) {
 					!newlyFocused // doesn't exist for security reasons in this case
 				) {
 					newlyFocused = document.activeElement;
-					console.log(`is_root=${is_root}`, `newlyFocused is (actually)`, element_to_string(newlyFocused));
+					console.log(`[${$w.title()}] (is_root=${is_root})`, `newlyFocused is (actually)`, element_to_string(newlyFocused));
 				}
 
 				const outside_or_at_exactly =
@@ -282,7 +282,7 @@ function $Window(options) {
 					!dom_container_el.contains(newlyFocused); // Note: node.contains(node) === true
 				const firmly_outside = outside_or_at_exactly && dom_container_el !== newlyFocused;
 
-				console.log(`is_root=${is_root}`, `outside_or_at_exactly=${outside_or_at_exactly}`, `firmly_outside=${firmly_outside}`);
+				console.log(`[${$w.title()}] (is_root=${is_root})`, `outside_or_at_exactly=${outside_or_at_exactly}`, `firmly_outside=${firmly_outside}`);
 				if (firmly_outside && is_root) {
 					stopShowingAsFocused();
 				}
@@ -314,7 +314,7 @@ function $Window(options) {
 							debug_focus_tracking(iframe.contentDocument, iframe, iframe.contentDocument.activeElement, is_root);
 						}
 						if (!focus_update_handlers_by_container.has(iframe)) {
-							console.log(`is_root=${is_root}`, "adding focusin/focusout/blur/focus for iframe");
+							console.log(`[${$w.title()}] (is_root=${is_root})`, "adding focusin/focusout/blur/focus for iframe");
 							const iframe_update_focus = make_focus_in_out_handler(iframe, iframe.contentDocument, false);
 							iframe.contentWindow.addEventListener("focusin", iframe_update_focus);
 							iframe.contentWindow.addEventListener("focusout", iframe_update_focus);
