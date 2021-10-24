@@ -339,6 +339,10 @@ body > .window-titlebar {
 .menu-hotkey {
 	text-decoration: underline;
 }
+.menu-hotkey::selection {
+	/* prevent weird looking white underlines if menubar contained in a selection, possible in the demo (minute edge case) */
+    text-decoration-color: var(--MenuText) !important;
+}
 
 
 ::selection {
