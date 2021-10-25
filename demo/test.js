@@ -18,11 +18,6 @@ document.getElementById("no-focus-button").addEventListener("click", function (e
 	e.target.textContent = "Clicked Button";
 });
 
-// $('#full-height-checkbox').change(function () {
-// 	console.log('full-height changed');
-// 	$('body, html').css('height', this.checked ? '100%' : '');
-// }).trigger('change');
-
 let disable_an_item = false;
 const menus = {
 	"&Dialogs": [
@@ -148,7 +143,7 @@ const menus = {
 	})),
 };
 
-const $app_window_1 = new $Window({ title: "Application Window", resizable: true });
+const $app_window_1 = new $Window({ title: "Testing Area", resizable: true });
 $app_window_1.$content.append(new MenuBar(menus).element);
 $app_window_1.$content.append(`
 	<p>This is only some tests.</p>
@@ -156,8 +151,11 @@ $app_window_1.$content.append(`
 	<button id="test-tabstop-wrapping">Test Tabstop Wrapping</button>
 	<br>
 	<br>
-	<button id="test-delayed-focus">Focus (delayed)</button>
-	<button id="test-delayed-close">Close (delayed)</button>
+	<button id="test-focus-other">Focus Other</button>
+	<br>
+	<br>
+	<button id="test-delayed-focus">Focus Self (delayed)</button>
+	<button id="test-delayed-close">Close Self (delayed)</button>
 	<br>
 	<br>
 `);
@@ -166,8 +164,6 @@ $tool_window_1.$content.append(`
 	<p>This tool window has controls in it:</p>
 	<input type="text" placeholder="Text input">
 	<button>Button</button>
-	<p>Test that focus is shown on both the tool window and the parent window when focus lies within the tool window.</p>
-	<p>Also, tool windows probably shouldn't focus controls automatically on click, they're mainly supposed to keep the parent focused.</p>
 `);
 $app_window_1.on("closed", () => {
 	$tool_window_1.close();
@@ -176,9 +172,8 @@ const open_recursive_dialog = (x, y) => {
 	const $w = $Window({ title: "Recursive Dialog", resizable: false, maximizeButton: false, minimizeButton: false });
 	$w.$content.html("<p>I want more. More!</p>");
 	$w.$Button("Recurse", () => {
-		open_recursive_dialog(x + 20, y + 20);
-		x -= 40;
-		throw new Error("Don't close automatically please...");
+		open_recursive_dialog(x - 90, y + 100);
+		open_recursive_dialog(x + 90, y + 100);
 	}).focus().css({ width: 100 });
 	$w.$Button("Cancel", () => $w.close()).css({ width: 100 });
 	$w.css({
@@ -191,10 +186,13 @@ $app_window_1.find("#open-recursive-dialog").on("click", () => {
 	open_recursive_dialog(innerWidth / 2, innerHeight / 2);
 });
 $app_window_1.find("#test-delayed-focus").on("click", () => {
-	setTimeout(() => $tool_window_1.focus(), 1000);
+	setTimeout(() => $app_window_1.focus(), 1000);
 });
 $app_window_1.find("#test-delayed-close").on("click", () => {
 	setTimeout(() => $app_window_1.close(), 1000);
+});
+$app_window_1.find("#test-focus-other").on("click", () => {
+	$app_window_2.focus();
 });
 for (const trigger_style of ["jQuery", "native"]) {
 	for (const event_type of ["click", "pointerdown", "mousedown"]) {
@@ -315,8 +313,8 @@ $app_window_3.find("iframe").attr("srcdoc", `
 	margin: 30,
 });
 $app_window_3.css({
-	left: innerWidth * 0.2,
-	top: innerHeight * 0.3,
+	left: innerWidth * 0.05,
+	top: innerHeight * 0.5,
 	width: 500,
 	height: 400,
 });
@@ -325,3 +323,6 @@ $app_window_3.$content.css({
 	display: "flex",
 	flexDirection: "column",
 });
+
+$app_window_2.bringToFront();
+$app_window_1.bringToFront();

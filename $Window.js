@@ -815,15 +815,19 @@ function $Window(options) {
 		//   - Make sure to test this with another window previously focused
 		// - Simulated clicks (important for JS Paint's eye gaze and speech recognition modes)
 		// - (@TODO: Should clicking a child window focus the parent window?)
+		// - After potentially selecting text but not selecting anything
 		// It should NOT refocus when:
 		// - Clicking on a control in a different window
 		// - When other event handlers set focus
 		//   - Using the keyboard to focus something outside the window, such as a menu popup
-		//   - Clicking a control that focuses something outside the window (I don't have an example)
+		//   - Clicking a control that focuses something outside the window
+		//     - Button that opens another window (e.g. Recursive Dialog button in tests)
+		//     - Button that focuses a control in another window (e.g. Focus Other button in tests)
 		// - Trying to select text
 		// Also:
 		// - Clicking title bar button should not show a focus ring, or store it as the last focused control.
 		//   It should keep focus on whatever was focused before the title bar button was clicked.
+		// - Clicking in a window with no focusable controls should focus the window-content itself.
 
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
 		requestAnimationFrame(() => {
