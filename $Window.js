@@ -286,7 +286,7 @@ function $Window(options) {
 							observeIframes(iframe.contentDocument);
 						});
 					} catch (error) {
-						console.error(error);
+						warn_iframe_access(iframe, error);
 					}
 				}, 100);
 			}
@@ -385,8 +385,7 @@ function $Window(options) {
 							debug_focus_tracking(iframe.contentDocument, iframe.contentDocument, focus_in_iframe, is_root);
 						}
 					} catch (e) {
-						console.warn("OS-GUI can't access iframe", e);
-						// @TODO: only generate this error once, and say why it's trying to access the iframe
+						warn_iframe_access(iframe, e);
 					}
 				}
 
@@ -663,10 +662,22 @@ function $Window(options) {
 	// - window (global focus tracking)
 	// - $w[0] (window-local, for restoring focus when refocusing window)
 	// - any iframes that are same-origin (for restoring focus when refocusing window)
+	// @TODO: should these be WeakMaps? probably.
 	// @TODO: share this Map between all windows? but clean it up when destroying windows
 	var last_focus_by_container = new Map();
 	var focus_update_handlers_by_container = new Map();
 	var debug_svg_by_container = new Map();
+	var warned_iframes = new WeakSet();
+
+	const warn_iframe_access = (iframe, error) => {
+		if (warned_iframes.has(iframe)) {
+			return;
+		}
+		warned_iframes.add(iframe);
+		console.warn(`OS-GUI.js failed to access an iframe (${iframe.src}) for focus integration
+Only same-origin iframes can work with focus integration (showing window as focused, refocusing last focused controls).
+`, error);
+	};
 
 	const debug_focus_tracking = (document, container_el, descendant_el, is_root) => {
 		if (!$Window.DEBUG_FOCUS) {
@@ -742,7 +753,7 @@ function $Window(options) {
 				try {
 					refocus(last_focus);
 				} catch (e) {
-					console.warn("OS-GUI can't access iframe", e);
+					warn_iframe_access(last_focus, e);
 				}
 			}
 			return;
@@ -758,7 +769,7 @@ function $Window(options) {
 				try {
 					refocus($tabstops[0]); // not .contentDocument.body because we want the container tracked by last_focus_by_container
 				} catch (e) {
-					console.warn("OS-GUI can't access iframe", e);
+					warn_iframe_access($tabstops[0], e);
 				}
 			} else {
 				$tabstops[0].focus();
@@ -774,7 +785,7 @@ function $Window(options) {
 			try {
 				refocus(container_el.contentDocument.body);
 			} catch (e) {
-				console.warn("OS-GUI can't access iframe", e);
+				warn_iframe_access(container_el, e);
 			}
 		}
 	};
