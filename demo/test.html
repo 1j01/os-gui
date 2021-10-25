@@ -35,6 +35,9 @@
 			<p>Test that focus is shown on both the tool window and the parent window when focus lies within the tool window.</p>
 			<p>Test that controls in nested iframes get refocused when refocusing a window. Note that the innermost button is unstyled and may not get a focus ring unless you then use the keyboard.</p>
 			<p>Tool windows probably shouldn't focus controls automatically on click, they're mainly supposed to keep the parent focused. @TODO?</p>
+			<p>Clicking title bar button should not show a focus ring, or store it as the last focused control.
+				It should keep focus on whatever was focused before the title bar button was clicked.</p>
+			<p>Clicking in a window with no focusable controls should focus the window-content itself.</p>
 			<br><br><br>
 		</main>
 		<hr>

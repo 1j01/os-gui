@@ -824,10 +824,6 @@ function $Window(options) {
 		//     - Button that opens another window (e.g. Recursive Dialog button in tests)
 		//     - Button that focuses a control in another window (e.g. Focus Other button in tests)
 		// - Trying to select text
-		// Also:
-		// - Clicking title bar button should not show a focus ring, or store it as the last focused control.
-		//   It should keep focus on whatever was focused before the title bar button was clicked.
-		// - Clicking in a window with no focusable controls should focus the window-content itself.
 
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
 		requestAnimationFrame(() => {
