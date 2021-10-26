@@ -325,5 +325,41 @@ $app_window_3.$content.css({
 	flexDirection: "column",
 });
 
+
+const $app_window_4 = new $Window({
+	title: "Responsive Icon Test",
+	resizable: true,
+	// icon: $(`<img srcset="https://win98icons.alexmeub.com/icons/png/c_clamp-0.png 16w, https://win98icons.alexmeub.com/icons/png/c_clamp-1.png 32w">`)
+	icon: $(`<img srcset="https://win98icons.alexmeub.com/icons/png/camera3_network-5.png 16w, https://win98icons.alexmeub.com/icons/png/camera3_network-3.png 32w, https://win98icons.alexmeub.com/icons/png/camera3_network-4.png 48w">`)
+		[0],
+});
+$app_window_4.$content.append(`
+	<p>See different titlebar and icon sizes.</p>
+	<button id="size-8">8px</button>
+	<button id="size-16"><strong>16px</strong></button>
+	<button id="size-24">24px</button>
+	<button id="size-32"><strong>32px</strong></button>
+	<button id="size-48"><strong>48px</strong></button>
+	<button id="size-64">64px</button>
+	<p>Hm, if I zoom in/out it changes the source. Ideally it should ignore pixel density.</p>
+	<p>Also it won't "downgrade" to 16px once a larger size is loaded.</p>
+`);
+for (const button_el of $app_window_4.find("button")) {
+	button_el.addEventListener("click", () => {
+		$app_window_4.$titlebar.css({
+			height: parseInt(button_el.innerText) + 2,
+		});
+		$app_window_4.$icon.css({
+			width: parseInt(button_el.innerText),
+			height: parseInt(button_el.innerText),
+		});
+	});
+}
+$app_window_4.css({
+	left: innerWidth * 0.8,
+	top: innerHeight * 0.5,
+});
+
+
 $app_window_2.bringToFront();
 $app_window_1.bringToFront();

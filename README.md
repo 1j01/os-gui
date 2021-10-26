@@ -203,7 +203,7 @@ Returns a jQuery object with additional methods and properties (see below, after
 
 `options.title`: Sets the initial window caption.
 
-`options.icon`: Sets the icon of the window, assuming a global `TITLEBAR_ICON_SIZE` (which should generally be 16) and a global `$Icon` function which takes an icon identifier and size and returns an `img` (or other image-like element). I know this API sucks, I'm going to change it, don't worry. See [Specifying Icons](#specifying-icons) for more details.
+`options.icon`: Sets the icon of the window to an `<img>` element. You can use `src` or `srcset` to specify the image source, but note that srcset will change the icon based on the pixel density of the screen, and won't "downgrade" to a smaller image once a larger one is available.
 
 `options.toolWindow`: If `true`, the window will be a tool window, which means it will not have a minimize or maximize button, and it will be shown as always focused by default. It will also have a smaller close button in the default styles.
 
@@ -347,36 +347,6 @@ This event is emitted when the window is closed. It cannot be prevented.
 #### Event: `window-drag-start`
 
 Can be used to prevent dragging a window, with `event.preventDefault()`.
-
-### Specifying Icons
-
-⚠️ Bad API! Pointlessly indirect! ⚠️
-
-```js
-// var DESKTOP_ICON_SIZE = 32;
-// var TASKBAR_ICON_SIZE = 16;
-var TITLEBAR_ICON_SIZE = 16; // required global (if using options.icon)
-
-function getIconPath(name, size){
-	return "/images/icons/" + name + "-" + size + "x" + size + ".png";
-}
-
-function $Icon(name, size){ // required global (if using options.icon)
-	var $img = $("<img class='icon'/>");
-	$img.attr({
-		draggable: false,
-		src: getIconPath(name, size),
-		width: size,
-		height: size,
-	});
-	return $img;
-}
-
-$window = new $Window({
-	icon: "my-icon",
-});
-// this will load /images/icons/my-icon-16x16.png
-```
 
 ## License
 

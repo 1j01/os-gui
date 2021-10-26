@@ -120,9 +120,25 @@ function $Window(options) {
 	}
 
 	var $component = options.$component;
-	if (options.icon) {
-		$w.icon_name = options.icon;
-		$w.$icon = $Icon(options.icon, TITLEBAR_ICON_SIZE).prependTo($w.$titlebar);
+	if (options.icon && "tagName" in options.icon) {
+		$w.$icon = $(options.icon.cloneNode());
+		if (options.icon.tagName === "IMG") {
+			let icon_size = typeof TITLEBAR_ICON_SIZE !== "undefined" ? TITLEBAR_ICON_SIZE : 16;
+			$w.$icon.attr({
+				width: $w.$icon.attr("width") || icon_size,
+				height: $w.$icon.attr("height") || icon_size,
+			});
+		}
+		$w.icon_name = $w.$icon.data("icon-name");
+		$w.$icon.prependTo($w.$titlebar);
+	} else if (options.icon) {
+		// old terrible API using globals that you have to define
+		if (typeof $Icon !== "undefined" && typeof TITLEBAR_ICON_SIZE !== "undefined") {
+			$w.icon_name = options.icon;
+			$w.$icon = $Icon(options.icon, TITLEBAR_ICON_SIZE).prependTo($w.$titlebar);
+		} else {
+			throw new Error("Use {icon: img_element}");
+		}
 	}
 	if ($component) {
 		$w.addClass("component-window");
