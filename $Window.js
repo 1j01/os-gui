@@ -1033,7 +1033,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 
 	var drag_offset_x, drag_offset_y, drag_pointer_x, drag_pointer_y, drag_pointer_id;
 	var update_drag = (e) => {
-		if (drag_pointer_id === e.pointerId) {
+		if (drag_pointer_id === (e.pointerId ?? e.originalEvent.pointerId)) {
 			drag_pointer_x = e.clientX ?? drag_pointer_x;
 			drag_pointer_y = e.clientY ?? drag_pointer_y;
 		}
@@ -1068,13 +1068,13 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		drag_offset_y = e.clientY + scrollY - $w.position().top;
 		drag_pointer_x = e.clientX;
 		drag_pointer_y = e.clientY;
-		drag_pointer_id = e.pointerId;
+		drag_pointer_id = (e.pointerId ?? e.originalEvent.pointerId);
 		$G.on("pointermove", update_drag);
 		$G.on("scroll", update_drag);
 		$("body").addClass("dragging"); // for when mouse goes over an iframe
 	});
 	$G.on("pointerup pointercancel", (e) => {
-		if (e.pointerId !== drag_pointer_id) { return; }
+		if ((e.pointerId ?? e.originalEvent.pointerId) !== drag_pointer_id) { return; }
 		$G.off("pointermove", update_drag);
 		$G.off("scroll", update_drag);
 		$("body").removeClass("dragging");
@@ -1160,20 +1160,20 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				resize_offset_y = e.clientY + scrollY - rect.y - (y_axis === HANDLE_BOTTOM ? rect.height : 0);
 				resize_pointer_x = e.clientX;
 				resize_pointer_y = e.clientY;
-				resize_pointer_id = e.pointerId;
+				resize_pointer_id = (e.pointerId ?? e.originalEvent.pointerId);
 
 				$handle[0].setPointerCapture(resize_pointer_id); // keeps cursor consistent when mouse moves over other elements
 
 				// handle_pointermove(e); // was useful for checking that the offset is correct (should not do anything, if it's correct!)
 			});
 			function handle_pointermove(e) {
-				if (e.pointerId !== resize_pointer_id) { return; }
+				if ((e.pointerId ?? e.originalEvent.pointerId) !== resize_pointer_id) { return; }
 				resize_pointer_x = e.clientX;
 				resize_pointer_y = e.clientY;
 				update_resize();
 			}
 			function end_resize(e) {
-				if (e.pointerId !== resize_pointer_id) { return; }
+				if ((e.pointerId ?? e.originalEvent.pointerId) !== resize_pointer_id) { return; }
 				$G.off("pointermove", handle_pointermove);
 				$G.off("scroll", onscroll);
 				$("body").removeClass("dragging");
