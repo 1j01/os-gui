@@ -11,7 +11,10 @@ function element_to_string(element) {
 	if (element && "tagName" in element) {
 		return element.tagName.toLowerCase() +
 			(element.id ? "#" + element.id : "") +
-			(element.className ? "." + element.className.split(" ").join(".") : "");
+			(element.className ? "." + element.className.split(" ").join(".") : "") +
+			(element.src ? `[src="${element.src}"]` : "") + // Note: not escaped; may not actually work as a selector (but this is for debugging)
+			(element.srcdoc ? "[srcdoc]" : "") + // (srcdoc can be long)
+			(element.href ? `[href="${element.href}"]` : "");
 	} else if (element) {
 		return element.constructor.name;
 	} else {
@@ -680,13 +683,33 @@ function $Window(options) {
 	var warned_iframes = new WeakSet(); // prevent spamming console
 
 	const warn_iframe_access = (iframe, error) => {
-		if (warned_iframes.has(iframe)) {
-			return;
+		const log_template = (message) => [`OS-GUI.js failed to access an iframe (${element_to_string(iframe)}) for focus integration.
+${message}
+Original error:
+`, error];
+
+		let cross_origin;
+		if (iframe.srcdoc) {
+			cross_origin = false;
+		} else {
+			try {
+				const url = new URL(iframe.src);
+				cross_origin = url.origin !== window.location.origin; // shouldn't need to use iframe.ownerDocument.location.origin because intermediate iframes must be same-origin
+			} catch (parse_error) {
+				console.error(...log_template(`This may be a bug in OS-GUI. Is this a cross-origin iframe? Failed to parse URL (${parse_error}).`));
+				return;
+			}
 		}
-		warned_iframes.add(iframe);
-		console.warn(`OS-GUI.js failed to access an iframe (${iframe.src}) for focus integration
-Only same-origin iframes can work with focus integration (showing window as focused, refocusing last focused controls).
-`, error);
+		if (cross_origin) {
+			if (options.iframes?.ignoreCrossOrigin && !warned_iframes.has(iframe)) {
+				console.warn(...log_template(`Only same-origin iframes can work with focus integration (showing window as focused, refocusing last focused controls).
+If you can re-host the content on the same origin, you can resolve this and enable focus integration.
+You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}} to $Window.`));
+				warned_iframes.add(iframe);
+			}
+		} else {
+			console.error(...log_template(`This may be a bug in OS-GUI, since it doesn't appear to be a cross-origin iframe.`));
+		}
 	};
 
 	const debug_focus_tracking = (document, container_el, descendant_el, is_root) => {
