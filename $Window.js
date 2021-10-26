@@ -488,7 +488,7 @@ function $Window(options) {
 					$w.bringToFront();
 					if (!is_root) {
 						// trigger focusin events for iframes
-						// @TODO: probably don't need showAsFocused() here since it'll be handled externally,
+						// @TODO: probably don't need showAsFocused() here since it'll be handled externally (on this simulated focusin),
 						// and might not need a lot of other logic frankly if I'm simulating focusin events
 						let el = logical_container_el;
 						while (el) {
@@ -531,9 +531,9 @@ function $Window(options) {
 
 				// @TODO: make this metrically similar to what Windows 98 does
 				// @TODO: DRY! This is copied heavily from maximize()
-				// @TODO: should it show a maximize icon instead of an overlap icon if
-				// it's minimized and was maximized and thus will maximize when restoring,
-				// OR should it not maximize but restore the unmaximized state?
+				// @TODO: show restore icon in place of of minimize icon
+				// @TODO: after minimize (without taskbar) and maximize, restore should restore original position before minimize
+				// OR should it not maximize but restore the unmaximized state? I think I tested it but I forget.
 
 				const to_width = 150;
 				const spacing = 10;
