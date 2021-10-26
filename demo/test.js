@@ -370,7 +370,7 @@ $app_window_3.$content.css({
 
 
 const $app_window_4 = new $Window({
-	title: "Responsive Icon Test",
+	title: "Icon Size Test",
 	resizable: true,
 	icons: {
 		"16": "https://win98icons.alexmeub.com/icons/png/camera3_network-5.png",
@@ -386,8 +386,6 @@ $app_window_4.$content.append(`
 	<button id="size-32"><strong>32px</strong></button>
 	<button id="size-48"><strong>48px</strong></button>
 	<button id="size-64">64px</button>
-	<p>Hm, if I zoom in/out it changes the source. Ideally it should ignore pixel density.</p>
-	<p>Also it won't "downgrade" to 16px once a larger size is loaded.</p>
 `);
 for (const button_el of $app_window_4.find("button")) {
 	button_el.addEventListener("click", () => {
