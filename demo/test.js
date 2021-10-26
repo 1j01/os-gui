@@ -380,12 +380,12 @@ const $app_window_4 = new $Window({
 });
 $app_window_4.$content.append(`
 	<p>See different titlebar and icon sizes.</p>
-	<button id="size-8">8px</button>
-	<button id="size-16"><strong>16px</strong></button>
-	<button id="size-24">24px</button>
-	<button id="size-32"><strong>32px</strong></button>
-	<button id="size-48"><strong>48px</strong></button>
-	<button id="size-64">64px</button>
+	<button aria-pressed="false" class="toggle" id="size-8">8px</button>
+	<button aria-pressed="true" class="toggle selected" id="size-16"><strong>16px</strong></button>
+	<button aria-pressed="false" class="toggle" id="size-24">24px</button>
+	<button aria-pressed="false" class="toggle" id="size-32"><strong>32px</strong></button>
+	<button aria-pressed="false" class="toggle" id="size-48"><strong>48px</strong></button>
+	<button aria-pressed="false" class="toggle" id="size-64">64px</button>
 `);
 for (const button_el of $app_window_4.find("button")) {
 	button_el.addEventListener("click", () => {
@@ -393,6 +393,9 @@ for (const button_el of $app_window_4.find("button")) {
 			height: parseInt(button_el.innerText) + 2,
 		});
 		$app_window_4.setIconSize(parseInt(button_el.innerText));
+		$app_window_4.$content.find("button.selected").removeClass("selected").attr("aria-pressed", false);
+		button_el.classList.add("selected");
+		button_el.setAttribute("aria-pressed", true);
 	});
 }
 $app_window_4.css({
