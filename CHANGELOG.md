@@ -12,6 +12,10 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+### Changed
+- `applyCSSProperties` now takes an options object instead of an element as the second argument. Use `options.element` to specify the root element. Default is `document.documentElement` (i.e. `<html>`, `:root`).
+- `applyCSSProperties` now accepts a `CSSStyleDeclaration` interchangeably with a plain object of CSS properties, same as `renderThemeGraphics` does. I don't know if this is *useful*, but it's good to be consistent, and this doesn't cost much.
+
 ### Fixed
 - `aria-owns` attribute now correctly uses element IDs (not stringified elements like `[object HTMLDivElement]`)
 - Super minor: if a menu bar is contained in a selection, it will no longer show access key underlines as white. This bothered me. What can I say, I'm a compulsive [highlighter](https://xkcd.com/1271/).
@@ -22,6 +26,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   (For [98.js.org](https://98.js.org) this was a regression in v0.4.0 due to focus handling changes, but now it's handled in the library)
 - Focus can now be restored to the last focused control within (same-origin) iframes, even nested iframes! (when refocusing windows, e.g. clicking on the titlebar)
 - `options.iframes.ignoreCrossOrigin` to silence warnings about cross-origin iframes (which can't be seamlessly integrated).
+- `applyCSSProperties` now supports `options.recurseIntoIframes` (defaults to `false`).
 
 </details>
 

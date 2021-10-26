@@ -202,7 +202,7 @@ $(() => {
 		const fileText = await file.text();
 		const cssProperties = parseThemeFileString(fileText);
 		if (cssProperties) {
-			applyCSSProperties(cssProperties);
+			applyCSSProperties(cssProperties, { recurseIntoIframes: true });
 			console.log(makeThemeCSSFile(cssProperties));
 		}
 	}
@@ -233,6 +233,6 @@ $(() => {
 		$scrollbar_buttons.clone().css("--scrollbar-size", "30px"),
 	);
 	$(".scrollbar-demo").each((index, element) => {
-		applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), element);
+		applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), { element });
 	});
 });

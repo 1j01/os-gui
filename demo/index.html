@@ -311,7 +311,7 @@
 			</p>
 			<p>
 				The triangle graphics are rendered dynamically based on the theme colors and <code>--scrollbar-size</code> CSS variable.
-				To update the graphics, you need to call <code>applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), element)</code>,
+				To update the graphics, you need to call <code>applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), {element, recurseIntoIframes: true})</code>,
 				but graphics are prerendered at a default size in each theme's CSS file, so you shouldn't have to worry about it.
 			</p>
 			<div id="scrollbar-demos" style="height: 270px;">
