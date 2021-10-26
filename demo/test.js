@@ -143,12 +143,21 @@ const menus = {
 	})),
 };
 
-const $app_window_1 = new $Window({ title: "Testing Area", resizable: true });
+const $app_window_1 = new $Window({
+	title: "Testing Area", resizable: true,
+	icons: { 16: "https://win98icons.alexmeub.com/icons/png/application_hammer_grouppol-0.png" },
+});
 $app_window_1.$content.append(new MenuBar(menus).element);
 $app_window_1.$content.append(`
 	<p>This is only some tests.</p>
-	<button id="open-recursive-dialog">Recursive Dialog</button>
-	<button id="test-tabstop-wrapping">Test Tabstop Wrapping</button>
+	<button id="open-recursive-dialog">
+		<img src="https://win98icons.alexmeub.com/icons/png/accessibility_two_windows.png" width="32" height="32" style="vertical-align: middle;" />
+		Recursive Dialog
+	</button>
+	<button id="test-tabstop-wrapping">
+		<img src="https://win98icons.alexmeub.com/icons/png/accessibility_big_keys.png" width="32" height="32" style="vertical-align: middle;" />
+		Tabstop Wrapping
+	</button>
 	<br>
 	<br>
 	<button id="test-focus-other">Focus Other</button>
@@ -158,6 +167,9 @@ $app_window_1.$content.append(`
 	<button id="test-delayed-close">Close Self (delayed)</button>
 	<br>
 	<br>
+	<h3>Trigger mouse events on this window, delayed</h3>
+	<p>Click then quickly click elsewhere to see if it's refocused.</p>
+	<p>Currently "click" events don't refocus, but "mousedown" and "pointerdown" do.</p>
 `);
 const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_1 });
 $tool_window_1.$content.append(`
@@ -169,7 +181,13 @@ $app_window_1.on("closed", () => {
 	$tool_window_1.close();
 });
 const open_recursive_dialog = (x, y) => {
-	const $w = $Window({ title: "Recursive Dialog", resizable: false, maximizeButton: false, minimizeButton: false });
+	const $w = $Window({
+		title: "Recursive Dialog", resizable: false, maximizeButton: false, minimizeButton: false,
+		icons: {
+			32: "https://win98icons.alexmeub.com/icons/png/accessibility_two_windows.png",
+			16: "https://win98icons.alexmeub.com/icons/png/appwizard-1.png",
+		},
+	});
 	$w.$content.html("<p>I want more. More!</p>");
 	$w.$Button("Recurse", () => {
 		open_recursive_dialog(x - 90, y + 100);
@@ -210,7 +228,10 @@ for (const trigger_style of ["jQuery", "native"]) {
 						}));
 					}
 				}, 1000);
-			}),
+			}).prepend(
+				// https://win98icons.alexmeub.com/icons/png/mouse_ms-0.png
+				"<img src='https://win98icons.alexmeub.com/icons/png/mouse-2.png' width='16' height='16' style='vertical-align: middle;' />"
+			),
 			"<br>",
 		);
 	}
@@ -244,7 +265,16 @@ $app_window_1.find("#test-tabstop-wrapping").on("click", () => {
 		"<audio controls></audio>",
 		"<video controls></video>",
 	]) {
-		const $w = $Window({ title: "Tabstop Wrapping", resizable: false, maximizeButton: false, minimizeButton: false });
+		const $w = $Window({
+			title: "Tabstop Wrapping",
+			resizable: false,
+			maximizeButton: false,
+			minimizeButton: false,
+			// icons: {
+			// 	32: "https://win98icons.alexmeub.com/icons/png/accessibility_big_keys.png",
+			// 	16: "https://win98icons.alexmeub.com/icons/png/accessibility-5.png",
+			// },
+		});
 		$w.$content.html(`
 			<h2 style="font-size: 1em">First Control</h2>
 			${control_html}
@@ -276,7 +306,13 @@ $tool_window_1.css({
 // test hidden controls, disabled controls
 
 
-const $app_window_2 = new $Window({ title: "Selectable Text", resizable: true });
+const $app_window_2 = new $Window({
+	title: "Selectable Text",
+	resizable: true,
+	icons: {
+		16: "https://win98icons.alexmeub.com/icons/png/file_lines-1.png",
+	},
+});
 $app_window_2.$content.append(`
 	<p style="user-select: text; cursor: text">You should be able to select text in this window.</p>
 	<p style="user-select: text; cursor: text">I also have a control that should be default-focused but not if you select text.</p>
@@ -291,7 +327,14 @@ $app_window_2.css({
 });
 
 
-const $app_window_3 = new $Window({ title: "Iframe Window", resizable: true });
+const $app_window_3 = new $Window({
+	title: "Iframe Window", resizable: true,
+	icons: {
+		16: "https://win98icons.alexmeub.com/icons/png/html-4.png",
+		32: "https://win98icons.alexmeub.com/icons/png/html-3.png",
+		48: "https://win98icons.alexmeub.com/icons/png/html-5.png",
+	},
+});
 $app_window_3.$content.append(new MenuBar(menus).element);
 $app_window_3.$content.append(`
 	<iframe class="inset-deep"></iframe>
