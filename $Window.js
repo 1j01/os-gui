@@ -245,6 +245,11 @@ function $Window(options) {
 		// but it still doesn't handle the case where the browser window is not focused, and the user clicks an iframe directly.
 		// for that, we need to listen inside the iframe, because no events are fired at all outside in that case,
 		// and :focus/:focus-within doesn't work with iframes so we can't even do a hack with transitionstart.
+		// @TODO: simplify the strategy; I ended up piling a few strategies on top of each other, and the earlier ones may be redundant.
+		// In particular, 1. I ended up making it proactively inject into iframes, rather than when focused since there's a case where focus can't be detected otherwise.
+		// 2. I ended up simulating focusin events for iframes.
+		// I may want to rely on that, or, I may want to remove that and set up a refocus chain directly instead,
+		// avoiding refocus() which may interfere with drag operations in an iframe when focusing the iframe (e.g. clicking into Paint to draw or drag a sub-window).
 
 		// console.log("adding global focusin/focusout/blur/focus for window", $w[0].id);
 		const global_focus_update_handler = make_focus_in_out_handler($w[0], true); // must be $w and not $content so semantic parent chain works, with [data-semantic-parent] pointing to the window not the content
@@ -259,11 +264,13 @@ function $Window(options) {
 				// this also operates as a flag to prevent multiple handlers from being added, or waiting for the iframe to load duplicately
 				focus_update_handlers_by_container.set(iframe, iframe_update_focus);
 
-				setTimeout(() => { // for iframe src to be set? Note try INSIDE setTimeout, not OUTSIDE.
+				// @TODO: try removing setTimeout(s)
+				setTimeout(() => { // for iframe src to be set? I forget.
+					// Note: try must be INSIDE setTimeout, not outside, to work.
 					try {
 						const wait_for_iframe_load = (callback) => {
 							// Note: error may occur accessing iframe.contentDocument; this must be handled by the caller.
-							// This function must access it synchronously, to allow the caller to handle the error.
+							// To that end, this function must access it synchronously, to allow the caller to handle the error.
 							if (iframe.contentDocument.readyState == "complete") {
 								callback();
 							} else {
@@ -393,9 +400,12 @@ function $Window(options) {
 				// For child windows and menu popups, follow "semantic parent" chain.
 				// Menu popups and child windows aren't descendants of the window they belong to,
 				// but should keep the window shown as focused.
-				// (In principle this could be useful for focus tracking,
+				// (In principle this sort of feature could be useful for focus tracking*,
 				// but right now it's only for child windows and menu popups, which should not be tracked for refocus,
-				// so I'm doing this after last_focus_by_container.set for now anyway.)
+				// so I'm doing this after last_focus_by_container.set, for now anyway.)
+				// ((*: and it may even be surprising if it doesn't work, if one sees the attribute on menus and attempts to use it.
+				// But who's going to see that? The menus close so it's a pain to see the DOM structure! :P **))
+				// (((**: without window.debugKeepMenusOpen)))
 				if (is_root) {
 					do {
 						// if (!newly_focused?.closest) {
@@ -663,11 +673,11 @@ function $Window(options) {
 	// - $w[0] (window-local, for restoring focus when refocusing window)
 	// - any iframes that are same-origin (for restoring focus when refocusing window)
 	// @TODO: should these be WeakMaps? probably.
-	// @TODO: share this Map between all windows? but clean it up when destroying windows
-	var last_focus_by_container = new Map();
-	var focus_update_handlers_by_container = new Map();
-	var debug_svg_by_container = new Map();
-	var warned_iframes = new WeakSet();
+	// @TODO: share this Map between all windows? but clean it up when destroying windows? or would a WeakMap take care of that?
+	var last_focus_by_container = new Map(); // element to restore focus to, by container
+	var focus_update_handlers_by_container = new Map(); // event handlers by container; note use as a flag to avoid adding multiple handlers
+	var debug_svg_by_container = new Map(); // visualization
+	var warned_iframes = new WeakSet(); // prevent spamming console
 
 	const warn_iframe_access = (iframe, error) => {
 		if (warned_iframes.has(iframe)) {
@@ -951,6 +961,7 @@ Only same-origin iframes can work with focus integration (showing window as focu
 				break;
 			}
 			case 27: // Esc
+				// @TODO: make this optional, and probably default false
 				$w.close();
 				break;
 		}
