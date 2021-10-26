@@ -193,9 +193,15 @@ You should try to make the hotkeys unique, including between hotkeys and first l
 
 ### `$Window(options)`
 
-Creates a window component that can be dragged around and such, brought to the front when clicked\*
+Creates a window component that can be dragged around and such, brought to the front when clicked, and closed.
+Different types of windows can be created with different options.
+Note that focus wraps within a window's content.
 
-`options.title`: Shortcut to set the window title initially.
+Returns a jQuery object with additional methods and properties (see below, after options).
+
+<table><tr><td>
+
+`options.title`: Sets the initial window caption.
 
 `options.icon`: Sets the icon of the window, assuming a global `TITLEBAR_ICON_SIZE` (which should generally be 16) and a global `$Icon` function which takes an icon identifier and size and returns an `img` (or other image-like element). I know this API sucks, I'm going to change it, don't worry. See [Specifying Icons](#specifying-icons) for more details.
 
@@ -229,8 +235,25 @@ Creates a window component that can be dragged around and such, brought to the f
 
 `options.constrainRect(rect, x_axis, y_axis)`: A function that can be used to constrain the window to a particular rectangle. Takes and returns a rectangle object with `x`, `y`, `width`, and `height` properties. `x_axis` and `y_axis` define what is being dragged `-1` for left and top, `1` for right and bottom, and `0` for middle. Note that the window will always be constrained to not move past the minimum width and height.
 
-\*Iframes require special handling. There's an `$IframeWindow` helper in [98](https://github.com/1j01/98), but a better approach would use composition rather than inheritance.
-(You could want multiple iframes in a window, or just an iframe with other content around it, maybe an iframe that sometimes exists or not!)
+`options.iframes`: Contains options for controlling iframe integration.
+By default OS-GUI will try to enhance iframes with logic to:
+- [x] Show the window as focused when the iframe has focus (this even works for nested iframes!)
+- [x] Restore focus to controls in the iframe when refocusing the window (e.g. clicking the titlebar) (this even works for nested iframes!)
+- [ ] @TODO: propagate theme to iframes (i.e. when you drag a Windows `.theme` file, apply it to iframes too); 98.js.org handles this in its `$IframeWindow` helper so far.
+- [ ] @TODO: proxy mouse and keyboard events to and from the iframe, to allow for:
+	- [ ] Outer window to capture and prevent keyboard events
+		- Handle menu Alt+(access key) hotkeys when focus is in the iframe
+		- An obvious use case is a browser app that loads arbitrary interactive content, but reserves some keyboard shortcuts for its own use. That said, if you're implementing a browser inside a browser, you can't reserve any of the keyboard shortcuts that the real browser reserves! (Maybe an electron version of 98.js.org would be able to though.)
+	- [ ] Iframe to handle shortcuts when menus are focused
+	- [ ] Fixing issues where dragging inside the iframe (without needing pointer capture):
+		- [ ] Let the iframe to handle mouseup/pointerup events outside itself, so it knows when to end dragging.
+		- [ ] Let the iframe to handle mousemove/pointermove events outside itself, so it works when dragging outside the iframe (it's ugly if it stops at the border).
+		- [ ] At the start of a drag when the iframe was not previously focused, the gesture should be uninterrupted. (Does this need event proxying? Or just less nosy focus-handling (don't call focus() where not needed)? I think it currently focuses each parent browsing context before restoring focus inside the iframe, and it should really just figure out if it can focus an inner control, and IF NOT focus an outer one. And it shouldn't `focus()` what's already focused.)
+		- [ ] When dragging over elements outside the iframe, such as an overlapped window (even with an iframe inside it), the interacted iframe should be able to handle the drag. (It just needs a `.pointer-is-down iframe { pointer-events: none; }` and an override on the interacted iframe. I've done it in 98.js.org, easy. In addition to mousemove/pointermove proxying.)
+
+`options.iframes.ignoreCrossOrigin`: Set to true to silence cross-origin warnings for iframes within the window. Focus integration can't fully work with cross-origin iframes. There will be cases where the window is not shown as focused when clicking into the iframe, and focus can't be restored to controls within the iframe.
+
+</td></tr></table>
 
 Returns a jQuery object with additional methods and properties:
 
