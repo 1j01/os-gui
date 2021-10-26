@@ -329,9 +329,11 @@ $app_window_3.$content.css({
 const $app_window_4 = new $Window({
 	title: "Responsive Icon Test",
 	resizable: true,
-	// icon: $(`<img srcset="https://win98icons.alexmeub.com/icons/png/c_clamp-0.png 16w, https://win98icons.alexmeub.com/icons/png/c_clamp-1.png 32w">`)
-	icon: $(`<img srcset="https://win98icons.alexmeub.com/icons/png/camera3_network-5.png 16w, https://win98icons.alexmeub.com/icons/png/camera3_network-3.png 32w, https://win98icons.alexmeub.com/icons/png/camera3_network-4.png 48w">`)
-		[0],
+	icons: {
+		"16": "https://win98icons.alexmeub.com/icons/png/camera3_network-5.png",
+		"32": "https://win98icons.alexmeub.com/icons/png/camera3_network-3.png",
+		"48": "https://win98icons.alexmeub.com/icons/png/camera3_network-4.png",
+	},
 });
 $app_window_4.$content.append(`
 	<p>See different titlebar and icon sizes.</p>
@@ -349,10 +351,7 @@ for (const button_el of $app_window_4.find("button")) {
 		$app_window_4.$titlebar.css({
 			height: parseInt(button_el.innerText) + 2,
 		});
-		$app_window_4.$icon.css({
-			width: parseInt(button_el.innerText),
-			height: parseInt(button_el.innerText),
-		});
+		$app_window_4.setIconSize(parseInt(button_el.innerText));
 	});
 }
 $app_window_4.css({

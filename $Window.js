@@ -121,18 +121,10 @@ function $Window(options) {
 
 	var $component = options.$component;
 	if (options.icon && "tagName" in options.icon) {
-		$w.$icon = $(options.icon.cloneNode());
-		if (options.icon.tagName === "IMG") {
-			let icon_size = typeof TITLEBAR_ICON_SIZE !== "undefined" ? TITLEBAR_ICON_SIZE : 16;
-			$w.$icon.attr({
-				width: $w.$icon.attr("width") || icon_size,
-				height: $w.$icon.attr("height") || icon_size,
-			});
-		}
-		$w.icon_name = $w.$icon.data("icon-name");
-		$w.$icon.prependTo($w.$titlebar);
+		options.icons = { any: options.icon };
 	} else if (options.icon) {
 		// old terrible API using globals that you have to define
+		console.warn("DEPRECATED: use options.icons instead of options.icon");
 		if (typeof $Icon !== "undefined" && typeof TITLEBAR_ICON_SIZE !== "undefined") {
 			$w.icon_name = options.icon;
 			$w.$icon = $Icon(options.icon, TITLEBAR_ICON_SIZE).prependTo($w.$titlebar);
@@ -140,6 +132,44 @@ function $Window(options) {
 			throw new Error("Use {icon: img_element}");
 		}
 	}
+	$w.setIconSize = function (target_icon_size) {
+		$w.$icon?.remove();
+		if (options.icons) {
+			let icon_size;
+			if (options.icons[target_icon_size]) {
+				icon_size = target_icon_size;
+			} else if (options.icons["any"]) {
+				icon_size = "any";
+			} else {
+				const sizes = Object.keys(options.icons).filter(size => isFinite(size) && isFinite(parseFloat(size)));
+				sizes.sort((a, b) => Math.abs(a - target_icon_size) - Math.abs(b - target_icon_size));
+				icon_size = sizes[0];
+			}
+			if (icon_size) {
+				const icon = options.icons[icon_size];
+				if (icon.nodeType !== undefined) {
+					$w.$icon = $(icon.cloneNode());
+				} else {
+					$w.$icon = $(E("img"));
+					if (icon.srcset) {
+						$w.$icon.attr("srcset", icon.srcset);
+					} else {
+						$w.$icon.attr("src", icon.src || icon);
+					}
+					$w.$icon.attr("width", icon_size);
+					$w.$icon.attr("height", icon_size);
+					$w.$icon.css({
+						width: target_icon_size,
+						height: target_icon_size,
+					});
+				}
+				$w.$icon.prependTo($w.$titlebar);
+			}
+		}
+	};
+	// @TODO: automatically update icon size based on theme (with a CSS variable)
+	$w.setIconSize(16);
+
 	if ($component) {
 		$w.addClass("component-window");
 	}

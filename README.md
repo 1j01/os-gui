@@ -203,7 +203,7 @@ Returns a jQuery object with additional methods and properties (see below, after
 
 `options.title`: Sets the initial window caption.
 
-`options.icon`: Sets the icon of the window to an `<img>` element. You can use `src` or `srcset` to specify the image source, but note that srcset will change the icon based on the pixel density of the screen, and won't "downgrade" to a smaller image once a larger one is available.
+`options.icons`: Specifies the icon of the window at different sizes. Pass an object with keys that are sizes in pixels (or "any"), and values that are the URL of an image, or an object with `srcset` if you want support different pixel densities, or a DOM node if you want full control (e.g. to use an `<svg>` or a font icon or an emoji text node).
 
 `options.toolWindow`: If `true`, the window will be a tool window, which means it will not have a minimize or maximize button, and it will be shown as always focused by default. It will also have a smaller close button in the default styles.
 
