@@ -116,7 +116,12 @@ function $Window(options) {
 	}
 	if (options.parentWindow) {
 		options.parentWindow.addChildWindow($w);
-		$w[0].dataset.semanticParent = options.parentWindow[0].id;
+		// semantic parent logic is currently only suited for tool windows
+		// for dialog windows, it would make the dialog window not show as focused
+		// (alternatively, I could simply, when following the semantic parent chain, look for windows that are not tool windows)
+		if (options.toolWindow) {
+			$w[0].dataset.semanticParent = options.parentWindow[0].id;
+		}
 	}
 
 	var $component = options.$component;
@@ -874,7 +879,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			}
 			return;
 		}
-		if (options.parentWindow) {
+		if (options.toolWindow && options.parentWindow) {
 			options.parentWindow.triggerHandler("refocus-window");
 			return;
 		}
@@ -1400,6 +1405,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 
 		// TODO: support modals, which should focus what was focused before the modal was opened.
 		// (Note: must consider the element being removed from the DOM, or hidden, or made un-focusable)
+		// (Also: modals should steal focus / be brought to the front when focusing the parent window, and the parent window's content should be inert/uninteractive)
 		
 		// Focus next-topmost window
 		var $next_topmost = $($(".window:visible").toArray().sort((a, b) => b.style.zIndex - a.style.zIndex)[0]);
