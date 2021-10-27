@@ -440,6 +440,7 @@ function test_icon_sizes() {
 			"16": "https://win98icons.alexmeub.com/icons/png/camera3_network-5.png",
 			"32": "https://win98icons.alexmeub.com/icons/png/camera3_network-3.png",
 			"48": "https://win98icons.alexmeub.com/icons/png/camera3_network-4.png",
+			"64": $("<span/>").css({ fontSize: "50px" }).text("📷")[0],
 		},
 	});
 	$icon_test_window.$content.append(`
@@ -449,7 +450,8 @@ function test_icon_sizes() {
 		<button aria-pressed="false" class="toggle" id="size-24">24px</button>
 		<button aria-pressed="false" class="toggle" id="size-32"><strong>32px</strong></button>
 		<button aria-pressed="false" class="toggle" id="size-48"><strong>48px</strong></button>
-		<button aria-pressed="false" class="toggle" id="size-64">64px</button>
+		<button aria-pressed="false" class="toggle" id="size-64"><strong>64px</strong></button>
+		<button aria-pressed="false" class="toggle" id="size-128">128px</button>
 	`);
 	for (const button_el of $icon_test_window.find("button")) {
 		button_el.addEventListener("click", () => {

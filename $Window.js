@@ -153,7 +153,7 @@ function $Window(options) {
 			if (icon_size) {
 				const icon = options.icons[icon_size];
 				if (icon.nodeType !== undefined) {
-					$w.$icon = $(icon.cloneNode());
+					$w.$icon = $(icon.cloneNode(true));
 				} else {
 					$w.$icon = $(E("img"));
 					if (icon.srcset) {
