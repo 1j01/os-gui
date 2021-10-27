@@ -203,7 +203,7 @@ Returns a jQuery object with additional methods and properties (see below, after
 
 `options.title`: Sets the initial window caption.
 
-`options.icons`: Specifies the icon of the window at different sizes. Pass an object with keys that are sizes in pixels (or "any"), and values that are the URL of an image, or an object with `srcset` if you want support different pixel densities, or a DOM node if you want full control (e.g. to use an `<svg>` or a font icon or an emoji text node).
+`options.icons`: Specifies the icon of the window at different sizes. Pass an object with keys that are sizes in pixels (or "any"), and values that are the URL of an image, or an object with `srcset` if you want support different pixel densities, or a DOM node if you want full control (e.g. to use an `<svg>` or a font icon or an emoji).
 
 `options.toolWindow`: If `true`, the window will be a tool window, which means it will not have a minimize or maximize button, and it will be shown as always focused by default. It will also have a smaller close button in the default styles.
 
@@ -239,7 +239,9 @@ Returns a jQuery object with additional methods and properties (see below, after
 By default OS-GUI will try to enhance iframes with logic to:
 - [x] Show the window as focused when the iframe has focus (this even works for nested iframes!)
 - [x] Restore focus to controls in the iframe when refocusing the window (e.g. clicking the titlebar) (this even works for nested iframes!)
-- [ ] @TODO: propagate theme to iframes (i.e. when you drag a Windows `.theme` file, apply it to iframes too); 98.js.org handles this in its `$IframeWindow` helper so far.
+- [ ] Propagate theme to iframes (i.e. when you drag a Windows `.theme` file, apply it to iframes too)
+	- [x] Theme is propagated to iframes when using `applyCSSProperties(cssProperties, {element, recurseIntoIframes: true})`
+	- [ ] @TODO: apply theme for new iframes, not just existing ones (needs a place to store the current theme)
 - [ ] @TODO: proxy mouse and keyboard events to and from the iframe, to allow for:
 	- [ ] Outer window to capture and prevent keyboard events
 		- Handle menu Alt+(access key) hotkeys when focus is in the iframe
@@ -302,6 +304,24 @@ Brings the window to the front by setting its `z-index` to larger than any `z-in
 Sets the size of the window. Pass `{ innerWidth, innerHeight }` to specify the size in terms of the window content, or `{ outerWidth, outerHeight }` to specify the size including the window frame.
 
 *(This may be expanded in the future to allow setting the position as well...)*
+
+#### `setIcons(icons)`
+
+Changes the icon(s) of the window. `icons` is in the same format as `options.icons`.
+
+#### `setTitlebarIconSize(size)`
+
+Sets the size of the window's title bar icon, picking the closest size that's available.
+
+#### `getTitlebarIconSize()`
+
+Returns the size of the window's title bar icon.
+
+#### `getIconAtSize(size)`
+
+Picks the closest icon size that's available, and returns a unique DOM node (i.e. cloned).
+
+This can be used for representing the window in the taskbar.
 
 #### `$Button(text, action)`
 

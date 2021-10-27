@@ -258,6 +258,7 @@ function applyCSSProperties(cssProperties, options = {}) {
 				applyCSSProperties(cssProperties, { element: iframes[i].contentDocument.documentElement, recurseIntoIframes: true });
 			} catch (error) {
 				// ignore
+				// @TODO: share warning with $Window's iframe handling
 			}
 		}
 	}
