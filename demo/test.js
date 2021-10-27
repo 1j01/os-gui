@@ -1,15 +1,22 @@
 const full_height_checkbox = document.getElementById('full-height-checkbox');
 const rtl_checkbox = document.getElementById('rtl-checkbox');
+const debug_focus_checkbox = document.getElementById('debug-focus-checkbox');
 function update_full_height() {
 	document.body.style.height = document.documentElement.style.height = full_height_checkbox.checked ? "100%" : "";
 }
 function update_rtl() {
 	document.body.dir = rtl_checkbox.checked ? "rtl" : "ltr";
 }
+function update_debug_focus() {
+	$Window.DEBUG_FOCUS = debug_focus_checkbox.checked;
+}
+
 full_height_checkbox.addEventListener('change', update_full_height);
 rtl_checkbox.addEventListener('change', update_rtl);
+debug_focus_checkbox.addEventListener('change', update_debug_focus);
 update_full_height();
 update_rtl();
+update_debug_focus();
 
 document.getElementById("no-focus").addEventListener("mousedown", function (e) {
 	e.preventDefault();
