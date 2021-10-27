@@ -14,6 +14,8 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Deprecated
 - $Window's terrible `options.icon` API; use the new, versatile `options.icons` instead. No more ugly globals you have to define! Example: `new $Window({icons: {16: 'app-16x16.png', any: 'app-icon.svg'}})`
+- `setIconByID()`, use `setIcons(icons)` instead (with same format as `options.icons`)
+- `getIconName()`, use `$window.icons` instead perhaps, or avoid it entirely
 
 ### Changed
 - `applyCSSProperties` now takes an options object instead of an element as the second argument. Use `options.element` to specify the root element. Default is `document.documentElement` (i.e. `<html>`, `:root`).

@@ -190,6 +190,25 @@ function $Window(options) {
 	// @TODO: automatically update icon size based on theme (with a CSS variable)
 	$w.setIconSize(iconSize);
 
+	$w.getIconName = () => {
+		console.warn("DEPRECATED: use $w.icons object instead of $w.icon_name");
+		return $w.icon_name;
+	};
+	$w.setIconByID = (icon_name) => {
+		console.warn("DEPRECATED: use $w.setIcons(icons) instead of $w.setIconByID(icon_name)");
+		var old_$icon = $w.$icon;
+		$w.$icon = $Icon(icon_name, TITLEBAR_ICON_SIZE);
+		old_$icon.replaceWith($w.$icon);
+		$w.icon_name = icon_name;
+		$w.task?.updateIcon();
+		return $w;
+	};
+	$w.setIcons = (icons) => {
+		$w.icons = icons;
+		$w.setIconSize(iconSize);
+		$w.task?.updateIcon();
+	};
+
 	if ($component) {
 		$w.addClass("component-window");
 	}
@@ -1364,18 +1383,6 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	};
 	$w.getTitle = () => {
 		return $w.title();
-	};
-	$w.getIconName = () => {
-		return $w.icon_name;
-	};
-	$w.setIconByID = (icon_name) => {
-		// $w.$icon.attr("src", getIconPath(icon_name));
-		var old_$icon = $w.$icon;
-		$w.$icon = $Icon(icon_name, TITLEBAR_ICON_SIZE);
-		old_$icon.replaceWith($w.$icon);
-		$w.icon_name = icon_name;
-		$w.task.updateIcon();
-		return $w;
 	};
 	$w.animateTitlebar = (from, to, callback = () => { }) => {
 		// flying titlebar animation
