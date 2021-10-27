@@ -18,6 +18,12 @@ document.getElementById("no-focus-button").addEventListener("click", function (e
 	e.target.textContent = "Clicked Button";
 });
 
+let $main_test_window;
+let $tool_window_1;
+let $selection_test_window;
+let $iframe_test_window;
+let $icon_test_window;
+
 let disable_an_item = false;
 const menus = {
 	"&Dialogs": [
@@ -143,7 +149,7 @@ const menus = {
 	})),
 };
 
-const $main_test_window = new $Window({
+$main_test_window = new $Window({
 	title: "Testing Area", resizable: true,
 	icons: { 16: "https://win98icons.alexmeub.com/icons/png/application_hammer_grouppol-0.png" },
 });
@@ -158,6 +164,18 @@ $main_test_window.$content.append(`
 		<img src="https://win98icons.alexmeub.com/icons/png/accessibility_big_keys.png" width="32" height="32" style="vertical-align: middle;" />
 		Tabstop Wrapping
 	</button>
+	<button id="test-iframes">
+		<img src="https://win98icons.alexmeub.com/icons/png/html-3.png" width="32" height="32" style="vertical-align: middle;" />
+		Iframes
+	</button>
+	<button id="test-selection">
+		<img src="https://win98icons.alexmeub.com/icons/png/file_lines-0.png" width="32" height="32" style="vertical-align: middle;" />
+		Selectable Text
+	</button>
+	<button id="test-icon-size">
+		<img src="https://win98icons.alexmeub.com/icons/png/camera3_network-3.png" width="32" height="32" style="vertical-align: middle;" />
+		Icon Size
+	</button>
 	<br>
 	<br>
 	<button id="test-focus-other">Focus Other</button>
@@ -171,7 +189,7 @@ $main_test_window.$content.append(`
 	<p>Click then quickly click elsewhere to see if it's refocused.</p>
 	<p>Currently "click" events don't refocus, but "mousedown" and "pointerdown" do.</p>
 `);
-const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $main_test_window });
+$tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $main_test_window });
 $tool_window_1.$content.append(`
 	<p>This tool window has controls in it:</p>
 	<input type="text" placeholder="Text input">
@@ -237,7 +255,14 @@ for (const trigger_style of ["jQuery", "native"]) {
 	}
 }
 
-$main_test_window.find("#test-tabstop-wrapping").on("click", () => {
+// Radio buttons should be treated as a group with one tabstop.
+// If there's no selected ("checked") radio, it should still visit the group,
+// but if there is a selected radio in the group, it should skip all unselected radios in the group.
+
+// todo: test <label> surrounding or not surrounding <input> (do labels even factor in to tabstop wrapping?)
+// test hidden controls, disabled controls
+
+function test_tabstop_wrapping() {
 	// Test tabstop wrapping by creating many windows with different types of controls.
 	let x = 0;
 	let y = 300;
@@ -290,7 +315,7 @@ $main_test_window.find("#test-tabstop-wrapping").on("click", () => {
 			y += h + 10;
 		}
 	}
-});
+}
 
 $main_test_window.center();
 $tool_window_1.css({
@@ -298,111 +323,109 @@ $tool_window_1.css({
 	left: $main_test_window[0].offsetLeft,
 });
 
-// Radio buttons should be treated as a group with one tabstop.
-// If there's no selected ("checked") radio, it should still visit the group,
-// but if there is a selected radio in the group, it should skip all unselected radios in the group.
-
-// todo: test <label> surrounding or not surrounding <input> (do labels even factor in to tabstop wrapping?)
-// test hidden controls, disabled controls
-
-
-const $selection_test_window = new $Window({
-	title: "Selectable Text",
-	resizable: true,
-	icons: {
-		16: "https://win98icons.alexmeub.com/icons/png/file_lines-1.png",
-	},
-});
-$selection_test_window.$content.append(`
-	<p style="user-select: text; cursor: text">You should be able to select text in this window.</p>
-	<p style="user-select: text; cursor: text">I also have a control that should be default-focused but not if you select text.</p>
-	<button>Button</button>
-	<button class="default" disabled>Disabled Default Button</button>
-	<button class="default">True Default Button</button>
-	<p style="user-select: text; cursor: text">Make sure you test selecting text as the first thing you do upon loading the page.</p>
-`);
-$selection_test_window.css({
-	left: innerWidth * 0.3,
-	top: innerHeight * 0.75,
-});
-
-
-const $iframe_test_window = new $Window({
-	title: "Iframe Window", resizable: true,
-	icons: {
-		16: "https://win98icons.alexmeub.com/icons/png/html-4.png",
-		32: "https://win98icons.alexmeub.com/icons/png/html-3.png",
-		48: "https://win98icons.alexmeub.com/icons/png/html-5.png",
-	},
-});
-$iframe_test_window.$content.append(new MenuBar(menus).element);
-$iframe_test_window.$content.append(`
-	<iframe class="inset-deep"></iframe>
-`);
-$iframe_test_window.find("iframe").attr("srcdoc", `
-	<p>This is an iframe test.</p>
-	<p>You should be able to focus controls, and restore focus when focusing the window.</p>
-	<p>Focus should be restored after selecting menu items.</p>
-	<button>Button</button>
-	<textarea>Text Area</textarea>
-	<iframe class="inset-deep" srcdoc='<p>Nested iframe!</p><button>Button</button>' style="width: 200px; height: 100px;"></iframe>
-	<iframe class="inset-deep" src="https://urlme.me/true_story/cross-origin/can't_work.jpg" style="width: 400px; height: 400px;"></iframe>
-	<p>You should also be able to select text in this window.</p>
-	<link rel="stylesheet" href="../build/layout.css">
-	<link rel="stylesheet" href="../build/windows-98.css">
-`).css({
-	boxSizing: "border-box",
-	display: "flex",
-	flex: 1,
-	margin: 30,
-});
-$iframe_test_window.css({
-	left: innerWidth * 0.05,
-	top: innerHeight * 0.5,
-	width: 500,
-	height: 400,
-});
-$iframe_test_window.$content.css({
-	paddingTop: "2px",
-	display: "flex",
-	flexDirection: "column",
-});
-
-
-const $icon_test_window = new $Window({
-	title: "Icon Size Test",
-	resizable: true,
-	icons: {
-		"16": "https://win98icons.alexmeub.com/icons/png/camera3_network-5.png",
-		"32": "https://win98icons.alexmeub.com/icons/png/camera3_network-3.png",
-		"48": "https://win98icons.alexmeub.com/icons/png/camera3_network-4.png",
-	},
-});
-$icon_test_window.$content.append(`
-	<p>See different titlebar and icon sizes.</p>
-	<button aria-pressed="false" class="toggle" id="size-8">8px</button>
-	<button aria-pressed="true" class="toggle selected" id="size-16"><strong>16px</strong></button>
-	<button aria-pressed="false" class="toggle" id="size-24">24px</button>
-	<button aria-pressed="false" class="toggle" id="size-32"><strong>32px</strong></button>
-	<button aria-pressed="false" class="toggle" id="size-48"><strong>48px</strong></button>
-	<button aria-pressed="false" class="toggle" id="size-64">64px</button>
-`);
-for (const button_el of $icon_test_window.find("button")) {
-	button_el.addEventListener("click", () => {
-		$icon_test_window.$titlebar.css({
-			height: parseInt(button_el.innerText) + 2,
-		});
-		$icon_test_window.setIconSize(parseInt(button_el.innerText));
-		$icon_test_window.$content.find("button.selected").removeClass("selected").attr("aria-pressed", false);
-		button_el.classList.add("selected");
-		button_el.setAttribute("aria-pressed", true);
+function test_selectable_text() {
+	$selection_test_window = new $Window({
+		title: "Selectable Text",
+		resizable: true,
+		icons: {
+			16: "https://win98icons.alexmeub.com/icons/png/file_lines-1.png",
+			32: "https://win98icons.alexmeub.com/icons/png/file_lines-0.png",
+		},
+	});
+	$selection_test_window.$content.append(`
+		<p style="user-select: text; cursor: text">You should be able to select text in this window.</p>
+		<p style="user-select: text; cursor: text">I also have a control that should be default-focused but not if you select text.</p>
+		<button>Button</button>
+		<button class="default" disabled>Disabled Default Button</button>
+		<button class="default">True Default Button</button>
+		<p style="user-select: text; cursor: text">Make sure you test selecting text as the first thing you do upon loading the page.</p>
+	`);
+	$selection_test_window.css({
+		left: innerWidth * 0.3,
+		top: innerHeight * 0.75,
 	});
 }
-$icon_test_window.css({
-	left: innerWidth * 0.8,
-	top: innerHeight * 0.5,
-});
 
+function test_iframes() {
+	$iframe_test_window = new $Window({
+		title: "Iframe Window", resizable: true,
+		icons: {
+			16: "https://win98icons.alexmeub.com/icons/png/html-4.png",
+			32: "https://win98icons.alexmeub.com/icons/png/html-3.png",
+			48: "https://win98icons.alexmeub.com/icons/png/html-5.png",
+		},
+	});
+	$iframe_test_window.$content.append(new MenuBar(menus).element);
+	$iframe_test_window.$content.append(`
+		<iframe class="inset-deep"></iframe>
+	`);
+	$iframe_test_window.find("iframe").attr("srcdoc", `
+		<p>This is an iframe test.</p>
+		<p>You should be able to focus controls, and restore focus when focusing the window.</p>
+		<p>Focus should be restored after selecting menu items.</p>
+		<button>Button</button>
+		<textarea>Text Area</textarea>
+		<iframe class="inset-deep" srcdoc='<p>Nested iframe!</p><button>Button</button>' style="width: 200px; height: 100px;"></iframe>
+		<iframe class="inset-deep" src="https://urlme.me/true_story/cross-origin/can't_work.jpg" style="width: 400px; height: 400px;"></iframe>
+		<p>You should also be able to select text in this window.</p>
+		<link rel="stylesheet" href="../build/layout.css">
+		<link rel="stylesheet" href="../build/windows-98.css">
+	`).css({
+		boxSizing: "border-box",
+		display: "flex",
+		flex: 1,
+		margin: 30,
+	});
+	$iframe_test_window.css({
+		left: innerWidth * 0.05,
+		top: innerHeight * 0.5,
+		width: 500,
+		height: 400,
+	});
+	$iframe_test_window.$content.css({
+		paddingTop: "2px",
+		display: "flex",
+		flexDirection: "column",
+	});
+}
 
-$selection_test_window.bringToFront();
-$main_test_window.bringToFront();
+function test_icon_sizes() {
+	$icon_test_window = new $Window({
+		title: "Icon Size Test",
+		resizable: true,
+		icons: {
+			"16": "https://win98icons.alexmeub.com/icons/png/camera3_network-5.png",
+			"32": "https://win98icons.alexmeub.com/icons/png/camera3_network-3.png",
+			"48": "https://win98icons.alexmeub.com/icons/png/camera3_network-4.png",
+		},
+	});
+	$icon_test_window.$content.append(`
+		<p>See different titlebar and icon sizes.</p>
+		<button aria-pressed="false" class="toggle" id="size-8">8px</button>
+		<button aria-pressed="true" class="toggle selected" id="size-16"><strong>16px</strong></button>
+		<button aria-pressed="false" class="toggle" id="size-24">24px</button>
+		<button aria-pressed="false" class="toggle" id="size-32"><strong>32px</strong></button>
+		<button aria-pressed="false" class="toggle" id="size-48"><strong>48px</strong></button>
+		<button aria-pressed="false" class="toggle" id="size-64">64px</button>
+	`);
+	for (const button_el of $icon_test_window.find("button")) {
+		button_el.addEventListener("click", () => {
+			$icon_test_window.$titlebar.css({
+				height: parseInt(button_el.innerText) + 2,
+			});
+			$icon_test_window.setIconSize(parseInt(button_el.innerText));
+			$icon_test_window.$content.find("button.selected").removeClass("selected").attr("aria-pressed", false);
+			button_el.classList.add("selected");
+			button_el.setAttribute("aria-pressed", true);
+		});
+	}
+	$icon_test_window.css({
+		left: innerWidth * 0.8,
+		top: innerHeight * 0.5,
+	});
+}
+
+$main_test_window.find("#test-iframes").on("click", test_iframes);
+$main_test_window.find("#test-icon-size").on("click", test_icon_sizes);
+$main_test_window.find("#test-tabstop-wrapping").on("click", test_tabstop_wrapping);
+$main_test_window.find("#test-selection").on("click", test_selectable_text);
