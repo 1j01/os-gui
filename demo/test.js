@@ -179,13 +179,19 @@ $main_test_window.$content.append(`
 	<br>
 	<button id="test-focus-other">Focus Other</button> (Selectable Text window must be open)
 	<br>
-	<button id="test-delayed-focus">Focus Self (delayed)</button> (Click off the window quickly to see it)
+	<button id="test-delayed-focus">
+		Focus Self
+		<img alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
+	</button> (Click off the window quickly to see it)
 	<br>
-	<button id="test-delayed-close">Close Self (delayed)</button> (Test that menus close properly)
+	<button id="test-delayed-close">
+		Close Self
+		<img alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
+	</button> (Test that menus close properly)
 	<br>
 	<br>
 	<h3>Trigger mouse events on this window, delayed</h3>
-	<p>Click then quickly click elsewhere to see if it's refocused.</p>
+	<p>Click buttons then quickly click elsewhere to see if the window is refocused.</p>
 	<p>Currently "click" events don't refocus, but "mousedown" and "pointerdown" do.</p>
 `);
 $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $main_test_window });
@@ -235,7 +241,7 @@ for (const trigger_style of ["jQuery", "native"]) {
 	for (const event_type of ["click", "pointerdown", "mousedown"]) {
 		const $td = $("<td>").appendTo($tr).append(
 			$("<button>").text(
-				`Trigger ${event_type} (${trigger_style}, delayed)`
+				`Trigger ${event_type} (${trigger_style})`
 			).click(() => {
 				setTimeout(() => {
 					if (trigger_style === "jQuery") {
@@ -247,10 +253,11 @@ for (const trigger_style of ["jQuery", "native"]) {
 						}));
 					}
 				}, 1000);
-			}).prepend(
-				// https://win98icons.alexmeub.com/icons/png/mouse_ms-0.png
-				"<img src='https://win98icons.alexmeub.com/icons/png/mouse-2.png' width='16' height='16' style='vertical-align: middle;' />"
-			)
+			}).prepend(`
+				<img src='https://win98icons.alexmeub.com/icons/png/mouse-2.png' width='16' height='16' style='vertical-align: middle;' />
+			`).append(`
+				<img alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
+			`)
 		);
 	}
 }
