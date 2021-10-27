@@ -778,6 +778,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			svg.style.height = "100%";
 			svg.style.pointerEvents = "none";
 			svg.style.zIndex = "100000000";
+			svg.style.direction = "ltr"; // position labels correctly
 			debug_svg_by_container.set(container_el, svg);
 			debug_svgs_in_window.push(svg);
 			document.body.appendChild(svg);
@@ -797,7 +798,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		}
 		const descendant_rect = descendant_el.getBoundingClientRect?.() ?? { left: 0, top: 0, width: innerWidth, height: innerHeight, right: innerWidth, bottom: innerHeight };
 		const container_rect = container_el.getBoundingClientRect?.() ?? { left: 0, top: 0, width: innerWidth, height: innerHeight, right: innerWidth, bottom: innerHeight };
-		// draw rectangles
+		// draw rectangles with labels
 		for (const rect of [descendant_rect, container_rect]) {
 			const rect_el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 			rect_el.setAttribute("x", rect.left);
