@@ -200,9 +200,25 @@ $tool_window_1.$content.append(`
 	<input type="text" placeholder="Text input">
 	<button>Button</button>
 `);
-$main_test_window.on("close", () => {
+$main_test_window.on("close", (event) => {
 	console.log("Main test window close event");
-	// $tool_window_1.close();
+	event.preventDefault();
+	const $confirm_window = new $Window({
+		title: "Confirm Close",
+		parentWindow: $main_test_window,
+		resizable: false,
+		width: 400,
+		height: 200,
+		maximizeButton: false,
+		minimizeButton: false,
+	});
+	$confirm_window.$content.append(`
+		<p>Are you sure you want to close this window?</p>
+	`);
+	$confirm_window.$Button("Close", () => {
+		$main_test_window.close(true);
+	}).focus();
+	$confirm_window.$Button("Cancel");
 });
 $main_test_window.on("closed", () => {
 	console.log("Main test window closed");
