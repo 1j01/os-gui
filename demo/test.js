@@ -433,6 +433,7 @@ function test_iframes() {
 }
 
 function test_icon_sizes() {
+	const emoji_el = $("<span/>").text("📷")[0];
 	$icon_test_window = new $Window({
 		title: "Icon Size Test — and a Long Titlebar Text (also known as a window caption)",
 		resizable: true,
@@ -440,28 +441,34 @@ function test_icon_sizes() {
 			"16": "https://win98icons.alexmeub.com/icons/png/camera3_network-5.png",
 			"32": "https://win98icons.alexmeub.com/icons/png/camera3_network-3.png",
 			"48": "https://win98icons.alexmeub.com/icons/png/camera3_network-4.png",
-			"64": $("<span/>").css({ fontSize: "50px" }).text("📷")[0],
+			"any": emoji_el,
 		},
 	});
 	$icon_test_window.$content.append(`
 		<p>See different titlebar and icon sizes.</p>
-		<button aria-pressed="false" class="toggle" id="size-8">8px</button>
-		<button aria-pressed="true" class="toggle selected" id="size-16"><strong>16px</strong></button>
-		<button aria-pressed="false" class="toggle" id="size-24">24px</button>
-		<button aria-pressed="false" class="toggle" id="size-32"><strong>32px</strong></button>
-		<button aria-pressed="false" class="toggle" id="size-48"><strong>48px</strong></button>
-		<button aria-pressed="false" class="toggle" id="size-64"><strong>64px</strong></button>
-		<button aria-pressed="false" class="toggle" id="size-128">128px</button>
+		<p><label>
+			<input type="checkbox" id="any-size" checked>
+			Include "any" icon size (with an emoji 📷)
+		</label></p>
 	`);
-	for (const button_el of $icon_test_window.find("button")) {
-		button_el.addEventListener("click", () => {
+	$icon_test_window.$content.find("#any-size").on("change", (e) => {
+		$icon_test_window.icons.any = e.target.checked ? emoji_el : null;
+	});
+	for (const size of [8, 16, 24, 32, 48, 64, 128]) {
+		const initially_selected = $icon_test_window.getTitlebarIconSize() === size;
+		const $button = $(`<button class="toggle">${size}px</button>`)
+			.attr("aria-pressed", initially_selected)
+			.addClass(initially_selected ? "selected" : "")
+			.css("font-weight", $icon_test_window.icons[size] ? "bold" : "normal")
+			.appendTo($icon_test_window.$content);
+		$button.on("click", () => {
 			$icon_test_window.$titlebar.css({
-				height: parseInt(button_el.innerText) + 2,
+				height: size + 2,
 			});
-			$icon_test_window.setIconSize(parseInt(button_el.innerText));
+			emoji_el.style.fontSize = `${size * 0.9}px`; // before setIconSize() which clones it
+			$icon_test_window.setIconSize(size);
 			$icon_test_window.$content.find("button.selected").removeClass("selected").attr("aria-pressed", false);
-			button_el.classList.add("selected");
-			button_el.setAttribute("aria-pressed", true);
+			$button.addClass("selected").attr("aria-pressed", true);
 		});
 	}
 	$icon_test_window.css({
