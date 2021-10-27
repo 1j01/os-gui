@@ -20,6 +20,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Changed
 - `applyCSSProperties` now takes an options object instead of an element as the second argument. Use `options.element` to specify the root element. Default is `document.documentElement` (i.e. `<html>`, `:root`).
 - `applyCSSProperties` now accepts a `CSSStyleDeclaration` interchangeably with a plain object of CSS properties, same as `renderThemeGraphics` does. I don't know if this is *useful*, but it's good to be consistent, and this doesn't cost much.
+- Page scrolling is prevented when the window is re-focused. (Browsers by default scroll controls into view, and re-focusing the window focuses the last focused control.)
 
 ### Fixed
 - `$Window`'s `closed` event wasn't fired because the element was removed from the DOM.

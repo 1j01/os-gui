@@ -897,7 +897,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		const logical_container_el = container_el.matches(".window-content") ? $w[0] : container_el;
 		const last_focus = last_focus_by_container.get(logical_container_el);
 		if (last_focus) {
-			last_focus.focus();
+			last_focus.focus({ preventScroll: true });
 			if (last_focus.tagName === "IFRAME") {
 				try {
 					refocus(last_focus);
@@ -910,7 +910,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		const $tabstops = find_tabstops(container_el);
 		const $default = $tabstops.filter(".default");
 		if ($default.length) {
-			$default.focus();
+			$default[0].focus({ preventScroll: true });
 			return;
 		}
 		if ($tabstops.length) {
@@ -921,7 +921,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 					warn_iframe_access($tabstops[0], e);
 				}
 			} else {
-				$tabstops[0].focus();
+				$tabstops[0].focus({ preventScroll: true });
 			}
 			return;
 		}
@@ -929,7 +929,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			options.parentWindow.triggerHandler("refocus-window");
 			return;
 		}
-		container_el.focus();
+		container_el.focus({ preventScroll: true });
 		if (container_el.tagName === "IFRAME") {
 			try {
 				refocus(container_el.contentDocument.body);
