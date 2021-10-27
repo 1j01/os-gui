@@ -1164,6 +1164,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		// $w.applyBounds(); // Windows doesn't really try to keep windows on screen
 		// but you also can't really drag off of the desktop, whereas here you can drag to way outside the web page.
 		$w.bringTitleBarInBounds();
+		drag_pointer_id = -1; // prevent bringTitleBarInBounds from making the window go to top left when unminimizing window from taskbar after previously dragging it
 	});
 	$w.$titlebar.on("dblclick", (e) => {
 		if ($component) {
