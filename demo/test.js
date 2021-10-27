@@ -326,6 +326,7 @@ function test_tabstop_wrapping() {
 			x = 0;
 			y += h + 10;
 		}
+		$w.focus(); // (will focus the last one)
 	}
 }
 
@@ -356,6 +357,7 @@ function test_selectable_text() {
 		left: innerWidth * 0.3,
 		top: innerHeight * 0.75,
 	});
+	$selection_test_window.focus();
 }
 
 function test_iframes() {
@@ -387,7 +389,7 @@ function test_iframes() {
 		display: "flex",
 		flex: 1,
 		margin: 30,
-	});
+	}).focus();
 	$iframe_test_window.css({
 		left: innerWidth * 0.05,
 		top: innerHeight * 0.5,
@@ -435,6 +437,7 @@ function test_icon_sizes() {
 		left: innerWidth * 0.8,
 		top: innerHeight * 0.5,
 	});
+	$icon_test_window.focus();
 }
 
 $main_test_window.find("#test-iframes").on("click", test_iframes);
