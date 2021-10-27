@@ -20,6 +20,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `applyCSSProperties` now accepts a `CSSStyleDeclaration` interchangeably with a plain object of CSS properties, same as `renderThemeGraphics` does. I don't know if this is *useful*, but it's good to be consistent, and this doesn't cost much.
 
 ### Fixed
+- `$Window`'s `closed` event wasn't fired because the element was removed from the DOM.
 - `aria-owns` attribute now correctly uses element IDs (not stringified elements like `[object HTMLDivElement]`)
 - Super minor: if a menu bar is contained in a selection, it will no longer show access key underlines as white. This bothered me. What can I say, I'm a compulsive [highlighter](https://xkcd.com/1271/).
 - Handle older jQuery for `pointerId` (`(e.pointerId ?? e.originalEvent.pointerId)`); affects the cursor during window resizing (which uses `setPointerCapture` to keep a consistent cursor).

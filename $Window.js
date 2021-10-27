@@ -1370,12 +1370,14 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		if ($component) {
 			$component.detach();
 		}
-		$w.remove();
 		$w.closed = true;
 		$event_target.triggerHandler("closed");
 		$w.trigger("closed");
 		// TODO: change usages of "close" to "closed" where appropriate
-		// and probably rename the "close" event
+		// and probably rename the "close" event ("before[-]close"? "may-close"? "close-request"?)
+
+		// MUST be after any events are triggered!
+		$w.remove();
 
 		// TODO: support modals, which should focus what was focused before the modal was opened.
 		// (Note: must consider the element being removed from the DOM, or hidden, or made un-focusable)

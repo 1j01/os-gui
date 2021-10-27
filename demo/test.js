@@ -187,7 +187,7 @@ $main_test_window.$content.append(`
 	<button id="test-delayed-close">
 		Close Self
 		<img alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
-	</button> (Test that menus close properly)
+	</button> (Test that menus close properly; also, the tool window should close)
 	<br>
 	<br>
 	<h3>Trigger mouse events on this window, delayed</h3>
@@ -200,7 +200,12 @@ $tool_window_1.$content.append(`
 	<input type="text" placeholder="Text input">
 	<button>Button</button>
 `);
+$main_test_window.on("close", () => {
+	console.log("Main test window close event");
+	// $tool_window_1.close();
+});
 $main_test_window.on("closed", () => {
+	console.log("Main test window closed");
 	$tool_window_1.close();
 });
 const open_recursive_dialog = (x, y) => {
