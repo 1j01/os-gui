@@ -841,10 +841,22 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	let debug_animation_frame_id;
 	const animate_debug_focus_tracking = () => {
 		cancelAnimationFrame(debug_animation_frame_id);
+		if (!$Window.DEBUG_FOCUS) {
+			clean_up_debug_focus_tracking();
+			return;
+		}
 		debug_animation_frame_id = requestAnimationFrame(animate_debug_focus_tracking);
 		for (const svg of debug_svgs_in_window) {
 			update_debug_focus_tracking(svg);
 		}
+	};
+	const clean_up_debug_focus_tracking = () => {
+		cancelAnimationFrame(debug_animation_frame_id);
+		for (const svg of debug_svgs_in_window) {
+			svg.remove();
+		}
+		debug_svgs_in_window.length = 0;
+		debug_svg_by_container.clear();
 	};
 
 	const refocus = (container_el = $w.$content[0]) => {
@@ -1412,11 +1424,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		$next_topmost.triggerHandler("refocus-window");
 
 		// Cleanup
-		for (const svg of debug_svgs_in_window) {
-			svg.remove();
-		}
-		debug_svgs_in_window.length = 0;
-		cancelAnimationFrame(debug_animation_frame_id);
+		clean_up_debug_focus_tracking();
 	};
 	$w.closed = false;
 
