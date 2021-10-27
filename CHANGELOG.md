@@ -26,6 +26,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Super minor: if a menu bar is contained in a selection, it will no longer show access key underlines as white. This bothered me. What can I say, I'm a compulsive [highlighter](https://xkcd.com/1271/).
 - Handle older jQuery for `pointerId` (`(e.pointerId ?? e.originalEvent.pointerId)`); affects the cursor during window resizing (which uses `setPointerCapture` to keep a consistent cursor).
 - Fix restore from minimize (to taskbar) going to top left corner of screen (if the window had previously been dragged). (This does not apply to taskbarless minimization, which seems to be fine.)
+- Word wrap is now prevented in flying titlebar text.
 
 ### Added
 - Windows are now shown as focused when focus is within an iframe, even for nested iframes! Unfortunately this can't work for cross-origin iframes in all cases.
