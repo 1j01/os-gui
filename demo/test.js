@@ -143,12 +143,12 @@ const menus = {
 	})),
 };
 
-const $app_window_1 = new $Window({
+const $main_test_window = new $Window({
 	title: "Testing Area", resizable: true,
 	icons: { 16: "https://win98icons.alexmeub.com/icons/png/application_hammer_grouppol-0.png" },
 });
-$app_window_1.$content.append(new MenuBar(menus).element);
-$app_window_1.$content.append(`
+$main_test_window.$content.append(new MenuBar(menus).element);
+$main_test_window.$content.append(`
 	<p>This is only some tests.</p>
 	<button id="open-recursive-dialog">
 		<img src="https://win98icons.alexmeub.com/icons/png/accessibility_two_windows.png" width="32" height="32" style="vertical-align: middle;" />
@@ -171,13 +171,13 @@ $app_window_1.$content.append(`
 	<p>Click then quickly click elsewhere to see if it's refocused.</p>
 	<p>Currently "click" events don't refocus, but "mousedown" and "pointerdown" do.</p>
 `);
-const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_1 });
+const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $main_test_window });
 $tool_window_1.$content.append(`
 	<p>This tool window has controls in it:</p>
 	<input type="text" placeholder="Text input">
 	<button>Button</button>
 `);
-$app_window_1.on("closed", () => {
+$main_test_window.on("closed", () => {
 	$tool_window_1.close();
 });
 const open_recursive_dialog = (x, y) => {
@@ -200,29 +200,29 @@ const open_recursive_dialog = (x, y) => {
 	});
 };
 
-$app_window_1.find("#open-recursive-dialog").on("click", () => {
+$main_test_window.find("#open-recursive-dialog").on("click", () => {
 	open_recursive_dialog(innerWidth / 2, innerHeight / 2);
 });
-$app_window_1.find("#test-delayed-focus").on("click", () => {
-	setTimeout(() => $app_window_1.focus(), 1000);
+$main_test_window.find("#test-delayed-focus").on("click", () => {
+	setTimeout(() => $main_test_window.focus(), 1000);
 });
-$app_window_1.find("#test-delayed-close").on("click", () => {
-	setTimeout(() => $app_window_1.close(), 1000);
+$main_test_window.find("#test-delayed-close").on("click", () => {
+	setTimeout(() => $main_test_window.close(), 1000);
 });
-$app_window_1.find("#test-focus-other").on("click", () => {
-	$app_window_2.focus();
+$main_test_window.find("#test-focus-other").on("click", () => {
+	$selection_test_window.focus();
 });
 for (const trigger_style of ["jQuery", "native"]) {
 	for (const event_type of ["click", "pointerdown", "mousedown"]) {
-		$app_window_1.$content.append(
+		$main_test_window.$content.append(
 			$("<button>").text(
 				`Trigger ${event_type} (${trigger_style}, delayed)`
 			).click(() => {
 				setTimeout(() => {
 					if (trigger_style === "jQuery") {
-						$app_window_1.find("p").trigger(event_type);
+						$main_test_window.find("p").trigger(event_type);
 					} else {
-						$app_window_1.find("p")[0].dispatchEvent(new Event(event_type, {
+						$main_test_window.find("p")[0].dispatchEvent(new Event(event_type, {
 							bubbles: true,
 							cancelable: true,
 						}));
@@ -237,7 +237,7 @@ for (const trigger_style of ["jQuery", "native"]) {
 	}
 }
 
-$app_window_1.find("#test-tabstop-wrapping").on("click", () => {
+$main_test_window.find("#test-tabstop-wrapping").on("click", () => {
 	// Test tabstop wrapping by creating many windows with different types of controls.
 	let x = 0;
 	let y = 300;
@@ -292,10 +292,10 @@ $app_window_1.find("#test-tabstop-wrapping").on("click", () => {
 	}
 });
 
-$app_window_1.center();
+$main_test_window.center();
 $tool_window_1.css({
-	top: $app_window_1[0].offsetTop + $app_window_1[0].offsetHeight + 30,
-	left: $app_window_1[0].offsetLeft,
+	top: $main_test_window[0].offsetTop + $main_test_window[0].offsetHeight + 30,
+	left: $main_test_window[0].offsetLeft,
 });
 
 // Radio buttons should be treated as a group with one tabstop.
@@ -306,14 +306,14 @@ $tool_window_1.css({
 // test hidden controls, disabled controls
 
 
-const $app_window_2 = new $Window({
+const $selection_test_window = new $Window({
 	title: "Selectable Text",
 	resizable: true,
 	icons: {
 		16: "https://win98icons.alexmeub.com/icons/png/file_lines-1.png",
 	},
 });
-$app_window_2.$content.append(`
+$selection_test_window.$content.append(`
 	<p style="user-select: text; cursor: text">You should be able to select text in this window.</p>
 	<p style="user-select: text; cursor: text">I also have a control that should be default-focused but not if you select text.</p>
 	<button>Button</button>
@@ -321,13 +321,13 @@ $app_window_2.$content.append(`
 	<button class="default">True Default Button</button>
 	<p style="user-select: text; cursor: text">Make sure you test selecting text as the first thing you do upon loading the page.</p>
 `);
-$app_window_2.css({
+$selection_test_window.css({
 	left: innerWidth * 0.3,
 	top: innerHeight * 0.75,
 });
 
 
-const $app_window_3 = new $Window({
+const $iframe_test_window = new $Window({
 	title: "Iframe Window", resizable: true,
 	icons: {
 		16: "https://win98icons.alexmeub.com/icons/png/html-4.png",
@@ -335,11 +335,11 @@ const $app_window_3 = new $Window({
 		48: "https://win98icons.alexmeub.com/icons/png/html-5.png",
 	},
 });
-$app_window_3.$content.append(new MenuBar(menus).element);
-$app_window_3.$content.append(`
+$iframe_test_window.$content.append(new MenuBar(menus).element);
+$iframe_test_window.$content.append(`
 	<iframe class="inset-deep"></iframe>
 `);
-$app_window_3.find("iframe").attr("srcdoc", `
+$iframe_test_window.find("iframe").attr("srcdoc", `
 	<p>This is an iframe test.</p>
 	<p>You should be able to focus controls, and restore focus when focusing the window.</p>
 	<p>Focus should be restored after selecting menu items.</p>
@@ -356,20 +356,20 @@ $app_window_3.find("iframe").attr("srcdoc", `
 	flex: 1,
 	margin: 30,
 });
-$app_window_3.css({
+$iframe_test_window.css({
 	left: innerWidth * 0.05,
 	top: innerHeight * 0.5,
 	width: 500,
 	height: 400,
 });
-$app_window_3.$content.css({
+$iframe_test_window.$content.css({
 	paddingTop: "2px",
 	display: "flex",
 	flexDirection: "column",
 });
 
 
-const $app_window_4 = new $Window({
+const $icon_test_window = new $Window({
 	title: "Icon Size Test",
 	resizable: true,
 	icons: {
@@ -378,7 +378,7 @@ const $app_window_4 = new $Window({
 		"48": "https://win98icons.alexmeub.com/icons/png/camera3_network-4.png",
 	},
 });
-$app_window_4.$content.append(`
+$icon_test_window.$content.append(`
 	<p>See different titlebar and icon sizes.</p>
 	<button aria-pressed="false" class="toggle" id="size-8">8px</button>
 	<button aria-pressed="true" class="toggle selected" id="size-16"><strong>16px</strong></button>
@@ -387,22 +387,22 @@ $app_window_4.$content.append(`
 	<button aria-pressed="false" class="toggle" id="size-48"><strong>48px</strong></button>
 	<button aria-pressed="false" class="toggle" id="size-64">64px</button>
 `);
-for (const button_el of $app_window_4.find("button")) {
+for (const button_el of $icon_test_window.find("button")) {
 	button_el.addEventListener("click", () => {
-		$app_window_4.$titlebar.css({
+		$icon_test_window.$titlebar.css({
 			height: parseInt(button_el.innerText) + 2,
 		});
-		$app_window_4.setIconSize(parseInt(button_el.innerText));
-		$app_window_4.$content.find("button.selected").removeClass("selected").attr("aria-pressed", false);
+		$icon_test_window.setIconSize(parseInt(button_el.innerText));
+		$icon_test_window.$content.find("button.selected").removeClass("selected").attr("aria-pressed", false);
 		button_el.classList.add("selected");
 		button_el.setAttribute("aria-pressed", true);
 	});
 }
-$app_window_4.css({
+$icon_test_window.css({
 	left: innerWidth * 0.8,
 	top: innerHeight * 0.5,
 });
 
 
-$app_window_2.bringToFront();
-$app_window_1.bringToFront();
+$selection_test_window.bringToFront();
+$main_test_window.bringToFront();
