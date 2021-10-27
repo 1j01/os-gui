@@ -1,11 +1,12 @@
-# <img alt="os-gui.js" src="images/os-gui-logo.svg" height="200">
+# <a href="https://os-gui.js.org"><img alt="os-gui.js" src="images/os-gui-logo.svg" height="200"></a>
 
 A library for imitating operating system graphical user interfaces on the web
 
 Specifically, Windows 98 — for now at least; it could be expanded in the future.
 
 This library powers [98.js.org](https://98.js.org), a web-based version of Windows 98, including Paint, Notepad, Sound Recorder, and more.
-See the [demos](https://1j01.github.io/os-gui/) for more information.
+
+See the [homepage](https://os-gui.js.org/) for more information.
 
 
 ## Features
@@ -30,7 +31,7 @@ See the [demos](https://1j01.github.io/os-gui/) for more information.
 
 ## Demo
 
-See [a demo online here](https://1j01.github.io/os-gui/)
+See [demos online here](https://os-gui.js.org)
 
 ### See also
 
@@ -50,7 +51,7 @@ Menu bars do **not** require jQuery.
 
 ## Setup
 
-The library is not yet provided as a bundle (single file).
+The library is not (yet) provided as a single convenient file.
 
 You can either 1. download the repository as a ZIP file, 2. clone the repository, or 3. install the library as an [npm package](https://www.npmjs.com/package/os-gui).
 
