@@ -726,6 +726,7 @@ function $Window(options) {
 	var last_focus_by_container = new Map(); // element to restore focus to, by container
 	var focus_update_handlers_by_container = new Map(); // event handlers by container; note use as a flag to avoid adding multiple handlers
 	var debug_svg_by_container = new Map(); // visualization
+	var debug_svgs_in_window = []; // visualization cleanup
 	var warned_iframes = new WeakSet(); // prevent spamming console
 
 	const warn_iframe_access = (iframe, error) => {
@@ -773,6 +774,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			svg.style.pointerEvents = "none";
 			svg.style.zIndex = "100000000";
 			debug_svg_by_container.set(container_el, svg);
+			debug_svgs_in_window.push(svg);
 			document.body.appendChild(svg);
 		}
 		while (svg.lastChild) {
@@ -1385,6 +1387,12 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		// Focus next-topmost window
 		var $next_topmost = $($(".window:visible").toArray().sort((a, b) => b.style.zIndex - a.style.zIndex)[0]);
 		$next_topmost.triggerHandler("refocus-window");
+
+		// Cleanup
+		for (const svg of debug_svgs_in_window) {
+			svg.remove();
+		}
+		debug_svgs_in_window.length = 0;
 	};
 	$w.closed = false;
 
