@@ -3,11 +3,11 @@
 	<head>
 		<meta charset="utf-8">
 		<title>OS GUI — Windows 98 CSS+JS Library Demo</title>
-		<link href="../build/layout.css" rel="stylesheet" type="text/css">
-		<link href="../build/windows-98.css" rel="stylesheet" type="text/css">
-		<link href="../build/windows-default.css" rel="stylesheet" title="Windows Default" type="text/css">
-		<link href="../build/peggys-pastels.css" rel="alternate stylesheet" title="Peggy's Pastels" type="text/css">
-		<link rel="icon" href="../images/os-gui-favicon.png" type="image/png">
+		<link href="build/layout.css" rel="stylesheet" type="text/css">
+		<link href="build/windows-98.css" rel="stylesheet" type="text/css">
+		<link href="build/windows-default.css" rel="stylesheet" title="Windows Default" type="text/css">
+		<link href="build/peggys-pastels.css" rel="alternate stylesheet" title="Peggy's Pastels" type="text/css">
+		<link rel="icon" href="images/os-gui-favicon.png" type="image/png">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<style>
 			html,
@@ -106,7 +106,7 @@
 				letter-spacing: 0.25em;
 			}
 			#logo-heading > span {
-				background: url('../images/os-gui-logo.svg');
+				background: url('images/os-gui-logo.svg');
 				background-repeat: no-repeat;
 				background-size: contain;
 				background-position: center;
@@ -142,11 +142,11 @@
 		</style>
 	</head>
 	<body>
-		<script src="lib/jquery-3.3.1.js"></script>
-		<script src="../MenuBar.js"></script>
-		<script src="../$Window.js"></script>
-		<script src="../parse-theme.js"></script>
-		<script src="demo.js"></script>
+		<script src="demo/lib/jquery-3.3.1.js"></script>
+		<script src="MenuBar.js"></script>
+		<script src="$Window.js"></script>
+		<script src="parse-theme.js"></script>
+		<script src="demo/demo.js"></script>
 		<main>
 			<h1 id="logo-heading"><span>OS-GUI.JS</span></h1>
 			<nav>
@@ -388,20 +388,20 @@
 			</table>
 			<!-- <div style="padding: 2em" class="outset-deep">Here's perhaps a panel, styled with <code>class="outset-deep"</code></div> -->
 			<h2><a id="demos"></a>Crazy Animation Demo</h2>
-			<p>Check out the interactive <a href="./animation.html" id="spaceship-link">spaceship animation demo<span id="spaceship-graphic"></span></a></p>
+			<p>Check out the interactive <a href="demo/animation.html" id="spaceship-link">spaceship animation demo<span id="spaceship-graphic"></span></a></p>
 			<h2>A Physics Sandbox</h2>
 			<a href="https://1j01.github.io/pbj-sandbox/"><svg style="width: 100%; height: 150px;" id="physics-teaser"></svg></a>
 			<p><a href="https://1j01.github.io/pbj-sandbox/" style="font-size:1.4em">PBJ Sandbox</a> is a point-based physics toy where you can build structures out of springy connections. The interface uses os-gui.js, with two custom themes.</p>
 			<h2>A Full Web Desktop</h2>
-			<a href="https://98.js.org/"><img src="../images/98.js.svg" height="200"></a>
+			<a href="https://98.js.org/"><img src="images/98.js.svg" height="200"></a>
 			<p><a href="https://98.js.org/" style="font-size:1.4em">98.js.org</a> is a web-based recreation of the Windows 98 desktop, including Paint, Sound Recorder, Solitaire, and more.</p>
 			<h2>The project that started it all</h2>
-			<a href="https://jspaint.app"><img src="../images/jspaint.svg" height="200"></a>
+			<a href="https://jspaint.app"><img src="images/jspaint.svg" height="200"></a>
 			<p><a href="https://jspaint.app" style="font-size:1.4em">JS Paint</a> is a detailed clone of MS Paint from Windows 98, with many <a href="https://github.com/1j01/jspaint#readme">extra features</a>.</p>
 		</main>
 		<footer>
 			Open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
 		</footer>
-		<script async src="physics-teaser.js"></script>
+		<script async src="demo/physics-teaser.js"></script>
 	</body>
 </html>

@@ -5,7 +5,7 @@ A library for imitating operating system graphical user interfaces on the web
 Specifically, Windows 98 — for now at least; it could be expanded in the future.
 
 This library powers [98.js.org](https://98.js.org), a web-based version of Windows 98, including Paint, Notepad, Sound Recorder, and more.
-See the [demos](https://1j01.github.io/os-gui/demo/) for more information.
+See the [demos](https://1j01.github.io/os-gui/) for more information.
 
 
 ## Features
@@ -30,7 +30,7 @@ See the [demos](https://1j01.github.io/os-gui/demo/) for more information.
 
 ## Demo
 
-See [a demo online here](https://1j01.github.io/os-gui/demo/)
+See [a demo online here](https://1j01.github.io/os-gui/)
 
 ### See also
 
