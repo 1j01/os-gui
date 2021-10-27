@@ -726,7 +726,7 @@ function $Window(options) {
 	var last_focus_by_container = new Map(); // element to restore focus to, by container
 	var focus_update_handlers_by_container = new Map(); // event handlers by container; note use as a flag to avoid adding multiple handlers
 	var debug_svg_by_container = new Map(); // visualization
-	var debug_svgs_in_window = []; // visualization cleanup
+	var debug_svgs_in_window = []; // visualization
 	var warned_iframes = new WeakSet(); // prevent spamming console
 
 	const warn_iframe_access = (iframe, error) => {
@@ -777,6 +777,16 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			debug_svgs_in_window.push(svg);
 			document.body.appendChild(svg);
 		}
+		svg._container_el = container_el;
+		svg._descendant_el = descendant_el;
+		svg._is_root = is_root;
+		animate_debug_focus_tracking();
+	};
+	const update_debug_focus_tracking = (svg) => {
+		const container_el = svg._container_el;
+		const descendant_el = svg._descendant_el;
+		const is_root = svg._is_root;
+
 		while (svg.lastChild) {
 			svg.removeChild(svg.lastChild);
 		}
@@ -822,8 +832,15 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			line_el.setAttribute("stroke-width", "2");
 			svg.appendChild(line_el);
 		}
-	}
-
+	};
+	let debug_animation_frame_id;
+	const animate_debug_focus_tracking = () => {
+		cancelAnimationFrame(debug_animation_frame_id);
+		debug_animation_frame_id = requestAnimationFrame(animate_debug_focus_tracking);
+		for (const svg of debug_svgs_in_window) {
+			update_debug_focus_tracking(svg);
+		}
+	};
 
 	const refocus = (container_el = $w.$content[0]) => {
 		const logical_container_el = container_el.matches(".window-content") ? $w[0] : container_el;
@@ -1393,6 +1410,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			svg.remove();
 		}
 		debug_svgs_in_window.length = 0;
+		cancelAnimationFrame(debug_animation_frame_id);
 	};
 	$w.closed = false;
 
