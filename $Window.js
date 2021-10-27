@@ -8,7 +8,7 @@ function E(tagName) {
 function element_to_string(element) {
 	// returns a CSS-selector-like string for the given element
 	// if (element instanceof Element) { // doesn't work with different window.Element from iframes
-	if (element && "tagName" in element) {
+	if (typeof element === "object" && "tagName" in element) {
 		return element.tagName.toLowerCase() +
 			(element.id ? "#" + element.id : "") +
 			(element.className ? "." + element.className.split(" ").join(".") : "") +
@@ -125,21 +125,21 @@ function $Window(options) {
 	}
 
 	var $component = options.$component;
-	if (options.icon && "tagName" in options.icon) {
+	if (typeof options.icon === "object" && "tagName" in options.icon) {
 		options.icons = { any: options.icon };
 	} else if (options.icon) {
 		// old terrible API using globals that you have to define
-		console.warn("DEPRECATED: use options.icons instead of options.icon");
+		console.warn("DEPRECATED: use options.icons instead of options.icon, e.g. new $Window({icons: {16: 'app-16x16.png', any: 'app-icon.svg'}})");
 		if (typeof $Icon !== "undefined" && typeof TITLEBAR_ICON_SIZE !== "undefined") {
 			$w.icon_name = options.icon;
 			$w.$icon = $Icon(options.icon, TITLEBAR_ICON_SIZE).prependTo($w.$titlebar);
 		} else {
-			throw new Error("Use {icon: img_element}");
+			throw new Error("Use {icon: img_element} or {icons: {16: url_or_img_element}} options");
 		}
 	}
 	$w.setIconSize = function (target_icon_size) {
-		$w.$icon?.remove();
 		if (options.icons) {
+			$w.$icon?.remove();
 			let icon_size;
 			if (options.icons[target_icon_size]) {
 				icon_size = target_icon_size;
