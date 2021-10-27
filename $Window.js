@@ -140,37 +140,44 @@ function $Window(options) {
 	$w.setIconSize = function (target_icon_size) {
 		if (options.icons) {
 			$w.$icon?.remove();
-			let icon_size;
-			if (options.icons[target_icon_size]) {
-				icon_size = target_icon_size;
-			} else if (options.icons["any"]) {
-				icon_size = "any";
-			} else {
-				const sizes = Object.keys(options.icons).filter(size => isFinite(size) && isFinite(parseFloat(size)));
-				sizes.sort((a, b) => Math.abs(a - target_icon_size) - Math.abs(b - target_icon_size));
-				icon_size = sizes[0];
-			}
-			if (icon_size) {
-				const icon = options.icons[icon_size];
-				if (icon.nodeType !== undefined) {
-					$w.$icon = $(icon.cloneNode(true));
-				} else {
-					$w.$icon = $(E("img"));
-					if (icon.srcset) {
-						$w.$icon.attr("srcset", icon.srcset);
-					} else {
-						$w.$icon.attr("src", icon.src || icon);
-					}
-					$w.$icon.attr("width", icon_size);
-					$w.$icon.attr("height", icon_size);
-					$w.$icon.css({
-						width: target_icon_size,
-						height: target_icon_size,
-					});
-				}
-				$w.$icon.prependTo($w.$titlebar);
-			}
+			$w.$icon = $($w.getIconAtSize(target_icon_size));
+			$w.$icon.prependTo($w.$titlebar);
 		}
+	};
+	$w.getIconAtSize = function (target_icon_size) {
+		let icon_size;
+		if (options.icons[target_icon_size]) {
+			icon_size = target_icon_size;
+		} else if (options.icons["any"]) {
+			icon_size = "any";
+		} else {
+			const sizes = Object.keys(options.icons).filter(size => isFinite(size) && isFinite(parseFloat(size)));
+			sizes.sort((a, b) => Math.abs(a - target_icon_size) - Math.abs(b - target_icon_size));
+			icon_size = sizes[0];
+		}
+		if (icon_size) {
+			const icon = options.icons[icon_size];
+			let icon_element;
+			if (icon.nodeType !== undefined) {
+				icon_element = icon.cloneNode(true);
+			} else {
+				icon_element = E("img");
+				const $icon = $(icon_element);
+				if (icon.srcset) {
+					$icon.attr("srcset", icon.srcset);
+				} else {
+					$icon.attr("src", icon.src || icon);
+				}
+				$icon.attr("width", icon_size);
+				$icon.attr("height", icon_size);
+				$icon.css({
+					width: target_icon_size,
+					height: target_icon_size,
+				});
+			}
+			return icon_element;
+		}
+		return null;
 	};
 	// @TODO: automatically update icon size based on theme (with a CSS variable)
 	$w.setIconSize(16);
