@@ -138,13 +138,20 @@ function $Window(options) {
 		}
 	}
 	$w.icons = options.icons || {};
+	let iconSize = 16;
+	$w.setTitlebarIconSize =
 	$w.setIconSize = function (target_icon_size) {
 		if ($w.icons) {
 			$w.$icon?.remove();
 			$w.$icon = $($w.getIconAtSize(target_icon_size));
 			$w.$icon.prependTo($w.$titlebar);
 		}
+		iconSize = target_icon_size;
 	};
+	$w.getTitlebarIconSize = function () {
+		return iconSize;
+	};
+	// @TODO: this could be a static method, like OSGUI.getIconAtSize(icons, targetSize)
 	$w.getIconAtSize = function (target_icon_size) {
 		let icon_size;
 		if ($w.icons[target_icon_size]) {
@@ -181,7 +188,7 @@ function $Window(options) {
 		return null;
 	};
 	// @TODO: automatically update icon size based on theme (with a CSS variable)
-	$w.setIconSize(16);
+	$w.setIconSize(iconSize);
 
 	if ($component) {
 		$w.addClass("component-window");
