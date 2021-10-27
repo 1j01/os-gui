@@ -465,8 +465,8 @@ function test_icon_sizes() {
 			$icon_test_window.$titlebar.css({
 				height: size + 2,
 			});
-			emoji_el.style.fontSize = `${size * 0.9}px`; // before setIconSize() which clones it
-			$icon_test_window.setIconSize(size);
+			emoji_el.style.fontSize = `${size * 0.9}px`; // before setTitlebarIconSize() which clones it
+			$icon_test_window.setTitlebarIconSize(size);
 			$icon_test_window.$content.find("button.selected").removeClass("selected").attr("aria-pressed", false);
 			$button.addClass("selected").attr("aria-pressed", true);
 		});

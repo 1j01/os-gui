@@ -139,8 +139,7 @@ function $Window(options) {
 	}
 	$w.icons = options.icons || {};
 	let iconSize = 16;
-	$w.setTitlebarIconSize =
-	$w.setIconSize = function (target_icon_size) {
+	$w.setTitlebarIconSize = function (target_icon_size) {
 		if ($w.icons) {
 			$w.$icon?.remove();
 			$w.$icon = $($w.getIconAtSize(target_icon_size));
@@ -188,7 +187,7 @@ function $Window(options) {
 		return null;
 	};
 	// @TODO: automatically update icon size based on theme (with a CSS variable)
-	$w.setIconSize(iconSize);
+	$w.setTitlebarIconSize(iconSize);
 
 	$w.getIconName = () => {
 		console.warn("DEPRECATED: use $w.icons object instead of $w.icon_name");
@@ -205,7 +204,7 @@ function $Window(options) {
 	};
 	$w.setIcons = (icons) => {
 		$w.icons = icons;
-		$w.setIconSize(iconSize);
+		$w.setTitlebarIconSize(iconSize);
 		$w.task?.updateIcon();
 	};
 
