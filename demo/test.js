@@ -155,7 +155,6 @@ $main_test_window = new $Window({
 });
 $main_test_window.$content.append(new MenuBar(menus).element);
 $main_test_window.$content.append(`
-	<p>This is only some tests.</p>
 	<button id="open-recursive-dialog">
 		<img src="https://win98icons.alexmeub.com/icons/png/accessibility_two_windows.png" width="32" height="32" style="vertical-align: middle;" />
 		Recursive Dialog
@@ -178,11 +177,11 @@ $main_test_window.$content.append(`
 	</button>
 	<br>
 	<br>
-	<button id="test-focus-other">Focus Other</button>
+	<button id="test-focus-other">Focus Other</button> (Selectable Text window must be open)
 	<br>
+	<button id="test-delayed-focus">Focus Self (delayed)</button> (Click off the window quickly to see it)
 	<br>
-	<button id="test-delayed-focus">Focus Self (delayed)</button>
-	<button id="test-delayed-close">Close Self (delayed)</button>
+	<button id="test-delayed-close">Close Self (delayed)</button> (Test that menus close properly)
 	<br>
 	<br>
 	<h3>Trigger mouse events on this window, delayed</h3>
@@ -230,9 +229,11 @@ $main_test_window.find("#test-delayed-close").on("click", () => {
 $main_test_window.find("#test-focus-other").on("click", () => {
 	$selection_test_window.focus();
 });
+const $table = $("<table>").appendTo($main_test_window.$content);
 for (const trigger_style of ["jQuery", "native"]) {
+	const $tr = $("<tr>").appendTo($table);
 	for (const event_type of ["click", "pointerdown", "mousedown"]) {
-		$main_test_window.$content.append(
+		const $td = $("<td>").appendTo($tr).append(
 			$("<button>").text(
 				`Trigger ${event_type} (${trigger_style}, delayed)`
 			).click(() => {
@@ -249,8 +250,7 @@ for (const trigger_style of ["jQuery", "native"]) {
 			}).prepend(
 				// https://win98icons.alexmeub.com/icons/png/mouse_ms-0.png
 				"<img src='https://win98icons.alexmeub.com/icons/png/mouse-2.png' width='16' height='16' style='vertical-align: middle;' />"
-			),
-			"<br>",
+			)
 		);
 	}
 }
