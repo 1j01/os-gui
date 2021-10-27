@@ -368,6 +368,43 @@ This event is emitted when the window is closed. It cannot be prevented.
 
 Can be used to prevent dragging a window, with `event.preventDefault()`.
 
+### Theming
+
+`parse-theme.js` contains functions for parsing and applying themes.
+
+
+#### `parseThemeFileString(themeString)`
+
+Parses an INI file string into CSS properties.
+
+Automatically renders dynamic theme graphics, and includes them in the CSS properties.
+
+#### `applyCSSProperties(cssProperties, {element=document.documentElement, recurseIntoIframes=false})`
+
+`cssProperties` is an object with CSS properties and values. It can also be a `CSSStyleDeclaration` object.
+
+`element` is the element to apply the properties to.
+
+If `recurseIntoIframes` is true, then the properties will be applied to all `<iframe>` elements within the element as well.
+This only works with same-origin iframes.
+
+#### `renderThemeGraphics(cssProperties)`
+
+Can be used to update theme graphics (scrollbar icons, etc.) for a specific section of the page. Used by the demo to show variations.
+
+Returns CSS properties representing the rendered theme graphics.
+
+```js
+element.style.setProperty('--scrollbar-size', '30px');
+applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), { element });
+```
+
+#### `makeThemeCSSFile(cssProperties)`
+
+Exports a CSS file for a theme. Assumes that the theme graphics are already rendered.
+Includes a "generated file" comment.
+
+
 ## License
 
 Licensed under the [MIT License](https://opensource.org/licenses/MIT), see [LICENSE](LICENSE) for details.
