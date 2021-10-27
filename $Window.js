@@ -1367,7 +1367,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		const $eye_leader = $w.$titlebar.clone(true);
 		$eye_leader.find("button").remove();
 		$eye_leader.appendTo("body");
-		const duration_ms = 200; // TODO: how long?
+		const duration_ms = $Window.OVERRIDE_TRANSITION_DURATION ?? 200; // TODO: how long?
 		const duration_str = `${duration_ms}ms`;
 		$eye_leader.css({
 			transition: `left ${duration_str} linear, top ${duration_str} linear, width ${duration_str} linear, height ${duration_str} linear`,

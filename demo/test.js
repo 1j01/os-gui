@@ -1,6 +1,7 @@
 const full_height_checkbox = document.getElementById('full-height-checkbox');
 const rtl_checkbox = document.getElementById('rtl-checkbox');
 const debug_focus_checkbox = document.getElementById('debug-focus-checkbox');
+const override_transition_duration_checkbox = document.getElementById('override-transition-duration-checkbox');
 function update_full_height() {
 	document.body.style.height = document.documentElement.style.height = full_height_checkbox.checked ? "100%" : "";
 }
@@ -10,13 +11,18 @@ function update_rtl() {
 function update_debug_focus() {
 	$Window.DEBUG_FOCUS = debug_focus_checkbox.checked;
 }
+function update_override_animation_duration() {
+	$Window.OVERRIDE_TRANSITION_DURATION = override_transition_duration_checkbox.checked ? 5000 : undefined;
+}
 
 full_height_checkbox.addEventListener('change', update_full_height);
 rtl_checkbox.addEventListener('change', update_rtl);
 debug_focus_checkbox.addEventListener('change', update_debug_focus);
+override_transition_duration_checkbox.addEventListener('change', update_override_animation_duration);
 update_full_height();
 update_rtl();
 update_debug_focus();
+update_override_animation_duration();
 
 document.getElementById("no-focus").addEventListener("mousedown", function (e) {
 	e.preventDefault();
@@ -180,7 +186,7 @@ $main_test_window.$content.append(`
 	</button>
 	<button id="test-icon-size">
 		<img src="https://win98icons.alexmeub.com/icons/png/camera3_network-3.png" width="32" height="32" style="vertical-align: middle;" />
-		Icon Size
+		Icon Size + Long Title
 	</button>
 	<br>
 	<br>
@@ -428,7 +434,7 @@ function test_iframes() {
 
 function test_icon_sizes() {
 	$icon_test_window = new $Window({
-		title: "Icon Size Test",
+		title: "Icon Size Test — and a Long Titlebar Text (also known as a window caption)",
 		resizable: true,
 		icons: {
 			"16": "https://win98icons.alexmeub.com/icons/png/camera3_network-5.png",
