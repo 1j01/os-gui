@@ -137,8 +137,9 @@ function $Window(options) {
 			throw new Error("Use {icon: img_element} or {icons: {16: url_or_img_element}} options");
 		}
 	}
+	$w.icons = options.icons || {};
 	$w.setIconSize = function (target_icon_size) {
-		if (options.icons) {
+		if ($w.icons) {
 			$w.$icon?.remove();
 			$w.$icon = $($w.getIconAtSize(target_icon_size));
 			$w.$icon.prependTo($w.$titlebar);
@@ -146,17 +147,17 @@ function $Window(options) {
 	};
 	$w.getIconAtSize = function (target_icon_size) {
 		let icon_size;
-		if (options.icons[target_icon_size]) {
+		if ($w.icons[target_icon_size]) {
 			icon_size = target_icon_size;
-		} else if (options.icons["any"]) {
+		} else if ($w.icons["any"]) {
 			icon_size = "any";
 		} else {
-			const sizes = Object.keys(options.icons).filter(size => isFinite(size) && isFinite(parseFloat(size)));
+			const sizes = Object.keys($w.icons).filter(size => isFinite(size) && isFinite(parseFloat(size)));
 			sizes.sort((a, b) => Math.abs(a - target_icon_size) - Math.abs(b - target_icon_size));
 			icon_size = sizes[0];
 		}
 		if (icon_size) {
-			const icon = options.icons[icon_size];
+			const icon = $w.icons[icon_size];
 			let icon_element;
 			if (icon.nodeType !== undefined) {
 				icon_element = icon.cloneNode(true);

@@ -36,7 +36,8 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `applyCSSProperties` now supports `options.recurseIntoIframes` (defaults to `false`).
 - `$Window` option `icons` which can specify icons of different sizes. Pass an object with keys that are sizes in pixels (or "any"), and values that are the URL of an image, or an object with `srcset` if you want support different pixel densities, or a DOM node if you want full control (e.g. to use an `<svg>` or a font icon or an emoji text node).
 - `$Window` method `setIconSize` to set the icon size, picking the nearest size from `icons`.
-- `$Window` method `getIconAtSize` to pick an icon for the given size. Returns an element or `null`.
+- `$Window` method `getIconAtSize` to pick an icon for the given size, for use in a taskbar. Returns an element or `null`.
+- `$Window` now exposes `icons` property based on the `options.icons` option.
 
 </details>
 
