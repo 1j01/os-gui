@@ -7,6 +7,7 @@ const menus = {
 				const $w = $Window({ title: "Ali Baba and the Forty Thieves", resizable: false, maximizeButton: false, minimizeButton: false });
 				$w.$content.html("<p>\"Open Sesame!\"</p>");
 				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
+				$w.center();
 			},
 			shortcut: "Ctrl+O",
 			description: "Shows a silly dialog box.",
@@ -18,6 +19,7 @@ const menus = {
 				const $w = $Window({ title: "Membership Status", resizable: false, maximizeButton: false, minimizeButton: false });
 				$w.$content.html("<p>You have left the EU.</p>");
 				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
+				$w.center();
 			},
 			description: "Shows a stupid dialog box.",
 		}
@@ -73,6 +75,7 @@ const menus = {
 				const $w = $Window({ title: "Radio Message", resizable: false, maximizeButton: false, minimizeButton: false });
 				$w.$content.html("<p>\"Over and out!\"</p>");
 				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
+				$w.center();
 			},
 			shortcut: "Ctrl+C",
 			description: "Shows a pointless dialog.",

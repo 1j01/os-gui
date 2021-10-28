@@ -46,6 +46,7 @@ const menus = {
 				const $w = $Window({ title: "Dialog", resizable: false, maximizeButton: false, minimizeButton: false });
 				$w.$content.html("<p>Hello world.</p>");
 				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
+				$w.center();
 			},
 			shortcut: "Ctrl+Boring",
 		},
