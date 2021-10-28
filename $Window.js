@@ -557,6 +557,8 @@ function $Window(options) {
 	$w.minimize = () => {
 		if ($w.is(":visible")) {
 			if ($w.task) {
+				// @TODO: API like $w.setMinimizeTarget(taskbarItemElement)
+				// instead of this hacky way you have to set `task` on the window
 				const $task = $w.task.$task;
 				const before_rect = $w.$titlebar[0].getBoundingClientRect();
 				const after_rect = $task[0].getBoundingClientRect();
@@ -679,7 +681,7 @@ function $Window(options) {
 	};
 
 	let before_maximize;
-	$w.$maximize?.on("click", () => {
+	$w.maximize = () => {
 		if ($w.hasClass("minimized-without-taskbar")) {
 			$w.minimize();
 			return;
@@ -745,6 +747,16 @@ function $Window(options) {
 				$w.$maximize.addClass("window-action-restore");
 			}
 		});
+	};
+	$w.restore = () => {
+		if ($w.is(".minimized-without-taskbar, .minimized")) {
+			$w.unminimize();
+		} else if ($w.is(".maximized")) {
+			$w.maximize();
+		}
+	};
+	$w.$maximize?.on("click", () => {
+		$w.maximize();
 	});
 	$w.$minimize?.on("click", () => {
 		$w.minimize();

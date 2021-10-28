@@ -280,6 +280,18 @@ Tries to focus something within the window, in this order of priority:
 
 Removes focus from the window. If focus is outside the window, it is left unchanged.
 
+#### `minimize()`
+
+Minimizes the window. If `$window.task.$task` is defined it will use that as a target for minimizing, otherwise the window will minimize to the bottom of the screen.
+
+#### `maximize()`
+
+Maximizes the window. While maximized, the window will use `position: fixed`, so it will not scroll with the page.
+
+#### `restore()`
+
+Restores the window from minimized or maximized state. If the window is not minimized or maximized, this method does nothing.
+
 #### `center()`
 
 Centers the window in the page.

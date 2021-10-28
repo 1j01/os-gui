@@ -44,6 +44,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Focus can now be restored to the last focused control within (same-origin) iframes, even nested iframes! (when refocusing windows, e.g. clicking on the titlebar)
 - `options.iframes.ignoreCrossOrigin` to silence warnings about cross-origin iframes (which can't be seamlessly integrated).
 - `applyCSSProperties` now supports `options.recurseIntoIframes` (defaults to `false`).
+- `$Window` methods `maximize()`, `minimize()`, and `restore()`
 - `$Window` option `icons` which can specify icons of different sizes. Pass an object with keys that are sizes in pixels (or "any"), and values that are the URL of an image, or an object with `srcset` if you want support different pixel densities, or a DOM node if you want full control (e.g. to use an `<svg>` or a font icon or an emoji text node).
 - `$Window` method `setTitlebarIconSize` to set the icon size, picking the nearest size from `icons`.
 - `$Window` method `getTitlebarIconSize` to get the current icon size.
