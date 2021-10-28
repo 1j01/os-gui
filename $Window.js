@@ -97,15 +97,15 @@ function $Window(options) {
 		options.maximizeButton = false;
 	}
 	if (options.minimizeButton !== false) {
-		$w.$minimize = $(E("button")).addClass("window-minimize-button window-button").appendTo($w.$titlebar);
+		$w.$minimize = $(E("button")).addClass("window-minimize-button window-action-minimize window-button").appendTo($w.$titlebar);
 		$w.$minimize.attr("aria-label", "Minimize window"); // @TODO: for taskbarless minimized windows, "restore"
 	}
 	if (options.maximizeButton !== false) {
-		$w.$maximize = $(E("button")).addClass("window-maximize-button window-button").appendTo($w.$titlebar);
+		$w.$maximize = $(E("button")).addClass("window-maximize-button window-action-maximize window-button").appendTo($w.$titlebar);
 		$w.$maximize.attr("aria-label", "Maximize or restore window"); // @TODO: specific text for the state
 	}
 	if (options.closeButton !== false) {
-		$w.$x = $(E("button")).addClass("window-close-button window-button").appendTo($w.$titlebar);
+		$w.$x = $(E("button")).addClass("window-close-button window-action-close window-button").appendTo($w.$titlebar);
 		$w.$x.attr("aria-label", "Close window");
 	}
 	$w.$content = $(E("div")).addClass("window-content").appendTo($w);
@@ -569,7 +569,6 @@ function $Window(options) {
 
 				// @TODO: make this metrically similar to what Windows 98 does
 				// @TODO: DRY! This is copied heavily from maximize()
-				// @TODO: show restore icon in place of of minimize icon
 				// @TODO: after minimize (without taskbar) and maximize, restore should restore original position before minimize
 				// OR should it not maximize but restore the unmaximized state? I think I tested it but I forget.
 
@@ -602,7 +601,11 @@ function $Window(options) {
 					if ($w.hasClass("maximized")) {
 						$w.removeClass("maximized");
 						$w.addClass("was-maximized");
+						$w.$maximize.removeClass("window-action-restore");
+						$w.$maximize.addClass("window-action-maximize");
 					}
+					$w.$minimize.removeClass("window-action-minimize");
+					$w.$minimize.addClass("window-action-restore");
 					$w.css({
 						position: "fixed",
 						top: `calc(100% - ${titlebar_height + 5}px)`,
@@ -616,7 +619,11 @@ function $Window(options) {
 					if ($w.hasClass("was-maximized")) {
 						$w.removeClass("was-maximized");
 						$w.addClass("maximized");
+						$w.$maximize.removeClass("window-action-maximize");
+						$w.$maximize.addClass("window-action-restore");
 					}
+					$w.$minimize.removeClass("window-action-restore");
+					$w.$minimize.addClass("window-action-minimize");
 					$w.css({ width: "", height: "" });
 					if (before_minimize) {
 						$w.css({
@@ -717,7 +724,8 @@ function $Window(options) {
 		const before_rect = $w.$titlebar[0].getBoundingClientRect();
 		let after_rect;
 		$w.css("transform", "");
-		if ($w.hasClass("maximized")) {
+		const restoring = $w.hasClass("maximized");
+		if (restoring) {
 			instantly_unmaximize();
 			after_rect = $w.$titlebar[0].getBoundingClientRect();
 			instantly_maximize();
@@ -727,10 +735,14 @@ function $Window(options) {
 			instantly_unmaximize();
 		}
 		$w.animateTitlebar(before_rect, after_rect, () => {
-			if ($w.hasClass("maximized")) {
-				instantly_unmaximize();
+			if (restoring) {
+				instantly_unmaximize(); // finalize in some way
+				$w.$maximize.removeClass("window-action-restore");
+				$w.$maximize.addClass("window-action-maximize");
 			} else {
-				instantly_maximize();
+				instantly_maximize(); // finalize in some way
+				$w.$maximize.removeClass("window-action-maximize");
+				$w.$maximize.addClass("window-action-restore");
 			}
 		});
 	});

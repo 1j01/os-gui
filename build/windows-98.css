@@ -392,31 +392,29 @@ body > .window-titlebar {
 	padding: 0;
 }
 
-.window-close-button {
+.window-action-close {
 	background-position: calc(-3 * 13px - 1px) 0px;
 }
-.window-maximize-button {
+.window-action-maximize {
 	background-position: calc(-1 * 13px - 1px) 0px;
 }
-.maximized .window-maximize-button,
-.minimized-without-taskbar .window-maximize-button {
+.window-action-restore {
 	background-position: calc(-2 * 13px - 1px) 0px;
 }
-.window-minimize-button {
+.window-action-minimize {
 	background-position: calc(-0 * 13px - 1px) 0px;
 }
 
-.window-close-button:enabled:hover:active {
+.window-action-close:enabled:hover:active {
 	background-position: calc(-3 * 13px - 0px) 1px;
 }
-.window-maximize-button:enabled:hover:active {
+.window-action-maximize:enabled:hover:active {
 	background-position: calc(-1 * 13px - 0px) 1px;
 }
-.maximized .window-maximize-button:enabled:hover:active,
-.minimized-without-taskbar .window-maximize-button:enabled:hover:active {
+.window-action-restore:enabled:hover:active {
 	background-position: calc(-2 * 13px - 0px) 1px;
 }
-.window-minimize-button:enabled:hover:active {
+.window-action-minimize:enabled:hover:active {
 	background-position: calc(-0 * 13px - 0px) 1px;
 }
 
