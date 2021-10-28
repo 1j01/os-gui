@@ -33,6 +33,7 @@ body > .window-titlebar {
 	align-items: center;
 	white-space: nowrap;
 	overflow: hidden;
+	flex-shrink: 0;
 }
 .os-window .window-title-area {
 	position: relative;

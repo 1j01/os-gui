@@ -37,6 +37,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Prevented showing multiple menu buttons as hovered (e.g. if you press Esc and left/right and then hover a different item with the mouse)
 - Prevented focus ring showing on menu items when clicking and then using the keyboard, or when using touch. (Menu item highlight effect is separate from focus ring.)
 - Prevented resizing window while minimized to bottom of screen (in the case that there's no taskbar).
+- Prevented titlebar from shrinking and disappearing (especially when minimized without taskbar), for some window layouts.
 
 ### Added
 - Windows are now shown as focused when focus is within an iframe, even for nested iframes! Unfortunately this can't work for cross-origin iframes in all cases.
