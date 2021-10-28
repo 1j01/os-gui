@@ -698,7 +698,7 @@ function MenuBar(menus) {
 		});
 	}
 
-	let this_click_opened_the_menu = false;
+	// let this_click_opened_the_menu = false;
 	const make_menu_button = (menus_key, menu_items) => {
 		const menu_button_el = E("div", {
 			class: "menu-button",
@@ -770,19 +770,36 @@ function MenuBar(menus) {
 			top_level_menu_index = Object.keys(menus).indexOf(menus_key);
 		});
 		menu_button_el.addEventListener("pointerdown", e => {
-			open_top_level_menu(e.type);
+			if (menu_button_el.classList.contains("active")) {
+				setTimeout(() => {
+					menu_button_el.dispatchEvent(new CustomEvent("release", {}));
+				}, 100);
+				menu_button_el.style.backgroundColor = "red";
+				if (e.pointerType === "touch") {
+					menus_el.focus();
+				}
+			} else {
+				menu_button_el.style.backgroundColor = "lime";
+				open_top_level_menu(e.type);
+			}
+			setTimeout(() => {
+				menu_button_el.style.backgroundColor = "";
+			}, 500);
 		});
 		menu_button_el.addEventListener("pointerenter", e => {
 			if (selecting_menus) {
+				if (e.pointerType === "touch") {
+					return;
+				}
 				open_top_level_menu(e.type);
 			}
 		});
 		function open_top_level_menu(type = "other") {
-			if (type !== "pointerenter") {
-				if (!menu_button_el.classList.contains("active")) {
-					this_click_opened_the_menu = true;
-				}
-			}
+			// if (type !== "pointerenter") {
+			// 	if (!menu_button_el.classList.contains("active")) {
+			// 		this_click_opened_the_menu = true;
+			// 	}
+			// }
 
 			close_menus();
 
@@ -811,15 +828,19 @@ function MenuBar(menus) {
 				send_info_event(); // @TODO: allow descriptions on top level menus
 			}
 		};
-		menu_button_el.addEventListener("pointerup", () => {
-			if (this_click_opened_the_menu) {
-				this_click_opened_the_menu = false;
-				return;
-			}
-			if (menu_button_el.classList.contains("active")) {
-				close_menus();
-			}
-		});
+		// @TODO: event listener order??
+		// window.addEventListener("pointerup", e => {
+		// 	this_click_opened_the_menu = false;
+		// });
+		// menu_button_el.addEventListener("pointerup", () => {
+		// 	if (this_click_opened_the_menu) {
+		// 		// this_click_opened_the_menu = false;
+		// 		return;
+		// 	}
+		// 	if (menu_button_el.classList.contains("active")) {
+		// 		close_menus();
+		// 	}
+		// });
 		menu_button_el.addEventListener("release", () => {
 			selecting_menus = false;
 
