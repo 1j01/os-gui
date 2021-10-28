@@ -163,12 +163,38 @@ $(() => {
 		[$tool_window_2, $("#tool-window-2-positioner")],
 		[$app_window_3, $("#app-window-3-positioner")],
 	];
-	for (const [$window, $positioning_el] of $windows_and_$positioners) {
-		$window.css({
-			left: $positioning_el.offset().left,
-			top: $positioning_el.offset().top
-		});
+	function position_windows() {
+		for (const [$window, $positioning_el] of $windows_and_$positioners) {
+			$window.css({
+				left: $positioning_el.offset().left,
+				top: $positioning_el.offset().top,
+				opacity: "",
+			});
+		}
 	}
+	function debounce(func, wait, immediate) {
+		let timeout;
+		return function () {
+			const context = this, args = arguments;
+			const later = function () {
+				timeout = null;
+				if (!immediate) func.apply(context, args);
+			};
+			const callNow = immediate && !timeout;
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+			if (callNow) func.apply(context, args);
+		};
+	}
+	$(window).on("resize", debounce(position_windows, 100));
+	$(window).on("resize", () => {
+		for (const [$window, $positioning_el] of $windows_and_$positioners) {
+			$window.css({
+				opacity: 0.4,
+			});
+		}
+	});
+	position_windows();
 
 	// Fake closing the windows (hide and fade back in), for demo purposes
 	function fake_closing($window) {
