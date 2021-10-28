@@ -590,6 +590,7 @@ function $Window(options) {
 				}
 				const to_x = $w._minimize_slot_index * (to_width + spacing) + 10;
 				const titlebar_height = $w.$titlebar.outerHeight();
+				let before_unminimize;
 				const instantly_minimize = () => {
 					before_minimize = {
 						position: $w.css("position"),
@@ -608,15 +609,33 @@ function $Window(options) {
 					}
 					$w.$minimize.removeClass("window-action-minimize");
 					$w.$minimize.addClass("window-action-restore");
-					$w.css({
-						position: "fixed",
-						top: `calc(100% - ${titlebar_height + 5}px)`,
-						left: to_x,
-						width: to_width,
-						height: titlebar_height,
-					});
+					if (before_unminimize) {
+						$w.css({
+							position: before_unminimize.position,
+							left: before_unminimize.left,
+							top: before_unminimize.top,
+							width: before_unminimize.width,
+							height: before_unminimize.height,
+						});
+					} else {
+						$w.css({
+							position: "fixed",
+							top: `calc(100% - ${titlebar_height + 5}px)`,
+							left: to_x,
+							width: to_width,
+							height: titlebar_height,
+						});
+					}
 				};
 				const instantly_unminimize = () => {
+					before_unminimize = {
+						position: $w.css("position"),
+						left: $w.css("left"),
+						top: $w.css("top"),
+						width: $w.css("width"),
+						height: $w.css("height"),
+					};
+
 					$w.removeClass("minimized-without-taskbar");
 					if ($w.hasClass("was-maximized")) {
 						$w.removeClass("was-maximized");
