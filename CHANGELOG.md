@@ -39,6 +39,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Prevented resizing window while minimized to bottom of screen (in the case that there's no taskbar).
 - Prevented titlebar from shrinking and disappearing (especially when minimized without taskbar), for some window layouts.
 - Fixed animation of window restoring if window was minimized without taskbar and then dragged.
+- Fixed titlebar button active state not working in Chrome 95.
 
 ### Added
 - Windows are now shown as focused when focus is within an iframe, even for nested iframes! Unfortunately this can't work for cross-origin iframes in all cases.

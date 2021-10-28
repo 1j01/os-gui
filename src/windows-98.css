@@ -120,18 +120,21 @@ button.lightweight:enabled:hover /*,
 button.lightweight:focus */ {
 	@extend %outset-shallow;
 }
-button.lightweight:enabled:hover:active {
+button.lightweight:enabled:hover:active,
+button.lightweight.pressing,
+button.lightweight.pressed {
 	@extend %inset-shallow;
 }
 button:disabled {
 	color: var(--GrayText);
 	text-shadow: 1px 1px 0px var(--ButtonHilight);
 }
-/* TODO: [checked]? .pressed? .depressed? .down? .held? .active? what should it be called? */
-button:not(.lightweight).toggle:enabled:hover:active {
+button:not(.lightweight).toggle:enabled:hover:active,
+button:not(.lightweight).pressing {
 	@extend %inset-deep;
 }
-button:not(.lightweight).toggle.selected {
+button:not(.lightweight).toggle.selected, /* @TODO: deprecate/remove .toggle API, use .pressed instead */
+button:not(.lightweight).pressed {
 	@extend %inset-deep;
 	@extend %checkerboard;
 }
@@ -176,9 +179,6 @@ body > .window-titlebar {
 .window-button {
 	margin: 2px 0;
 }
-.os-window .window-button:enabled:hover:active {
-	@extend %inset-deep;
-}
 .window-close-button {
 	margin-left: 2px;
 	margin-right: 2px;
@@ -188,7 +188,8 @@ body > .window-titlebar {
 	height: 11px;
 	background-position: 7px 0;
 }
-.os-window.tool-window .window-close-button:enabled:hover:active {
+.os-window.tool-window .window-close-button:enabled:hover:active,
+.os-window.tool-window .window-close-button.pressing {
 	background-position: 8px 1px;
 }
 .os-window .window-title-area {
@@ -247,16 +248,20 @@ body > .window-titlebar {
 	background-position: calc(-0 * 13px - 1px) 0px;
 }
 
-.window-action-close:enabled:hover:active {
+.window-action-close:enabled:hover:active,
+.window-action-close.pressing {
 	background-position: calc(-3 * 13px - 0px) 1px;
 }
-.window-action-maximize:enabled:hover:active {
+.window-action-maximize:enabled:hover:active,
+.window-action-maximize.pressing {
 	background-position: calc(-1 * 13px - 0px) 1px;
 }
-.window-action-restore:enabled:hover:active {
+.window-action-restore:enabled:hover:active,
+.window-action-restore.pressing {
 	background-position: calc(-2 * 13px - 0px) 1px;
 }
-.window-action-minimize:enabled:hover:active {
+.window-action-minimize:enabled:hover:active,
+.window-action-minimize.pressing {
 	background-position: calc(-0 * 13px - 0px) 1px;
 }
 

@@ -1210,10 +1210,25 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		e.preventDefault();
 	});
 	$w.$titlebar.on("mousedown", "button", (e) => {
-		// prevent focus ring on titlebar buttons
-		setTimeout(() => {
-			refocus();
-		}, 0);
+		// Prevent focus on titlebar buttons.
+		// This can break the :active state. In Firefox, a setTimeout before any focus() was enough,
+		// but now in Chrome 95, focus() breaks the :active state too, and setTimeout only delays the brokenness,
+		// so I have to use a CSS class now for the pressed state.
+		refocus();
+		// Emulate :enabled:active:hover state with .pressing class
+		const button = e.currentTarget;
+		button.classList.add("pressing");
+		const release = () => {
+			button.classList.remove("pressing");
+			$G.off("mouseup blur", release);
+			$(button).off("mouseenter", on_mouse_enter);
+			$(button).off("mouseleave", on_mouse_leave);
+		};
+		const on_mouse_enter = () => { button.classList.add("pressing"); };
+		const on_mouse_leave = () => { button.classList.remove("pressing"); };
+		$G.on("mouseup blur", release);
+		$(button).on("mouseenter", on_mouse_enter);
+		$(button).on("mouseleave", on_mouse_leave);
 	});
 	$w.$titlebar.on("pointerdown", (e) => {
 		if ($(e.target).closest("button").length) {
