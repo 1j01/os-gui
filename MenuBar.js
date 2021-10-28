@@ -129,10 +129,10 @@ function MenuBar(menus) {
 		}
 	};
 
-	const top_level_highlight = (new_index) => {
-		if (typeof new_index === "string") {
-			new_index = Object.keys(menus).indexOf(new_index);
-		}
+	const top_level_highlight = (new_index_or_menu_key) => {
+		const new_index = typeof new_index_or_menu_key === "string" ?
+			Object.keys(menus).indexOf(new_index_or_menu_key) :
+			new_index_or_menu_key;
 		if (top_level_menu_index !== -1) {
 			top_level_menus[top_level_menu_index].menu_button_el.classList.remove("highlight");
 			// could close the menu here, but it's handled externally right now
