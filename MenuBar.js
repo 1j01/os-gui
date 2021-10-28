@@ -396,6 +396,12 @@ function MenuBar(menus) {
 			this.highlight(-1);
 		});
 
+		menu_popup_el.addEventListener("focusin", (e) => {
+			// prevent focus going to menu items; as designed, it works with aria-activedescendant and focus on the menu popup itself
+			// (on desktop when clicking (and dragging out) then pressing a key, or on mobile when tapping, a focus ring was visible, and it wouldn't go away with keyboard navigation either)
+			menu_popup_el.focus({ preventScroll: true });
+		});
+
 		let last_item_el;
 		this.highlight = (index_or_element) => { // index includes separators
 			let item_el = index_or_element;
