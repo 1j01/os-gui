@@ -21,6 +21,8 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `applyCSSProperties` now takes an options object instead of an element as the second argument. Use `options.element` to specify the root element. Default is `document.documentElement` (i.e. `<html>`, `:root`).
 - `applyCSSProperties` now accepts a `CSSStyleDeclaration` interchangeably with a plain object of CSS properties, same as `renderThemeGraphics` does. I don't know if this is *useful*, but it's good to be consistent, and this doesn't cost much.
 - Page scrolling is prevented when the window is re-focused. (Browsers by default scroll controls into view, and re-focusing the window focuses the last focused control.)
+- `touch-action: none` is now applied to the menu bar, so the page doesn't scroll if you're trying to access the menus.
+- Menus now close on pointer down, not pointer up, for menu buttons.
 
 ### Fixed
 - `$Window`'s `closed` event wasn't fired because the element was removed from the DOM.
@@ -30,6 +32,9 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Handle older jQuery for `pointerId` (`(e.pointerId ?? e.originalEvent.pointerId)`); affects the cursor during window resizing (which uses `setPointerCapture` to keep a consistent cursor).
 - Fix restore from minimize (to taskbar) going to top left corner of screen (if the window had previously been dragged). (This does not apply to taskbarless minimization, which seems to be fine.)
 - Word wrap is now prevented in flying titlebar text.
+- Menu bar behavior with touch (menus not opening, dialogs blurring after opening via menu, etc.)
+- Prevented showing multiple menu buttons as hovered (e.g. if you press Esc and left/right and then hover a different item with the mouse)
+- Prevented focus ring showing on menu items when clicking and then using the keyboard, or when using touch. (Menu item highlight effect is separate from focus ring.)
 
 ### Added
 - Windows are now shown as focused when focus is within an iframe, even for nested iframes! Unfortunately this can't work for cross-origin iframes in all cases.
