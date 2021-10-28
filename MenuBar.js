@@ -739,6 +739,7 @@ function MenuBar(menus) {
 						// Well, it might have accessibility problems, so maybe not. I think this is fine.
 						return;
 					}
+					item_el.click();
 				});
 				item_el.addEventListener("click", e => {
 					if (item.submenu) {
