@@ -43,6 +43,7 @@
 	],
 	"files": [
 		"demo/",
+		"index.html",
 		"build/",
 		"$MenuBar.js",
 		"MenuBar.js",
