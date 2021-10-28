@@ -448,13 +448,15 @@ body > .window-titlebar {
 	background: rgb(192, 192, 192);
 	background: var(--Menu);
 }
-.menu-button:hover,
-.menu-button:focus {
+/* Note: In Windows 98, normal menu bars have an inset highlight if you use Esc and then the arrow keys,
+whereas Explorer's menu bars are outset and match the hover effect, which I feel makes more sense,
+so I think I'll immitate that. */
+/* Also, to prevent duplicate highlight, and lingering highlight with touch, I'm using a class, rather than :hover/:focus/:active */
+.menu-button.highlight {
 	box-shadow: 1px 1px 0 rgb(255, 255, 255) inset, -1px -1px 0 rgb(128, 128, 128) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
-.menu-button:active,
-.menu-button.active {
+.menu-button.highlight.active {
 	box-shadow: 1px 1px 0 rgb(128, 128, 128) inset, -1px -1px 0 rgb(255, 255, 255) inset;
 	box-shadow: 1px 1px 0 var(--ButtonShadow) inset, -1px -1px 0 var(--ButtonHilight) inset;
 	top: 1px;

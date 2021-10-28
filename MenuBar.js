@@ -129,6 +129,29 @@ function MenuBar(menus) {
 		}
 	};
 
+	const top_level_highlight = (new_index) => {
+		if (typeof new_index === "string") {
+			new_index = Object.keys(menus).indexOf(new_index);
+		}
+		if (top_level_menu_index !== -1) {
+			top_level_menus[top_level_menu_index].menu_button_el.classList.remove("highlight");
+			// could close the menu here, but it's handled externally right now
+		}
+		if (new_index !== -1) {
+			top_level_menus[new_index].menu_button_el.classList.add("highlight");
+		}
+		top_level_menu_index = new_index;
+	};
+	menus_el.addEventListener("pointerleave", () => {
+		// unhighlight unless a menu is open
+		if (
+			top_level_menu_index !== -1 &&
+			top_level_menus[top_level_menu_index].menu_popup_el.style.display === "none"
+		) {
+			top_level_highlight(-1);
+		}
+	});
+
 	const is_disabled = item => {
 		if (typeof item.enabled === "function") {
 			return !item.enabled();
@@ -166,10 +189,10 @@ function MenuBar(menus) {
 		const active_menu_popup_el = e.target.closest(".menu-popup");
 		const active_menu_popup = active_menu_popup_el && menu_popup_by_el.get(active_menu_popup_el);
 		const top_level_menu = top_level_menus[top_level_menu_index];
-		const { menu_button_el, open_top_level_menu } = top_level_menu;
-		const menu_popup_el = active_menu_popup_el || top_level_menu.menu_popup_el;
+		const { menu_button_el, open_top_level_menu } = top_level_menu || {};
+		const menu_popup_el = active_menu_popup_el || top_level_menu?.menu_popup_el;
 		const parent_item_el = parent_item_el_by_popup_el.get(active_menu_popup_el);
-		const highlighted_item_el = menu_popup_el.querySelector(".menu-item.highlight");
+		const highlighted_item_el = menu_popup_el?.querySelector(".menu-item.highlight");
 
 		// console.log("keydown", e.key, { target: e.target, active_menu_popup_el, top_level_menu, menu_popup_el, parent_item_el, highlighted_item_el });
 
@@ -197,18 +220,32 @@ function MenuBar(menus) {
 					send_info_event(active_menu_popup.parentMenuPopup.menuItems[active_menu_popup.parentMenuPopup.itemElements.indexOf(parent_item_el)]);
 					// @TODO: simplify with something like active_menu_popup.close()
 					e.preventDefault();
-				} else if (highlighted_item_el || !active_menu_popup) {
+				} else if (
+					// basically any case except if you hover to open a submenu and then press right/left
+					// in which case the menu is already open/focused
+					highlighted_item_el ||
+					!active_menu_popup ||
+					!active_menu_popup.parentMenuPopup
+				) {
 					// go to next/previous top level menu, wrapping around
 					// and open a new menu only if a menu was already open
-					const menu_was_open = visible(menu_popup_el);
+					const menu_was_open = menu_popup_el && visible(menu_popup_el);
 					const cycle_dir = ((get_direction() === "ltr") === right) ? 1 : -1;
-					const new_index = (top_level_menu_index + cycle_dir + top_level_menus.length) % top_level_menus.length;
+					let new_index;
+					// Note case where menu is closed, menu button is hovered, then menu bar is unhovered,
+					// rehovered(outside any buttons), and unhovered, and THEN you try to go to the next menu.
+					// It doesn't work right now. @FIXME
+					if (top_level_menu_index === -1) {
+						new_index = cycle_dir === 1 ? 0 : top_level_menus.length - 1;
+					} else {
+						new_index = (top_level_menu_index + cycle_dir + top_level_menus.length) % top_level_menus.length;
+					}
 					const new_top_level_menu = top_level_menus[new_index];
 					const target_button_el = new_top_level_menu.menu_button_el;
 					if (menu_was_open) {
 						new_top_level_menu.open_top_level_menu("keydown");
 					} else {
-						menu_button_el.dispatchEvent(new CustomEvent("release"), {});
+						menu_button_el?.dispatchEvent(new CustomEvent("release"), {});
 						target_button_el.focus({ preventScroll: true });
 					}
 					e.preventDefault();
@@ -281,7 +318,7 @@ function MenuBar(menus) {
 					open_top_level_menu("keydown");
 					e.preventDefault();
 				} else {
-					highlighted_item_el.dispatchEvent(new CustomEvent("activate-menu-item"), {});
+					highlighted_item_el?.dispatchEvent(new CustomEvent("activate-menu-item"), {});
 					e.preventDefault();
 				}
 				break;
@@ -767,17 +804,17 @@ function MenuBar(menus) {
 			}
 		});
 		menu_button_el.addEventListener("focus", () => {
-			top_level_menu_index = Object.keys(menus).indexOf(menus_key);
+			top_level_highlight(menus_key);
 		});
 		menu_button_el.addEventListener("pointerdown", e => {
 			if (menu_button_el.classList.contains("active")) {
 				menu_button_el.dispatchEvent(new CustomEvent("release", {}));
-				// @TODO: prevent lingering :hover/:focus style
 			} else {
 				open_top_level_menu(e.type);
 			}
 		});
 		menu_button_el.addEventListener("pointerenter", e => {
+			top_level_highlight(menus_key);
 			if (e.pointerType === "touch") {
 				return;
 			}
@@ -798,7 +835,8 @@ function MenuBar(menus) {
 			}
 			// console.log("pointerdown (possibly simulated) — menu_popup_el.style.zIndex", menu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
 			// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
-			top_level_menu_index = Object.keys(menus).indexOf(menus_key);
+			top_level_highlight(menus_key);
+			
 			menu_popup_el.dispatchEvent(new CustomEvent("update"), {});
 
 			selecting_menus = true;
