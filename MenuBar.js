@@ -78,10 +78,10 @@ function MenuBar(menus) {
 
 	const menus_el = E("div", {
 		class: "menus",
-		"touch-action": "none",
 		role: "menubar",
 		"aria-label": "Application Menu",
 	});
+	menus_el.style.touchAction = "none";
 
 	// returns writing/layout direction, "ltr" or "rtl"
 	function get_direction() {
