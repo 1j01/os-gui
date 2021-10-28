@@ -549,10 +549,6 @@ function $Window(options) {
 
 	$w.css("touch-action", "none");
 
-	$w.$x?.on("click", () => {
-		$w.close();
-	});
-
 	let before_minimize;
 	$w.minimize = () => {
 		if (animating_titlebar) {
@@ -767,15 +763,11 @@ function $Window(options) {
 			$w.maximize();
 		}
 	};
-	$w.$maximize?.on("click", () => {
-		$w.maximize();
-	});
-	$w.$minimize?.on("click", () => {
-		$w.minimize();
-	});
-	$w.$title_area.on("dblclick", () => {
-		$w.$maximize?.triggerHandler("click");
-	});
+	// must not pass event to functions by accident; also methods may not be defined yet
+	$w.$minimize?.on("click", (e)=> { $w.minimize(); });
+	$w.$maximize?.on("click", (e)=> { $w.maximize(); });
+	$w.$x?.on("click", (e)=> { $w.close(); });
+	$w.$title_area.on("dblclick", (e)=> { $w.maximize(); });
 
 	$w.css({
 		position: "absolute",
