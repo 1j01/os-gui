@@ -205,7 +205,7 @@ function MenuBar(menus) {
 					(get_direction() === "ltr") === right
 				) {
 					// enter submenu
-					highlighted_item_el.dispatchEvent(new CustomEvent("activate-menu-item"), {});
+					highlighted_item_el.click();
 					e.preventDefault();
 				} else if (
 					parent_item_el &&
@@ -318,7 +318,7 @@ function MenuBar(menus) {
 					open_top_level_menu("keydown");
 					e.preventDefault();
 				} else {
-					highlighted_item_el?.dispatchEvent(new CustomEvent("activate-menu-item"), {});
+					highlighted_item_el?.click();
 					e.preventDefault();
 				}
 				break;
@@ -338,7 +338,7 @@ function MenuBar(menus) {
 					if (matching_item_els.length === 1) {
 						// it's unambiguous, go ahead and activate it
 						const menu_item_el = matching_item_els[0];
-						menu_item_el.dispatchEvent(new CustomEvent("activate-menu-item", {}));
+						menu_item_el.click();
 						e.preventDefault();
 					} else {
 						// cycle the menu items that match the key
@@ -372,6 +372,7 @@ function MenuBar(menus) {
 			tabIndex: "-1",
 			role: "menu",
 		});
+		menu_popup_el.style.touchAction = "pan-y"; // will allow for scrolling overflowing menus in the future, but prevent event delay and double tap to zoom
 		menu_popup_el.style.outline = "none";
 		const menu_popup_table_el = E("table", { class: "menu-popup-table" });
 		menu_popup_el.appendChild(menu_popup_table_el);
@@ -669,7 +670,7 @@ function MenuBar(menus) {
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
 					});
 					item_el.addEventListener("pointerenter", () => {
-						// @TODO: don't cancel close timer? in Windows 98 it'll close after a delay even if you hover the parent menu item
+						// @TODO: don't cancel close timer? in Windows 98 it'll still close after a delay if you hover the submenu's parent item
 						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
 						open_tid = setTimeout(() => {
@@ -703,11 +704,17 @@ function MenuBar(menus) {
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
 					});
 
-					item_el.addEventListener("click", () => { open_submenu(false); });
 					item_el.addEventListener("pointerdown", () => { open_submenu(false); });
 				}
 
+				let just_activated = false; // to prevent double-activation from pointerup + click
 				const item_action = () => {
+					if (just_activated) {
+						return;
+					}
+					just_activated = true;
+					setTimeout(() => { just_activated = false; }, 10);
+
 					if (item.checkbox) {
 						if (item.checkbox.toggle) {
 							item.checkbox.toggle();
@@ -718,20 +725,23 @@ function MenuBar(menus) {
 						item.action();
 					}
 				};
-				// unlike click, this allows gliding to a menu item and releasing to activate it
-				// @TODO: can I support .click() as well? maybe do .click() here if it wouldn't otherwise be handled?
-				// stopImmediatePropagation/preventDefault might help? setTimeout could do the trick in a pinch
+				// pointerup is for gliding to menu items to activate
 				item_el.addEventListener("pointerup", e => {
 					if (e.pointerType === "mouse" && e.button !== 0) {
 						return;
 					}
-					item_action();
+					if (e.pointerType === "touch") {
+						// Will use click instead; otherwise focus is lost on a delay: if it opens a dialog for example,
+						// you have to hold down on the menu item for a bit otherwise it'll blur the dialog after opening.
+						// I think this is caused by the pointer falling through to elements without touch-action defined.
+						// RIGHT NOW, gliding to menu items isn't supported for touch anyways,
+						// although I'd like to support it in the future.
+						// Well, it might have accessibility problems, so maybe not. I think this is fine.
+						return;
+					}
 				});
-				// I'd like to make this just "click", but don't want duplicate events
-				item_el.addEventListener("activate-menu-item", e => {
+				item_el.addEventListener("click", e => {
 					if (item.submenu) {
-						// this isn't part of item_action because it shouldn't happen on click
-						// (...um, because it's redundant with the click event?)
 						open_submenu(true);
 					} else {
 						item_action();
