@@ -232,9 +232,6 @@ function MenuBar(menus) {
 					const menu_was_open = menu_popup_el && visible(menu_popup_el);
 					const cycle_dir = ((get_direction() === "ltr") === right) ? 1 : -1;
 					let new_index;
-					// Note case where menu is closed, menu button is hovered, then menu bar is unhovered,
-					// rehovered(outside any buttons), and unhovered, and THEN you try to go to the next menu.
-					// It doesn't work right now. @FIXME
 					if (top_level_menu_index === -1) {
 						new_index = cycle_dir === 1 ? 0 : top_level_menus.length - 1;
 					} else {
@@ -247,6 +244,9 @@ function MenuBar(menus) {
 					} else {
 						menu_button_el?.dispatchEvent(new CustomEvent("release"), {});
 						target_button_el.focus({ preventScroll: true });
+						// Note case where menu is closed, menu button is hovered, then menu bar is unhovered,
+						// rehovered(outside any buttons), and unhovered, and THEN you try to go to the next menu.
+						top_level_highlight(new_index);
 					}
 					e.preventDefault();
 				} // else:
@@ -269,7 +269,7 @@ function MenuBar(menus) {
 					send_info_event(active_menu_popup.menuItems[active_menu_popup.itemElements.indexOf(to_item_el)]);
 					e.preventDefault();
 				} else {
-					open_top_level_menu("keydown");
+					open_top_level_menu?.("keydown");
 				}
 				e.preventDefault();
 				break;
