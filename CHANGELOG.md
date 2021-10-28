@@ -53,6 +53,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `$Window` method `getTitlebarIconSize` to get the current icon size.
 - `$Window` method `getIconAtSize` to pick an icon for the given size, for use in a taskbar. Returns an element or `null`.
 - `$Window` now exposes `icons` property based on the `options.icons` option.
+- `.pressing` class to show buttons as pressed (when triggering via the keyboard for example).
 
 </details>
 

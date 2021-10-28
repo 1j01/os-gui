@@ -108,8 +108,12 @@ A rule of thumb is that it should be on the button that will trigger with Enter.
 You can make a lightweight button by adding `.lightweight` to the button.
 Lightweight buttons are subtle and have no border until hover.
 
-#### Disabled Buttons
+#### Disabled Button States
 You can disable a button by adding the standard `disabled` attribute to the button.
+
+#### Pressed Button States
+You can show a button as being pressed by adding the `.pressing` class to the button.  
+This is useful for buttons that are triggered by a keystroke.
 
 ### Scrollbar styles
 
