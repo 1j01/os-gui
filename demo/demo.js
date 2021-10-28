@@ -165,35 +165,24 @@ $(() => {
 	];
 	function position_windows() {
 		for (const [$window, $positioning_el] of $windows_and_$positioners) {
-			$window.css({
-				left: $positioning_el.offset().left,
-				top: $positioning_el.offset().top,
-				opacity: "",
-			});
+			// in a separate loop to prevent layout thrashing (untested performance optimization)
+			$positioning_el._new_offset = $positioning_el.offset();
 		}
-	}
-	function debounce(func, wait, immediate) {
-		let timeout;
-		return function () {
-			const context = this, args = arguments;
-			const later = function () {
-				timeout = null;
-				if (!immediate) func.apply(context, args);
-			};
-			const callNow = immediate && !timeout;
-			clearTimeout(timeout);
-			timeout = setTimeout(later, wait);
-			if (callNow) func.apply(context, args);
-		};
-	}
-	$(window).on("resize", debounce(position_windows, 100));
-	$(window).on("resize", () => {
 		for (const [$window, $positioning_el] of $windows_and_$positioners) {
-			$window.css({
-				opacity: 0.4,
-			});
+			const { _new_offset, _old_offset } = $positioning_el;
+			if (
+				_new_offset.top !== _old_offset?.top ||
+				_new_offset.left !== _old_offset?.left
+			) {
+				$window.css({
+					left: _new_offset.left,
+					top: _new_offset.top,
+				});
+				$positioning_el._old_offset = _new_offset;
+			}
 		}
-	});
+	}
+	$(window).on("resize", position_windows);
 	position_windows();
 
 	// Fake closing the windows (hide and fade back in), for demo purposes
