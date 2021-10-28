@@ -83,18 +83,18 @@
 			}
 
 			@media (max-width: 800px) {
-				table {
+				.demo-table {
 					display: block;
 				}
-				table tr {
+				.demo-table tr {
 					display: block;
 				}
-				table tr td {
+				.demo-table tr td {
 					display: block;
 					padding: 0.5em;
 				}
-				table colgroup,
-				table col {
+				.demo-table colgroup,
+				.demo-table col {
 					display: none;
 				}
 			}
@@ -271,7 +271,7 @@
 			<p>You can go <em>bananas with buttons!</em></p>
 			<p>Come on down to Isaiah's Button Emporium, we've got all the buttons, we've got <em>gray buttons</em>... and... <em>more-gray</em> buttons!</p>
 			<p><b>Tip</b>: You should use verbs for button labels when possible. For demo purposes, labels here describe the button type.</p>
-			<table id="buttons-demo">
+			<table id="buttons-demo" class="demo-table">
 				<col style="/* background/color set elsewhere */ width: 150px;"/>
 				<col style="background: var(--InfoWindow); color: var(--InfoText);"/>
 				<col/>
@@ -380,7 +380,7 @@
 				</div>
 			</div>
 			<h2>Insets & Outsets</h2>
-			<table id="insets-outsets-demo">
+			<table id="insets-outsets-demo" class="demo-table">
 				<col style="background: var(--ButtonFace); color: var(--ButtonText); width: 150px;"/>
 				<col style="background: var(--InfoWindow); color: var(--InfoText);"/>
 				<col/>
