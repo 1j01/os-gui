@@ -71,5 +71,16 @@
 		"XMLHTTP",
 		"yaddah",
 		"zepto"
-	]
+	],
+	"workbench.colorTheme": "Hardcore Theme",
+	// "workbench.colorTheme": "windows-nt", 
+	"workbench.iconTheme": "windows-nt-icons",
+	// "workbench.iconTheme": "vsclassic-icon-theme"
+	// Customize "Hardcore Theme"
+	"workbench.colorCustomizations": {
+		"sideBar.foreground": "#999" // fix contrast (but still leave it pretty dim)
+	},
+	"editor.tokenColorCustomizations": {
+		"comments": "#7e9dac", // contrast with inline suggestions
+	},
 }
