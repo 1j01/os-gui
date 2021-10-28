@@ -55,6 +55,7 @@
 			}
 			#buttons-demo td button {
 				width: 100%;
+				max-width: 200px;
 			}
 			#buttons-demo,
 			#insets-outsets-demo {
@@ -63,6 +64,12 @@
 			#buttons-demo td,
 			#insets-outsets-demo td {
 				padding: 0.5em;
+			}
+			/* can't use <col> for this because I'm conditionally changing the display property with a media query */
+			#buttons-demo td:first-child,
+			#insets-outsets-demo td:first-child {
+				background: var(--ButtonFace);
+				color: var(--ButtonText);
 			}
 
 			#insets-outsets-demo td:first-of-type div {
@@ -73,6 +80,23 @@
 				display: block;
 				background: white;
 				color: black;
+			}
+
+			@media (max-width: 800px) {
+				table {
+					display: block;
+				}
+				table tr {
+					display: block;
+				}
+				table tr td {
+					display: block;
+					padding: 0.5em;
+				}
+				table colgroup,
+				table col {
+					display: none;
+				}
 			}
 
 			.scrollbar-demo {
@@ -210,10 +234,28 @@
 			<p>This example shows an app window with a tool window and a menu bar.</p>
 			<p>The tool window shares focus with the parent app window, and always stays on top of it's parent.</p>
 			<p><b>Tip:</b> Remember to listen for the <code>closed</code> event on the application window to close any tool windows.</p>
-			<div style="position: relative; height: 200px;">
+			<div style="position: relative;" id="combined-application-positioners">
 				<div id="app-window-2-positioner"></div>
-				<div id="tool-window-2-positioner" style="position: absolute; left: 400px; top: 30px;"></div>
+				<div id="tool-window-2-positioner" style="position: absolute;"></div>
 			</div>
+			<style>
+				#combined-application-positioners {
+					height: 220px;
+				}
+				#tool-window-2-positioner {
+					left: 400px;
+					top: 30px;
+				}
+				@media screen and (max-width: 800px) {
+					#combined-application-positioners {
+						height: 260px;
+					}
+					#tool-window-2-positioner {
+						left: 20px;
+						top: 100px;
+					}
+				}
+			</style>
 			<h2>Right-To-Left Support</h2>
 			<p>OS-GUI supports right-to-left languages with a flipped layout. Keyboard navigation is flipped appropriately (for entering/exiting submenus).</p>
 			<p>You can specify the standard HTML attribute
@@ -230,7 +272,7 @@
 			<p>Come on down to Isaiah's Button Emporium, we've got all the buttons, we've got <em>gray buttons</em>... and... <em>more-gray</em> buttons!</p>
 			<p><b>Tip</b>: You should use verbs for button labels when possible. For demo purposes, labels here describe the button type.</p>
 			<table id="buttons-demo">
-				<col style="background: var(--ButtonFace); color: var(--ButtonText); width: 150px;"/>
+				<col style="/* background/color set elsewhere */ width: 150px;"/>
 				<col style="background: var(--InfoWindow); color: var(--InfoText);"/>
 				<col/>
 				<tr>
@@ -312,10 +354,11 @@
 			</p>
 			<p>
 				The triangle graphics are rendered dynamically based on the theme colors and <code>--scrollbar-size</code> CSS variable.
-				To update the graphics, you need to call <code>applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), {element, recurseIntoIframes: true})</code>,
-				but graphics are prerendered at a default size in each theme's CSS file, so you shouldn't have to worry about it.
+				Graphics are prerendered at a default size in each theme's CSS file,
+				but you can update the graphics with:
 			</p>
-			<div id="scrollbar-demos" style="height: 270px;">
+			<pre style="overflow: auto;">applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), {element, recurseIntoIframes: true});</pre>
+			<div id="scrollbar-demos" style="height: 270px; overflow: auto;">
 				<div class="scrollbar-demo">
 					<div class="scrollbar-button decrement horizontal" style="display: inline-block;"></div><div class="scrollbar-button increment horizontal" style="display: inline-block;"></div>
 					<div class="scrollbar-button decrement vertical"></div>
