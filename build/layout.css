@@ -46,6 +46,11 @@ body > .window-titlebar {
 	vertical-align: bottom;
 }
 
+.os-window.maximized .handle,
+.os-window.minimized-without-taskbar .handle {
+	display: none; /* prevent resizing when window is minimized */
+}
+
 /* Fix dragging things (like windows) over iframes */
 .dragging iframe {
 	pointer-events: none;
