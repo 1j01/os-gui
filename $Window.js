@@ -555,6 +555,10 @@ function $Window(options) {
 
 	let before_minimize;
 	$w.minimize = () => {
+		if (animating_titlebar) {
+			when_done_animating_titlebar.push($w.minimize);
+			return;
+		}
 		if ($w.is(":visible")) {
 			if ($w.task) {
 				// @TODO: API like $w.setMinimizeTarget(taskbarItemElement)
@@ -662,6 +666,10 @@ function $Window(options) {
 		}
 	};
 	$w.unminimize = () => {
+		if (animating_titlebar) {
+			when_done_animating_titlebar.push($w.unminimize);
+			return;
+		}
 		if ($w.hasClass("minimized-without-taskbar")) {
 			$w.minimize();
 			return;
@@ -682,6 +690,10 @@ function $Window(options) {
 
 	let before_maximize;
 	$w.maximize = () => {
+		if (animating_titlebar) {
+			when_done_animating_titlebar.push($w.maximize);
+			return;
+		}
 		if ($w.hasClass("minimized-without-taskbar")) {
 			$w.minimize();
 			return;
@@ -1407,8 +1419,12 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	$w.getTitle = () => {
 		return $w.title();
 	};
+	let animating_titlebar = false;
+	let when_done_animating_titlebar = []; // queue of functions to call when done animating,
+	// so maximize() / minimize() / restore() eventually gives the same result as if there was no animation
 	$w.animateTitlebar = (from, to, callback = () => { }) => {
 		// flying titlebar animation
+		animating_titlebar = true;
 		const $eye_leader = $w.$titlebar.clone(true);
 		$eye_leader.find("button").remove();
 		$eye_leader.appendTo("body");
@@ -1432,15 +1448,20 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				height: to.height,
 			});
 		}, 5);
-		const tid = setTimeout(() => {
+		let handled_transition_completion = false;
+		const handle_transition_completion = () => {
+			if (handled_transition_completion) {
+				return; // ignore multiple calls (an idempotency pattern)
+			} else {
+				handled_transition_completion = true;
+			}
+			animating_titlebar = false;
 			$eye_leader.remove();
 			callback();
-		}, duration_ms * 1.2);
-		$eye_leader.on("transitionend animationcancel", () => {
-			$eye_leader.remove();
-			clearTimeout(tid);
-			callback();
-		});
+			when_done_animating_titlebar.shift()?.(); // relies on animating_titlebar = false;
+		};
+		$eye_leader.on("transitionend transitioncancel", handle_transition_completion);
+		setTimeout(handle_transition_completion, duration_ms * 1.2);
 	};
 	$w.close = (force) => {
 		if (!force) {
