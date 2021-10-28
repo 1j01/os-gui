@@ -1456,6 +1456,9 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		setTimeout(handle_transition_completion, duration_ms * 1.2);
 	};
 	$w.close = (force) => {
+		if (force && force !== true) {
+			throw new TypeError("force must be a boolean or undefined, not " + Object.prototype.toString.call(force));
+		}
 		if (!force) {
 			var e = $.Event("close");
 			$w.trigger(e);
