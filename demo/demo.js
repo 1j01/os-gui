@@ -174,9 +174,12 @@ $(() => {
 				_new_offset.top !== _old_offset?.top ||
 				_new_offset.left !== _old_offset?.left
 			) {
+				$window.restore(); // in case it was minimized or maximized
 				$window.css({
 					left: _new_offset.left,
 					top: _new_offset.top,
+					width: "",
+					height: "",
 				});
 				$positioning_el._old_offset = _new_offset;
 			}
@@ -195,6 +198,7 @@ $(() => {
 			setTimeout(() => {
 				// Restore position
 				const $positioning_el = $windows_and_$positioners.find(([$other_window]) => $window === $other_window)[1];
+				$window.restore(); // in case it was minimized or maximized
 				$window.css({
 					left: $positioning_el.offset().left,
 					top: $positioning_el.offset().top,
