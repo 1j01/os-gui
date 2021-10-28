@@ -771,36 +771,21 @@ function MenuBar(menus) {
 		});
 		menu_button_el.addEventListener("pointerdown", e => {
 			if (menu_button_el.classList.contains("active")) {
-				setTimeout(() => {
-					menu_button_el.dispatchEvent(new CustomEvent("release", {}));
-				}, 100);
-				menu_button_el.style.backgroundColor = "red";
-				if (e.pointerType === "touch") {
-					menus_el.focus();
-				}
+				menu_button_el.dispatchEvent(new CustomEvent("release", {}));
+				// @TODO: prevent lingering :hover/:focus style
 			} else {
-				menu_button_el.style.backgroundColor = "lime";
 				open_top_level_menu(e.type);
 			}
-			setTimeout(() => {
-				menu_button_el.style.backgroundColor = "";
-			}, 500);
 		});
 		menu_button_el.addEventListener("pointerenter", e => {
+			if (e.pointerType === "touch") {
+				return;
+			}
 			if (selecting_menus) {
-				if (e.pointerType === "touch") {
-					return;
-				}
 				open_top_level_menu(e.type);
 			}
 		});
 		function open_top_level_menu(type = "other") {
-			// if (type !== "pointerenter") {
-			// 	if (!menu_button_el.classList.contains("active")) {
-			// 		this_click_opened_the_menu = true;
-			// 	}
-			// }
-
 			close_menus();
 
 			menu_button_el.classList.add("active");
@@ -828,19 +813,6 @@ function MenuBar(menus) {
 				send_info_event(); // @TODO: allow descriptions on top level menus
 			}
 		};
-		// @TODO: event listener order??
-		// window.addEventListener("pointerup", e => {
-		// 	this_click_opened_the_menu = false;
-		// });
-		// menu_button_el.addEventListener("pointerup", () => {
-		// 	if (this_click_opened_the_menu) {
-		// 		// this_click_opened_the_menu = false;
-		// 		return;
-		// 	}
-		// 	if (menu_button_el.classList.contains("active")) {
-		// 		close_menus();
-		// 	}
-		// });
 		menu_button_el.addEventListener("release", () => {
 			selecting_menus = false;
 
