@@ -22,11 +22,6 @@ function uid() {
 	return (uid_counter++).toString(36) + Math.random().toString(36).slice(2);
 }
 
-// straight from jQuery; @TODO: do something simpler
-function visible(elem) {
-	return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
-}
-
 // @TODO: DRY hotkey helpers with jspaint (export them?)
 
 // & defines accelerators (hotkeys) in menus and buttons and things, which get underlined in the UI.
@@ -105,7 +100,7 @@ function MenuBar(menus) {
 	const parent_item_el_by_popup_el = new WeakMap();
 
 	// @TODO: specific to this menu bar (note that popups are not descendants of the menu bar)
-	const any_open_menus = () => [...document.querySelectorAll(".menu-popup")].some(popup_el => visible(popup_el));
+	const any_open_menus = () => [...document.querySelectorAll(".menu-popup")].some(popup_el => popup_el.style.display !== "none");
 
 	const close_menus = () => {
 		for (const { menu_button_el } of top_level_menus) {
@@ -229,7 +224,7 @@ function MenuBar(menus) {
 				) {
 					// go to next/previous top level menu, wrapping around
 					// and open a new menu only if a menu was already open
-					const menu_was_open = menu_popup_el && visible(menu_popup_el);
+					const menu_was_open = menu_popup_el && menu_popup_el.style.display !== "none";
 					const cycle_dir = ((get_direction() === "ltr") === right) ? 1 : -1;
 					let new_index;
 					if (top_level_menu_index === -1) {
@@ -257,7 +252,7 @@ function MenuBar(menus) {
 			case 40: // Down
 			case 38: // Up
 				const down = e.keyCode === 40;
-				// if (menu_popup_el && visible(menu_popup_el) && highlighted_item_el) {
+				// if (menu_popup_el && menu_popup_el.style.display !== "none") && highlighted_item_el) {
 				if (active_menu_popup) {
 					const cycle_dir = down ? 1 : -1;
 					const item_els = [...menu_popup_el.querySelectorAll(".menu-item")];
@@ -389,7 +384,7 @@ function MenuBar(menus) {
 
 			// could use aria-expanded for selecting this, alternatively
 			for (const submenu of submenus) {
-				if (visible(submenu.submenu_popup_el)) {
+				if (submenu.submenu_popup_el.style.display !== "none") {
 					this.highlight(submenu.item_el);
 					return;
 				}
@@ -509,7 +504,7 @@ function MenuBar(menus) {
 				});
 				item_el.addEventListener("pointerleave", (event) => {
 					if (
-						visible(item_el) && // not "left" due to closing
+						menu_popup_el.style.display !== "none" && // not "left" due to closing
 						event.pointerType !== "touch" // not "left" as in finger lifting off
 					) {
 						send_info_event();
