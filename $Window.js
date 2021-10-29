@@ -999,11 +999,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				warn_iframe_access(container_el, e);
 			}
 		}
-		if (container_el.hasAttribute("tabindex")) {
-			container_el.focus({ preventScroll: true });
-			return container_el;
-		}
-		return null;
+		container_el.focus({ preventScroll: true });
+		return container_el;
 	};
 
 	$w.on("refocus-window", () => {
