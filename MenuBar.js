@@ -117,7 +117,9 @@ function MenuBar(menus) {
 				popup_el.removeAttribute("aria-activedescendant");
 				const parent_item_el = parent_item_el_by_popup_el.get(popup_el);
 				if (parent_item_el) {
-					parent_item_el.classList.remove("highlight");
+					if (!parent_item_el.classList.contains("menu-button")) {
+						parent_item_el.classList.remove("highlight");
+					}
 					parent_item_el.setAttribute("aria-expanded", "false");
 				}
 			}
