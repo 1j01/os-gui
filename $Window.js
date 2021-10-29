@@ -1052,7 +1052,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				return;
 			}
 			// If menus got focus, don't refocus.
-			if (document.activeElement?.closest?.(".menus")) {
+			if (document.activeElement?.closest?.(".menus, .menu-popup")) {
 				// console.log("click in menus");
 				return;
 			}
