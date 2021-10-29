@@ -148,6 +148,14 @@ function MenuBar(menus) {
 			top_level_highlight(-1);
 		}
 	});
+	window.addEventListener("focusout", (event) => {
+		// if not still in menus, unhighlight (e.g. if you hit Escape to unfocus the menus)
+		if (event.relatedTarget?.closest?.(".menu-popup, .menus")) {
+			return;
+		}
+		top_level_highlight(-1);
+	});
+	
 
 	const is_disabled = item => {
 		if (typeof item.enabled === "function") {
