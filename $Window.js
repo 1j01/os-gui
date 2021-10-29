@@ -1053,8 +1053,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
 		requestAnimationFrame(() => {
 			const last_focus_global = last_focus_by_container.get(window);
-			// const last_focus_in_window = last_focus_by_container.get($w.$content[0]);
-			// console.log("did focus change?", { last_focus_in_window, last_focus_global, activeElement: document.activeElement, win_elem: $w[0]}, document.activeElement !== last_focus_global);
+			const last_focus_in_window = last_focus_by_container.get($w.$content[0]);
+			console.log("did focus change?", { last_focus_in_window, last_focus_global, activeElement: document.activeElement, win_elem: $w[0]}, document.activeElement !== last_focus_global);
 
 			// If something programmatically got focus, don't refocus.
 			if (
@@ -1062,7 +1062,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				document.activeElement !== document &&
 				document.activeElement !== document.body &&
 				document.activeElement !== $w.$content[0] &&
-				document.activeElement !== last_focus_global
+				document.activeElement !== last_focus_global //&&
+				// document.activeElement !== last_focus_in_window
 			) {
 				return;
 			}
@@ -1224,9 +1225,9 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		});
 	};
 	$w.$titlebar.css("touch-action", "none");
-	$w.$titlebar.on("selectstart", (e) => { // preventing mousedown would break :active state, I'm not sure if just selectstart is enough...
-		e.preventDefault();
-	});
+	// $w.$titlebar.on("selectstart", (e) => { // preventing mousedown would break :active state, I'm not sure if just selectstart is enough...
+	// 	e.preventDefault();
+	// });
 	$w.$titlebar.on("mousedown", "button", (e) => {
 		// Prevent focus on titlebar buttons.
 		// This can break the :active state. In Firefox, a setTimeout before any focus() was enough,
