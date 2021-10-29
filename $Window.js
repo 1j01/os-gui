@@ -947,8 +947,10 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	};
 
 	const refocus = (container_el = $w.$content[0]) => {
+		console.trace("refocus");
 		const to_focus = what_to_focus(container_el);
 		if (to_focus) {
+			console.log("refocusing", to_focus);
 			to_focus.focus({ preventScroll: true });
 		}
 	};
@@ -1012,7 +1014,12 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 
 	// redundant events are for handling synthetic events,
 	// which may be sent individually, rather than in tandem
-	$w.on("pointerdown mousedown", handle_pointer_activation);
+	// $w.on("mousedown", handle_pointer_activation);
+	$w.on("pointerdown", (event) => {
+		console.log("pointerdown", event);
+		handle_pointer_activation(event);
+	});
+	// $w.on("pointerdown mousedown", handle_pointer_activation);
 	// Note that jQuery treats some events differently, and can't listen for some synthetic events
 	// but pointerdown and mousedown seem to be supported. That said, if you trigger() either,
 	// addEventListener() handlers will not be called. So if I remove the dependency on jQuery,
