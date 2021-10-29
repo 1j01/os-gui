@@ -915,10 +915,11 @@ function MenuBar(menus) {
 	});
 	window.addEventListener("blur", close_menus);
 	function close_menus_on_click_outside(event) {
-		if (!event.target.closest(".menus, .menu-popup")) {
-			// window.console && console.log(event.type, "occurred outside of menus (on ", event.target, ") so...");
-			close_menus();
+		if (event.target?.closest?.(".menus, .menu-popup")) {
+			return;
 		}
+		// window.console && console.log(event.type, "occurred outside of menus (on ", event.target, ") so...");
+		close_menus();
 	}
 	window.addEventListener("pointerdown", close_menus_on_click_outside);
 	window.addEventListener("pointerup", close_menus_on_click_outside);
