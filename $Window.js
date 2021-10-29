@@ -1039,7 +1039,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		requestAnimationFrame(() => {
 			const last_focus_global = last_focus_by_container.get(window);
 			// const last_focus_in_window = last_focus_by_container.get($w.$content[0]);
-			// console.log("did focus change?", { last_focus_in_window, last_focus_global, activeElement: document.activeElement, win_elem: $w[0]}, document.activeElement !== last_focus_global);
+			// console.log("a tick after", event.type, { last_focus_in_window, last_focus_global, activeElement: document.activeElement, win_elem: $w[0] });
+			// console.log("did focus change?", document.activeElement !== last_focus_global);
 
 			// If something programmatically got focus, don't refocus.
 			if (

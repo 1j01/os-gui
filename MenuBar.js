@@ -126,6 +126,13 @@ function MenuBar(menus) {
 		}
 	};
 
+	const refocus_window = () => {
+		const window_el = menus_el.closest(".window");
+		if (window_el) {
+			window_el.dispatchEvent(new CustomEvent("refocus-window"));
+		}
+	};
+
 	const top_level_highlight = (new_index_or_menu_key) => {
 		const new_index = typeof new_index_or_menu_key === "string" ?
 			Object.keys(menus).indexOf(new_index_or_menu_key) :
@@ -308,10 +315,7 @@ function MenuBar(menus) {
 			case 18: // Alt
 				// close all menus and refocus the last focused control in the window
 				close_menus();
-				const window_el = menus_el.closest(".window");
-				if (window_el) {
-					window_el.dispatchEvent(new CustomEvent("refocus-window"));
-				}
+				refocus_window();
 				e.preventDefault();
 				break;
 			case 32: // Space
@@ -727,6 +731,7 @@ function MenuBar(menus) {
 						menu_popup_el.dispatchEvent(new CustomEvent("update"), {});
 					} else if (item.action) {
 						close_menus();
+						refocus_window(); // before action, so things like copy/paste have a better chance of working
 						item.action();
 					}
 				};

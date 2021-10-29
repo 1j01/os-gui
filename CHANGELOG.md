@@ -25,6 +25,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Menus now close on pointer down, not pointer up, for menu buttons.
 - When windows are minimized without a taskbar, the minimize button now shows a restore icon.
 - Taskbar height calculation now includes padding/border (of `.taskbar` element)
+- When a menu item is clicked and the menu closes, the containing window is re-focused.
 
 ### Fixed
 - `$Window`'s `closed` event wasn't fired because the element was removed from the DOM.
