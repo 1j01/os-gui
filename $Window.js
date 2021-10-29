@@ -298,8 +298,8 @@ function $Window(options) {
 		$w.bringToFront();
 		refocus();
 	};
-	$w._refocus = () => {
-		return refocus();
+	$w._what_to_focus = () => {
+		return what_to_focus();
 	};
 	$w.blur = () => {
 		stopShowingAsFocused();
@@ -947,12 +947,19 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	};
 
 	const refocus = (container_el = $w.$content[0]) => {
+		const to_focus = what_to_focus(container_el);
+		if (to_focus) {
+			to_focus.focus({ preventScroll: true });
+		}
+	};
+
+	const what_to_focus = (container_el = $w.$content[0]) => {
 		const logical_container_el = container_el.matches(".window-content") ? $w[0] : container_el;
 		const last_focus = last_focus_by_container.get(logical_container_el);
 		if (last_focus) {
 			if (last_focus.tagName === "IFRAME") {
 				try {
-					const focused = refocus(last_focus);
+					const focused = what_to_focus(last_focus);
 					if (focused) {
 						return focused;
 					}
@@ -960,19 +967,17 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 					warn_iframe_access(last_focus, e);
 				}
 			}
-			last_focus.focus({ preventScroll: true });
 			return last_focus;
 		}
 		const $tabstops = find_tabstops(container_el);
 		const $default = $tabstops.filter(".default");
 		if ($default.length) {
-			$default[0].focus({ preventScroll: true });
 			return $default[0];
 		}
 		if ($tabstops.length) {
 			if ($tabstops[0].tagName === "IFRAME") {
 				try {
-					const focused = refocus($tabstops[0]); // not .contentDocument.body because we want the container tracked by last_focus_by_container
+					const focused = what_to_focus($tabstops[0]); // not .contentDocument.body because we want the container tracked by last_focus_by_container
 					if (focused) {
 						return focused;
 					}
@@ -980,18 +985,17 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 					warn_iframe_access($tabstops[0], e);
 				}
 			}
-			$tabstops[0].focus({ preventScroll: true });
 			return $tabstops[0];
 		}
 		if (options.toolWindow && options.parentWindow) {
-			const focused = options.parentWindow._refocus();
+			const focused = options.parentWindow._what_to_focus();
 			if (focused) {
 				return focused;
 			}
 		}
 		if (container_el.tagName === "IFRAME") {
 			try {
-				const focused = refocus(container_el.contentDocument.body);
+				const focused = what_to_focus(container_el.contentDocument.body);
 				if (focused) {
 					return focused;
 				}
@@ -999,7 +1003,6 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				warn_iframe_access(container_el, e);
 			}
 		}
-		container_el.focus({ preventScroll: true });
 		return container_el;
 	};
 
