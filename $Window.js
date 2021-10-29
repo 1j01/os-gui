@@ -730,7 +730,7 @@ function $Window(options) {
 			const $taskbar = $(".taskbar");
 			const scrollbar_width = window.innerWidth - $(window).width();
 			const scrollbar_height = window.innerHeight - $(window).height();
-			const taskbar_height = $taskbar.length ? $taskbar.height() + 1 : 0;
+			const taskbar_height = $taskbar.length ? $taskbar.outerHeight() + 1 : 0;
 			$w.css({
 				position: "fixed",
 				top: 0,

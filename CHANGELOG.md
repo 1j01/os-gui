@@ -24,6 +24,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `touch-action: none` is now applied to the menu bar, so the page doesn't scroll if you're trying to access the menus.
 - Menus now close on pointer down, not pointer up, for menu buttons.
 - When windows are minimized without a taskbar, the minimize button now shows a restore icon.
+- Taskbar height calculation now includes padding/border (of `.taskbar` element)
 
 ### Fixed
 - `$Window`'s `closed` event wasn't fired because the element was removed from the DOM.
