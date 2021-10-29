@@ -947,6 +947,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	};
 
 	const refocus = (container_el = $w.$content[0]) => {
+		console.log("refocus", container_el);
 		const logical_container_el = container_el.matches(".window-content") ? $w[0] : container_el;
 		const last_focus = last_focus_by_container.get(logical_container_el);
 		if (last_focus) {
@@ -954,53 +955,53 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				try {
 					const focused = refocus(last_focus);
 					if (focused) {
-						return focused;
+						console.log("refocus returning", focused); return focused;
 					}
 				} catch (e) {
 					warn_iframe_access(last_focus, e);
 				}
 			}
 			last_focus.focus({ preventScroll: true });
-			return last_focus;
+			console.log("refocus returning", last_focus); return last_focus;
 		}
 		const $tabstops = find_tabstops(container_el);
 		const $default = $tabstops.filter(".default");
 		if ($default.length) {
 			$default[0].focus({ preventScroll: true });
-			return $default[0];
+			console.log("refocus returning", $default[0]); return $default[0];
 		}
 		if ($tabstops.length) {
 			if ($tabstops[0].tagName === "IFRAME") {
 				try {
 					const focused = refocus($tabstops[0]); // not .contentDocument.body because we want the container tracked by last_focus_by_container
 					if (focused) {
-						return focused;
+						console.log("refocus returning", focused); return focused;
 					}
 				} catch (e) {
 					warn_iframe_access($tabstops[0], e);
 				}
 			}
 			$tabstops[0].focus({ preventScroll: true });
-			return $tabstops[0];
+			console.log("refocus returning", $tabstops[0]); return $tabstops[0];
 		}
 		if (options.toolWindow && options.parentWindow) {
 			const focused = options.parentWindow._refocus();
 			if (focused) {
-				return focused;
+				console.log("refocus returning", focused); return focused;
 			}
 		}
 		if (container_el.tagName === "IFRAME") {
 			try {
 				const focused = refocus(container_el.contentDocument.body);
 				if (focused) {
-					return focused;
+					console.log("refocus returning", focused); return focused;
 				}
 			} catch (e) {
 				warn_iframe_access(container_el, e);
 			}
 		}
 		container_el.focus({ preventScroll: true });
-		return container_el;
+		console.log("refocus returning", container_el); return container_el;
 	};
 
 	$w.on("refocus-window", () => {
