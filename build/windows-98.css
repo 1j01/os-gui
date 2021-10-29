@@ -293,7 +293,6 @@ body > .window-titlebar {
 	/*color: var(--WindowText);*/
 	/*border: 1px solid var(--WindowFrame);*/
 	/* TODO: use window-specific theme colors; also different types of windows */
-	padding: 2px;
 }
 .os-window:not(.maximized) {
 	border-style: solid;
@@ -315,6 +314,7 @@ body > .window-titlebar {
 	border-color: var(--ButtonLight) var(--ButtonShadow) var(--ButtonShadow) var(--ButtonLight);
 	border-style: solid;
 	border-width: 2px 2px;
+	padding: 2px;
 }
 .window-button {
 	margin: 2px 0;
