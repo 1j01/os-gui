@@ -1221,7 +1221,14 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		// Emulate :enabled:active:hover state with .pressing class
 		const button = e.currentTarget;
 		button.classList.add("pressing");
-		const release = () => {
+		const release = (event) => {
+			// blur is just to handle the edge case of alt+tabbing/ctrl+tabbing away
+			if (event && event.type === "blur") {
+				// if (document.activeElement?.tagName === "IFRAME") {
+				if (document.hasFocus()) {
+					return; // the window isn't really blurred; an iframe got focus
+				}
+			}
 			button.classList.remove("pressing");
 			$G.off("mouseup blur", release);
 			$(button).off("mouseenter", on_mouse_enter);
