@@ -175,8 +175,11 @@ function $Window(options) {
 				} else {
 					$icon.attr("src", icon.src || icon);
 				}
-				$icon.attr("width", icon_size);
-				$icon.attr("height", icon_size);
+				$icon.attr({
+					width: icon_size,
+					height: icon_size,
+					draggable: false,
+				});
 				$icon.css({
 					width: target_icon_size,
 					height: target_icon_size,
