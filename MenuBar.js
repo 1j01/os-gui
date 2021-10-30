@@ -333,6 +333,9 @@ function MenuBar(menus) {
 				break;
 			default:
 				// handle accelerators and first-letter navigation
+				if (!menu_popup_el) {
+					break; // @TODO: handle accelerators for menu bar
+				}
 				const key = String.fromCharCode(e.keyCode).toLowerCase();
 				const item_els = [...menu_popup_el.querySelectorAll(".menu-item")];
 				const item_els_by_accelerator = {};
