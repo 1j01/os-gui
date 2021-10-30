@@ -12,7 +12,16 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
-Nothing here yet.
+### Added
+- `MenuBar` method `closeMenus()` to close any open menus.
+- `MenuBar` method `setKeyboardScope(...elements)` to control hotkey handling
+
+### Changed
+- If you close a menu by clicking the menu button, the containing window will now be re-focused.
+- Menus no longer close when encountering a synthetic `blur` event, to facilitate a hack in [Pinball](https://98.js.org), where a `blur` is triggered to trick the game into pausing.
+
+### Fixed
+- Fixed error when pressing arbitrary (unhandled) keys with menu bar focused
 
 </details>
 
