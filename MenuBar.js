@@ -918,7 +918,15 @@ function MenuBar(menus) {
 			}
 		}
 	});
-	window.addEventListener("blur", close_menus);
+	// window.addEventListener("blur", close_menus);
+	window.addEventListener("blur", (event) => {
+		// hack for Pinball (in 98.js.org) where it triggers fake blur events
+		// in order to pause the game
+		if (!event.isTrusted) {
+			return;
+		}
+		close_menus();
+	});
 	function close_menus_on_click_outside(event) {
 		if (event.target?.closest?.(".menus, .menu-popup")) {
 			return;
