@@ -141,12 +141,20 @@ See examples in the [demo code](./demo/demo.js).
 
 Closes any menus that are open.
 
-#### `setKeyboardScope(element)`
+#### `setKeyboardScope(...elements)`
 
 Hotkeys like <kbd>Alt</kbd> will be handled at the level of the given element.
 
 By default, the scope is `window` (global), for the case of a single-page application where the menu bar is at the top.
-If you are putting the menu bar in a window, you should call this with the window element.
+If you are putting the menu bar in a window, you should call this with the window's element:
+
+```js
+menu_bar.setKeyboardScope($window[0]);
+```
+
+Note that some keyboard behavior is always handled if the menu bar has focus.
+
+Note also for iframes, you may need to call this with `$window[0], iframe.contentWindow` currently, but this should be changed in the future (keyboard events should be proxied).
 
 #### Event: `info`
 

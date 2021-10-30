@@ -922,14 +922,14 @@ function MenuBar(menus) {
 	window.addEventListener("pointerdown", close_menus_on_click_outside);
 	window.addEventListener("pointerup", close_menus_on_click_outside);
 
-	let keyboard_scope_element;
-	function set_keyboard_scope(scope_element) {
-		if (keyboard_scope_element) {
-			keyboard_scope_element.removeEventListener("keydown", keyboard_scope_keydown);
+	let keyboard_scope_elements = [];
+	function set_keyboard_scope(...elements) {
+		for (const el of keyboard_scope_elements) {
+			el.removeEventListener("keydown", keyboard_scope_keydown);
 		}
-		keyboard_scope_element = scope_element;
-		if (keyboard_scope_element) {
-			keyboard_scope_element.addEventListener("keydown", keyboard_scope_keydown);
+		keyboard_scope_elements = elements;
+		for (const el of keyboard_scope_elements) {
+			el.addEventListener("keydown", keyboard_scope_keydown);
 		}
 	}
 	function keyboard_scope_keydown(e) {
