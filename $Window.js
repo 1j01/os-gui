@@ -84,8 +84,12 @@ $Window.Z_INDEX = 5;
 
 var minimize_slots = []; // for if there's no taskbar
 
+// @TODO: make this a class,
+// instead of a weird pseudo-class
 function $Window(options) {
 	options = options || {};
+	// @TODO: handle all option defaults here
+	// and validate options.
 
 	var $w = $(E("div")).addClass("window os-window").appendTo("body");
 	$w[0].$window = $w;
@@ -105,6 +109,9 @@ function $Window(options) {
 	if (options.maximizeButton !== false) {
 		$w.$maximize = $(E("button")).addClass("window-maximize-button window-action-maximize window-button").appendTo($w.$titlebar);
 		$w.$maximize.attr("aria-label", "Maximize or restore window"); // @TODO: specific text for the state
+		if (!options.resizable) {
+			$w.$maximize.attr("disabled", true);
+		}
 	}
 	if (options.closeButton !== false) {
 		$w.$x = $(E("button")).addClass("window-close-button window-action-close window-button").appendTo($w.$titlebar);
@@ -723,6 +730,9 @@ function $Window(options) {
 
 	let before_maximize;
 	$w.maximize = () => {
+		if (!options.resizable) {
+			return;
+		}
 		if (animating_titlebar) {
 			when_done_animating_titlebar.push($w.maximize);
 			return;
@@ -1165,7 +1175,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				}
 				break;
 			}
-			case 27: // Esc
+			case 27: // Escape
 				// @TODO: make this optional, and probably default false
 				$w.close();
 				break;
