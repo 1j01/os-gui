@@ -171,27 +171,27 @@ $main_test_window = new $Window({
 $main_test_window.$content.append(new MenuBar(menus).element);
 $main_test_window.$content.append(`
 	<button id="open-recursive-dialog">
-		<img src="https://win98icons.alexmeub.com/icons/png/accessibility_two_windows.png" width="32" height="32" style="vertical-align: middle;" />
+		<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/accessibility_two_windows.png" width="32" height="32" style="vertical-align: middle;" />
 		Recursive Dialog
 	</button>
 	<button id="test-tabstop-wrapping">
-		<img src="https://win98icons.alexmeub.com/icons/png/accessibility_big_keys.png" width="32" height="32" style="vertical-align: middle;" />
+		<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/accessibility_big_keys.png" width="32" height="32" style="vertical-align: middle;" />
 		Tabstop Wrapping
 	</button>
 	<button id="test-iframes">
-		<img src="https://win98icons.alexmeub.com/icons/png/html-3.png" width="32" height="32" style="vertical-align: middle;" />
+		<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/html-3.png" width="32" height="32" style="vertical-align: middle;" />
 		Iframes
 	</button>
 	<button id="test-selection">
-		<img src="https://win98icons.alexmeub.com/icons/png/file_lines-0.png" width="32" height="32" style="vertical-align: middle;" />
+		<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/file_lines-0.png" width="32" height="32" style="vertical-align: middle;" />
 		Selectable Text
 	</button>
 	<button id="test-icon-size">
-		<img src="https://win98icons.alexmeub.com/icons/png/camera3_network-3.png" width="32" height="32" style="vertical-align: middle;" />
+		<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/camera3_network-3.png" width="32" height="32" style="vertical-align: middle;" />
 		Icon Size + Long Title
 	</button>
 	<button id="test-theme">
-		<img src="https://win98icons.alexmeub.com/icons/png/themes-2.png" width="32" height="32" style="vertical-align: middle;" />
+		<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/themes-2.png" width="32" height="32" style="vertical-align: middle;" />
 		Window Theme
 	</button>
 	<br>
@@ -200,12 +200,12 @@ $main_test_window.$content.append(`
 	<br>
 	<button id="test-delayed-focus">
 		Focus Self
-		<img alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
+		<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
 	</button> (Click off the window quickly to see it)
 	<br>
 	<button id="test-delayed-close">
 		Close Self
-		<img alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
+		<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
 	</button> (Test that menus close properly; also, the tool window should close)
 	<br>
 	<br>
@@ -294,9 +294,9 @@ for (const trigger_style of ["jQuery", "native"]) {
 					}
 				}, 1000);
 			}).prepend(`
-				<img src='https://win98icons.alexmeub.com/icons/png/mouse-2.png' width='16' height='16' style='vertical-align: middle;' />
+				<img draggable="false" src='https://win98icons.alexmeub.com/icons/png/mouse-2.png' width='16' height='16' style='vertical-align: middle;' />
 			`).append(`
-				<img alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
+				<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
 			`)
 		);
 	}
@@ -504,11 +504,11 @@ function test_window_theme() {
 		</div>
 		<div style="margin: 10px;">
 			<button id="theme-self">
-				<img src="https://win98icons.alexmeub.com/icons/png/themes-0.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
+				<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/themes-0.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
 				Theme Self
 			</button>
 			<button id="theme-other">
-				<img src="https://win98icons.alexmeub.com/icons/png/mouse_location.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
+				<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/mouse_location.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
 				Theme Other...
 			</button>
 		</div>
