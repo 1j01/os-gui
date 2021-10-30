@@ -137,6 +137,10 @@ Returns an object with property `element`, which you should then append to the D
 
 See examples in the [demo code](./demo/demo.js).
 
+#### `closeMenus()`
+
+Closes any menus that are open.
+
 #### Event: `info`
 
 Can be used to implement a status bar.

@@ -938,6 +938,7 @@ function MenuBar(menus) {
 	window.addEventListener("pointerup", close_menus_on_click_outside);
 
 	this.element = menus_el;
+	this.closeMenus = close_menus;
 }
 
 exports.MenuBar = MenuBar;
