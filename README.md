@@ -151,6 +151,11 @@ If you are putting the menu bar in a window, you should call this with the windo
 ```js
 menu_bar.setKeyboardScope($window[0]);
 ```
+or better yet,
+```js
+$window.setMenuBar(menu_bar);
+```
+which takes care of the keyboard scope for you.
 
 Note that some keyboard behavior is always handled if the menu bar has focus.
 
@@ -360,6 +365,12 @@ Returns the size of the window's title bar icon.
 Picks the closest icon size that's available, and returns a unique DOM node (i.e. cloned).
 
 This can be used for representing the window in the taskbar.
+
+#### `setMenuBar(menuBar)`
+
+Appends the menu bar to the window, and sets the keyboard scope for the menu bar's hotkeys to the window.
+
+Can be called with `null` to remove the menu bar.
 
 #### `$Button(text, action)`
 

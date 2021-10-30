@@ -960,8 +960,6 @@ function MenuBar(menus) {
 	this.element = menus_el;
 	this.closeMenus = close_menus;
 	this.setKeyboardScope = set_keyboard_scope;
-	// @TODO: add a helper to $Window to set up a menu bar, like $window.setMenuBar(menuBar||null)
-	// which would set the keyboard scope and append the element in the proper place
 }
 
 exports.MenuBar = MenuBar;

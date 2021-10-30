@@ -1538,6 +1538,22 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	};
 	$w.closed = false;
 
+	let current_menu_bar;
+	// @TODO: should this be like setMenus(menu_definitions)?
+	// It seems like setMenuBar(menu_bar) might be prone to bugs
+	// trying to set the same menu bar on multiple windows.
+	$w.setMenuBar = (menu_bar) => {
+		// $w.find(".menus").remove(); // ugly, if only because of the class name haha
+		if (current_menu_bar) {
+			current_menu_bar.element.remove();
+		}
+		if (menu_bar) {
+			$w.$titlebar.after(menu_bar.element);
+			menu_bar.setKeyboardScope($w[0]);
+			current_menu_bar = menu_bar;
+		}
+	};
+
 	if (options.title) {
 		$w.title(options.title);
 	}
