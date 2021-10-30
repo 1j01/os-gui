@@ -141,6 +141,13 @@ See examples in the [demo code](./demo/demo.js).
 
 Closes any menus that are open.
 
+#### `setKeyboardScope(element)`
+
+Hotkeys like <kbd>Alt</kbd> will be handled at the level of the given element.
+
+By default, the scope is `window` (global), for the case of a single-page application where the menu bar is at the top.
+If you are putting the menu bar in a window, you should call this with the window element.
+
 #### Event: `info`
 
 Can be used to implement a status bar.

@@ -162,7 +162,7 @@ function MenuBar(menus) {
 		}
 		top_level_highlight(-1);
 	});
-	
+
 
 	const is_disabled = item => {
 		if (typeof item.enabled === "function") {
@@ -814,22 +814,6 @@ function MenuBar(menus) {
 		menu_button_el.setAttribute("aria-haspopup", "true");
 		menu_button_el.setAttribute("aria-controls", menu_popup_el.id);
 
-		// @TODO: allow setting scope for alt shortcuts, like menuBar.setHotkeyScope(windowElement||window)
-		// and add a helper to $Window to set up a menu bar, like $window.setMenuBar(menuBar||null)
-		window.addEventListener("keydown", e => {
-			if (e.ctrlKey || e.metaKey) { // Ctrl or Command held
-				if (e.keyCode !== 17 && e.keyCode !== 91 && e.keyCode !== 93 && e.keyCode !== 224) { // anything but Ctrl or Command pressed
-					close_menus();
-				}
-				return;
-			}
-			if (e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey) { // Alt held
-				if (String.fromCharCode(e.keyCode) === get_hotkey(menus_key)) {
-					e.preventDefault();
-					open_top_level_menu("keydown");
-				}
-			}
-		});
 		menu_button_el.addEventListener("focus", () => {
 			top_level_highlight(menus_key);
 		});
@@ -863,7 +847,7 @@ function MenuBar(menus) {
 			// console.log("pointerdown (possibly simulated) — menu_popup_el.style.zIndex", menu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
 			// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
 			top_level_highlight(menus_key);
-			
+
 			menu_popup_el.dispatchEvent(new CustomEvent("update"), {});
 
 			selecting_menus = true;
@@ -894,6 +878,7 @@ function MenuBar(menus) {
 			menu_button_el,
 			menu_popup_el,
 			menus_key,
+			hotkey: get_hotkey(menus_key),
 			open_top_level_menu,
 		});
 	};
@@ -937,8 +922,41 @@ function MenuBar(menus) {
 	window.addEventListener("pointerdown", close_menus_on_click_outside);
 	window.addEventListener("pointerup", close_menus_on_click_outside);
 
+	let keyboard_scope_element;
+	function set_keyboard_scope(scope_element) {
+		if (keyboard_scope_element) {
+			keyboard_scope_element.removeEventListener("keydown", keyboard_scope_keydown);
+		}
+		keyboard_scope_element = scope_element;
+		if (keyboard_scope_element) {
+			keyboard_scope_element.addEventListener("keydown", keyboard_scope_keydown);
+		}
+	}
+	function keyboard_scope_keydown(e) {
+		if (e.ctrlKey || e.metaKey) { // Ctrl or Command held
+			if (e.keyCode !== 17 && e.keyCode !== 91 && e.keyCode !== 93 && e.keyCode !== 224) { // anything but Ctrl or Command pressed
+				close_menus();
+			}
+			return;
+		}
+		if (e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey) { // Alt held
+			const menu = top_level_menus.find((menu) =>
+				menu.hotkey.toLowerCase() === String.fromCharCode(e.keyCode).toLowerCase()
+			);
+			if (menu) {
+				e.preventDefault();
+				menu.open_top_level_menu("keydown");
+			}
+		}
+	}
+
+	set_keyboard_scope(window);
+
 	this.element = menus_el;
 	this.closeMenus = close_menus;
+	this.setKeyboardScope = set_keyboard_scope;
+	// @TODO: add a helper to $Window to set up a menu bar, like $window.setMenuBar(menuBar||null)
+	// which would set the keyboard scope and append the element in the proper place
 }
 
 exports.MenuBar = MenuBar;
