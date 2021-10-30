@@ -446,33 +446,45 @@ function test_triggering() {
 			32: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAl1JREFUWEfVVltywyAMFBeLc7EacC+W5GClswIRWQY/Ejcz5SvBoF1pV7IdqRUiJfx1ehM72EhEyRG5ROTD/Ig+fvR3xQI4/nyNQiCjMqNCAjvT5Ch43p/xPAos5+dBnEuUcmhk+pMASOR9rgsecyVOAl9U28rhx5xxJsAFOn11g4ZAKRMg8pFl+DCBmAnESBQCJ/5ZAjG4NI6Jpm9IsGyOs7SYZRVjTPC342QDMQF4ICQKATrkJZe8929XpQYA+PV6rSDDMMySjNCirHEcyTm+eg4BC75W3svlQtM0kZfefFMLB3BktHcBHOtUArr0a0Rut1t9/G8IxDzIyXf8whL8VQUALuLCrWJjTaZJQEptiR2RQIPDNZjmXIpn6+Q2alUALYi2e5XAGriQER5dAvf7feFHW4HeGRgU2drMc//kJTIsCCD7VmBcEgIA6IGjapgVZVDVsvdkYAI6VQTXU8+WYQ/44/HgayDM8YwHtAzlY2vvGKJ25mVs82dDWToJkQSPBBwVHIYhD3S1Ei4eeclow4nD5TNSSFhPiHxNAorM5otGhgx6vWU4VESTQGwNrlqSYWubwhdbo9YOGSGu3Y89TcCCLwiU8nMs0ajljrXMbdkkZgt8QWANtJrLjNdW5lJKbTicg+Y2Ib0hBpQzTQ9I6Tt9zXfVzF9ovkZAfMCzYcMDdXZoMDPrN8GtBNqI+pl0VSXfM+CRzHtlZhkwToteWpbn9+OzY1pvuV2Zr+nMlSyGtLMF+0lGrDIm/0Tf99ze6qaWBPrcU+dSFQM8M7CQ7rn9FQJNMmd8iuvAv0XzaDC1qAqpAAAAAElFTkSuQmCC",
 		},
 	});
+	let target_window_el = $trigger_test_window[0];
 	$trigger_test_window.$content.append(`
-		<br>
-		<button id="test-focus-other">Focus Other</button> (Selectable Text window must be open)
+		<p>
+			Target window: <b id="target-window-text">Self</b>
+			<button id="pick-target-window-button">Pick Target</button>
+		</p>
+		<button id="test-immediate-focus">Focus Now</button>
 		<br>
 		<button id="test-delayed-focus">
-			Focus Self
+			Focus
 			<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
 		</button> (Click off the window quickly to see it)
 		<br>
 		<button id="test-delayed-close">
-			Close Self
+			Close
 			<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
-		</button> (Test that menus close properly; also, the tool window should close)
+		</button>
+		(Test that menus, submenus, and child windows close)
 		<br>
-		<h3>Trigger mouse events on this window, delayed</h3>
+		<h3>Trigger mouse events on a delay</h3>
 		<p>Click buttons then quickly click elsewhere to see if the window is refocused.</p>
 		<p>Currently "click" events don't refocus, but "mousedown" and "pointerdown" do.</p>
 	`);
 
+	$trigger_test_window.$content.find("#pick-target-window-button").click(() => {
+		pick_window_el((window_el) => {
+			target_window_el = window_el;
+			$trigger_test_window.$content.find("#target-window-text").text(window_el.querySelector(".window-title").textContent);
+		}, "Select a target window for testing.");
+	});
+
 	$trigger_test_window.find("#test-delayed-focus").on("click", () => {
-		setTimeout(() => $trigger_test_window.focus(), 1000);
+		setTimeout(() => target_window_el.$window.focus(), 1000);
 	});
 	$trigger_test_window.find("#test-delayed-close").on("click", () => {
-		setTimeout(() => $trigger_test_window.close(), 1000);
+		setTimeout(() => target_window_el.$window.close(), 1000);
 	});
-	$trigger_test_window.find("#test-focus-other").on("click", () => {
-		$selection_test_window.focus();
+	$trigger_test_window.find("#test-immediate-focus").on("click", () => {
+		target_window_el.$window.focus();
 	});
 
 	const $table = $("<table>").appendTo($trigger_test_window.$content);
@@ -540,7 +552,7 @@ function test_window_theme() {
 		const theme_id = $theme_test_window.$content.find("#theme-select").val();
 		pick_window_el((other_window_el) => {
 			apply_theme_to_window_el(other_window_el, theme_id);
-		});
+		}, "Select a window to apply the theme to.");
 	});
 }
 
@@ -552,8 +564,8 @@ function apply_theme_to_window_el(window_el, theme_id) {
 	applyCSSProperties(props, { element: window_el, recurseIntoIframes: true });
 }
 
-function pick_window_el(callback) {
-	const $overlay_message = $("<div/>").text("Select a window to apply the theme to.").css({
+function pick_window_el(callback, message = "Select a window.") {
+	const $overlay_message = $("<div/>").text(message).css({
 		position: "absolute",
 		top: 0,
 		left: 0,
