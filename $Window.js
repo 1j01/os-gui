@@ -88,6 +88,8 @@ function $Window(options) {
 	options = options || {};
 
 	var $w = $(E("div")).addClass("window os-window").appendTo("body");
+	$w[0].$window = $w;
+	$w.element = $w[0];
 	$w[0].id = `os-window-${Math.random().toString(36).substr(2, 9)}`;
 	$w.$titlebar = $(E("div")).addClass("window-titlebar").appendTo($w);
 	$w.$title_area = $(E("div")).addClass("window-title-area").appendTo($w.$titlebar);

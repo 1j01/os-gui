@@ -223,6 +223,8 @@ Note that focus wraps within a window's content.
 
 Returns a jQuery object with additional methods and properties (see below, after options).
 
+The DOM node can be accessed with `$window.element`, and the `$Window` object can be accessed from the DOM node with with `element.$window`.
+
 <table><tr><td>
 
 `options.title`: Sets the initial window caption.
@@ -386,6 +388,10 @@ The title portion of the titlebar.
 
 *jQuery object.*  
 The close button.
+
+#### `element`
+
+The DOM element that represents the window.
 
 #### Event: `closed`
 

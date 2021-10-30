@@ -15,6 +15,8 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Added
 - `MenuBar` method `closeMenus()` to close any open menus.
 - `MenuBar` method `setKeyboardScope(...elements)` to control hotkey handling
+- `$Window` property `element` to get the DOM element.
+- `element.$window` to get the `$Window` instance from the DOM element.
 
 ### Changed
 - If you close a menu by clicking the menu button, the containing window will now be re-focused.
