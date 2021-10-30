@@ -36,6 +36,7 @@ let $tool_window_1;
 let $selection_test_window;
 let $iframe_test_window;
 let $icon_test_window;
+let $theme_test_window;
 
 let disable_an_item = false;
 const menus = {
@@ -188,6 +189,10 @@ $main_test_window.$content.append(`
 	<button id="test-icon-size">
 		<img src="https://win98icons.alexmeub.com/icons/png/camera3_network-3.png" width="32" height="32" style="vertical-align: middle;" />
 		Icon Size + Long Title
+	</button>
+	<button id="test-theme">
+		<img src="https://win98icons.alexmeub.com/icons/png/themes-2.png" width="32" height="32" style="vertical-align: middle;" />
+		Window Theme
 	</button>
 	<br>
 	<br>
@@ -479,7 +484,193 @@ function test_icon_sizes() {
 	$icon_test_window.focus();
 }
 
+function test_window_theme() {
+	$theme_test_window = new $Window({
+		title: "Window Theme Applier",
+		resizable: true,
+		icons: {
+			16: "https://win98icons.alexmeub.com/icons/png/themes-1.png",
+			32: "https://win98icons.alexmeub.com/icons/png/themes-0.png",
+			48: "https://win98icons.alexmeub.com/icons/png/themes-2.png",
+		},
+	});
+	$theme_test_window.$content.append(`
+		<div style="margin: 10px;">
+			<select id="theme-select">
+				<option value="windows-default">Windows Default</option>
+				<option value="peggys-pastels" selected>Peggy's Pastels</option>
+				<option value="blue">Blue</option>
+			</select>
+		</div>
+		<div style="margin: 10px;">
+			<button id="theme-self">
+				<img src="https://win98icons.alexmeub.com/icons/png/themes-0.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
+				Theme Self
+			</button>
+			<button id="theme-other">
+				<img src="https://win98icons.alexmeub.com/icons/png/mouse_location.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
+				Theme Other...
+			</button>
+		</div>
+	`);
+	$theme_test_window.$content.find("#theme-self").on("click", () => {
+		const theme_id = $theme_test_window.$content.find("#theme-select").val();
+		apply_theme_to_window_el($theme_test_window[0], theme_id);
+	});
+	$theme_test_window.$content.find("#theme-other").on("click", () => {
+		const theme_id = $theme_test_window.$content.find("#theme-select").val();
+		pick_window_el((other_window_el) => {
+			apply_theme_to_window_el(other_window_el, theme_id);
+		});
+	});
+}
+
+function apply_theme_to_window_el(window_el, theme_id) {
+	const props = Object.assign({},
+		window_themes[theme_id],
+		renderThemeGraphics(window_themes[theme_id]),
+	);
+	applyCSSProperties(props, { element: window_el, recurseIntoIframes: true });
+}
+
+function pick_window_el(callback) {
+	const $overlay_message = $("<div/>").text("Select a window to apply the theme to.").css({
+		position: "absolute",
+		top: 0,
+		left: 0,
+		width: "100%",
+		textAlign: "center",
+		fontSize: "2em",
+		color: "white",
+		backgroundColor: "rgba(0,0,0,0.5)",
+		padding: "1em",
+		pointerEvents: "none",
+	});
+	const keydown = (e) => {
+		if (e.key === "Escape") {
+			$overlay_message.remove();
+			removeEventListener("keydown", keydown);
+			removeEventListener("pointerdown", pointerdown, true);
+		}
+	};
+	const pointerdown = (e) => {
+		const window_el = e.target.closest(".window");
+		if (window_el) {
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			$overlay_message.remove();
+			removeEventListener("keydown", keydown);
+			removeEventListener("pointerdown", pointerdown, true);
+			callback(window_el);
+		}
+	};
+	addEventListener("keydown", keydown);
+	addEventListener("pointerdown", pointerdown, true);
+	$overlay_message.appendTo(document.body);
+}
+
 $main_test_window.find("#test-iframes").on("click", test_iframes);
 $main_test_window.find("#test-icon-size").on("click", test_icon_sizes);
+$main_test_window.find("#test-theme").on("click", test_window_theme);
 $main_test_window.find("#test-tabstop-wrapping").on("click", test_tabstop_wrapping);
 $main_test_window.find("#test-selection").on("click", test_selectable_text);
+
+window_themes = {
+	"windows-default": {
+		"--ActiveBorder": "rgb(192, 192, 192)",
+		"--ActiveTitle": "rgb(0, 0, 128)",
+		"--AppWorkspace": "rgb(128, 128, 128)",
+		"--Background": "rgb(0, 128, 128)",
+		"--ButtonAlternateFace": "rgb(180, 180, 180)",
+		"--ButtonDkShadow": "rgb(0, 0, 0)",
+		"--ButtonFace": "rgb(192, 192, 192)",
+		"--ButtonHilight": "rgb(255, 255, 255)",
+		"--ButtonLight": "rgb(223, 223, 223)",
+		"--ButtonShadow": "rgb(128, 128, 128)",
+		"--ButtonText": "rgb(0, 0, 0)",
+		"--GradientActiveTitle": "rgb(16, 132, 208)",
+		"--GradientInactiveTitle": "rgb(181, 181, 181)",
+		"--GrayText": "rgb(128, 128, 128)",
+		"--Hilight": "rgb(0, 0, 128)",
+		"--HilightText": "rgb(255, 255, 255)",
+		"--HotTrackingColor": "rgb(0, 0, 255)",
+		"--InactiveBorder": "rgb(192, 192, 192)",
+		"--InactiveTitle": "rgb(128, 128, 128)",
+		"--InactiveTitleText": "rgb(192, 192, 192)",
+		"--InfoText": "rgb(0, 0, 0)",
+		"--InfoWindow": "rgb(255, 255, 225)",
+		"--Menu": "rgb(192, 192, 192)",
+		"--MenuText": "rgb(0, 0, 0)",
+		"--Scrollbar": "rgb(192, 192, 192)",
+		"--TitleText": "rgb(255, 255, 255)",
+		"--Window": "rgb(255, 255, 255)",
+		"--WindowFrame": "rgb(0, 0, 0)",
+		"--WindowText": "rgb(0, 0, 0)",
+	},
+	"peggys-pastels": {
+		"--Scrollbar": "rgb(250, 224, 228)",
+		"--Background": "rgb(162, 219, 210)",
+		"--ActiveTitle": "rgb(0, 191, 188)",
+		"--InactiveTitle": "rgb(0, 187, 169)",
+		"--Menu": "rgb(244, 193, 202)",
+		"--Window": "rgb(244, 255, 255)",
+		"--WindowFrame": "rgb(0, 0, 0)",
+		"--MenuText": "rgb(0, 0, 0)",
+		"--WindowText": "rgb(0, 0, 0)",
+		"--TitleText": "rgb(255, 255, 255)",
+		"--ActiveBorder": "rgb(244, 193, 202)",
+		"--InactiveBorder": "rgb(244, 193, 202)",
+		"--AppWorkspace": "rgb(255, 184, 182)",
+		"--Hilight": "rgb(162, 219, 210)",
+		"--HilightText": "rgb(0, 0, 0)",
+		"--ButtonFace": "rgb(244, 193, 202)",
+		"--ButtonShadow": "rgb(222, 69, 96)",
+		"--GrayText": "rgb(222, 69, 96)",
+		"--ButtonText": "rgb(0, 0, 0)",
+		"--InactiveTitleText": "rgb(0, 85, 77)",
+		"--ButtonHilight": "rgb(250, 224, 228)",
+		"--ButtonDkShadow": "rgb(64, 64, 64)",
+		"--ButtonLight": "rgb(247, 219, 215)",
+		"--InfoText": "rgb(0, 0, 0)",
+		"--InfoWindow": "rgb(204, 255, 255)",
+		"--ButtonAlternateFace": "rgb(181, 181, 181)",
+		"--HotTrackingColor": "rgb(0, 128, 128)",
+		"--GradientActiveTitle": "rgb(202, 156, 185)",
+		"--GradientInactiveTitle": "rgb(236, 145, 162)",
+		"--MenuHilight": "rgb(162, 219, 210)",
+		"--MenuBar": "rgb(244, 193, 202)",
+	},
+	"blue": {
+		"--ActiveTitle": "rgb(0, 0, 128)",
+		"--Background": "rgb(58, 110, 165)",
+		"--Hilight": "rgb(51, 153, 255)",
+		"--HilightText": "rgb(255, 255, 255)",
+		"--TitleText": "rgb(255, 255, 255)",
+		"--Window": "rgb(255, 255, 255)",
+		"--WindowText": "rgb(0, 0, 0)",
+		"--Scrollbar": "rgb(211, 228, 248)",
+		"--InactiveTitle": "rgb(49, 131, 221)",
+		"--Menu": "rgb(166, 202, 240)",
+		"--WindowFrame": "rgb(0, 0, 0)",
+		"--MenuText": "rgb(0, 0, 0)",
+		"--ActiveBorder": "rgb(166, 202, 240)",
+		"--InactiveBorder": "rgb(166, 202, 240)",
+		"--AppWorkspace": "rgb(49, 131, 221)",
+		"--ButtonFace": "rgb(166, 202, 240)",
+		"--ButtonShadow": "rgb(49, 131, 221)",
+		"--GrayText": "rgb(49, 131, 221)",
+		"--ButtonText": "rgb(0, 0, 0)",
+		"--InactiveTitleText": "rgb(0, 0, 128)",
+		"--ButtonHilight": "rgb(211, 228, 248)",
+		"--ButtonDkShadow": "rgb(0, 0, 0)",
+		"--ButtonLight": "rgb(166, 202, 240)",
+		"--InfoText": "rgb(0, 0, 0)",
+		"--InfoWindow": "rgb(225, 225, 255)",
+		"--GradientActiveTitle": "rgb(16, 132, 208)",
+		"--GradientInactiveTitle": "rgb(49, 131, 221)",
+		"--ButtonAlternateFace": "rgb(192, 192, 192)",
+		"--HotTrackingColor": "rgb(0, 0, 128)",
+		"--MenuHilight": "rgb(0, 0, 128)",
+		"--MenuBar": "rgb(166, 202, 240)",
+	},
+};
