@@ -194,24 +194,10 @@ $main_test_window.$content.append(`
 		<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/themes-2.png" width="32" height="32" style="vertical-align: middle;" />
 		Window Theme
 	</button>
-	<br>
-	<br>
-	<button id="test-focus-other">Focus Other</button> (Selectable Text window must be open)
-	<br>
-	<button id="test-delayed-focus">
-		Focus Self
-		<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
-	</button> (Click off the window quickly to see it)
-	<br>
-	<button id="test-delayed-close">
-		Close Self
-		<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
-	</button> (Test that menus close properly; also, the tool window should close)
-	<br>
-	<br>
-	<h3>Trigger mouse events on this window, delayed</h3>
-	<p>Click buttons then quickly click elsewhere to see if the window is refocused.</p>
-	<p>Currently "click" events don't refocus, but "mousedown" and "pointerdown" do.</p>
+	<button id="test-triggering">
+		<img draggable="false" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAl1JREFUWEfVVltywyAMFBeLc7EacC+W5GClswIRWQY/Ejcz5SvBoF1pV7IdqRUiJfx1ehM72EhEyRG5ROTD/Ig+fvR3xQI4/nyNQiCjMqNCAjvT5Ch43p/xPAos5+dBnEuUcmhk+pMASOR9rgsecyVOAl9U28rhx5xxJsAFOn11g4ZAKRMg8pFl+DCBmAnESBQCJ/5ZAjG4NI6Jpm9IsGyOs7SYZRVjTPC342QDMQF4ICQKATrkJZe8929XpQYA+PV6rSDDMMySjNCirHEcyTm+eg4BC75W3svlQtM0kZfefFMLB3BktHcBHOtUArr0a0Rut1t9/G8IxDzIyXf8whL8VQUALuLCrWJjTaZJQEptiR2RQIPDNZjmXIpn6+Q2alUALYi2e5XAGriQER5dAvf7feFHW4HeGRgU2drMc//kJTIsCCD7VmBcEgIA6IGjapgVZVDVsvdkYAI6VQTXU8+WYQ/44/HgayDM8YwHtAzlY2vvGKJ25mVs82dDWToJkQSPBBwVHIYhD3S1Ei4eeclow4nD5TNSSFhPiHxNAorM5otGhgx6vWU4VESTQGwNrlqSYWubwhdbo9YOGSGu3Y89TcCCLwiU8nMs0ajljrXMbdkkZgt8QWANtJrLjNdW5lJKbTicg+Y2Ib0hBpQzTQ9I6Tt9zXfVzF9ovkZAfMCzYcMDdXZoMDPrN8GtBNqI+pl0VSXfM+CRzHtlZhkwToteWpbn9+OzY1pvuV2Zr+nMlSyGtLMF+0lGrDIm/0Tf99ze6qaWBPrcU+dSFQM8M7CQ7rn9FQJNMmd8iuvAv0XzaDC1qAqpAAAAAElFTkSuQmCC" width="32" height="32" style="vertical-align: middle;" />
+		Triggering
+	</button>
 `);
 $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $main_test_window });
 $tool_window_1.$content.append(`
@@ -266,41 +252,6 @@ const open_recursive_dialog = (x, y) => {
 $main_test_window.find("#open-recursive-dialog").on("click", () => {
 	open_recursive_dialog(innerWidth / 2, innerHeight / 2);
 });
-$main_test_window.find("#test-delayed-focus").on("click", () => {
-	setTimeout(() => $main_test_window.focus(), 1000);
-});
-$main_test_window.find("#test-delayed-close").on("click", () => {
-	setTimeout(() => $main_test_window.close(), 1000);
-});
-$main_test_window.find("#test-focus-other").on("click", () => {
-	$selection_test_window.focus();
-});
-const $table = $("<table>").appendTo($main_test_window.$content);
-for (const trigger_style of ["jQuery", "native"]) {
-	const $tr = $("<tr>").appendTo($table);
-	for (const event_type of ["click", "pointerdown", "mousedown"]) {
-		const $td = $("<td>").appendTo($tr).append(
-			$("<button>").text(
-				`Trigger ${event_type} (${trigger_style})`
-			).click(() => {
-				setTimeout(() => {
-					if (trigger_style === "jQuery") {
-						$main_test_window.find("p").trigger(event_type);
-					} else {
-						$main_test_window.find("p")[0].dispatchEvent(new Event(event_type, {
-							bubbles: true,
-							cancelable: true,
-						}));
-					}
-				}, 1000);
-			}).prepend(`
-				<img draggable="false" src='https://win98icons.alexmeub.com/icons/png/mouse-2.png' width='16' height='16' style='vertical-align: middle;' />
-			`).append(`
-				<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
-			`)
-		);
-	}
-}
 
 // Radio buttons should be treated as a group with one tabstop.
 // If there's no selected ("checked") radio, it should still visit the group,
@@ -484,6 +435,74 @@ function test_icon_sizes() {
 	$icon_test_window.focus();
 }
 
+function test_triggering() {
+	$trigger_test_window = new $Window({
+		title: "Triggering Tests",
+		resizable: true,
+		icons: {
+			// Custom 16x16 icon
+			16: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAASdJREFUOE+NkwuShCAMRDsX83OwIQQPpl5sstVRWHTcD1VqYOiXTmAE3cgmDve2IoKYxrffp5A6bUE2OCfpJXA5tvPDSHCuObAUQbbIE9oGOIjioeKyO95vYFkAzbha6HQ3wLdPM/grAYsJ1AgIgx/jZ0CGJwVKEahGSX8DspkLHCxPkJGSN0A22miFBk5V2d9jmJlP09Q2jeN4sWsdIKUEOaTH+y5+qrWuDcOAUgqzHwCKSfzvoBiqCHkF9NZ/A23bhqSKwvtydjUc3AHrugZnnufGo5i22UqKG+QJwAbmnBuA4pqEMUuokA8HFO/7fqlkGMfIzLqLWXPC+SOAWXhMteYmPiE80ssp9On4A+0TEHHN3NVeT6Bez/6fGmI+/aiN6+5yC78AaxabjWK9MHoAAAAASUVORK5CYII=",
+			// "Real" 32x32 icon
+			32: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAl1JREFUWEfVVltywyAMFBeLc7EacC+W5GClswIRWQY/Ejcz5SvBoF1pV7IdqRUiJfx1ehM72EhEyRG5ROTD/Ig+fvR3xQI4/nyNQiCjMqNCAjvT5Ch43p/xPAos5+dBnEuUcmhk+pMASOR9rgsecyVOAl9U28rhx5xxJsAFOn11g4ZAKRMg8pFl+DCBmAnESBQCJ/5ZAjG4NI6Jpm9IsGyOs7SYZRVjTPC342QDMQF4ICQKATrkJZe8929XpQYA+PV6rSDDMMySjNCirHEcyTm+eg4BC75W3svlQtM0kZfefFMLB3BktHcBHOtUArr0a0Rut1t9/G8IxDzIyXf8whL8VQUALuLCrWJjTaZJQEptiR2RQIPDNZjmXIpn6+Q2alUALYi2e5XAGriQER5dAvf7feFHW4HeGRgU2drMc//kJTIsCCD7VmBcEgIA6IGjapgVZVDVsvdkYAI6VQTXU8+WYQ/44/HgayDM8YwHtAzlY2vvGKJ25mVs82dDWToJkQSPBBwVHIYhD3S1Ei4eeclow4nD5TNSSFhPiHxNAorM5otGhgx6vWU4VESTQGwNrlqSYWubwhdbo9YOGSGu3Y89TcCCLwiU8nMs0ajljrXMbdkkZgt8QWANtJrLjNdW5lJKbTicg+Y2Ib0hBpQzTQ9I6Tt9zXfVzF9ovkZAfMCzYcMDdXZoMDPrN8GtBNqI+pl0VSXfM+CRzHtlZhkwToteWpbn9+OzY1pvuV2Zr+nMlSyGtLMF+0lGrDIm/0Tf99ze6qaWBPrcU+dSFQM8M7CQ7rn9FQJNMmd8iuvAv0XzaDC1qAqpAAAAAElFTkSuQmCC",
+		},
+	});
+	$trigger_test_window.$content.append(`
+		<br>
+		<button id="test-focus-other">Focus Other</button> (Selectable Text window must be open)
+		<br>
+		<button id="test-delayed-focus">
+			Focus Self
+			<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
+		</button> (Click off the window quickly to see it)
+		<br>
+		<button id="test-delayed-close">
+			Close Self
+			<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
+		</button> (Test that menus close properly; also, the tool window should close)
+		<br>
+		<h3>Trigger mouse events on this window, delayed</h3>
+		<p>Click buttons then quickly click elsewhere to see if the window is refocused.</p>
+		<p>Currently "click" events don't refocus, but "mousedown" and "pointerdown" do.</p>
+	`);
+
+	$trigger_test_window.find("#test-delayed-focus").on("click", () => {
+		setTimeout(() => $trigger_test_window.focus(), 1000);
+	});
+	$trigger_test_window.find("#test-delayed-close").on("click", () => {
+		setTimeout(() => $trigger_test_window.close(), 1000);
+	});
+	$trigger_test_window.find("#test-focus-other").on("click", () => {
+		$selection_test_window.focus();
+	});
+
+	const $table = $("<table>").appendTo($trigger_test_window.$content);
+	for (const trigger_style of ["jQuery", "native"]) {
+		const $tr = $("<tr>").appendTo($table);
+		for (const event_type of ["click", "pointerdown", "mousedown"]) {
+			const $td = $("<td>").appendTo($tr).append(
+				$("<button>").text(
+					`Trigger ${event_type} (${trigger_style})`
+				).click(() => {
+					setTimeout(() => {
+						if (trigger_style === "jQuery") {
+							$trigger_test_window.find("p").trigger(event_type);
+						} else {
+							$trigger_test_window.find("p")[0].dispatchEvent(new Event(event_type, {
+								bubbles: true,
+								cancelable: true,
+							}));
+						}
+					}, 1000);
+				}).prepend(`
+					<img draggable="false" src='https://win98icons.alexmeub.com/icons/png/mouse-2.png' width='16' height='16' style='vertical-align: middle;' />
+				`).append(`
+					<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
+				`)
+			);
+		}
+	}
+}
+
 function test_window_theme() {
 	$theme_test_window = new $Window({
 		title: "Window Theme Applier",
@@ -574,6 +593,7 @@ $main_test_window.find("#test-icon-size").on("click", test_icon_sizes);
 $main_test_window.find("#test-theme").on("click", test_window_theme);
 $main_test_window.find("#test-tabstop-wrapping").on("click", test_tabstop_wrapping);
 $main_test_window.find("#test-selection").on("click", test_selectable_text);
+$main_test_window.find("#test-triggering").on("click", test_triggering);
 
 window_themes = {
 	"windows-default": {
