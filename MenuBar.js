@@ -823,6 +823,8 @@ function MenuBar(menus) {
 		menu_button_el.addEventListener("pointerdown", e => {
 			if (menu_button_el.classList.contains("active")) {
 				menu_button_el.dispatchEvent(new CustomEvent("release", {}));
+				refocus_window();
+				e.preventDefault(); // needed for refocus_window() to work
 			} else {
 				open_top_level_menu(e.type);
 			}
