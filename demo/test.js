@@ -165,7 +165,7 @@ const menus = {
 };
 
 $main_test_window = new $Window({
-	title: "Testing Area",
+	title: "Test Station",
 	resizable: false,
 	icons: { 16: "https://win98icons.alexmeub.com/icons/png/application_hammer_grouppol-0.png" },
 });
@@ -181,7 +181,7 @@ $main_test_window.$content.append(`
 	</button>
 	<button id="test-iframes">
 		<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/html-3.png" width="32" height="32" style="vertical-align: middle;" />
-		Iframes
+		Nested Iframes
 	</button>
 	<button id="test-selection">
 		<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/file_lines-0.png" width="32" height="32" style="vertical-align: middle;" />
@@ -197,9 +197,22 @@ $main_test_window.$content.append(`
 	</button>
 	<button id="test-triggering">
 		<img draggable="false" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAl1JREFUWEfVVltywyAMFBeLc7EacC+W5GClswIRWQY/Ejcz5SvBoF1pV7IdqRUiJfx1ehM72EhEyRG5ROTD/Ig+fvR3xQI4/nyNQiCjMqNCAjvT5Ch43p/xPAos5+dBnEuUcmhk+pMASOR9rgsecyVOAl9U28rhx5xxJsAFOn11g4ZAKRMg8pFl+DCBmAnESBQCJ/5ZAjG4NI6Jpm9IsGyOs7SYZRVjTPC342QDMQF4ICQKATrkJZe8929XpQYA+PV6rSDDMMySjNCirHEcyTm+eg4BC75W3svlQtM0kZfefFMLB3BktHcBHOtUArr0a0Rut1t9/G8IxDzIyXf8whL8VQUALuLCrWJjTaZJQEptiR2RQIPDNZjmXIpn6+Q2alUALYi2e5XAGriQER5dAvf7feFHW4HeGRgU2drMc//kJTIsCCD7VmBcEgIA6IGjapgVZVDVsvdkYAI6VQTXU8+WYQ/44/HgayDM8YwHtAzlY2vvGKJ25mVs82dDWToJkQSPBBwVHIYhD3S1Ei4eeclow4nD5TNSSFhPiHxNAorM5otGhgx6vWU4VESTQGwNrlqSYWubwhdbo9YOGSGu3Y89TcCCLwiU8nMs0ajljrXMbdkkZgt8QWANtJrLjNdW5lJKbTicg+Y2Ib0hBpQzTQ9I6Tt9zXfVzF9ovkZAfMCzYcMDdXZoMDPrN8GtBNqI+pl0VSXfM+CRzHtlZhkwToteWpbn9+OzY1pvuV2Zr+nMlSyGtLMF+0lGrDIm/0Tf99ze6qaWBPrcU+dSFQM8M7CQ7rn9FQJNMmd8iuvAv0XzaDC1qAqpAAAAAElFTkSuQmCC" width="32" height="32" style="vertical-align: middle;" />
-		Triggering
+		Trigger Station
 	</button>
 `);
+$main_test_window.$content.css({
+	display: "flex",
+	flexDirection: "column",
+	justifyContent: "stretch",
+}).find("button").css({
+	display: "flex",
+	flexDirection: "row",
+	alignItems: "center",
+	margin: "0.2em",
+}).addClass("lightweight").find("img").css({
+	marginRight: "0.5em",
+	marginLeft: "0.5em",
+});
 $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $main_test_window });
 $tool_window_1.$content.append(`
 	<p>This tool window has controls in it:</p>
@@ -439,7 +452,7 @@ function test_icon_sizes() {
 
 function test_triggering() {
 	$trigger_test_window = new $Window({
-		title: "Triggering Tests",
+		title: "Trigger Station",
 		resizable: true,
 		icons: {
 			// Custom 16x16 icon
