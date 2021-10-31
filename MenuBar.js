@@ -333,24 +333,35 @@ function MenuBar(menus) {
 				break;
 			default:
 				// handle accelerators and first-letter navigation
-				if (!menu_popup_el) {
-					break; // @TODO: handle accelerators for menu bar
-				}
 				const key = String.fromCharCode(e.keyCode).toLowerCase();
-				const item_els = [...menu_popup_el.querySelectorAll(".menu-item")];
+				const item_els = active_menu_popup ?
+					[...menu_popup_el.querySelectorAll(".menu-item")] :
+					top_level_menus.map(top_level_menu => top_level_menu.menu_button_el);
 				const item_els_by_accelerator = {};
 				for (const item_el of item_els) {
 					const accelerator = item_el.querySelector(".menu-hotkey");
-					const accelerator_key = (accelerator ? accelerator.textContent : item_el.querySelector(".menu-item-label").textContent[0]).toLowerCase();
+					const accelerator_key = (accelerator ?
+						accelerator.textContent :
+						(item_el.querySelector(".menu-item-label") ?? item_el).textContent[0]
+					).toLowerCase();
 					item_els_by_accelerator[accelerator_key] = item_els_by_accelerator[accelerator_key] || [];
 					item_els_by_accelerator[accelerator_key].push(item_el);
 				}
 				const matching_item_els = item_els_by_accelerator[key] || [];
+				// console.log({ key, item_els, item_els_by_accelerator, matching_item_els });
 				if (matching_item_els.length) {
 					if (matching_item_els.length === 1) {
 						// it's unambiguous, go ahead and activate it
 						const menu_item_el = matching_item_els[0];
-						menu_item_el.click();
+						// click() doesn't work for menu buttons at the moment,
+						// and also we want to highlight the first item in the menu
+						// in that case, which doesn't happen with the mouse
+						if (menu_item_el.classList.contains("menu-button")) {
+							const top_level_menu = top_level_menus.find(top_level_menu => top_level_menu.menu_button_el === menu_item_el);
+							top_level_menu.open_top_level_menu("keydown");
+						} else {
+							menu_item_el.click();
+						}
 						e.preventDefault();
 					} else {
 						// cycle the menu items that match the key
