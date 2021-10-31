@@ -473,7 +473,7 @@ function test_triggering() {
 	`);
 
 	$trigger_test_window.$content.find("#pick-target-window-button").click(() => {
-		pick_window_el((window_el) => {
+		pick_el(".os-window", (window_el) => {
 			target_window_el = window_el;
 			$trigger_test_window.$content.find("#target-window-text").text(window_el.querySelector(".window-title").textContent);
 		}, "Select a target window for testing.");
@@ -563,7 +563,7 @@ function test_window_theme() {
 		apply_theme_to_el($theme_test_window[0], theme_id);
 	});
 	$theme_test_window.$content.find("#theme-other").on("click", () => {
-		pick_window_el((other_window_el) => {
+		pick_el(".os-window", (other_window_el) => {
 			apply_theme_to_el(other_window_el, theme_id);
 		}, "Select a window to apply the theme to.");
 	});
@@ -588,9 +588,9 @@ function apply_theme_to_el(window_el, theme_id) {
 	applyCSSProperties(props, { element: window_el, recurseIntoIframes: true });
 }
 
-function pick_window_el(callback, message = "Select a window.") {
+function pick_el(selector, callback, message = "Select an element.") {
 	const $overlay_message = $("<div/>").text(message).css({
-		position: "absolute",
+		position: "fixed",
 		top: 0,
 		left: 0,
 		width: "100%",
@@ -600,26 +600,62 @@ function pick_window_el(callback, message = "Select a window.") {
 		backgroundColor: "rgba(0,0,0,0.5)",
 		padding: "1em",
 		pointerEvents: "none",
+	}).append(`<small style='display: block; font-size: 0.6em;'>Press <kbd>Esc</kbd> to cancel.</small>`);
+	const $target_overlay = $("<div class='target-overlay'/>").css({
+		position: "fixed",
+		// backgroundColor: "rgba(255,255,255,0.3)",
+		boxSizing: "border-box",
+		// outline: "3px dashed black",
+		// boxShadow: "0 0 0 2px white, 0 0 0 1px black inset",
+		outline: "2px dashed black",
+		boxShadow: "0 0 0 2px white, 0 0 0 3px red, 0 0 0 1px red inset",
+		// pointerEvents: "none", // we'll use it to block clicks as well as being an indicator
+		zIndex: 9999999999,
+		// cursor: "crosshair",
+		cursor: "pointer",
+	}).appendTo("body").hide();
+	let current_el = null;
+	const cleanup = () => {
+		$overlay_message.remove();
+		$target_overlay.remove();
+		removeEventListener("keydown", keydown, true);
+		removeEventListener("pointermove", pointermove, true);
+		removeEventListener("pointerdown", pointerdown, true);
+	};
+	$target_overlay.on("click", () => {
+		cleanup();
+		callback(current_el);
 	});
+
 	const keydown = (e) => {
 		if (e.key === "Escape") {
-			$overlay_message.remove();
-			removeEventListener("keydown", keydown);
-			removeEventListener("pointerdown", pointerdown, true);
+			cleanup();
+			e.preventDefault();
+			e.stopImmediatePropagation();
+		}
+	};
+	const pointermove = (e) => {
+		const matched_el = document.elementsFromPoint(e.clientX, e.clientY)
+			.find((el) => el.matches(selector));
+		if (matched_el) {
+			current_el = matched_el;
+			const rect = matched_el.getBoundingClientRect();
+			$target_overlay.css({
+				top: rect.top,
+				left: rect.left,
+				width: rect.width,
+				height: rect.height,
+			});
+			$target_overlay.show();
+		} else {
+			$target_overlay.hide();
 		}
 	};
 	const pointerdown = (e) => {
-		const window_el = e.target.closest(".window");
-		if (window_el) {
-			e.preventDefault();
-			e.stopImmediatePropagation();
-			$overlay_message.remove();
-			removeEventListener("keydown", keydown);
-			removeEventListener("pointerdown", pointerdown, true);
-			callback(window_el);
-		}
+		e.preventDefault(); // prevent focus change
 	};
-	addEventListener("keydown", keydown);
+	addEventListener("keydown", keydown, true);
+	addEventListener("pointermove", pointermove, true);
 	addEventListener("pointerdown", pointerdown, true);
 	$overlay_message.appendTo(document.body);
 }
