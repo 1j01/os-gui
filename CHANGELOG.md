@@ -25,6 +25,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Fixed
 - Fixed error when pressing arbitrary (unhandled) keys with menu bar focused
+- Menus now ignore Alt+(hotkey) if the event is already handled. (For instance, on the demo page there's a menu bar without a window which has global hotkeys, as well as menu bars with identical hotkeys in windows. Hotkeys will now affect the appropriate menu bar depending on whether a window is focused.)
 
 </details>
 
