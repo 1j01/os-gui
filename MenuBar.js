@@ -942,13 +942,43 @@ function MenuBar(menus) {
 	function set_keyboard_scope(...elements) {
 		for (const el of keyboard_scope_elements) {
 			el.removeEventListener("keydown", keyboard_scope_keydown);
+			el.removeEventListener("keyup", keyboard_scope_keyup);
 		}
 		keyboard_scope_elements = elements;
 		for (const el of keyboard_scope_elements) {
 			el.addEventListener("keydown", keyboard_scope_keydown);
+			el.addEventListener("keyup", keyboard_scope_keyup);
 		}
 	}
+	let tapping_alt = false; // nothing else pressed but Alt (so far)
+	let had_focus_before_alt = false;
+	function keyboard_scope_keyup(e) {
+		if (e.defaultPrevented) {
+			return;
+		}
+		// console.log("keyup", e.key, e.keyCode, e.code, e.altKey, e.shiftKey, e.ctrlKey, e.metaKey);
+		if (e.keyCode === 18) { // Alt released
+			if (tapping_alt) {
+				console.log("Tapped Alt", "had_focus_before_alt", had_focus_before_alt);
+			}
+			if (tapping_alt && !had_focus_before_alt) {
+				menus_el.querySelector(".menu-button").focus();
+				e.preventDefault();
+			}
+			tapping_alt = false; // might not be necessary but whatever
+		}
+	}
+	setInterval(() => {
+		top_level_menus[0].menu_button_el.textContent = tapping_alt ? "⌥ Alt" : "ナ Na";
+	}, 10);
 	function keyboard_scope_keydown(e) {
+		if (e.keyCode === 18) { // Alt
+			// @TODO: consider other event handlers
+			had_focus_before_alt = menus_el.contains(document.activeElement);
+			tapping_alt = true;
+		} else {
+			tapping_alt = false;
+		}
 		// Close menus if the user presses almost any key combination
 		// e.g. if you look in the menu to remember a shortcut,
 		// and then use the shortcut.
