@@ -165,7 +165,8 @@ const menus = {
 };
 
 $main_test_window = new $Window({
-	title: "Testing Area", resizable: true,
+	title: "Testing Area",
+	resizable: false,
 	icons: { 16: "https://win98icons.alexmeub.com/icons/png/application_hammer_grouppol-0.png" },
 });
 $main_test_window.setMenuBar(new MenuBar(menus));
@@ -348,7 +349,8 @@ function test_selectable_text() {
 
 function test_iframes() {
 	$iframe_test_window = new $Window({
-		title: "Iframe Window", resizable: true,
+		title: "Iframe Window",
+		resizable: true,
 		icons: {
 			16: "https://win98icons.alexmeub.com/icons/png/html-4.png",
 			32: "https://win98icons.alexmeub.com/icons/png/html-3.png",
@@ -518,7 +520,7 @@ function test_triggering() {
 function test_window_theme() {
 	$theme_test_window = new $Window({
 		title: "Window Theme Applier",
-		resizable: true,
+		resizable: false,
 		icons: {
 			16: "https://win98icons.alexmeub.com/icons/png/themes-1.png",
 			32: "https://win98icons.alexmeub.com/icons/png/themes-0.png",
