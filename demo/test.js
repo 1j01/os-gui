@@ -544,6 +544,10 @@ function test_window_theme() {
 				<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/mouse_location.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
 				Theme Other...
 			</button>
+			<button id="theme-anything">
+				<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/mouse_location.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
+				Theme Anything...
+			</button>
 			<button id="theme-all">
 				<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/windows_three.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
 				Theme All
@@ -567,25 +571,34 @@ function test_window_theme() {
 			apply_theme_to_el(other_window_el, theme_id);
 		}, "Select a window to apply the theme to.");
 	});
+	$theme_test_window.$content.find("#theme-anything").on("click", () => {
+		pick_el("*", (el) => {
+			apply_theme_to_el(el, theme_id);
+		}, "Select an element to apply the theme to.");
+	});
 	$theme_test_window.$content.find("#theme-all").on("click", () => {
-		apply_theme_to_el(document.documentElement, theme_id);
-		// could unset the styles on window,
-		// but I'll just set them for now.
-		for (const window_el of document.querySelectorAll(".window")) {
-			apply_theme_to_el(window_el, theme_id);
+		for (const theme_point_el of document.querySelectorAll(".theme-point")) {
+			apply_theme_to_el(theme_point_el, theme_id, "unset");
 		}
+		apply_theme_to_el(document.documentElement, theme_id);
 	});
 	// $theme_test_window.$content.find("#theme-global").on("click", () => {
 	// 	apply_theme_to_el(document.documentElement, theme_id);
 	// });
 }
 
-function apply_theme_to_el(window_el, theme_id) {
+function apply_theme_to_el(element, theme_id, unset) {
 	const props = Object.assign({},
 		window_themes[theme_id],
 		renderThemeGraphics(window_themes[theme_id]),
 	);
-	applyCSSProperties(props, { element: window_el, recurseIntoIframes: true });
+	if (unset) {
+		for (const key of Object.keys(props)) {
+			props[key] = "";
+		}
+	}
+	applyCSSProperties(props, { element, recurseIntoIframes: true });
+	element.classList.add("theme-point");
 }
 
 function pick_el(selector, callback, message = "Select an element.") {
@@ -636,7 +649,7 @@ function pick_el(selector, callback, message = "Select an element.") {
 	};
 	const pointermove = (e) => {
 		const matched_el = document.elementsFromPoint(e.clientX, e.clientY)
-			.find((el) => el.matches(selector));
+			.find((el) => el.matches(selector) && !el.matches(".target-overlay"));
 		if (matched_el) {
 			current_el = matched_el;
 			const rect = matched_el.getBoundingClientRect();
