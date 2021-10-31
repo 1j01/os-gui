@@ -544,21 +544,43 @@ function test_window_theme() {
 				<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/mouse_location.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
 				Theme Other...
 			</button>
+			<button id="theme-all">
+				<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/windows_three.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
+				Theme All
+			</button>
+			<!--<button id="theme-global">
+				<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/windows_update_large-4.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
+				Set Global Default
+			</button>-->
 		</div>
 	`);
+	const select = $theme_test_window.$content.find("#theme-select")[0];
+	let theme_id = select.value;
+	select.addEventListener("change", () => {
+		theme_id = select.value;
+	});
 	$theme_test_window.$content.find("#theme-self").on("click", () => {
-		const theme_id = $theme_test_window.$content.find("#theme-select").val();
-		apply_theme_to_window_el($theme_test_window[0], theme_id);
+		apply_theme_to_el($theme_test_window[0], theme_id);
 	});
 	$theme_test_window.$content.find("#theme-other").on("click", () => {
-		const theme_id = $theme_test_window.$content.find("#theme-select").val();
 		pick_window_el((other_window_el) => {
-			apply_theme_to_window_el(other_window_el, theme_id);
+			apply_theme_to_el(other_window_el, theme_id);
 		}, "Select a window to apply the theme to.");
 	});
+	$theme_test_window.$content.find("#theme-all").on("click", () => {
+		apply_theme_to_el(document.documentElement, theme_id);
+		// could unset the styles on window,
+		// but I'll just set them for now.
+		for (const window_el of document.querySelectorAll(".window")) {
+			apply_theme_to_el(window_el, theme_id);
+		}
+	});
+	// $theme_test_window.$content.find("#theme-global").on("click", () => {
+	// 	apply_theme_to_el(document.documentElement, theme_id);
+	// });
 }
 
-function apply_theme_to_window_el(window_el, theme_id) {
+function apply_theme_to_el(window_el, theme_id) {
 	const props = Object.assign({},
 		window_themes[theme_id],
 		renderThemeGraphics(window_themes[theme_id]),
