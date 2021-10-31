@@ -562,17 +562,17 @@ function $Window(options) {
 	let task;
 	Object.defineProperty($w, "task", {
 		get() {
-			return task; // || { $task: $(minimize_target_el) };
+			return task;
 		},
 		set(new_task) {
-			console.warn("DEPRECATED: use $w.setMinimizeTarget(taskbar_button_el) instead");
-			minimize_target_el = new_task.$task[0];
+			console.warn("DEPRECATED: use $w.setMinimizeTarget(taskbar_button_el) instead of setting $window.task object");
 			task = new_task;
 		},
 	});
 
 	let before_minimize;
 	$w.minimize = () => {
+		minimize_target_el = minimize_target_el || task?.$task[0];
 		if (animating_titlebar) {
 			when_done_animating_titlebar.push($w.minimize);
 			return;
