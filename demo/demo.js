@@ -107,7 +107,7 @@ $(() => {
 
 	const $app_window_2 = new $Window({ title: "Application Example", resizable: true });
 	const app_window_2_menu_bar = new MenuBar(menus);
-	$app_window_2.$content.prepend(app_window_2_menu_bar.element);
+	$app_window_2.setMenuBar(app_window_2_menu_bar);
 	$app_window_2.$content.css({
 		padding: 0,
 		display: "flex",
@@ -142,7 +142,7 @@ $(() => {
 
 	const $app_window_3 = new $Window({ title: "Right-To-Left Example", resizable: true });
 	$app_window_3.css("direction", "rtl");
-	$app_window_3.$content.prepend(new MenuBar(menus).element);
+	$app_window_3.setMenuBar(new MenuBar(menus));
 	$app_window_3.$content.css({
 		padding: 0,
 		display: "flex",

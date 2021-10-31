@@ -168,7 +168,7 @@ $main_test_window = new $Window({
 	title: "Testing Area", resizable: true,
 	icons: { 16: "https://win98icons.alexmeub.com/icons/png/application_hammer_grouppol-0.png" },
 });
-$main_test_window.$content.append(new MenuBar(menus).element);
+$main_test_window.setMenuBar(new MenuBar(menus));
 $main_test_window.$content.append(`
 	<button id="open-recursive-dialog">
 		<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/accessibility_two_windows.png" width="32" height="32" style="vertical-align: middle;" />
@@ -355,7 +355,7 @@ function test_iframes() {
 			48: "https://win98icons.alexmeub.com/icons/png/html-5.png",
 		},
 	});
-	$iframe_test_window.$content.append(new MenuBar(menus).element);
+	$iframe_test_window.setMenuBar(new MenuBar(menus));
 	$iframe_test_window.$content.append(`
 		<iframe class="inset-deep"></iframe>
 	`);
