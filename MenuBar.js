@@ -941,10 +941,15 @@ function MenuBar(menus) {
 		// Close menus if the user presses almost any key combination
 		// e.g. if you look in the menu to remember a shortcut,
 		// and then use the shortcut.
-		if (e.ctrlKey || e.metaKey) { // Ctrl or Command held
-			if (e.keyCode !== 17 && e.keyCode !== 91 && e.keyCode !== 93 && e.keyCode !== 224) { // anything pressed other than Ctrl or Command
-				close_menus();
-			}
+		if (
+			(e.ctrlKey || e.metaKey) && // Ctrl or Command held down
+			// and anything then pressed other than Ctrl or Command
+			e.keyCode !== 17 &&
+			e.keyCode !== 91 &&
+			e.keyCode !== 93 &&
+			e.keyCode !== 224
+		) {
+			close_menus();
 			return;
 		}
 		if (e.defaultPrevented) {
