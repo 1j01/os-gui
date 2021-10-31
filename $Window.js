@@ -105,6 +105,7 @@ function $Window(options) {
 	if (options.minimizeButton !== false) {
 		$w.$minimize = $(E("button")).addClass("window-minimize-button window-action-minimize window-button").appendTo($w.$titlebar);
 		$w.$minimize.attr("aria-label", "Minimize window"); // @TODO: for taskbarless minimized windows, "restore"
+		$w.$minimize.append("<span class='window-button-icon'></span>");
 	}
 	if (options.maximizeButton !== false) {
 		$w.$maximize = $(E("button")).addClass("window-maximize-button window-action-maximize window-button").appendTo($w.$titlebar);
@@ -112,10 +113,12 @@ function $Window(options) {
 		if (!options.resizable) {
 			$w.$maximize.attr("disabled", true);
 		}
+		$w.$maximize.append("<span class='window-button-icon'></span>");
 	}
 	if (options.closeButton !== false) {
 		$w.$x = $(E("button")).addClass("window-close-button window-action-close window-button").appendTo($w.$titlebar);
 		$w.$x.attr("aria-label", "Close window");
+		$w.$x.append("<span class='window-button-icon'></span>");
 	}
 	$w.$content = $(E("div")).addClass("window-content").appendTo($w);
 	$w.$content.attr("tabIndex", "-1");
@@ -1246,6 +1249,9 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		refocus();
 		// Emulate :enabled:active:hover state with .pressing class
 		const button = e.currentTarget;
+		if (!$(button).is(":enabled")) {
+			return;
+		}
 		button.classList.add("pressing");
 		const release = (event) => {
 			// blur is just to handle the edge case of alt+tabbing/ctrl+tabbing away
@@ -1588,6 +1594,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 
 	// mustHaveMethods($w, windowInterfaceMethods);
 
+	make_disabled_inset_filter();
+
 	return $w;
 }
 
@@ -1617,6 +1625,42 @@ function $FormWindow(title) {
 	};
 
 	return $w;
+}
+
+function make_disabled_inset_filter() {
+	if (document.getElementById("os-gui-black-to-inset-filter")) {
+		return;
+	}
+	const svg_xml = `
+		<svg style="position: absolute; pointer-events: none; bottom: 100%;">
+			<defs>
+				<filter id="os-gui-black-to-inset-filter" x="0" y="0" width="1px" height="1px">
+					<feColorMatrix
+						in="SourceGraphic"
+						type="matrix"
+						values="
+							1 0 0 0 0
+							0 1 0 0 0
+							0 0 1 0 0
+							-1000 -1000 -1000 1 0
+						"
+						result="black-parts-isolated"
+					/>
+					<feFlood result="shadow-color" flood-color="var(--ButtonShadow)"/>
+					<feFlood result="hilight-color" flood-color="var(--ButtonHilight)"/>
+					<feOffset in="black-parts-isolated" dx="1" dy="1" result="offset"/>
+					<feComposite in="hilight-color" in2="offset" operator="in" result="hilight-colored-offset"/>
+					<feComposite in="shadow-color" in2="black-parts-isolated" operator="in" result="shadow-colored"/>
+					<feMerge>
+						<feMergeNode in="hilight-colored-offset"/>
+						<feMergeNode in="shadow-colored"/>
+					</feMerge>
+				</filter>
+			</defs>
+		</svg>
+	`;
+	const $svg = $(svg_xml);
+	$svg.appendTo("body");
 }
 
 exports.$Window = $Window;

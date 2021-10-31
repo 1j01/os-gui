@@ -319,6 +319,10 @@ body > .window-titlebar {
 .window-button {
 	margin: 2px 0;
 }
+.window-button:disabled .window-button-icon {
+	filter: saturate(0%) opacity(50%); /* fallback */
+	filter: url("#os-gui-black-to-inset-filter");
+}
 .window-close-button {
 	margin-left: 2px;
 	margin-right: 2px;
@@ -326,10 +330,14 @@ body > .window-titlebar {
 .os-window.tool-window .window-close-button {
 	width: 11px;
 	height: 11px;
+}
+.os-window.tool-window .window-close-button .window-button-icon {
+	width: 7px;
+	height: 7px;
 	background-position: 7px 0;
 }
-.os-window.tool-window .window-close-button:enabled:hover:active,
-.os-window.tool-window .window-close-button.pressing {
+.os-window.tool-window .window-close-button:enabled:hover:active .window-button-icon ,
+.os-window.tool-window .window-close-button.pressing .window-button-icon {
 	background-position: 8px 1px;
 }
 .os-window .window-title-area {
@@ -367,43 +375,48 @@ body > .window-titlebar {
 .window-close-button,
 .window-maximize-button,
 .window-minimize-button {
-	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAKCAYAAADo3z3CAAAAoUlEQVRIS9VVWw7AIAib9z/0FpZgCOFRgpluf9MClhYdV++7gfDhYLxYDw+UyiHd5F8S5lr6zNa6Xpv/KwhHOahQpLB1+CwfycgYrwmE0WK8MTsIR1aOGsR+NYkkYzN5/pGwVA9xA/diq8LeHCKuQxQ+aoYt2yJWtpSNZth0edRpGVC5eGQcSg4hXLml3fdpBeHs8evWyPKX9ruXVqnYCeAHA8IyC9K2kmkAAAAASUVORK5CYII=");
-	-ms-interpolation-mode: nearest-neighbor;
-	    image-rendering: -moz-crisp-edges;
-	    image-rendering: pixelated;
 	display: block;
 	width: 16px;
 	height: 14px;
 	padding: 0;
 }
+.window-button-icon {
+	display: block;
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAKCAYAAADo3z3CAAAAoUlEQVRIS9VVWw7AIAib9z/0FpZgCOFRgpluf9MClhYdV++7gfDhYLxYDw+UyiHd5F8S5lr6zNa6Xpv/KwhHOahQpLB1+CwfycgYrwmE0WK8MTsIR1aOGsR+NYkkYzN5/pGwVA9xA/diq8LeHCKuQxQ+aoYt2yJWtpSNZth0edRpGVC5eGQcSg4hXLml3fdpBeHs8evWyPKX9ruXVqnYCeAHA8IyC9K2kmkAAAAASUVORK5CYII=");
+	-ms-interpolation-mode: nearest-neighbor;
+	    image-rendering: -moz-crisp-edges;
+	    image-rendering: pixelated;
+	width: 12px;
+	height: 10px;
+}
 
-.window-action-close {
+.window-action-close .window-button-icon  {
 	background-position: calc(-3 * 13px - 1px) 0px;
 }
-.window-action-maximize {
+.window-action-maximize .window-button-icon  {
 	background-position: calc(-1 * 13px - 1px) 0px;
 }
-.window-action-restore {
+.window-action-restore .window-button-icon  {
 	background-position: calc(-2 * 13px - 1px) 0px;
 }
-.window-action-minimize {
+.window-action-minimize .window-button-icon  {
 	background-position: calc(-0 * 13px - 1px) 0px;
 }
 
-.window-action-close:enabled:hover:active,
-.window-action-close.pressing {
+.window-action-close:enabled:hover:active .window-button-icon ,
+.window-action-close.pressing .window-button-icon  {
 	background-position: calc(-3 * 13px - 0px) 1px;
 }
-.window-action-maximize:enabled:hover:active,
-.window-action-maximize.pressing {
+.window-action-maximize:enabled:hover:active .window-button-icon ,
+.window-action-maximize.pressing .window-button-icon  {
 	background-position: calc(-1 * 13px - 0px) 1px;
 }
-.window-action-restore:enabled:hover:active,
-.window-action-restore.pressing {
+.window-action-restore:enabled:hover:active .window-button-icon ,
+.window-action-restore.pressing .window-button-icon  {
 	background-position: calc(-2 * 13px - 0px) 1px;
 }
-.window-action-minimize:enabled:hover:active,
-.window-action-minimize.pressing {
+.window-action-minimize:enabled:hover:active .window-button-icon ,
+.window-action-minimize.pressing .window-button-icon  {
 	background-position: calc(-0 * 13px - 0px) 1px;
 }
 
