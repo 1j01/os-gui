@@ -968,12 +968,15 @@ function MenuBar(menus) {
 			tapping_alt = false; // might not be necessary but whatever
 		}
 	}
+	// @DEBUG
 	setInterval(() => {
-		top_level_menus[0].menu_button_el.textContent = tapping_alt ? "⌥ Alt" : "ナ Na";
+		top_level_menus[0].menu_button_el.textContent = (tapping_alt ? "⌥ Alt" : "ナ Na")
+			+ (had_focus_before_alt ? " (HFBA)" : "(UFBA)");
 	}, 10);
 	function keyboard_scope_keydown(e) {
 		if (e.keyCode === 18) { // Alt
-			// @TODO: consider other event handlers
+			// @FIXME: menus_el is already unfocused by pressing Alt,
+			// so this is always false
 			had_focus_before_alt = menus_el.contains(document.activeElement);
 			tapping_alt = true;
 		} else {
@@ -991,6 +994,7 @@ function MenuBar(menus) {
 			e.keyCode !== 224
 		) {
 			close_menus();
+			// don't preventDefault() here, we want other things to happen!
 			return;
 		}
 		if (e.defaultPrevented) {
