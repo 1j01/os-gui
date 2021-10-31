@@ -451,8 +451,13 @@ function test_triggering() {
 	let target_window_el = $trigger_test_window[0];
 	$trigger_test_window.$content.append(`
 		<p>
-			Target window: <b id="target-window-text">Self</b>
-			<button id="pick-target-window-button">Pick Target</button>
+			Target window: <b id="target-window-text" style="display: inline-block; width: 200px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; vertical-align: text-bottom;">
+				Self
+			</b>
+			<button id="pick-target-window-button">
+				<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/mouse_location.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
+				Pick Target...
+			</button>
 		</p>
 		<button id="test-immediate-focus">Focus Now</button>
 		<br>
@@ -542,7 +547,7 @@ function test_window_theme() {
 			</button>
 			<button id="theme-other">
 				<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/mouse_location.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
-				Theme Other...
+				Theme Window...
 			</button>
 			<button id="theme-anything">
 				<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/mouse_location.png" alt="" style="width: 32px; height: 32px; vertical-align: middle;">
