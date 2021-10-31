@@ -459,6 +459,13 @@ function test_triggering() {
 				Pick Target...
 			</button>
 		</p>
+		<p>
+			<label for="delay-input">
+				<img draggable="false" alt="" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: text-bottom;' />
+				Delay:
+			</label>
+			<input type="number" id="delay-input" value="1500" min="0" max="10000" step="100" style="width: 50px;">
+		</p>
 		<button id="test-immediate-focus">Focus Now</button>
 		<br>
 		<button id="test-delayed-focus">
@@ -476,6 +483,11 @@ function test_triggering() {
 		<p>Click buttons then quickly click elsewhere to see if the window is refocused.</p>
 		<p>Currently "click" events don't refocus, but "mousedown" and "pointerdown" do.</p>
 	`);
+	const delay_input = $trigger_test_window.$content.find("#delay-input")[0];
+	let delay = parseInt(delay_input.value);
+	delay_input.addEventListener("change", () => {
+		delay = parseInt(delay_input.value);
+	});
 
 	$trigger_test_window.$content.find("#pick-target-window-button").click(() => {
 		pick_el(".os-window", (window_el) => {
@@ -485,10 +497,10 @@ function test_triggering() {
 	});
 
 	$trigger_test_window.find("#test-delayed-focus").on("click", () => {
-		setTimeout(() => target_window_el.$window.focus(), 1000);
+		setTimeout(() => target_window_el.$window.focus(), delay);
 	});
 	$trigger_test_window.find("#test-delayed-close").on("click", () => {
-		setTimeout(() => target_window_el.$window.close(), 1000);
+		setTimeout(() => target_window_el.$window.close(), delay);
 	});
 	$trigger_test_window.find("#test-immediate-focus").on("click", () => {
 		target_window_el.$window.focus();
@@ -511,7 +523,7 @@ function test_triggering() {
 								cancelable: true,
 							}));
 						}
-					}, 1000);
+					}, delay);
 				}).prepend(`
 					<img draggable="false" src='https://win98icons.alexmeub.com/icons/png/mouse-2.png' width='16' height='16' style='vertical-align: middle;' />
 				`).append(`
