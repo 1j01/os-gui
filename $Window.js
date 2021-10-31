@@ -554,6 +554,23 @@ function $Window(options) {
 
 	$w.css("touch-action", "none");
 
+	let minimize_target_el = null; // taskbar button (optional)
+	$w.setMinimizeTarget = function (new_taskbar_button_el) {
+		minimize_target_el = new_taskbar_button_el;
+	};
+
+	let task;
+	Object.defineProperty($w, "task", {
+		get() {
+			return task; // || { $task: $(minimize_target_el) };
+		},
+		set(new_task) {
+			console.warn("DEPRECATED: use $w.setMinimizeTarget(taskbar_button_el) instead");
+			minimize_target_el = new_task.$task[0];
+			task = new_task;
+		},
+	});
+
 	let before_minimize;
 	$w.minimize = () => {
 		if (animating_titlebar) {
@@ -562,11 +579,8 @@ function $Window(options) {
 		}
 		if ($w.is(":visible")) {
 			if ($w.task) {
-				// @TODO: API like $w.setMinimizeTarget(taskbarItemElement)
-				// instead of this hacky way you have to set `task` on the window
-				const $task = $w.task.$task;
 				const before_rect = $w.$titlebar[0].getBoundingClientRect();
-				const after_rect = $task[0].getBoundingClientRect();
+				const after_rect = minimize_target_el.getBoundingClientRect();
 				$w.animateTitlebar(before_rect, after_rect, () => {
 					$w.hide();
 					$w.blur();
@@ -695,8 +709,7 @@ function $Window(options) {
 			return;
 		}
 		if ($w.is(":hidden")) {
-			const $task = $w.task.$task;
-			const before_rect = $task[0].getBoundingClientRect();
+			const before_rect = minimize_target_el.getBoundingClientRect();
 			$w.show();
 			const after_rect = $w.$titlebar[0].getBoundingClientRect();
 			$w.hide();
@@ -1447,6 +1460,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	$w.title = title => {
 		if (title) {
 			$w.$title.text(title);
+			// @TODO: title-change event instead or something
 			if ($w.task) {
 				$w.task.updateTitle();
 			}

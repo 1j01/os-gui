@@ -372,6 +372,11 @@ Appends the menu bar to the window, and sets the keyboard scope for the menu bar
 
 Can be called with `null` to remove the menu bar.
 
+#### `setMinimizeTarget(minimizeTargetElement)`
+
+The minimize target (taskbar button) represents the window when minimized, and is used for animating minimize and restore.
+If `minimizeTargetElement` is `null`, the window will minimize to the bottom of the screen (the default).
+
 #### `$Button(text, action)`
 
 Creates a button in the window's content area.

@@ -12,10 +12,14 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+### Deprecated
+- `$window.task` way of interfacing with a taskbar; use `$window.setMinimizeTarget(taskbarButtonElement)` instead.
+
 ### Added
 - `MenuBar` method `closeMenus()` to close any open menus.
 - `MenuBar` method `setKeyboardScope(...elements)` to control hotkey handling
 - `$Window` method `setMenuBar(menuBar)` to set the menu bar, and set up the keyboard scope.
+- `$Window` method `setMinimizeTarget(taskbarButtonElement)` to set the element representing the window when minimized, which will be used when animating.
 - `$Window` property `element` to get the DOM element.
 - `element.$window` to get the `$Window` instance from the DOM element.
 
