@@ -27,10 +27,12 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Changed
 - If you close a menu by clicking the menu button, the containing window will now be re-focused.
 - Menus no longer close when encountering a synthetic `blur` event, to facilitate a hack in [Pinball](https://98.js.org), where a `blur` is triggered to trick the game into pausing.
+- Windows that are not `resizable` can no longer be maximized. The maximize button will be grayed out.
 
 ### Fixed
 - Fixed error when pressing arbitrary (unhandled) keys with menu bar focused
 - Menus now ignore Alt+(hotkey) if the event is already handled. (For instance, on the demo page there's a menu bar without a window which has global hotkeys, as well as menu bars with identical hotkeys in windows. Hotkeys will now affect the appropriate menu bar depending on whether a window is focused.)
+- Window titlebar buttons now use `ButtonText` theme color instead of always black.
 
 </details>
 
