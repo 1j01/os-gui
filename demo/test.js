@@ -164,6 +164,21 @@ const menus = {
 			shortcut: "Ctrl+Fake",
 		},
 		{
+			item: "Disabled Checked",
+			enabled: false,
+			shortcut: "Ctrl+Fake",
+			checkbox: {
+				check: () => true,
+				toggle: () => { }
+			},
+		},
+		{
+			item: "Disabled Submenu",
+			enabled: false,
+			shortcut: "Ctrl+Fake",
+			submenu: [],
+		},
+		{
 			item: "disabled: true?",
 			disabled: true,
 			shortcut: "Ctrl+Fake",
@@ -181,6 +196,14 @@ const menus = {
 			item: "Conditionally disabled",
 			enabled: () => !disable_an_item,
 			shortcut: "Ctrl+Fake",
+		},
+		MENU_DIVIDER,
+		{
+			item: "Show All &Icons As Disabled",
+			checkbox: {
+				check: () => document.body.classList.contains("show-disabled-icons"),
+				toggle: () => document.body.classList.toggle("show-disabled-icons"),
+			},
 		},
 	],
 	"&Help": new Array(100).fill(0).map((_, i) => ({
@@ -503,13 +526,22 @@ function test_triggering() {
 			</label>
 			<input type="number" id="delay-input" value="1500" min="0" max="10000" step="100" style="width: 50px;">
 		</p>
-		<button id="test-immediate-focus">Focus Now</button>
 		<br>
+		<button id="test-immediate-focus">Focus Now</button>
 		<button id="test-delayed-focus">
 			Focus
 			<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
-		</button> (Click off the window quickly to see it)
+		</button>
 		<br>
+		<br>
+		<button id="test-delayed-minimize">
+			Minimize
+			<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
+		</button>
+		<button id="test-delayed-maximize">
+			Maximize
+			<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
+		</button>
 		<button id="test-delayed-close">
 			Close
 			<img draggable="false" alt="delayed" src='https://win98icons.alexmeub.com/icons/png/clock-0.png' width='16' height='16' style='vertical-align: middle;' />
@@ -538,6 +570,12 @@ function test_triggering() {
 	});
 	$trigger_test_window.find("#test-delayed-close").on("click", () => {
 		setTimeout(() => target_window_el.$window.close(), delay);
+	});
+	$trigger_test_window.find("#test-delayed-minimize").on("click", () => {
+		setTimeout(() => target_window_el.$window.minimize(), delay);
+	});
+	$trigger_test_window.find("#test-delayed-maximize").on("click", () => {
+		setTimeout(() => target_window_el.$window.maximize(), delay);
 	});
 	$trigger_test_window.find("#test-immediate-focus").on("click", () => {
 		target_window_el.$window.focus();
@@ -833,3 +871,5 @@ window_themes = {
 		"--MenuBar": "rgb(166, 202, 240)",
 	},
 };
+
+makeBlackToInsetFilter();

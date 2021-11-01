@@ -29,7 +29,7 @@
 		<main>
 			<br><br><br>
 			<div style="display: flex; gap: 30px;">
-				<label><input type="checkbox" id="full-height-checkbox"> Full Height</label>
+				<label><input type="checkbox" id="full-height-checkbox"> Full Height Body</label>
 				<label><input type="checkbox" id="rtl-checkbox"> Right-To-Left</label>
 				<label><input type="checkbox" id="debug-focus-checkbox"> Debug Focus</label>
 				<label><input type="checkbox" id="override-transition-duration-checkbox"> Debug Flying Titlebar</label>
@@ -61,5 +61,11 @@
 			OS-GUI is open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
 		</footer>
 		<script src="test.js"></script>
+		<style>
+			.show-disabled-icons img {
+				filter: saturate(0%) opacity(50%); /* fallback until SVG filter is initialized */
+				filter: url("#os-gui-black-to-inset-filter");
+			}
+		</style>
 	</body>
 </html>
