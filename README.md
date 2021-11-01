@@ -426,6 +426,15 @@ This event is emitted when the window is closed. It cannot be prevented.
 
 Can be used to prevent dragging a window, with `event.preventDefault()`.
 
+#### Event: `title-change`
+
+Can be used to update a taskbar button's label.
+
+#### Event: `icon-change`
+
+Can be used to update a taskbar button's icon.
+Use `$window.getIconAtSize(size)` to get an appropriate icon.
+
 ### Theming
 
 `parse-theme.js` contains functions for parsing and applying themes.

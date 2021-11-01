@@ -13,7 +13,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 	</summary>
 
 ### Deprecated
-- `$window.task` way of interfacing with a taskbar; use `$window.setMinimizeTarget(taskbarButtonElement)` instead.
+- `$window.task` way of interfacing with a taskbar; use `$window.setMinimizeTarget(taskbarButtonElement)` instead, and events `icon-change` and `title-change` to update the button.
 
 ### Added
 - `MenuBar` method `closeMenus()` to close any open menus.
@@ -22,6 +22,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `$Window` method `setMinimizeTarget(taskbarButtonElement)` to set the element representing the window when minimized, which will be used when animating.
 - `$Window` property `element` to get the DOM element.
 - `element.$window` to get the `$Window` instance from the DOM element.
+- `$Window` events `icon-change` and `title-change`
 - Top level menus support accelerator keys without holding Alt, if the menu bar is focused. (You can not yet tap Alt to focus the menu bar, so you're probably still going to need to hold Alt in practice for now.)
 - `makeBlackToInsetFilter()` in `parse-theme.js` to initialize an SVG filter for disabled button icons
 

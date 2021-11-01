@@ -158,6 +158,7 @@ function $Window(options) {
 			$w.$icon.prependTo($w.$titlebar);
 		}
 		iconSize = target_icon_size;
+		$w.trigger("icon-change");
 	};
 	$w.getTitlebarIconSize = function () {
 		return iconSize;
@@ -215,12 +216,14 @@ function $Window(options) {
 		old_$icon.replaceWith($w.$icon);
 		$w.icon_name = icon_name;
 		$w.task?.updateIcon();
+		$w.trigger("icon-change");
 		return $w;
 	};
 	$w.setIcons = (icons) => {
 		$w.icons = icons;
 		$w.setTitlebarIconSize(iconSize);
 		$w.task?.updateIcon();
+		// icon-change already sent by setTitlebarIconSize
 	};
 
 	if ($component) {
@@ -1476,7 +1479,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	$w.title = title => {
 		if (title) {
 			$w.$title.text(title);
-			// @TODO: title-change event instead or something
+			$w.trigger("title-change");
 			if ($w.task) {
 				$w.task.updateTitle();
 			}
