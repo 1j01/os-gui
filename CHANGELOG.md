@@ -23,6 +23,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `$Window` property `element` to get the DOM element.
 - `element.$window` to get the `$Window` instance from the DOM element.
 - Top level menus support accelerator keys without holding Alt, if the menu bar is focused. (You can not yet tap Alt to focus the menu bar, so you're probably still going to need to hold Alt in practice for now.)
+- `makeBlackToInsetFilter()` in `parse-theme.js` to initialize an SVG filter for disabled button icons
 
 ### Changed
 - If you close a menu by clicking the menu button, the containing window will now be re-focused.

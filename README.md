@@ -462,6 +462,18 @@ applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), { element });
 Exports a CSS file for a theme. Assumes that the theme graphics are already rendered.
 Includes a "generated file" comment.
 
+#### `makeBlackToInsetFilter()`
+
+Initializes an SVG filter that can be used to make icons appear disabled.
+It may not work with all icons, since it uses the black parts of the image to form a shape.
+
+Usage from CSS:
+```css
+button:disabled .icon {
+	filter: saturate(0%) opacity(50%); /* fallback until SVG filter is initialized */
+	filter: url("#os-gui-black-to-inset-filter");
+}
+```
 
 ## License
 
