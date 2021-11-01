@@ -12,6 +12,12 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+Nothing here yet.
+
+</details>
+
+## [0.6.0] - 2021-11-01
+
 ### Deprecated
 - `$window.task` way of interfacing with a taskbar; use `$window.setMinimizeTarget(taskbarButtonElement)` instead, and events `icon-change` and `title-change` to update the button.
 
@@ -35,8 +41,6 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Fixed error when pressing arbitrary (unhandled) keys with menu bar focused
 - Menus now ignore Alt+(hotkey) if the event is already handled. (For instance, on the demo page there's a menu bar without a window which has global hotkeys, as well as menu bars with identical hotkeys in windows. Hotkeys will now affect the appropriate menu bar depending on whether a window is focused.)
 - Window titlebar buttons now use `ButtonText` theme color instead of always black.
-
-</details>
 
 ## [0.5.0] - 2021-10-29
 
@@ -229,8 +233,9 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Window component is now an app window instead of a tool window, to aid reintegration with 98.js.org; jspaint will come later.
 - Window component is styled with `.os-window` now, altho it includes both classes `os-window` and `window`.
 
-[Unreleased]: https://github.com/1j01/os-gui/compare/v0.5.0...HEAD
-[0.4.1]: https://github.com/1j01/os-gui/compare/v0.4.1...v0.5.0
+[Unreleased]: https://github.com/1j01/os-gui/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/1j01/os-gui/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/1j01/os-gui/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/1j01/os-gui/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/1j01/os-gui/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/1j01/os-gui/compare/v0.2.2...v0.3.0
