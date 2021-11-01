@@ -95,6 +95,7 @@ button:not(.lightweight).default:enabled:hover:active {
 }
 */
 /* also, this is more complicated; see Paint; the tool buttons translate when being pushed and when depressed, and these add together */
+/* omg, a thought... what if I used feDisplacementMap SVG filter... */
 
 button:not(.lightweight):focus::before {
 	content: "";
@@ -176,12 +177,69 @@ body > .window-titlebar {
 	@extend %outset-deep;
 	padding: 2px;
 }
+
 .window-button {
+	display: block;
+	width: 16px;
+	height: 14px;
+	padding: 0;
 	margin: 2px 0;
 }
+.window-button-icon {
+	display: block;
+	/* background-image: url("images/titlebar-buttons.png"); */
+	--sprite-image: url("images/titlebar-buttons.png");
+	--sprite-y: 0;
+	image-rendering: pixelated;
+	width: 12px;
+	height: 10px;
+	position: relative;
+	pointer-events: none;
+}
+.os-window .window-button:enabled:hover:active .window-button-icon,
+.os-window .window-button.pressing .window-button-icon {
+	top: 1px;
+	left: 1px;
+}
 .window-button:disabled .window-button-icon {
-	filter: saturate(0%) opacity(50%); /* fallback */
-	filter: url("#os-gui-black-to-inset-filter");
+	/* filter: saturate(0%) opacity(50%); fallback */
+	/* filter: url("#os-gui-black-to-inset-filter"); */
+}
+.window-button .window-button-icon::before,
+.window-button .window-button-icon::after {
+	content: "";
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	mask-image: var(--sprite-image);
+	mask-position: var(--sprite-x) var(--sprite-y);
+	background-color: var(--ButtonText);
+}
+.window-button:disabled .window-button-icon::before {
+	background-color: var(--ButtonHilight);
+	left: 1px;
+	top: 1px;
+}
+.window-button:enabled .window-button-icon::after {
+	display: none;
+}
+.window-button:disabled .window-button-icon::after {
+	background-color: var(--GrayText);
+}
+.window-action-close .window-button-icon  {
+	--sprite-x: calc(-3 * 13px - 1px);
+}
+.window-action-maximize .window-button-icon  {
+	--sprite-x: calc(-1 * 13px - 1px);
+}
+.window-action-restore .window-button-icon  {
+	--sprite-x: calc(-2 * 13px - 1px);
+}
+.window-action-minimize .window-button-icon  {
+	--sprite-x: calc(-0 * 13px - 1px);
 }
 .window-close-button {
 	margin-left: 2px;
@@ -194,11 +252,7 @@ body > .window-titlebar {
 .os-window.tool-window .window-close-button .window-button-icon {
 	width: 7px;
 	height: 7px;
-	background-position: 7px 0;
-}
-.os-window.tool-window .window-close-button:enabled:hover:active .window-button-icon ,
-.os-window.tool-window .window-close-button.pressing .window-button-icon {
-	background-position: 8px 1px;
+	--sprite-x: 7px;
 }
 .os-window .window-title-area {
 	height: 16px;
@@ -226,58 +280,6 @@ body > .window-titlebar {
 	white-space: nowrap;
 	padding-left: 2px;
 }
-.window-close-button {
-	/* display: block !important; */
-	/* float: right; */
-	/* width: 13px;
-	height: 11px; */
-}
-.window-close-button,
-.window-maximize-button,
-.window-minimize-button {
-	display: block;
-	width: 16px;
-	height: 14px;
-	padding: 0;
-}
-.window-button-icon {
-	display: block;
-	background-image: url("images/titlebar-buttons.png");
-	image-rendering: pixelated;
-	width: 12px;
-	height: 10px;
-}
-
-.window-action-close .window-button-icon  {
-	background-position: calc(-3 * 13px - 1px) 0px;
-}
-.window-action-maximize .window-button-icon  {
-	background-position: calc(-1 * 13px - 1px) 0px;
-}
-.window-action-restore .window-button-icon  {
-	background-position: calc(-2 * 13px - 1px) 0px;
-}
-.window-action-minimize .window-button-icon  {
-	background-position: calc(-0 * 13px - 1px) 0px;
-}
-
-.window-action-close:enabled:hover:active .window-button-icon ,
-.window-action-close.pressing .window-button-icon  {
-	background-position: calc(-3 * 13px - 0px) 1px;
-}
-.window-action-maximize:enabled:hover:active .window-button-icon ,
-.window-action-maximize.pressing .window-button-icon  {
-	background-position: calc(-1 * 13px - 0px) 1px;
-}
-.window-action-restore:enabled:hover:active .window-button-icon ,
-.window-action-restore.pressing .window-button-icon  {
-	background-position: calc(-2 * 13px - 0px) 1px;
-}
-.window-action-minimize:enabled:hover:active .window-button-icon ,
-.window-action-minimize.pressing .window-button-icon  {
-	background-position: calc(-0 * 13px - 0px) 1px;
-}
-
 
 .menus {
 	background: var(--Menu);
