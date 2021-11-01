@@ -588,7 +588,7 @@ function $Window(options) {
 			return;
 		}
 		if ($w.is(":visible")) {
-			if ($w.task) {
+			if (minimize_target_el && !$w.hasClass("minimized-without-taskbar")) {
 				const before_rect = $w.$titlebar[0].getBoundingClientRect();
 				const after_rect = minimize_target_el.getBoundingClientRect();
 				$w.animateTitlebar(before_rect, after_rect, () => {

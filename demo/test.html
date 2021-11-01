@@ -33,10 +33,13 @@
 				<label><input type="checkbox" id="rtl-checkbox"> Right-To-Left</label>
 				<label><input type="checkbox" id="debug-focus-checkbox"> Debug Focus</label>
 				<label><input type="checkbox" id="override-transition-duration-checkbox"> Debug Flying Titlebar</label>
+				<label><input type="checkbox" id="taskbar-checkbox"> Taskbar</label>
 			</div>
 			<br><br><br>
 			<div id="no-focus" style="background-color: beige; color: #000;">
-				You can't focus me, not even this <button id="no-focus-button">button</button>. This is useful for taskbars, for example.
+				You can't focus me, not even this <button id="no-focus-button">button</button>.
+				<span id="without-taskbar-text">This is useful for taskbars, for example.</span>
+				<span id="with-taskbar-text" hidden>This is analogous to a taskbar. <button id="minimize-target">I am Minimize Target for all windows.</button></span>
 			</div>
 			<br><br><br>
 			<h2>Manual Tests</h2>

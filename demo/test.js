@@ -2,6 +2,7 @@ const full_height_checkbox = document.getElementById('full-height-checkbox');
 const rtl_checkbox = document.getElementById('rtl-checkbox');
 const debug_focus_checkbox = document.getElementById('debug-focus-checkbox');
 const override_transition_duration_checkbox = document.getElementById('override-transition-duration-checkbox');
+const taskbar_checkbox = document.getElementById('taskbar-checkbox');
 function update_full_height() {
 	document.body.style.height = document.documentElement.style.height = full_height_checkbox.checked ? "100%" : "";
 }
@@ -14,21 +15,44 @@ function update_debug_focus() {
 function update_override_animation_duration() {
 	$Window.OVERRIDE_TRANSITION_DURATION = override_transition_duration_checkbox.checked ? 5000 : undefined;
 }
+function update_taskbar() {
+	if (taskbar_checkbox.checked) {
+		document.getElementById("with-taskbar-text").hidden = false;
+		document.getElementById("without-taskbar-text").hidden = true;
+		for (const window_el of document.querySelectorAll(".os-window")) {
+			window_el.$window.setMinimizeTarget(document.getElementById("minimize-target"));
+		}
+	} else {
+		document.getElementById("with-taskbar-text").hidden = true;
+		document.getElementById("without-taskbar-text").hidden = false;
+		for (const window_el of document.querySelectorAll(".os-window")) {
+			window_el.$window.setMinimizeTarget(null);
+		}
+	}
+}
 
 full_height_checkbox.addEventListener('change', update_full_height);
 rtl_checkbox.addEventListener('change', update_rtl);
 debug_focus_checkbox.addEventListener('change', update_debug_focus);
 override_transition_duration_checkbox.addEventListener('change', update_override_animation_duration);
+taskbar_checkbox.addEventListener('change', update_taskbar);
 update_full_height();
 update_rtl();
 update_debug_focus();
 update_override_animation_duration();
+setInterval(update_taskbar, 200); // for new windows
 
 document.getElementById("no-focus").addEventListener("mousedown", function (e) {
 	e.preventDefault();
 });
 document.getElementById("no-focus-button").addEventListener("click", function (e) {
 	e.target.textContent = "Clicked Button";
+});
+
+document.getElementById("minimize-target").addEventListener("click", function (e) {
+	for (const window_el of document.querySelectorAll(".os-window")) {
+		window_el.$window.unminimize();
+	}
 });
 
 let $main_test_window;
