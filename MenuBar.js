@@ -336,8 +336,8 @@ function MenuBar(menus) {
 						// click() doesn't work for menu buttons at the moment,
 						// and also we want to highlight the first item in the menu
 						// in that case, which doesn't happen with the mouse
-						if (menu_item_el.classList.contains("menu-button")) {
-							const top_level_menu = top_level_menus.find(top_level_menu => top_level_menu.menu_button_el === menu_item_el);
+						const top_level_menu = top_level_menus.find(top_level_menu => top_level_menu.menu_button_el === menu_item_el);
+						if (top_level_menu) {
 							top_level_menu.open_top_level_menu("keydown");
 						} else {
 							menu_item_el.click();
