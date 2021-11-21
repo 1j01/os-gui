@@ -22,7 +22,8 @@ function uid() {
 	return (uid_counter++).toString(36) + Math.random().toString(36).slice(2);
 }
 
-// @TODO: DRY hotkey helpers with jspaint (export them?)
+// @TODO: export hotkey helpers; also include one for escaping &'s (useful for dynamic menus like a list of history entries)
+// also @TODO: support dynamic menus (e.g. a list of history entries, contextually shown options, or a contextually named "Undo <action>" label; Explorer has all these things)
 
 // & defines accelerators (hotkeys) in menus and buttons and things, which get underlined in the UI.
 // & can be escaped by doubling it, e.g. "&Taskbar && Start Menu"
@@ -207,6 +208,7 @@ function MenuBar(menus) {
 				if (
 					highlighted_item_el?.classList.contains("has-submenu") &&
 					(get_direction() === "ltr") === right
+					// @TODO: don't enter disabled submenus
 				) {
 					// enter submenu
 					highlighted_item_el.click();
@@ -671,12 +673,11 @@ function MenuBar(menus) {
 					// If you return the mouse from a submenu into its parent
 					// *directly onto the parent menu item*, it stays open, but if you cross other menu items
 					// in the parent menu, (@TODO:) it'll close after the delay even if you land on the parent menu item.
-					// @TODO: Highlight the submenu-containing item while the submenu is open,
-					// unless hovering a different item at that level (one highlight per level max).
-					// @TODO: once a submenu opens (completing its animation if it has one),
+					// Once a submenu opens (completing its animation if it has one),
 					// - up/down should navigate the submenu (although it should not show as focused right away)
-					//   - the rule is probably: up/down navigate the bottom-most submenu always (as long as it's not animating)
-					// - the submenu cancels its closing timeout (if you've moved outside all menus, say)
+					//   (i.e. up/down always navigate the most-nested open submenu, as long as it's not animating, in which case nothing happens)
+					// - @TODO: the submenu cancels its closing timeout (if you've moved outside all menus, say)
+					//   (but if you move outside menus AFTER the submenu has opened, it should start the closing timeout)
 					// @TODO: make this more robust in general! Make some automated tests.
 
 					let open_tid, close_tid;
@@ -715,6 +716,7 @@ function MenuBar(menus) {
 						}
 					});
 					// keep submenu open while mouse is outside any parent menus
+					// (@TODO: what if it goes to another parent menu though?)
 					menu_popup_el.addEventListener("pointerleave", () => {
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
 					});
