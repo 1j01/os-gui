@@ -172,8 +172,6 @@ function MenuBar(menus) {
 		if (e.defaultPrevented) {
 			return;
 		}
-		// const active_menu_popup_el = e.target.closest(".menu-popup");
-		// const active_menu_popup = active_menu_popup_el && menu_popup_by_el.get(active_menu_popup_el);
 		const active_menu_popup_el = active_menu_popup?.element;
 		const top_level_menu = top_level_menus[top_level_menu_index];
 		const { menu_button_el, open_top_level_menu } = top_level_menu || {};
@@ -196,8 +194,8 @@ function MenuBar(menus) {
 					highlighted_item_el.click();
 					e.preventDefault();
 				} else if (
-					parent_item_el &&
-					!parent_item_el.classList.contains("menu-button") && // left/right doesn't make sense to close the top level menu
+					active_menu_popup &&
+					active_menu_popup.parentMenuPopup && // left/right doesn't make sense to close the top level menu
 					(get_direction() === "ltr") !== right
 				) {
 					// exit submenu
@@ -208,6 +206,7 @@ function MenuBar(menus) {
 				} else if (
 					// basically any case except if you hover to open a submenu and then press right/left
 					// in which case the menu is already open/focused
+					// This is mimicking the behavior of Explorer's menus; most Windows 98 apps work differently; @TODO: make this configurable
 					highlighted_item_el ||
 					!active_menu_popup ||
 					!active_menu_popup.parentMenuPopup
@@ -230,7 +229,7 @@ function MenuBar(menus) {
 						menu_button_el?.dispatchEvent(new CustomEvent("release"), {});
 						target_button_el.focus({ preventScroll: true });
 						// Note case where menu is closed, menu button is hovered, then menu bar is unhovered,
-						// rehovered(outside any buttons), and unhovered, and THEN you try to go to the next menu.
+						// rehovered (outside any buttons), and unhovered, and THEN you try to go to the next menu.
 						top_level_highlight(new_index);
 					}
 					e.preventDefault();
