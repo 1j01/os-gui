@@ -87,15 +87,15 @@ function MenuBar(menus) {
 	let selecting_menus = false; // state where you can glide between menus without clicking
 
 	const top_level_menus = [];
-	let top_level_menu_index = -1; // index of the top level menu that's most recently open
+	let top_level_menu_index = -1; // index of the top level menu that's most recently open, or highlighted
 	let active_menu_popup; // most nested open MenuPopup
 	const menu_popup_by_el = new WeakMap(); // maps DOM elements to MenuPopup instances
 
 	// There can be multiple menu bars instantiated from the same menu definitions,
 	// so this can't be a map of menu item to submenu, it has to be of menu item ELEMENTS to submenu.
-	// (or you know, it could work totally differently, this is just one way obviously)
+	// (or you know, it could work totally differently, this is just one way to do it)
 	// This is for entering submenus.
-	const submenu_popups_by_menu_item_el = new WeakMap();
+	const submenu_popup_by_menu_item_el = new WeakMap();
 
 	// This is for exiting submenus.
 	const parent_item_el_by_popup_el = new WeakMap();
@@ -579,7 +579,7 @@ function MenuBar(menus) {
 					item_el.setAttribute("aria-expanded", "false");
 					item_el.setAttribute("aria-controls", submenu_popup_el.id);
 
-					submenu_popups_by_menu_item_el.set(item_el, submenu_popup);
+					submenu_popup_by_menu_item_el.set(item_el, submenu_popup);
 					parent_item_el_by_popup_el.set(submenu_popup_el, item_el);
 					submenu_popup_el.dataset.semanticParent = menu_popup_el.id; // for $Window to understand the popup belongs to its window
 					menu_popup_el.setAttribute("aria-owns", `${menu_popup_el.getAttribute("aria-owns") || ""} ${submenu_popup_el.id}`);
@@ -776,7 +776,7 @@ function MenuBar(menus) {
 		const menu_popup = new MenuPopup(menu_items);
 		const menu_popup_el = menu_popup.element;
 		document.body?.appendChild(menu_popup_el);
-		submenu_popups_by_menu_item_el.set(menu_button_el, menu_popup);
+		submenu_popup_by_menu_item_el.set(menu_button_el, menu_popup);
 		parent_item_el_by_popup_el.set(menu_popup_el, menu_button_el);
 		menu_button_el.id = `menu-button-${menus_key}-${uid()}`;
 		menu_popup_el.dataset.semanticParent = menu_button_el.id; // for $Window to understand the popup belongs to its window
