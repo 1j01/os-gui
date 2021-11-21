@@ -181,10 +181,10 @@ function MenuBar(menus) {
 
 		// console.log("keydown", e.key, { target: e.target, active_menu_popup_el, top_level_menu, menu_popup_el, parent_item_el, highlighted_item_el });
 
-		switch (e.keyCode) {
-			case 37: // Left
-			case 39: // Right
-				const right = e.keyCode === 39;
+		switch (e.key) {
+			case "ArrowLeft":
+			case "ArrowRight":
+				const right = e.key === "ArrowRight";
 				if (
 					highlighted_item_el?.classList.contains("has-submenu") &&
 					(get_direction() === "ltr") === right
@@ -238,9 +238,9 @@ function MenuBar(menus) {
 				// so it makes sense to do nothing (as Windows 98 does) and not go to the next/previous menu
 				// (although highlighting the first item might be nicer...)
 				break;
-			case 40: // Down
-			case 38: // Up
-				const down = e.keyCode === 40;
+			case "ArrowUp":
+			case "ArrowDown":
+				const down = e.key === "ArrowDown";
 				// if (menu_popup_el && menu_popup_el.style.display !== "none") && highlighted_item_el) {
 				if (active_menu_popup) {
 					const cycle_dir = down ? 1 : -1;
@@ -267,7 +267,7 @@ function MenuBar(menus) {
 				}
 				e.preventDefault();
 				break;
-			case 27: // Escape
+			case "Escape":
 				if (active_menu_popup) {
 					// (@TODO: doesn't parent_item_el always exist?)
 					if (parent_item_el && parent_item_el !== menu_button_el) {
@@ -292,17 +292,17 @@ function MenuBar(menus) {
 					}
 				}
 				break;
-			case 18: // Alt
+			case "Alt":
 				// close all menus and refocus the last focused control in the window
 				close_menus();
 				refocus_window();
 				e.preventDefault();
 				break;
-			case 32: // Space
+			case "Space":
 				// opens system menu in Windows 98
 				// (at top level)
 				break;
-			case 13: // Enter
+			case "Enter":
 				if (menu_button_el === document.activeElement) {
 					open_top_level_menu("keydown");
 					e.preventDefault();
@@ -313,7 +313,7 @@ function MenuBar(menus) {
 				break;
 			default:
 				// handle accelerators and first-letter navigation
-				const key = String.fromCharCode(e.keyCode).toLowerCase();
+				const key = e.key.toLowerCase();
 				const item_els = active_menu_popup ?
 					[...menu_popup_el.querySelectorAll(".menu-item")] :
 					top_level_menus.map(top_level_menu => top_level_menu.menu_button_el);
@@ -902,7 +902,7 @@ function MenuBar(menus) {
 			!document.activeElement.closest || // window or document
 			!document.activeElement.closest(".menus, .menu-popup")
 		) {
-			if (e.keyCode === 27) { // Escape
+			if (e.key === "Escape") {
 				if (active_menu_popup) {
 					close_menus();
 					e.preventDefault();
@@ -956,10 +956,8 @@ function MenuBar(menus) {
 		if (
 			(e.ctrlKey || e.metaKey) && // Ctrl or Command held down
 			// and anything then pressed other than Ctrl or Command
-			e.keyCode !== 17 &&
-			e.keyCode !== 91 &&
-			e.keyCode !== 93 &&
-			e.keyCode !== 224
+			e.key !== "Control" &&
+			e.key !== "Meta"
 		) {
 			close_menus();
 			return;
@@ -970,7 +968,7 @@ function MenuBar(menus) {
 		}
 		if (e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey) { // Alt held
 			const menu = top_level_menus.find((menu) =>
-				menu.hotkey.toLowerCase() === String.fromCharCode(e.keyCode).toLowerCase()
+				menu.hotkey.toLowerCase() === e.key.toLowerCase()
 			);
 			if (menu) {
 				e.preventDefault();
