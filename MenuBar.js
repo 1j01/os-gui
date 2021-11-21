@@ -648,9 +648,7 @@ function MenuBar(menus) {
 						item_el,
 						submenu_popup_el,
 						submenu_popup,
-						open_submenu,
 					});
-					menu_popup_el._submenus = submenus;
 
 					function close_submenus_at_this_level() {
 						for (const { submenu_popup, item_el } of submenus) {
