@@ -155,14 +155,6 @@ function MenuBar(menus) {
 			top_level_highlight(-1);
 		}
 	});
-	window.addEventListener("focusout", (event) => {
-		// if not still in menus, unhighlight (e.g. if you hit Escape to unfocus the menus)
-		if (event.relatedTarget?.closest?.(".menu-popup, .menus")) {
-			return;
-		}
-		top_level_highlight(-1);
-	});
-
 
 	const is_disabled = item => {
 		if (typeof item.enabled === "function") {
@@ -934,9 +926,19 @@ function MenuBar(menus) {
 		}
 		// window.console && console.log(event.type, "occurred outside of menus (on ", event.target, ") so...");
 		close_menus();
+		top_level_highlight(-1);
 	}
 	window.addEventListener("pointerdown", close_menus_on_click_outside);
 	window.addEventListener("pointerup", close_menus_on_click_outside);
+
+	window.addEventListener("focusout", (event) => {
+		// if not still in menus, unhighlight (e.g. if you hit Escape to unfocus the menus)
+		if (event.relatedTarget?.closest?.(".menu-popup, .menus")) {
+			return;
+		}
+		close_menus();
+		top_level_highlight(-1);
+	});
 
 	let keyboard_scope_elements = [];
 	function set_keyboard_scope(...elements) {
