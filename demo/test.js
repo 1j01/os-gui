@@ -206,6 +206,8 @@ const menus = {
 			},
 		},
 	],
+	"&Loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong Menu Button Text": [
+	],
 	"&Help": new Array(100).fill(0).map((_, i) => ({
 		item: new Array(i + 3).fill("A").join(""),
 	})),
@@ -215,6 +217,8 @@ $main_test_window = new $Window({
 	title: "Test Station",
 	resizable: false,
 	icons: { 16: "https://win98icons.alexmeub.com/icons/png/application_hammer_grouppol-0.png" },
+	innerWidth: 300,
+	// innerHeight: 600,
 });
 $main_test_window.setMenuBar(new MenuBar(menus));
 $main_test_window.$content.append(`

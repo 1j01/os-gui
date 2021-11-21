@@ -57,6 +57,7 @@ body > .window-titlebar {
 .menus {
 	display: flex;
 	flex: 0 0 auto;
+	flex-wrap: wrap;
 }
 .menu-popup {
 	position: absolute;
@@ -65,8 +66,12 @@ body > .window-titlebar {
 .menu-popup-table {
 	border-collapse: collapse;
 }
+.menu-button,
 .menu-item {
 	white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    /* text-overflow: ellipsis; might imply a dialog */
 }
 .menu-hr {
 	display: block !important;
