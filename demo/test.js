@@ -611,6 +611,8 @@ function test_triggering() {
 			);
 		}
 	}
+
+	$trigger_test_window.focus();
 }
 
 function test_window_theme() {
@@ -681,6 +683,7 @@ function test_window_theme() {
 	// $theme_test_window.$content.find("#theme-global").on("click", () => {
 	// 	apply_theme_to_el(document.documentElement, theme_id);
 	// });
+	$theme_test_window.focus();
 }
 
 function apply_theme_to_el(element, theme_id, unset) {
