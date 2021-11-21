@@ -100,29 +100,15 @@ function MenuBar(menus) {
 	// This is for exiting submenus.
 	const parent_item_el_by_popup_el = new WeakMap();
 
-	// @TODO: specific to this menu bar (note that popups are not descendants of the menu bar)
-	const any_open_menus = () => [...document.querySelectorAll(".menu-popup")].some(popup_el => popup_el.style.display !== "none");
+	const all_menu_popups = [];
+
+	// this may be equivalent to !!active_menu_popup if I've implemented it properly
+	const any_open_menus = () => all_menu_popups.some(({ element }) => element.style.display !== "none");
 
 	const close_menus = () => {
 		for (const { menu_button_el } of top_level_menus) {
-			menu_button_el.dispatchEvent(new CustomEvent("release"), {});
-		}
-		// Close any rogue floating submenus
-		// @TODO: eventually this code should be removed
-		// it's here pretty much "just in case"
-		const popup_els = document.querySelectorAll(".menu-popup");
-		for (const popup_el of popup_els) {
-			if (!window.debugKeepMenusOpen) {
-				popup_el.style.display = "none";
-				popup_el.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("highlight"));
-				popup_el.removeAttribute("aria-activedescendant");
-				const parent_item_el = parent_item_el_by_popup_el.get(popup_el);
-				if (parent_item_el) {
-					if (!parent_item_el.classList.contains("menu-button")) {
-						parent_item_el.classList.remove("highlight");
-					}
-					parent_item_el.setAttribute("aria-expanded", "false");
-				}
+			if (menu_button_el.getAttribute("aria-expanded") === "true") {
+				menu_button_el.dispatchEvent(new CustomEvent("release"), {});
 			}
 		}
 	};
@@ -138,7 +124,7 @@ function MenuBar(menus) {
 		const new_index = typeof new_index_or_menu_key === "string" ?
 			Object.keys(menus).indexOf(new_index_or_menu_key) :
 			new_index_or_menu_key;
-		if (top_level_menu_index !== -1) {
+		if (top_level_menu_index !== -1 && top_level_menu_index !== new_index) {
 			top_level_menus[top_level_menu_index].menu_button_el.classList.remove("highlight");
 			// could close the menu here, but it's handled externally right now
 		}
@@ -191,8 +177,9 @@ function MenuBar(menus) {
 		if (e.defaultPrevented) {
 			return;
 		}
-		const active_menu_popup_el = e.target.closest(".menu-popup");
-		const active_menu_popup = active_menu_popup_el && menu_popup_by_el.get(active_menu_popup_el);
+		// const active_menu_popup_el = e.target.closest(".menu-popup");
+		// const active_menu_popup = active_menu_popup_el && menu_popup_by_el.get(active_menu_popup_el);
+		const active_menu_popup_el = active_menu_popup?.element;
 		const top_level_menu = top_level_menus[top_level_menu_index];
 		const { menu_button_el, open_top_level_menu } = top_level_menu || {};
 		const menu_popup_el = active_menu_popup_el || top_level_menu?.menu_popup_el;
@@ -219,12 +206,9 @@ function MenuBar(menus) {
 					(get_direction() === "ltr") !== right
 				) {
 					// exit submenu
-					active_menu_popup.parentMenuPopup.element.focus({ preventScroll: true });
-					active_menu_popup_el.style.display = "none";
-					active_menu_popup.highlight(-1);
+					active_menu_popup.close(true); // This changes the active_menu_popup_el to the parent menu!
 					parent_item_el.setAttribute("aria-expanded", "false");
-					send_info_event(active_menu_popup.parentMenuPopup.menuItems[active_menu_popup.parentMenuPopup.itemElements.indexOf(parent_item_el)]);
-					// @TODO: simplify with something like active_menu_popup.close()
+					send_info_event(active_menu_popup.menuItems[active_menu_popup.itemElements.indexOf(parent_item_el)]);
 					e.preventDefault();
 				} else if (
 					// basically any case except if you hover to open a submenu and then press right/left
@@ -268,9 +252,19 @@ function MenuBar(menus) {
 					const cycle_dir = down ? 1 : -1;
 					const item_els = [...menu_popup_el.querySelectorAll(".menu-item")];
 					const from_index = item_els.indexOf(highlighted_item_el);
-					const to_index = (from_index + cycle_dir + item_els.length) % item_els.length;
+					let to_index = (from_index + cycle_dir + item_els.length) % item_els.length;
+					if (from_index === -1) {
+						if (down) {
+							to_index = 0;
+						} else {
+							to_index = item_els.length - 1;
+						}
+					}
+					// more fun way to do it:
+					// const to_index = (Math.max(from_index, -down) + cycle_dir + item_els.length) % item_els.length;
+
 					const to_item_el = item_els[to_index];
-					// active_menu_popup.highlight(to_index); // wouldn't work because it doesn't include separators
+					// active_menu_popup.highlight(to_index); // wouldn't work because to_index doesn't count separators
 					active_menu_popup.highlight(to_item_el);
 					send_info_event(active_menu_popup.menuItems[active_menu_popup.itemElements.indexOf(to_item_el)]);
 					e.preventDefault();
@@ -283,12 +277,10 @@ function MenuBar(menus) {
 				if (any_open_menus()) {
 					// (@TODO: doesn't parent_item_el always exist?)
 					if (parent_item_el && parent_item_el !== menu_button_el) {
-						// exit submenu (@TODO: DRY)
-						active_menu_popup.parentMenuPopup.element.focus({ preventScroll: true });
-						active_menu_popup_el.style.display = "none";
-						active_menu_popup.highlight(-1);
+						// exit submenu (@TODO: DRY further by moving more logic into close()?)
+						active_menu_popup.close(true); // This changes the active_menu_popup to the parent menu!
 						parent_item_el.setAttribute("aria-expanded", "false");
-						send_info_event(active_menu_popup.parentMenuPopup.menuItems[active_menu_popup.parentMenuPopup.itemElements.indexOf(parent_item_el)]);
+						send_info_event(active_menu_popup.menuItems[active_menu_popup.itemElements.indexOf(parent_item_el)]);
 					} else {
 						// close_menus takes care of releasing the pressed state of the button as well
 						close_menus();
@@ -396,6 +388,7 @@ function MenuBar(menus) {
 
 		this.element = menu_popup_el;
 		menu_popup_by_el.set(menu_popup_el, this);
+		all_menu_popups.push(this);
 
 		let submenus = [];
 
@@ -438,6 +431,23 @@ function MenuBar(menus) {
 				last_item_el = null;
 			}
 		};
+
+		this.close = (focus_parent_menu_popup = true) => { // Note: won't focus menu bar buttons.
+			// idempotent
+			for (const submenu of submenus) {
+				submenu.submenu_popup.close(false);
+			}
+			if (focus_parent_menu_popup) {
+				this.parentMenuPopup?.element.focus({ preventScroll: true });
+			}
+			menu_popup_el.style.display = "none";
+			this.highlight(-1);
+			// after closing submenus, which should move the active_menu_popup to this level, move it up to the parent level
+			if (active_menu_popup === this) {
+				active_menu_popup = this.parentMenuPopup;
+			}
+		};
+
 
 		if (menu_items.length === 0) {
 			menu_items = [{
@@ -643,19 +653,14 @@ function MenuBar(menus) {
 
 					function close_submenu() {
 						// idempotent
-						submenu_popup_el.style.display = "none";
-						submenu_popup.highlight(-1);
+						submenu_popup.close(false);
 						item_el.setAttribute("aria-expanded", "false");
-						if (submenu_popup_el._submenus) {
-							for (const submenu of submenu_popup_el._submenus) {
-								submenu.close_submenu();
-							}
-						}
 					}
 
 					submenus.push({
 						item_el,
 						submenu_popup_el,
+						submenu_popup,
 						open_submenu,
 						close_submenu,
 					});
@@ -844,6 +849,12 @@ function MenuBar(menus) {
 			}
 		});
 		function open_top_level_menu(type = "other") {
+			
+			const new_index = Object.keys(menus).indexOf(menus_key);
+			if (new_index === top_level_menu_index && menu_button_el.getAttribute("aria-expanded") === "true") {
+				return; // already open
+			}
+
 			close_menus();
 
 			menu_button_el.classList.add("active");
@@ -877,8 +888,7 @@ function MenuBar(menus) {
 
 			menu_button_el.classList.remove("active");
 			if (!window.debugKeepMenusOpen) {
-				menu_popup_el.style.display = "none";
-				menu_popup.highlight(-1);
+				menu_popup.close(true);
 				menu_button_el.setAttribute("aria-expanded", "false");
 			}
 
@@ -923,7 +933,7 @@ function MenuBar(menus) {
 		close_menus();
 	});
 	function close_menus_on_click_outside(event) {
-		if (event.target?.closest?.(".menus, .menu-popup")) {
+		if (event.target?.closest?.(".menus") === menus_el || event.target?.closest?.(".menu-popup")) {
 			return;
 		}
 		// window.console && console.log(event.type, "occurred outside of menus (on ", event.target, ") so...");
@@ -935,7 +945,7 @@ function MenuBar(menus) {
 
 	window.addEventListener("focusout", (event) => {
 		// if not still in menus, unhighlight (e.g. if you hit Escape to unfocus the menus)
-		if (event.relatedTarget?.closest?.(".menu-popup, .menus")) {
+		if (event.relatedTarget?.closest?.(".menus") === menus_el || event.relatedTarget?.closest?.(".menu-popup")) {
 			return;
 		}
 		close_menus();
