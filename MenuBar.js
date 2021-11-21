@@ -100,11 +100,6 @@ function MenuBar(menus) {
 	// This is for exiting submenus.
 	const parent_item_el_by_popup_el = new WeakMap();
 
-	const all_menu_popups = [];
-
-	// this may be equivalent to !!active_menu_popup if I've implemented it properly
-	const any_open_menus = () => all_menu_popups.some(({ element }) => element.style.display !== "none");
-
 	const close_menus = () => {
 		for (const { menu_button_el } of top_level_menus) {
 			if (menu_button_el.getAttribute("aria-expanded") === "true") {
@@ -274,7 +269,7 @@ function MenuBar(menus) {
 				e.preventDefault();
 				break;
 			case 27: // Escape
-				if (any_open_menus()) {
+				if (active_menu_popup) {
 					// (@TODO: doesn't parent_item_el always exist?)
 					if (parent_item_el && parent_item_el !== menu_button_el) {
 						// exit submenu (@TODO: DRY further by moving more logic into close()?)
@@ -388,7 +383,6 @@ function MenuBar(menus) {
 
 		this.element = menu_popup_el;
 		menu_popup_by_el.set(menu_popup_el, this);
-		all_menu_popups.push(this);
 
 		let submenus = [];
 
@@ -910,7 +904,7 @@ function MenuBar(menus) {
 			!document.activeElement.closest(".menus, .menu-popup")
 		) {
 			if (e.keyCode === 27) { // Escape
-				if (any_open_menus()) {
+				if (active_menu_popup) {
 					close_menus();
 					e.preventDefault();
 				}
