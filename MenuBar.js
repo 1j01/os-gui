@@ -651,24 +651,18 @@ function MenuBar(menus) {
 						active_menu_popup = submenu_popup;
 					};
 
-					function close_submenu() {
-						// idempotent
-						submenu_popup.close(false);
-						item_el.setAttribute("aria-expanded", "false");
-					}
-
 					submenus.push({
 						item_el,
 						submenu_popup_el,
 						submenu_popup,
 						open_submenu,
-						close_submenu,
 					});
 					menu_popup_el._submenus = submenus;
 
 					function close_submenus_at_this_level() {
-						for (const submenu of submenus) {
-							submenu.close_submenu();
+						for (const { submenu_popup, item_el } of submenus) {
+							submenu_popup.close(false);
+							item_el.setAttribute("aria-expanded", "false");
 						}
 						menu_popup_el.focus({ preventScroll: true });
 					}
