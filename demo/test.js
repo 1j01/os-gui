@@ -106,6 +106,11 @@ const menus = {
 			submenu: [],
 		},
 		{
+			item: "&Disabled",
+			submenu: [],
+			enabled: false,
+		},
+		{
 			item: "&Many Submenus",
 			// this can get very slow to load with a lot of submenus, because it creates the DOM structure for the entire thing
 			// so I've limited it for now, maybe later we can make it render as needed, perhaps optionally; I'm not sure of the implications on accessibility
@@ -151,6 +156,9 @@ const menus = {
 					}))
 				]
 			}))
+		},
+		{
+			item: "&Not A Submenu",
 		},
 	],
 	"&Enabled": [

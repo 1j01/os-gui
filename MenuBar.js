@@ -186,9 +186,8 @@ function MenuBar(menus) {
 			case "ArrowRight":
 				const right = e.key === "ArrowRight";
 				if (
-					highlighted_item_el?.classList.contains("has-submenu") &&
+					highlighted_item_el?.matches(".has-submenu:not([aria-disabled='true'])") &&
 					(get_direction() === "ltr") === right
-					// @TODO: don't enter disabled submenus
 				) {
 					// enter submenu
 					highlighted_item_el.click();
@@ -588,6 +587,9 @@ function MenuBar(menus) {
 
 					open_submenu = (highlight_first = true) => {
 						if (submenu_popup_el.style.display !== "none") {
+							return;
+						}
+						if (item_el.getAttribute("aria-disabled") === "true") {
 							return;
 						}
 						close_submenus_at_this_level();
