@@ -522,7 +522,6 @@ function MenuBar(menus) {
 				// *Maybe* it could look at more of the overall state within `highlight`,
 				// but could it distinguish hovering an outer vs an inner item if two are highlighted?
 				item_el.addEventListener("pointerenter", () => {
-					menu_popup_el.dispatchEvent(new CustomEvent("update"), {}); // @TODO: why?
 					this.highlight(item_index);
 					send_info_event(item);
 				});
