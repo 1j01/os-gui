@@ -11,13 +11,13 @@ See the [homepage](https://os-gui.js.org/) for more information.
 
 ## Features
 
-- Menu bars, with support for checkbox items, disabled states, and submenus
+- Menu bars, with support for checkbox and radio items, disabled states, submenus, keyboard shortcuts, and more
 
 - App windows which you can drag around, maximize, minimize, close, and resize
 
 - Dialog and tool window variants
 
-- Flying titlebar animation that guides your eyes, for maximize/minimize/restore
+- Flying titlebar animation that guides your eyes during maximize/minimize/restore
 
 - Focus containment: if you Tab or Shift+Tab within a window, it wraps around to the first/last control.
 
@@ -203,9 +203,10 @@ Menu item specifications are either `MENU_DIVIDER` - a constant indicating a hor
 * `item`: a label for the item
 * `shortcut` (optional): a keyboard shortcut for the item, like "Ctrl+A"; this is not functionally implemented, you'll need to listen for the shortcut yourself!
 * `action` (optional): a function to execute when the item is clicked (can only specify either `action` or `checkbox`)
-* `checkbox` (optional): an object specifying that this item should behave as a checkbox.
-Property `check` of this object should be a function that *checks* if the checkbox should be checked or not and returns `true` for checked and `false` for unchecked. What a cutesy name.
+* `checkbox` (optional): an object specifying that this item should behave as a checkbox or radio button.
+Property `check` of this object should be a function that *checks* if the item should be checked or not, returning `true` for checked and `false` for unchecked. What a cutesy name.
 Property `toggle` should be a function that toggles the state of the option, however you're storing it; called when clicked.
+Property `type` can be set to `"radio"` to display as a radio button (the default being a checkbox). Use this for exclusive options.
 * `enabled` (optional): can be `false` to unconditionally disable the item, or a function that determines whether the item should be enabled, returning `true` to enable the item, `false` to disable.
 * `submenu` (optional): an array of menu item specifications to create a submenu
 * `description`: for implementing a status bar; an [`info` event](#event-info) is emitted when rolling over the item with this description
@@ -272,7 +273,7 @@ By default OS-GUI will try to enhance iframes with logic to:
 - [x] Restore focus to controls in the iframe when refocusing the window (e.g. clicking the titlebar) (this even works for nested iframes!)
 - [ ] Propagate theme to iframes (i.e. when you drag a Windows `.theme` file, apply it to iframes too)
 	- [x] Theme is propagated to iframes when using `applyCSSProperties(cssProperties, {element, recurseIntoIframes: true})`
-	- [ ] @TODO: apply theme for new iframes, not just existing ones (needs a place to store the current theme)
+	- [ ] @TODO: apply theme for new iframes, not just existing ones (needs a place to store the current theme, or a way to listen for changes to CSS properties in the DOM so it can dynamically inherit them across the frame boundary, supporting stylesheets as well as inline styles)
 - [ ] @TODO: proxy mouse and keyboard events to and from the iframe, to allow for:
 	- [ ] Outer window to capture and prevent keyboard events
 		- Handle menu Alt+(access key) hotkeys when focus is in the iframe

@@ -534,7 +534,15 @@ function MenuBar(menus) {
 					}
 				});
 
-				if (item.checkbox) {
+				if (item.checkbox?.type === "radio") {
+					checkbox_area_el.innerHTML = `
+						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
+							style="fill:currentColor;display:inline-block;vertical-align:middle"
+						>
+							<circle cx="8" cy="8" r="3"/>
+						</svg>
+					`;
+				} else if (item.checkbox) {
 					checkbox_area_el.innerHTML = `
 						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
 							style="fill:currentColor;display:inline-block;vertical-align:middle"
@@ -543,16 +551,6 @@ function MenuBar(menus) {
 						</svg>
 					`;
 				}
-				// @TODO: radio menu item support
-				// if (item.radio) {
-				// 	checkbox_area_el.innerHTML = `
-				// 		<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
-				// 			style="fill:currentColor;display:inline-block;vertical-align:middle"
-				// 		>
-				// 			<circle cx="8" cy="8" r="3"/>
-				// 		</svg>
-				// 	`;
-				// }
 
 				let open_submenu, submenu_popup_el;
 				if (item.submenu) {

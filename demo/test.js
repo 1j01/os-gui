@@ -63,6 +63,7 @@ let $icon_test_window;
 let $theme_test_window;
 
 let disable_an_item = false;
+let radio_value;
 const menus = {
 	"&Dialogs": [
 		{
@@ -93,10 +94,11 @@ const menus = {
 		{
 			item: "&Many Items",
 			submenu: new Array(100).fill(0).map((_, i) => ({
-				item: `Item ${i}`,
+				item: `Radio ${i}`,
 				checkbox: {
-					check: function () { return this.pointless_checkbox_value; },
-					toggle: function () { this.pointless_checkbox_value = !this.pointless_checkbox_value; }
+					type: "radio",
+					check: function () { return radio_value === i; },
+					toggle: function () { radio_value = i; }
 				},
 				shortcut: `Ctrl+${i}`,
 			}))
