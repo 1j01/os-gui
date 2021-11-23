@@ -306,9 +306,7 @@ body > .window-titlebar {
 	line-height: 1;
 	margin-top: 1px; /* NORMAL MARGIN */
 	/* margin-bottom: 1px; consumed margin */
-
-	margin-left: -1px; /* keep menu items directly abutting */
-	left: 1px; /* offset to counteract margin-left for the first button */
+	margin-right: -1px; /* keep menu items directly abutting */
 
 	/* need the overflow visible for the psuedo element's top and left borders to be visible */
 	overflow: visible;
