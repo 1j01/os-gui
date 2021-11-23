@@ -294,24 +294,27 @@ body > .window-titlebar {
 }
 .menu-button {
 	box-sizing: border-box;
-	height: 18px;
-	line-height: 1;
-	margin-top: 1px;
-	/* margin-bottom: 1px; */
-
 	/* Using a balanced border to offset the contents on press */
 	border: 0px solid transparent;
 	border-top-width: 0px;
 	border-left-width: 0px;
 	border-bottom-width: 1px;
 	border-right-width: 1px;
-	margin-left: -1px;
-	left: 1px;
+	/* Unfortunately, everything else has to be balanced by 1px (very carefully) in many places. */
+	
+	height: 18px; /* (EFFECTIVELY NORMAL but...) +1px -1px: +1px due to transparent border, but needs to be metrically same as visual height for the menu popup positioning, so I used bottom: -1px on the pseudo element to get it so this can be -1px to 18px again */
+	line-height: 1;
+	margin-top: 1px; /* NORMAL MARGIN */
+	/* margin-bottom: 1px; consumed margin */
+
+	margin-left: -1px; /* keep menu items directly abutting */
+	left: 1px; /* offset to counteract margin-left for the first button */
+
 	/* need the overflow visible for the psuedo element's top and left borders to be visible */
 	overflow: visible;
-	clip-path: inset(0 1px 0 0);
+	clip-path: inset(0 1px 0 0); /* clipping text off inside the border, without clipping the border (somewhat mysteriously) */
 
-	padding: 2px 5px;
+	padding: 2px 5px; /* NORMAL PADDING; I took great lengths to make this easily changable from outside code (padding is an obvious strategy for making the press offset effect, but I think this is a common thing you might want to customize) */
 	position: relative;
 	outline: 0;
 	/* @extend button.lightweight; */
