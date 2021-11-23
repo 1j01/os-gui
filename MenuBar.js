@@ -826,7 +826,7 @@ function MenuBar(menus) {
 				open_top_level_menu(e.type);
 			}
 		});
-		menu_button_el.addEventListener("pointerenter", e => {
+		menu_button_el.addEventListener("pointermove", e => {
 			top_level_highlight(menus_key);
 			if (e.pointerType === "touch") {
 				return;
