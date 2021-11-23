@@ -940,12 +940,7 @@ function MenuBar(menus) {
 		}
 		close_menus();
 		// Top level buttons should no longer be highlighted due to focus, but still may be highlighted due to hover.
-		const hovered = top_level_menus.find(({ menu_button_el }) => menu_button_el.matches(":hover"));
-		if (hovered) {
-			top_level_highlight(hovered.menus_key);
-		} else {
-			top_level_highlight(-1);
-		}
+		top_level_highlight(top_level_menus.findIndex(({ menu_button_el }) => menu_button_el.matches(":hover")));
 	});
 
 	let keyboard_scope_elements = [];
