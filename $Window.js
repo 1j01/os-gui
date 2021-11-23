@@ -423,7 +423,7 @@ function $Window(options) {
 		}
 
 		observeIframes($w.$content[0]);
-		
+
 		function make_focus_in_out_handler(logical_container_el, is_root) {
 			// In case of iframes, logical_container_el is the iframe, and container_node is the iframe's contentDocument.
 			// container_node is not a parameter here because it can change over time, may be an empty document before the iframe is loaded.
@@ -817,10 +817,10 @@ function $Window(options) {
 		}
 	};
 	// must not pass event to functions by accident; also methods may not be defined yet
-	$w.$minimize?.on("click", (e)=> { $w.minimize(); });
-	$w.$maximize?.on("click", (e)=> { $w.maximize(); });
-	$w.$x?.on("click", (e)=> { $w.close(); });
-	$w.$title_area.on("dblclick", (e)=> { $w.maximize(); });
+	$w.$minimize?.on("click", (e) => { $w.minimize(); });
+	$w.$maximize?.on("click", (e) => { $w.maximize(); });
+	$w.$x?.on("click", (e) => { $w.close(); });
+	$w.$title_area.on("dblclick", (e) => { $w.maximize(); });
 
 	$w.css({
 		position: "absolute",
@@ -1565,7 +1565,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		// TODO: support modals, which should focus what was focused before the modal was opened.
 		// (Note: must consider the element being removed from the DOM, or hidden, or made un-focusable)
 		// (Also: modals should steal focus / be brought to the front when focusing the parent window, and the parent window's content should be inert/uninteractive)
-		
+
 		// Focus next-topmost window
 		var $next_topmost = $($(".window:visible").toArray().sort((a, b) => b.style.zIndex - a.style.zIndex)[0]);
 		$next_topmost.triggerHandler("refocus-window");

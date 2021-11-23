@@ -836,7 +836,7 @@ function MenuBar(menus) {
 			}
 		});
 		function open_top_level_menu(type = "other") {
-			
+
 			const new_index = Object.keys(menus).indexOf(menus_key);
 			if (new_index === top_level_menu_index && menu_button_el.getAttribute("aria-expanded") === "true") {
 				return; // already open
