@@ -596,6 +596,9 @@ function MenuBar(menus) {
 						submenu_popup_el.style.display = "";
 						submenu_popup_el.style.zIndex = get_new_menu_z_index();
 						submenu_popup_el.setAttribute("dir", get_direction());
+						if (window.inheritTheme) {
+							window.inheritTheme(submenu_popup_el, menu_popup_el);
+						}
 						if (!submenu_popup_el.parentElement) {
 							document.body.appendChild(submenu_popup_el);
 						}
@@ -846,6 +849,9 @@ function MenuBar(menus) {
 			menu_popup_el.style.display = "";
 			menu_popup_el.style.zIndex = get_new_menu_z_index();
 			menu_popup_el.setAttribute("dir", get_direction());
+			if (window.inheritTheme) {
+				window.inheritTheme(menu_popup_el, menus_el);
+			}
 			if (!menu_popup_el.parentElement) {
 				document.body.appendChild(menu_popup_el);
 			}
