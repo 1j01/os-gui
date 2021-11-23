@@ -1232,7 +1232,13 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	var drag_offset_x, drag_offset_y, drag_pointer_x, drag_pointer_y, drag_pointer_id;
 	var update_drag = (e) => {
 		const pointerId = e.pointerId ?? e.originalEvent?.pointerId; // originalEvent doesn't exist for triggerHandler()
-		if (drag_pointer_id === pointerId || pointerId === undefined) { // (allowing synthetic events to affect the drag without pointerId)
+		if (
+			drag_pointer_id === pointerId ||
+			pointerId === undefined || // (allowing synthetic events to affect the drag without pointerId)
+			drag_pointer_id === undefined || // (allowing real events to affect a drag started with a synthetic event without a pointerId, for jspaint's Eye Gaze Mode... uh...)
+			drag_pointer_id === 1234567890 // allowing real events to affect a drag started with a synthetic event with this fake pointerId, for jspaint's Eye Gaze Mode!!
+			// @TODO: find a better way to support synthetic events (could make the fake pointerId a formal part of the API contract at least...)
+		) {
 			drag_pointer_x = e.clientX ?? drag_pointer_x;
 			drag_pointer_y = e.clientY ?? drag_pointer_y;
 		}
