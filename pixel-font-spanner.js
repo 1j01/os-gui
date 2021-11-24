@@ -35,9 +35,30 @@
 		return array;
 	}
 
+	let text_scale;
+	let text_size;
+
+	function updateWrapper(wrapper) {
+		wrapper.style.left = "0px";
+		wrapper.style.top = "0px";
+		wrapper.style.width = "auto";
+		wrapper.style.height = "auto";
+		// wrapper.style.fontSize = text_scale * 100 + "%";
+		// wrapper.style.fontSize = "calc(var(--device-pixel-ratio) * )";
+		wrapper.style.fontSize = text_size + "px";
+		wrapper.style.fontFamily = `"Pixelated MS Sans Serif", Arial, sans-serif`;
+
+		const rect = wrapper.getBoundingClientRect();
+		wrapper.style.left = `${Math.ceil(rect.left) - rect.left}px`;
+		wrapper.style.top = `${Math.ceil(rect.top) - rect.top}px`;
+		wrapper.style.width = `${Math.ceil(rect.width)}px`;
+		wrapper.style.height = `${Math.ceil(rect.height)}px`;
+	}
+
 	function render(mutationsList) {
-		const text_scale = 1 / window.devicePixelRatio;
-		const text_size = 11 * text_scale;
+		text_scale = 1 / window.devicePixelRatio;
+		text_size = 11 * text_scale;
+		
 		// document.documentElement.style.setProperty('--text-scale', text_scale);
 		// document.documentElement.style.setProperty('--device-pixel-ratio', window.devicePixelRatio);
 		const text_nodes = mutationsList ?
@@ -61,22 +82,11 @@
             
 				wrapper.isDynamicWrapper = true;
 				wrapper.className = "text-node-wrapper";
+
+				new ResizeObserver(() => updateWrapper(wrapper)).observe(wrapper);
 			}
 			if (wrapper) {
-				wrapper.style.left = "0px";
-				wrapper.style.top = "0px";
-				wrapper.style.width = "auto";
-				wrapper.style.height = "auto";
-				// wrapper.style.fontSize = text_scale * 100 + "%";
-				// wrapper.style.fontSize = "calc(var(--device-pixel-ratio) * )";
-				wrapper.style.fontSize = text_size + "px";
-				wrapper.style.fontFamily = `"Pixelated MS Sans Serif", Arial, sans-serif`;
-
-				const rect = wrapper.getBoundingClientRect();
-				wrapper.style.left = `${Math.ceil(rect.left) - rect.left}px`;
-				wrapper.style.top = `${Math.ceil(rect.top) - rect.top}px`;
-				wrapper.style.width = `${Math.ceil(rect.width)}px`;
-				wrapper.style.height = `${Math.ceil(rect.height)}px`;
+				updateWrapper(wrapper);
 			}
 		}
 	}
@@ -94,8 +104,8 @@
 	var observer = new MutationObserver(render);
 	observer.observe(document.body, { childList: true, subtree: true, attributes: false, characterData: true });
 
-	render();
-	window.addEventListener('resize', render);
+	// render();
+	// window.addEventListener('resize', render);
 	// document.addEventListener('selectionchange', render);
 	// document.addEventListener('scroll', render);
 
