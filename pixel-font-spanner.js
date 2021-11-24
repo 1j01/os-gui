@@ -23,6 +23,9 @@
 	// - Rewrite all applications in something other than JavaScript. The web platform sucks. But you know, if it was all webgl or whatever, with emscripten, pixel fonts would be fine.
 	// - Convince people that anti-aliased fonts look better. Look how fancy they are.
 	// - Convince people Windows 98 used anti-aliased fonts. Look, the option is right there: https://i.imgur.com/UPTFwu3.png
+	// - I also did a proof of concept of just blotting out text, intended for visual regression testing: https://jsfiddle.net/1j01/8nzuktvw/3/
+	//   (The idea here was just to hide differences in text rendering across platforms, but if text metrics are different, it can make things even more different.)
+
 
 	function textNodesUnder(el) {
 		const array = [];
