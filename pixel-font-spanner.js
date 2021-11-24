@@ -35,12 +35,14 @@
 		return array;
 	}
 
-	function render() {
+	function render(mutationsList) {
 		const text_scale = 1 / window.devicePixelRatio;
 		const text_size = 11 * text_scale;
 		// document.documentElement.style.setProperty('--text-scale', text_scale);
 		// document.documentElement.style.setProperty('--device-pixel-ratio', window.devicePixelRatio);
-		const text_nodes = textNodesUnder(document.body);
+		const text_nodes = mutationsList ?
+			mutationsList.reduce((acc, mutation) => acc.concat(textNodesUnder(mutation.target)), []) :
+			textNodesUnder(document.body);
 		for (const text_node of text_nodes) {
 			let wrapper = text_node.parentElement.isDynamicWrapper ? text_node.parentElement : null;
 			if (!wrapper && (text_node.textContent.trim() !== "") && filter(text_node)) {
@@ -93,7 +95,6 @@
 	observer.observe(document.body, { childList: true, subtree: true, attributes: false, characterData: true });
 
 	render();
-	window.addEventListener("load", render);
 	window.addEventListener('resize', render);
 	// document.addEventListener('selectionchange', render);
 	// document.addEventListener('scroll', render);
