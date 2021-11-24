@@ -77,8 +77,13 @@
 	}
 
 	function filter(text_node) {
-		return text_node.parentElement.tagName !== "STYLE" && text_node.parentElement.tagName !== "SCRIPT" &&
-			!text_node.parentElement.closest("h1,h2,h3,h4,h5,h6,p,pre,code,blockquote,ul,ol,li,table,tr,td,th,thead,tbody,tfoot,dl,dt,dd,figure,figcaption,svg,script,style,title");
+		return (
+			text_node.parentElement.tagName !== "STYLE" &&
+			text_node.parentElement.tagName !== "SCRIPT" &&
+			//text_node.parentElement.tagName !== "TITLE" &&
+			text_node.parentElement.closest(".menus, .menu-popup, .os-window")
+		);
+		// !text_node.parentElement.closest("h1,h2,h3,h4,h5,h6,pre,code,blockquote,ul,ol,li,table,tr,td,th,thead,tbody,tfoot,dl,dt,dd,figure,figcaption,svg,script,style,title,nav,footer,header");
 	}
 
 	var observer = new MutationObserver(render);
@@ -86,7 +91,7 @@
 
 	render();
 	window.addEventListener("load", render);
-	document.addEventListener('resize', render);
+	window.addEventListener('resize', render);
 	// document.addEventListener('selectionchange', render);
 	// document.addEventListener('scroll', render);
 
