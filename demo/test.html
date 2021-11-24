@@ -15,6 +15,7 @@
 		<script src="../MenuBar.js"></script>
 		<script src="../$Window.js"></script>
 		<script src="../parse-theme.js"></script>
+		<script src="../pixel-font-spanner.js"></script>
 		<header>
 			<h1>
 				<!-- <img alt="" src="https://win98icons.alexmeub.com/icons/png/registration-0.png" width="32" height="32" style="vertical-align: middle"> -->
@@ -65,6 +66,23 @@
 			.show-disabled-icons img {
 				filter: saturate(0%) opacity(50%); /* fallback until SVG filter is initialized */
 				filter: url("#os-gui-black-to-inset-filter");
+			}
+
+			/* Pseudo pixel fonts */
+			/* The web platform doesn't support pixel fonts. This needs pixel-font-spanner.js for subpixel alignment. */
+			@font-face {
+				font-family: "Pixelated MS Sans Serif";
+				src: url("../fonts/converted/ms_sans_serif.woff") format("woff");
+				src: url("../fonts/converted/ms_sans_serif.woff2") format("woff2");
+				font-weight: normal;
+				font-style: normal;
+			}
+			@font-face {
+				font-family: "Pixelated MS Sans Serif";
+				src: url("../fonts/converted/ms_sans_serif_bold.woff") format("woff");
+				src: url("../fonts/converted/ms_sans_serif_bold.woff2") format("woff2");
+				font-weight: bold;
+				font-style: normal;
 			}
 		</style>
 	</body>

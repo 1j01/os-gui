@@ -164,7 +164,8 @@
 				transform: translate(-50%, -50%) translateX(460px) scale(0.3) rotate(.25turn);
 			}
 
-			/* Pixel font */
+			/* Pseudo pixel fonts */
+			/* The web platform doesn't support pixel fonts. This needs pixel-font-spanner.js for subpixel alignment. */
 			@font-face {
 				font-family: "Pixelated MS Sans Serif";
 				src: url("fonts/converted/ms_sans_serif.woff") format("woff");
@@ -172,7 +173,6 @@
 				font-weight: normal;
 				font-style: normal;
 			}
-
 			@font-face {
 				font-family: "Pixelated MS Sans Serif";
 				src: url("fonts/converted/ms_sans_serif_bold.woff") format("woff");
@@ -180,22 +180,6 @@
 				font-weight: bold;
 				font-style: normal;
 			}
-
-			input,
-			button,
-			select,
-			textarea,
-			label,
-			.menus *,
-			.menu-popup *,
-			.os-window,
-			.window-titlebar {
-				/* font-family: "Pixelated MS Sans Serif", Arial !important; */
-				/* -webkit-font-smoothing: none;
-				font-smooth: never; */
-				/* font-size: 11px !important; */
-			}
-
 		</style>
 	</head>
 	<body>
