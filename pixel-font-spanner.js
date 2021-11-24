@@ -65,6 +65,7 @@
 				// wrapper.style.fontSize = text_scale * 100 + "%";
 				// wrapper.style.fontSize = "calc(var(--device-pixel-ratio) * )";
 				wrapper.style.fontSize = text_size + "px";
+				wrapper.style.fontFamily = `"Pixelated MS Sans Serif", Arial, sans-serif`;
 
 				const rect = wrapper.getBoundingClientRect();
 				wrapper.style.left = `${Math.ceil(rect.left) - rect.left}px`;
@@ -75,7 +76,11 @@
 		}
 	}
 
+	var observer = new MutationObserver(render);
+	observer.observe(document.body, { childList: true, subtree: true });
+
 	render();
+	window.addEventListener("load", render);
 	document.addEventListener('resize', render);
 	// document.addEventListener('selectionchange', render);
 	// document.addEventListener('scroll', render);
