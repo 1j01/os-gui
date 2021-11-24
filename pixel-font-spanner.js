@@ -40,7 +40,7 @@
 		const text_nodes = textNodesUnder(document.body);
 		for (const text_node of text_nodes) {
 			let wrapper = text_node.parentElement.isDynamicWrapper ? text_node.parentElement : null;
-			if (!wrapper && (text_node.textContent.trim() !== "")) {
+			if (!wrapper && (text_node.textContent.trim() !== "") && filter(text_node)) {
 				wrapper = document.createElement("span");
 				text_node.parentElement.insertBefore(wrapper, text_node.nextSibling);
 				wrapper.appendChild(text_node);
@@ -76,8 +76,13 @@
 		}
 	}
 
+	function filter(text_node) {
+		return text_node.parentElement.tagName !== "STYLE" && text_node.parentElement.tagName !== "SCRIPT" &&
+			!text_node.parentElement.closest("h1,h2,h3,h4,h5,h6,p,pre,code,blockquote,ul,ol,li,table,tr,td,th,thead,tbody,tfoot,dl,dt,dd,figure,figcaption,svg,script,style,title");
+	}
+
 	var observer = new MutationObserver(render);
-	observer.observe(document.body, { childList: true, subtree: true });
+	observer.observe(document.body, { childList: true, subtree: true, attributes: false, characterData: true });
 
 	render();
 	window.addEventListener("load", render);
