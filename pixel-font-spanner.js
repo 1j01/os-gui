@@ -56,8 +56,9 @@
 	}
 
 	function render(mutationsList) {
+		let target_text_size = 11 * Math.max(1, Math.round(window.devicePixelRatio));
 		text_scale = 1 / window.devicePixelRatio;
-		text_size = 11 * text_scale;
+		text_size = target_text_size * text_scale;
 		
 		// document.documentElement.style.setProperty('--text-scale', text_scale);
 		// document.documentElement.style.setProperty('--device-pixel-ratio', window.devicePixelRatio);
@@ -105,8 +106,8 @@
 	observer.observe(document.body, { childList: true, subtree: true, attributes: false, characterData: true });
 
 	// render();
-	// window.addEventListener('resize', render);
-	// document.addEventListener('selectionchange', render);
-	// document.addEventListener('scroll', render);
+	window.addEventListener('resize', ()=> { render(); });
+	// document.addEventListener('selectionchange', ()=> { render(); });
+	// document.addEventListener('scroll', ()=> { render(); });
 
 })();
