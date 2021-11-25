@@ -253,7 +253,7 @@ $main_test_window.$content.append(`
 		Icon Size + Long Title
 	</button>
 	<button id="test-theme">
-		<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/themes-2.png" width="32" height="32" style="vertical-align: middle;" />
+		<img draggable="false" src="https://win98icons.alexmeub.com/icons/png/themes-0.png" width="32" height="32" style="vertical-align: middle;" />
 		Window Theme
 	</button>
 	<button id="test-triggering">
