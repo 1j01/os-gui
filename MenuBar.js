@@ -311,6 +311,9 @@ function MenuBar(menus) {
 				}
 				break;
 			default:
+				if (e.ctrlKey || e.metaKey) {
+					break;
+				}
 				// handle accelerators and first-letter navigation
 				const key = e.key.toLowerCase();
 				const item_els = active_menu_popup ?
