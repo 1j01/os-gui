@@ -537,6 +537,8 @@ function MenuBar(menus) {
 					}
 				});
 
+				// Note: viewBox is needed for scaling the SVG, used in JS Paint's Eye Gaze Mode
+				
 				if (item.checkbox?.type === "radio") {
 					checkbox_area_el.innerHTML = `
 						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
@@ -559,7 +561,7 @@ function MenuBar(menus) {
 				if (item.submenu) {
 					item_el.classList.add("has-submenu");
 					submenu_area_el.innerHTML = `
-						<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"
+						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
 							style="fill:currentColor;display:inline-block;vertical-align:middle"
 						>
 							<path d="m6 4 4 4-4 4z"/>
