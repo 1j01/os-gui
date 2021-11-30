@@ -476,7 +476,8 @@ function MenuBar(menus) {
 				item_el.classList.add("menu-item");
 				item_el.id = `menu-item-${uid()}`;
 				item_el.tabIndex = -1; // may be needed for aria-activedescendant in some browsers?
-				item_el.setAttribute("role", item.checkbox ? "menuitemcheckbox" : "menuitem");
+				// @TODO: group menuitemradio in a tbody[role="group"]; need to change the API to allow this
+				item_el.setAttribute("role", item.checkbox ? item.checkbox.type === "radio" ? "menuitemradio" : "menuitemcheckbox" : "menuitem");
 				// prevent announcing the SHORTCUT (distinct from the hotkey, which would already not be announced unless it's e.g. a translated string like "새로 만들기 (&N)")
 				// remove_hotkey so it doesn't announce an ampersand
 				item_el.setAttribute("aria-label", remove_hotkey(item.label || item.item));

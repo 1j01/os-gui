@@ -23,6 +23,7 @@
 		"LOGFONTW",
 		"maximizable",
 		"menuitemcheckbox",
+		"menuitemradio",
 		"minimizable",
 		"Mothership",
 		"mousedown",
