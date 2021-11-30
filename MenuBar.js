@@ -443,18 +443,10 @@ function MenuBar(menus) {
 			}
 		};
 
-
-		if (menu_items.length === 0) {
-			menu_items = [{
-				label: "(Empty)",
-				enabled: false,
-			}];
-		}
-
-		menu_items.forEach((item, item_index) => {
+		const add_menu_item = (parent_element, item, item_index) => {
 			const row_el = E("tr", { class: "menu-row" });
 			this.itemElements.push(row_el);
-			menu_popup_table_el.appendChild(row_el);
+			parent_element.appendChild(row_el);
 			if (item === MENU_DIVIDER) {
 				const td_el = E("td", { colspan: 4 });
 				const hr_el = E("hr", { class: "menu-hr" });
@@ -476,7 +468,6 @@ function MenuBar(menus) {
 				item_el.classList.add("menu-item");
 				item_el.id = `menu-item-${uid()}`;
 				item_el.tabIndex = -1; // may be needed for aria-activedescendant in some browsers?
-				// @TODO: group menuitemradio in a tbody[role="group"]; need to change the API to allow this
 				item_el.setAttribute("role", item.checkbox ? item.checkbox.type === "radio" ? "menuitemradio" : "menuitemcheckbox" : "menuitem");
 				// prevent announcing the SHORTCUT (distinct from the hotkey, which would already not be announced unless it's e.g. a translated string like "새로 만들기 (&N)")
 				// remove_hotkey so it doesn't announce an ampersand
@@ -738,7 +729,33 @@ function MenuBar(menus) {
 					}
 				});
 			}
-		});
+		};
+
+		if (menu_items.length === 0) {
+			menu_items = [{
+				label: "(Empty)",
+				enabled: false,
+			}];
+		}
+		let init_index = 0;
+		for (const item of menu_items) {
+			if (item.radioItems) {
+				const tbody = E("tbody", { role: "group" }); // multiple tbody elements are allowed, can be used for grouping rows
+				for (const radio_item of item.radioItems) {
+					radio_item.checkbox = {
+						type: "radio",
+						check: () => radio_item.value === item.getValue(),
+						toggle: () => {
+							item.setValue(radio_item.value);
+						},
+					};
+					add_menu_item(tbody, radio_item, init_index++);
+				}
+				menu_popup_table_el.appendChild(tbody);
+			} else {
+				add_menu_item(menu_popup_table_el, item, init_index++);
+			}
+		}
 	}
 
 	// let this_click_opened_the_menu = false;

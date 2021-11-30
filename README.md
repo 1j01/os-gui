@@ -198,18 +198,25 @@ menubar.element.addEventListener("default-info", (event)=> {
 
 ### Menu item specification
 
-Menu item specifications are either `MENU_DIVIDER` - a constant indicating a horizontal rule, or an object with the following properties:
+Menu item specifications are either `MENU_DIVIDER` - a constant indicating a horizontal rule, or a radio group specification, or an object with the following properties:
 
 * `item`: a label for the item
 * `shortcut` (optional): a keyboard shortcut for the item, like "Ctrl+A"; this is not functionally implemented, you'll need to listen for the shortcut yourself!
 * `action` (optional): a function to execute when the item is clicked (can only specify either `action` or `checkbox`)
-* `checkbox` (optional): an object specifying that this item should behave as a checkbox or radio button.
+* `checkbox` (optional): an object specifying that this item should behave as a checkbox.
 Property `check` of this object should be a function that *checks* if the item should be checked or not, returning `true` for checked and `false` for unchecked. What a cutesy name.
 Property `toggle` should be a function that toggles the state of the option, however you're storing it; called when clicked.
-Property `type` can be set to `"radio"` to display as a radio button (the default being a checkbox). Use this for exclusive options.
 * `enabled` (optional): can be `false` to unconditionally disable the item, or a function that determines whether the item should be enabled, returning `true` to enable the item, `false` to disable.
 * `submenu` (optional): an array of menu item specifications to create a submenu
 * `description`: for implementing a status bar; an [`info` event](#event-info) is emitted when rolling over the item with this description
+* `value` (optional): for radio items, the value of the item; can be any type, but `===` is used to determine whether the item is checked.
+
+A radio group specification is an object with the following properties:
+
+* `radioItems`: an array of menu item specifications to create a radio button group. Unlike `submenu`, the items are included directly in this menu. It is recommended to separate the radio options from other menu items with a `MENU_DIVIDER`.
+* `getValue`: a function that should return the value of the selected radio item.
+* `setValue`: a function that should change the state to the given value, in an application-specific way.
+<!-- * `ariaLabel` (optional): a string to use as the `aria-label` for the radio group. -->
 
 ### Menu hotkeys
 

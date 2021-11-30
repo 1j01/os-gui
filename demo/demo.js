@@ -1,4 +1,5 @@
 let nothingness_state = true;
+let radio_state = "foo";
 const menus = {
 	"&File": [
 		{
@@ -53,7 +54,7 @@ const menus = {
 			description: "Contains a stupid physics joke.",
 		},
 		{
-			item: "&Many Items",
+			item: "&Checkboxes",
 			submenu: new Array(100).fill(0).map((_, i) => ({
 				item: `Item ${i}`,
 				checkbox: {
@@ -65,7 +66,31 @@ const menus = {
 				},
 				shortcut: `Ctrl+${i}`,
 			})),
-			description: "Contains lots of items.",
+			description: "Contains many checkbox items.",
+		},
+		{
+			item: "&Radio Buttons",
+			submenu: [
+				{
+					radioItems: [
+						{
+							item: "&Foo",
+							value: "foo",
+						},
+						{
+							item: "&Bar",
+							value: "bar",
+						},
+						{
+							item: "&Baz",
+							value: "baz",
+						},
+					],
+					getValue: () => radio_state,
+					setValue: (new_value) => { radio_state = new_value; },
+				},
+			],
+			description: "Contains radio button menu items.",
 		},
 	],
 	"&Edit": [

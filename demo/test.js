@@ -93,15 +93,19 @@ const menus = {
 		},
 		{
 			item: "&Many Items",
-			submenu: new Array(100).fill(0).map((_, i) => ({
-				item: `Radio ${i}`,
-				checkbox: {
-					type: "radio",
-					check: function () { return radio_value === i; },
-					toggle: function () { radio_value = i; }
+			submenu: [
+				{
+					radioItems: new Array(100).fill(0).map((_, i) => ({
+						item: `Radio ${i}`,
+						value: i,
+						shortcut: `Ctrl+${i}`,
+					})),
+					getValue: () => radio_value,
+					setValue: (new_value) => {
+						radio_value = new_value;
+					},
 				},
-				shortcut: `Ctrl+${i}`,
-			}))
+			],
 		},
 		{
 			item: "&No Items",
