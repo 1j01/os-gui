@@ -512,10 +512,6 @@ function MenuBar(menus) {
 					}
 					if (item.checkbox && item.checkbox.check) {
 						const checked = item.checkbox.check();
-						// @TODO: use CSS for checkmark icon so it can be styled per theme
-						// checkbox_area_el.classList.toggle("checked", checked);
-						// use visibility rather than display so it doesn't affect item height
-						checkbox_area_el.querySelector("svg").style.visibility = checked ? "visible" : "hidden";
 						item_el.setAttribute("aria-checked", checked ? "true" : "false");
 					}
 				});
@@ -537,40 +533,17 @@ function MenuBar(menus) {
 						send_info_event();
 					}
 				});
-
-				// Note: viewBox is needed for scaling the SVG, used in JS Paint's Eye Gaze Mode
 				
 				if (item.checkbox?.type === "radio") {
-					checkbox_area_el.innerHTML = `
-						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
-							style="fill:currentColor;display:inline-block;vertical-align:middle"
-						>
-							<circle cx="8" cy="8" r="3"/>
-						</svg>
-					`;
+					checkbox_area_el.classList.add("radio");
 				} else if (item.checkbox) {
-					checkbox_area_el.innerHTML = `
-						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
-							style="fill:currentColor;display:inline-block;vertical-align:middle"
-						>
-							<path d="M5 7v3l2 2 5-5V4L7 9Z"/>
-						</svg>
-					`;
+					checkbox_area_el.classList.add("checkbox");
 				}
 
 				let open_submenu, submenu_popup_el;
 				if (item.submenu) {
-					item_el.classList.add("has-submenu");
-					submenu_area_el.innerHTML = `
-						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
-							style="fill:currentColor;display:inline-block;vertical-align:middle"
-						>
-							<path d="m6 4 4 4-4 4z"/>
-						</svg>
-					`;
-					menu_popup_el.addEventListener("update", () => {
-						submenu_area_el.querySelector("svg").style.transform = get_direction() === "rtl" ? "scaleX(-1)" : "";
-					});
+					item_el.classList.add("has-submenu"); // @TODO: remove this, and use [aria-haspopup] instead (note true = menu)
+					submenu_area_el.classList.toggle("point-right", get_direction() === "rtl");
 
 					const submenu_popup = new MenuPopup(item.submenu, { parentMenuPopup: this });
 					submenu_popup_el = submenu_popup.element;
