@@ -552,21 +552,33 @@ so I think I'll immitate that. */
 }
 /* Note: viewBox is needed for scaling the SVG, used in JS Paint's Eye Gaze Mode */
 .menu-item-checkbox-area::after {
-	content: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
+	        mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
 }
 .menu-item-checkbox-area.radio::after {
-	content: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
-}
-.menu-item:not([aria-checked=true]) .menu-item-checkbox-area::after {
-	visibility: hidden; /* use visibility rather than display so it doesn't affect item height */
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
+	        mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
 }
 .has-submenu .menu-item-submenu-area::after {
-	content: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
+	-webkit-mask-image: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
+	        mask-image: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
 }
 .has-submenu .menu-item-submenu-area.point-right::after {
 	transform: scaleX(-1);
 }
-
+.menu-item-checkbox-area::after,
+.menu-item-submenu-area::after {
+	content: "";
+	display: block;
+	width: 16px;
+	height: 16px;
+	/* no background means it's invisible by default here (masking transparent gives transparent, i.e. nothing) */
+}
+.menu-item[aria-checked=true] .menu-item-checkbox-area::after,
+.menu-item.has-submenu .menu-item-submenu-area::after {
+	/* makes it visible */
+	background: currentColor;
+}
 
 .menu-hr {
 	border: 0;
