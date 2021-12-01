@@ -216,7 +216,7 @@ A radio group specification is an object with the following properties:
 * `radioItems`: an array of menu item specifications to create a radio button group. Unlike `submenu`, the items are included directly in this menu. It is recommended to separate the radio options from other menu items with a `MENU_DIVIDER`.
 * `getValue`: a function that should return the value of the selected radio item.
 * `setValue`: a function that should change the state to the given value, in an application-specific way.
-<!-- * `ariaLabel` (optional): a string to use as the `aria-label` for the radio group. -->
+* `ariaLabel` (optional): a string to use as the `aria-label` for the radio group.
 
 ### Menu hotkeys
 

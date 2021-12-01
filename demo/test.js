@@ -104,6 +104,7 @@ const menus = {
 					setValue: (new_value) => {
 						radio_value = new_value;
 					},
+					ariaLabel: "Demo Radio Group",
 				},
 			],
 		},
