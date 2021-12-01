@@ -379,7 +379,7 @@ function MenuBar(menus) {
 		});
 		menu_popup_el.style.touchAction = "pan-y"; // will allow for scrolling overflowing menus in the future, but prevent event delay and double tap to zoom
 		menu_popup_el.style.outline = "none";
-		const menu_popup_table_el = E("table", { class: "menu-popup-table" });
+		const menu_popup_table_el = E("table", { class: "menu-popup-table", role: "presentation" });
 		menu_popup_el.appendChild(menu_popup_table_el);
 
 		this.element = menu_popup_el;
