@@ -807,7 +807,7 @@ function MenuBar(menus) {
 		menu_button_el.classList.add(`${menu_id}-menu-button`);
 		// menu_popup_el.id = `${menu_id}-menu-popup-${uid()}`; // id is created by MenuPopup and changing it breaks the data-semantic-parent relationship
 		menu_popup_el.style.display = "none";
-		menu_button_el.innerHTML = display_hotkey(menus_key);
+		menu_button_el.innerHTML = `<span>${display_hotkey(menus_key)}</span>`; // span is for button offset effect on press
 		menu_button_el.tabIndex = -1;
 
 		menu_button_el.setAttribute("aria-haspopup", "true");
