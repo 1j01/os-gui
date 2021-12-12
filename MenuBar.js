@@ -89,7 +89,6 @@ function MenuBar(menus) {
 	const top_level_menus = [];
 	let top_level_menu_index = -1; // index of the top level menu that's most recently open, or highlighted
 	let active_menu_popup; // most nested open MenuPopup
-	const menu_popup_by_el = new WeakMap(); // maps DOM elements to MenuPopup instances
 
 	// There can be multiple menu bars instantiated from the same menu definitions,
 	// so this can't be a map of menu item to submenu, it has to be of menu item ELEMENTS to submenu.
@@ -383,7 +382,6 @@ function MenuBar(menus) {
 		menu_popup_el.appendChild(menu_popup_table_el);
 
 		this.element = menu_popup_el;
-		menu_popup_by_el.set(menu_popup_el, this);
 
 		let submenus = [];
 
