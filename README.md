@@ -201,7 +201,8 @@ menubar.element.addEventListener("default-info", (event)=> {
 Menu item specifications are either `MENU_DIVIDER` - a constant indicating a horizontal rule, or a radio group specification, or an object with the following properties:
 
 * `label`: a label for the item; ampersands define [access keys](#access-keys) (to use a literal ampersand, use `&&`)
-* `shortcut` (optional): a keyboard shortcut for the item, like "Ctrl+A"; this is not functionally implemented, you'll need to listen for the shortcut yourself!
+* `shortcutLabel` (optional): a keyboard shortcut to show for the item, like "Ctrl+A" (Note: you need to listen for the shortcut yourself, unlike access keys)
+* `ariaKeyShortcuts` (optional): [`aria-keyshortcuts`](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-keyshortcuts) for the item, like "Control+A Meta+A", for screen readers. "Ctrl" is not valid (you must spell it out), and it's best to provide an alternative for macOS, usually with the equivalent Command key, using "Meta" (and `event.metaKey`).
 * `action` (optional): a function to execute when the item is clicked (can only specify either `action` or `checkbox`)
 * `checkbox` (optional): an object specifying that this item should behave as a checkbox.
 Property `check` of this object should be a function that *checks* if the item should be checked or not, returning `true` for checked and `false` for unchecked. What a cutesy name.

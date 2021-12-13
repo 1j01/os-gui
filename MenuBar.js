@@ -534,12 +534,9 @@ function MenuBar(menus) {
 				// but it is read in translated labels like "새로 만들기 (&N)".
 				// The AccessKeys.remove() is so it doesn't announce an ampersand from the access key.
 				item_el.setAttribute("aria-label", AccessKeys.remove(item.label || item.item));
-				// include the shortcut semantically; if you want to display the shortcut differently than aria-keyshortcuts syntax,
-				// provide both ariaKeyShortcuts and shortcutLabel (old API: shortcut)
-				// @TODO: why am I doing `|| item.shortcutLabel` here? isn't that kinda against the point?
-				// if you're providing just shortcutLabel, maybe you're indicating that it's not aria-keyshortcuts syntax,
-				// like for a non-keyboard shortcut? "Swipe Up", "Blink Twice", "Clap", "Mouse Wheel", etc.
-				item_el.setAttribute("aria-keyshortcuts", item.ariaKeyShortcuts || item.shortcut || item.shortcutLabel);
+				// Include the shortcut semantically.
+				// TODO: automatically include the access key, while the specific menu (or menu bar) is focused, and update docs to note this
+				item_el.setAttribute("aria-keyshortcuts", item.ariaKeyShortcuts || "");
 
 				if (item.description) {
 					item_el.setAttribute("aria-description", item.description);
@@ -555,7 +552,13 @@ function MenuBar(menus) {
 				item_el.appendChild(submenu_area_el);
 
 				label_el.appendChild(AccessKeys.toFragment(item.label || item.item));
-				shortcut_el.textContent = item.shortcut;
+				
+				if (item.shortcutLabel) {
+					shortcut_el.textContent = item.shortcutLabel;
+				} else if (item.shortcut) {
+					shortcut_el.textContent = item.shortcut;
+					console.warn("Menu item option `shortcut` is deprecated; use `shortcutLabel` instead (and ideally provide `ariaKeyShortcuts` as well)");
+				}
 
 				menu_popup_el.addEventListener("update", () => {
 					// item_el.disabled = is_disabled(item); // doesn't work, probably because it's a <tr>
