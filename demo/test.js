@@ -221,6 +221,46 @@ const menus = {
 			},
 		},
 	],
+	"Access Keys (&A)": [
+		{
+			item: "&At Start",
+		},
+		{
+			item: "At &Middle Word",
+		},
+		{
+			item: "In Mid&dle",
+		},
+		{
+			item: "Ampersand At End? &",
+		},
+		{
+			item: "Escaping && with &&&&",
+		},
+		{
+			item: "Not escaped but floating & (no letter after)",
+		},
+		{
+			item: "&",
+			shortcutLabel: "(Just '&')",
+		},
+		{
+			item: "&&",
+			shortcutLabel: "(Just '&&')",
+		},
+		{
+			item: "No access key",
+		},
+		{
+			item: "Duplicate access key (&A)",
+		},
+		{
+			item: "Another duplicate (implicit)",
+		},
+		{
+			item: "&Multiple &Supposed &Access Keys",
+		},
+	],
 	"&Loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong Menu Button Text": [
 	],
 	"&Help": new Array(100).fill(0).map((_, i) => ({
