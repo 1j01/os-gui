@@ -22,36 +22,90 @@ function uid() {
 	return (uid_counter++).toString(36) + Math.random().toString(36).slice(2);
 }
 
-// @TODO: export access key helpers; also include one for escaping &'s (useful for dynamic menus like a list of history entries)
-// also @TODO: support dynamic menus (e.g. a list of history entries, contextually shown options, or a contextually named "Undo <action>" label; Explorer has all these things)
-
-// & defines access keys (contextual hotkeys) in menus and buttons and things, which get underlined in the UI.
+// & defines access keys (contextual hotkeys) in menus and buttons and form labels, which get underlined in the UI.
 // & can be escaped by doubling it, e.g. "&Taskbar && Start Menu" for "Taskbar & Start Menu" with T as the access key.
-function index_of_access_key(text) {
-	// Returns the index of the ampersand that defines an access key, or -1 if not present.
+const AccessKeys = {
+	escape: function (label) {
+		// Escapes all ampersands in the label, so that they are not treated as access keys.
+		// Useful for dynamic menus like a list of history entries, where page titles shouldn't be spuriously interpreted as having access keys.
+		// Double ampersands are still escaped ("&&" becomes "&&&&"), so that "&&" isn't spuriously interpreted as "&".
+		return label.replace(/&/g, "&&");
+	},
+	unescape: function (label) {
+		// Un-escapes all double ampersands in the label.
+		// For rendering, use toHTML() or toFragment() instead.
+		return label.replace(/&&/g, "&");
+	},
+	indexOf: function (label) {
+		// Returns the index of the ampersand that defines an access key, or -1 if not present.
 
-	// return english_text.search(/(?<!&)&(?!&|\s)/); // not enough browser support for negative lookbehind assertions
+		// return label.search(/(?<!&)&(?!&|\s)/); // not enough browser support for negative lookbehind assertions
 
-	// The space here handles beginning-of-string matching and counteracts the offset for the [^&] so it acts like a negative lookbehind
-	return ` ${text}`.search(/[^&]&[^&\s]/);
-}
-// function has_access_key(text) {
-// 	return index_of_access_key(text) !== -1;
-// }
-function remove_access_key(text) {
-	// Note: doesn't remove " (&S)", just the "&"
-	// (TODO: should it unescape "&&" to "&"?)
-	return text.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
-}
-function display_access_key(text) {
-	// TODO: change class to .access-key, because they can appear outside menus, and "hotkey" is too generic
-	// also, I could use the <u> tag, since that gives the default styling (but then it'd have to be reset if you don't want it...)
-	// TODO: escape HTML to make it safer — make sure it applies not just before and after "&" but also if a replacement isn't made
-	return text.replace(/([^&]|^)&([^&\s])/, "$1<span class='menu-hotkey'>$2</span>").replace(/&&/g, "&");
-}
-function get_access_key(text) {
-	return text[index_of_access_key(text) + 1].toUpperCase();
-}
+		// The space here handles beginning-of-string matching and counteracts the offset for the [^&] so it acts like a negative lookbehind
+		return ` ${label}`.search(/[^&]&[^&\s]/);
+	},
+	has: function (label) {
+		// Returns true if the label has an access key.
+		return this.indexOf(label) >= 0;
+	},
+	get: function (label) {
+		// Returns the access key for the label, or null if none.
+		// Used by MenuBar and MenuPopup to trigger the menu item with the access key.
+		// Can be used for handling access keys in other UI, for example in form labels.
+		const index = this.indexOf(label);
+		if (index >= 0) {
+			return label.charAt(index + 1).toUpperCase();
+		}
+		return null;
+	},
+	remove: function (label) {
+		// Removes the access key indicator from the label.
+		// This is like toHTML() but for plain text.
+		// Note: while often access keys are part of a word, like "&New",
+		// in translations they are often indicated separately, like "새로 만들기 (&N)",
+		// since the access key stays the same, but the letter is no longer part of the word (or even the alphabet).
+		// This doesn't remove strings like " (&N)", it will just remove the "&" and leave "새로 만들기 (N)".
+		// (@TODO: should it unescape "&&" to "&"? don't want to double-unescape, so need to think about it.)
+		return label.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
+	},
+	toHTML: function (label) {
+		// Returns the label with the access key underlined (or with whatever .menu-hotkey styling), HTML-escaped.
+		const fragment = this.toFragment(label);
+		const dummy = document.createElement("div");
+		dummy.appendChild(fragment);
+		return dummy.innerHTML;
+
+		// old version, not escaping HTML:
+		// return label.replace(/([^&]|^)&([^&\s])/, "$1<span class='menu-hotkey'>$2</span>").replace(/&&/g, "&");
+
+		// alternative version, building an HTML string:
+		// const index = this.indexOf(label);
+		// if (index >= 0) {
+		// 	return escapeHTML(this.unescape(label.substring(0, index))) + "<u>" + escapeHTML(label.charAt(index + 1)) + "</u>" + escapeHTML(this.unescape(label.substring(index + 2)));
+		// } else {
+		// 	return escapeHTML(this.unescape(label));
+		// }
+	},
+	toFragment: function (label) {
+		// Returns a DocumentFragment of the label with the access key underlined (or with whatever .menu-hotkey styling)
+		const fragment = document.createDocumentFragment();
+		const index = this.indexOf(label);
+		if (index >= 0) {
+			fragment.appendChild(document.createTextNode(this.unescape(label.substring(0, index))));
+			// TODO: change class to .access-key, because they can appear outside menus, and "hotkey" is too generic
+			// also, I could use the <u> tag, since that gives the default styling (but then it'd have to be reset if you don't want it...)
+			const span = E("span", { class: "menu-hotkey" });
+			span.appendChild(document.createTextNode(label.charAt(index + 1)));
+			fragment.appendChild(span);
+			fragment.appendChild(document.createTextNode(this.unescape(label.substring(index + 2))));
+		} else {
+			fragment.appendChild(document.createTextNode(this.unescape(label)));
+		}
+		return fragment;
+	},
+};
+
+// @TODO: support dynamic menus (e.g. a list of history entries, contextually shown options, or a contextually named "Undo <action>" label; Explorer has all these things)
 
 // TODO: support copy/pasting text in jspaint's Text tool textarea from the menus
 // probably by recording document.activeElement on pointer down,
@@ -478,8 +532,8 @@ function MenuBar(menus) {
 				// The shortcut is noisy (albeit potentially useful), so I'm disabling it to match system behavior (at least with Orca).
 				// The access key is not read if it's part of a word like "&New", as it's just an underlined letter,
 				// but it is read in translated labels like "새로 만들기 (&N)".
-				// The remove_access_key() is so it doesn't announce an ampersand from the access key.
-				item_el.setAttribute("aria-label", remove_access_key(item.label || item.item));
+				// The AccessKeys.remove() is so it doesn't announce an ampersand from the access key.
+				item_el.setAttribute("aria-label", AccessKeys.remove(item.label || item.item));
 				// include the shortcut semantically; if you want to display the shortcut differently than aria-keyshortcuts syntax,
 				// provide both ariaKeyShortcuts and shortcutLabel (old API: shortcut)
 				// @TODO: why am I doing `|| item.shortcutLabel` here? isn't that kinda against the point?
@@ -500,7 +554,7 @@ function MenuBar(menus) {
 				item_el.appendChild(shortcut_el);
 				item_el.appendChild(submenu_area_el);
 
-				label_el.innerHTML = display_access_key(item.label || item.item);
+				label_el.appendChild(AccessKeys.toFragment(item.label || item.item));
 				shortcut_el.textContent = item.shortcut;
 
 				menu_popup_el.addEventListener("update", () => {
@@ -821,7 +875,7 @@ function MenuBar(menus) {
 		menu_button_el.classList.add(`${menu_id}-menu-button`);
 		// menu_popup_el.id = `${menu_id}-menu-popup-${uid()}`; // id is set by MenuPopup and changing it breaks the `data-semantic-parent` relationship
 		menu_popup_el.style.display = "none";
-		menu_button_el.innerHTML = `<span>${display_access_key(menus_key)}</span>`; // span is for button offset effect on press
+		menu_button_el.innerHTML = `<span>${AccessKeys.toHTML(menus_key)}</span>`; // span is for button offset effect on press
 		menu_button_el.tabIndex = -1;
 
 		menu_button_el.setAttribute("aria-haspopup", "true");
@@ -901,7 +955,7 @@ function MenuBar(menus) {
 			menu_button_el,
 			menu_popup_el,
 			menus_key,
-			access_key: get_access_key(menus_key),
+			access_key: AccessKeys.get(menus_key),
 			open_top_level_menu,
 		});
 	};
@@ -1002,6 +1056,7 @@ function MenuBar(menus) {
 }
 
 exports.MenuBar = MenuBar;
+exports.AccessKeys = AccessKeys;
 exports.MENU_DIVIDER = MENU_DIVIDER;
 
 })(window);
