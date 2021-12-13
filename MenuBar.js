@@ -533,7 +533,10 @@ function MenuBar(menus) {
 				// The access key is not read if it's part of a word like "&New", as it's just an underlined letter,
 				// but it is read in translated labels like "새로 만들기 (&N)".
 				// The AccessKeys.remove() is so it doesn't announce an ampersand from the access key.
-				item_el.setAttribute("aria-label", AccessKeys.remove(item.label || item.item));
+				if (item.label || item.item) {
+					// deprecation notice for item.item is handled below, don't need to duplicate the warning
+					item_el.setAttribute("aria-label", AccessKeys.remove(item.label || item.item));
+				}
 				// Include the shortcut semantically.
 				// TODO: automatically include the access key, while the specific menu (or menu bar) is focused, and update docs to note this
 				item_el.setAttribute("aria-keyshortcuts", item.ariaKeyShortcuts || "");
@@ -551,7 +554,14 @@ function MenuBar(menus) {
 				item_el.appendChild(shortcut_el);
 				item_el.appendChild(submenu_area_el);
 
-				label_el.appendChild(AccessKeys.toFragment(item.label || item.item));
+				if (item.label) {
+					label_el.appendChild(AccessKeys.toFragment(item.label));
+				} else if (item.item) {
+					// I originally called it `item` because it's not "just" a label (it defines the access key, and also IDs),
+					// but `item` is a kinda wacky name (an "item's item" doesn't make sense)
+					label_el.appendChild(AccessKeys.toFragment(item.item));
+					console.warn("Menu item option `item` is deprecated; use `label` instead.");
+				}
 				
 				if (item.shortcutLabel) {
 					shortcut_el.textContent = item.shortcutLabel;
