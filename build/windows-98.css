@@ -561,6 +561,7 @@ so I think I'll immitate that. (I might change it later) */
 	margin-top: 3px;
 	margin-bottom: 4px;
 }
+/* @TODO: rename .access-key (could also make it a <u> element, in which case this rule isn't needed) */
 .menu-hotkey {
 	text-decoration: underline;
 }

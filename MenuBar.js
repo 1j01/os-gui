@@ -22,33 +22,35 @@ function uid() {
 	return (uid_counter++).toString(36) + Math.random().toString(36).slice(2);
 }
 
-// @TODO: export hotkey helpers; also include one for escaping &'s (useful for dynamic menus like a list of history entries)
+// @TODO: export access key helpers; also include one for escaping &'s (useful for dynamic menus like a list of history entries)
 // also @TODO: support dynamic menus (e.g. a list of history entries, contextually shown options, or a contextually named "Undo <action>" label; Explorer has all these things)
 
-// & defines accelerators (hotkeys) in menus and buttons and things, which get underlined in the UI.
-// & can be escaped by doubling it, e.g. "&Taskbar && Start Menu"
-function index_of_hotkey(text) {
-	// Returns the index of the ampersand that defines a hotkey, or -1 if not present.
+// & defines access keys (contextual hotkeys) in menus and buttons and things, which get underlined in the UI.
+// & can be escaped by doubling it, e.g. "&Taskbar && Start Menu" for "Taskbar & Start Menu" with T as the access key.
+function index_of_access_key(text) {
+	// Returns the index of the ampersand that defines an access key, or -1 if not present.
 
 	// return english_text.search(/(?<!&)&(?!&|\s)/); // not enough browser support for negative lookbehind assertions
 
 	// The space here handles beginning-of-string matching and counteracts the offset for the [^&] so it acts like a negative lookbehind
 	return ` ${text}`.search(/[^&]&[^&\s]/);
 }
-// function has_hotkey(text) {
-// 	return index_of_hotkey(text) !== -1;
+// function has_access_key(text) {
+// 	return index_of_access_key(text) !== -1;
 // }
-function remove_hotkey(text) {
+function remove_access_key(text) {
+	// Note: doesn't remove " (&S)", just the "&"
+	// (TODO: should it unescape "&&" to "&"?)
 	return text.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
 }
-function display_hotkey(text) {
-	// TODO: use a more general term like .hotkey or .accelerator? .access-key? because they can appear outside menus, too
+function display_access_key(text) {
+	// TODO: change class to .access-key, because they can appear outside menus, and "hotkey" is too generic
 	// also, I could use the <u> tag, since that gives the default styling (but then it'd have to be reset if you don't want it...)
 	// TODO: escape HTML to make it safer — make sure it applies not just before and after "&" but also if a replacement isn't made
 	return text.replace(/([^&]|^)&([^&\s])/, "$1<span class='menu-hotkey'>$2</span>").replace(/&&/g, "&");
 }
-function get_hotkey(text) {
-	return text[index_of_hotkey(text) + 1].toUpperCase();
+function get_access_key(text) {
+	return text[index_of_access_key(text) + 1].toUpperCase();
 }
 
 // TODO: support copy/pasting text in jspaint's Text tool textarea from the menus
@@ -316,23 +318,23 @@ function MenuBar(menus) {
 				if (e.ctrlKey || e.metaKey) {
 					break;
 				}
-				// handle accelerators and first-letter navigation
+				// handle access keys and first-letter navigation
 				const key = e.key.toLowerCase();
 				const item_els = active_menu_popup ?
 					[...menu_popup_el.querySelectorAll(".menu-item")] :
 					top_level_menus.map(top_level_menu => top_level_menu.menu_button_el);
-				const item_els_by_accelerator = {};
+				const item_els_by_access_key = {};
 				for (const item_el of item_els) {
-					const accelerator = item_el.querySelector(".menu-hotkey");
-					const accelerator_key = (accelerator ?
-						accelerator.textContent :
+					const access_key_el = item_el.querySelector(".menu-hotkey");
+					const access_key = (access_key_el ?
+						access_key_el.textContent :
 						(item_el.querySelector(".menu-item-label") ?? item_el).textContent[0]
 					).toLowerCase();
-					item_els_by_accelerator[accelerator_key] = item_els_by_accelerator[accelerator_key] || [];
-					item_els_by_accelerator[accelerator_key].push(item_el);
+					item_els_by_access_key[access_key] = item_els_by_access_key[access_key] || [];
+					item_els_by_access_key[access_key].push(item_el);
 				}
-				const matching_item_els = item_els_by_accelerator[key] || [];
-				// console.log({ key, item_els, item_els_by_accelerator, matching_item_els });
+				const matching_item_els = item_els_by_access_key[key] || [];
+				// console.log({ key, item_els, item_els_by_access_key, matching_item_els });
 				if (matching_item_els.length) {
 					if (matching_item_els.length === 1) {
 						// it's not ambiguous, so go ahead and activate it
@@ -476,8 +478,8 @@ function MenuBar(menus) {
 				// The shortcut is noisy (albeit potentially useful), so I'm disabling it to match system behavior (at least with Orca).
 				// The access key is not read if it's part of a word like "&New", as it's just an underlined letter,
 				// but it is read in translated labels like "새로 만들기 (&N)".
-				// The remove_hotkey() is so it doesn't announce an ampersand from the access key.
-				item_el.setAttribute("aria-label", remove_hotkey(item.label || item.item));
+				// The remove_access_key() is so it doesn't announce an ampersand from the access key.
+				item_el.setAttribute("aria-label", remove_access_key(item.label || item.item));
 				// include the shortcut semantically; if you want to display the shortcut differently than aria-keyshortcuts syntax,
 				// provide both ariaKeyShortcuts and shortcutLabel (old API: shortcut)
 				// @TODO: why am I doing `|| item.shortcutLabel` here? isn't that kinda against the point?
@@ -498,7 +500,7 @@ function MenuBar(menus) {
 				item_el.appendChild(shortcut_el);
 				item_el.appendChild(submenu_area_el);
 
-				label_el.innerHTML = display_hotkey(item.label || item.item);
+				label_el.innerHTML = display_access_key(item.label || item.item);
 				shortcut_el.textContent = item.shortcut;
 
 				menu_popup_el.addEventListener("update", () => {
@@ -819,7 +821,7 @@ function MenuBar(menus) {
 		menu_button_el.classList.add(`${menu_id}-menu-button`);
 		// menu_popup_el.id = `${menu_id}-menu-popup-${uid()}`; // id is set by MenuPopup and changing it breaks the `data-semantic-parent` relationship
 		menu_popup_el.style.display = "none";
-		menu_button_el.innerHTML = `<span>${display_hotkey(menus_key)}</span>`; // span is for button offset effect on press
+		menu_button_el.innerHTML = `<span>${display_access_key(menus_key)}</span>`; // span is for button offset effect on press
 		menu_button_el.tabIndex = -1;
 
 		menu_button_el.setAttribute("aria-haspopup", "true");
@@ -899,7 +901,7 @@ function MenuBar(menus) {
 			menu_button_el,
 			menu_popup_el,
 			menus_key,
-			hotkey: get_hotkey(menus_key),
+			access_key: get_access_key(menus_key),
 			open_top_level_menu,
 		});
 	};
@@ -983,7 +985,7 @@ function MenuBar(menus) {
 		}
 		if (e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey) { // Alt held
 			const menu = top_level_menus.find((menu) =>
-				menu.hotkey.toLowerCase() === e.key.toLowerCase()
+				menu.access_key.toLowerCase() === e.key.toLowerCase()
 			);
 			if (menu) {
 				e.preventDefault();

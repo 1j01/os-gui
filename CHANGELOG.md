@@ -29,7 +29,7 @@ Nothing here yet.
 - `$Window` property `element` to get the DOM element.
 - `element.$window` to get the `$Window` instance from the DOM element.
 - `$Window` events `icon-change` and `title-change`
-- Top level menus support accelerator keys without holding Alt, if the menu bar is focused. (You can not yet tap Alt to focus the menu bar, so you're probably still going to need to hold Alt in practice for now.)
+- Top level menus support access keys without holding Alt, if the menu bar is focused. (You can not yet tap Alt to focus the menu bar, so you're probably still going to need to hold Alt in practice for now.)
 - `makeBlackToInsetFilter()` in `parse-theme.js` to initialize an SVG filter for disabled button icons
 
 ### Changed
@@ -147,7 +147,7 @@ Nothing here yet.
 - Menu bar's `info` event now works with submenus as well. (Previously items that contain submenus were assumed to not have descriptions, simply because Paint's one submenu does not a have a description. But for instance Explorer has descriptions for all of its menus (except Favorites, which is a bit special, what with drag and drop and context menus and all.))
 - Greatly improved menu navigation:
   - Menus can now be opened with Enter and exited with Escape.
-  - Menus can now be navigated with accelerators, and the first letters of items without accelerators defined.
+  - Menus can now be navigated with access keys, and the first letters of items without access keys defined.
   - Pressing Escape an extra time will unfocus the menu bar, focusing the last focused control within the window.
   - Submenus can now be navigated with the arrow keys.
   - Submenus stay open more easily. It's a little buggy still, but they're not constantly trying to close themselves on you.

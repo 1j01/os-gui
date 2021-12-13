@@ -200,7 +200,7 @@ menubar.element.addEventListener("default-info", (event)=> {
 
 Menu item specifications are either `MENU_DIVIDER` - a constant indicating a horizontal rule, or a radio group specification, or an object with the following properties:
 
-* `item`: a label for the item
+* `label`: a label for the item; ampersands define [access keys](#access-keys) (to use a literal ampersand, use `&&`)
 * `shortcut` (optional): a keyboard shortcut for the item, like "Ctrl+A"; this is not functionally implemented, you'll need to listen for the shortcut yourself!
 * `action` (optional): a function to execute when the item is clicked (can only specify either `action` or `checkbox`)
 * `checkbox` (optional): an object specifying that this item should behave as a checkbox.
@@ -218,15 +218,24 @@ A radio group specification is an object with the following properties:
 * `setValue`: a function that should change the state to the given value, in an application-specific way.
 * `ariaLabel` (optional): a string to use as the `aria-label` for the radio group.
 
-### Menu hotkeys
+### Access Keys
 
-Menus can be navigated using the first letter of the menu item, or if you place `&` in front of a letter in the menu item, it will be used as the hotkey.
+Menus can be navigated with contextual hotkeys known as "access keys".
 
-For menu button hotkeys, you need to press Alt, and within menu popups you must press the key directly. Alt will close the menus.
+Place an ampersand before a letter in a menu button or menu item's label to make it an access key.
+Microsoft has [documentation on access keys](https://docs.microsoft.com/windows/apps/design/input/access-keys),
+including guidelines for choosing access keys.
+Generally the first letter is a good choice.
 
-If there are multiple menu items with the same hotkey, it will cycle between them without activating them.
-You should try to make the hotkeys unique, including between hotkeys and first letters of menu items without defined hotkeys.
-(This behavior is observed in Windows 98's Explorer's Favorites menu, where you can make bookmarks that match other accelerators or menu items.)
+If a menu item doesn't define an access key, the first letter of the label is used.
+
+For menu buttons, you need to hold Alt when pressing the button's access key, but for menu items in menu popups you must press the key directly, as Alt will close the menus.
+
+If there are multiple menu items with the same access key, it will cycle between them without activating them.
+You should try to make the access keys unique, including between access keys and first letters of menu items without defined access keys.
+(This behavior is observed in Windows 98, in Explorer's Favorites menu, where you can make bookmarks with the first letter matching the access keys of other menu items.)
+
+<!-- @TODO: this section is an awkward mix of explaining what access keys are, how they work, and how to implement them; should restructure -->
 
 ### `$Window(options)`
 
