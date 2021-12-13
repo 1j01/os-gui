@@ -42,14 +42,16 @@ function remove_hotkey(text) {
 	return text.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
 }
 function display_hotkey(text) {
-	// TODO: use a more general term like .hotkey or .accelerator?
+	// TODO: use a more general term like .hotkey or .accelerator? .access-key? because they can appear outside menus, too
+	// also, I could use the <u> tag, since that gives the default styling (but then it'd have to be reset if you don't want it...)
+	// TODO: escape HTML to make it safer — make sure it applies not just before and after "&" but also if a replacement isn't made
 	return text.replace(/([^&]|^)&([^&\s])/, "$1<span class='menu-hotkey'>$2</span>").replace(/&&/g, "&");
 }
 function get_hotkey(text) {
 	return text[index_of_hotkey(text) + 1].toUpperCase();
 }
 
-// TODO: support copy/pasting text in the text tool textarea from the menus
+// TODO: support copy/pasting text in jspaint's Text tool textarea from the menus
 // probably by recording document.activeElement on pointer down,
 // and restoring focus before executing menu item actions.
 
@@ -120,7 +122,7 @@ function MenuBar(menus) {
 			new_index_or_menu_key;
 		if (top_level_menu_index !== -1 && top_level_menu_index !== new_index) {
 			top_level_menus[top_level_menu_index].menu_button_el.classList.remove("highlight");
-			// could close the menu here, but it's handled externally right now
+			// closing the menu is handled externally
 		}
 		if (new_index !== -1) {
 			top_level_menus[new_index].menu_button_el.classList.add("highlight");
@@ -274,6 +276,7 @@ function MenuBar(menus) {
 						parent_item_el.setAttribute("aria-expanded", "false");
 						send_info_event(active_menu_popup.menuItems[active_menu_popup.itemElements.indexOf(parent_item_el)]);
 					} else {
+						// exit top level menu
 						// close_menus takes care of releasing the pressed state of the button as well
 						close_menus();
 						menu_button_el.focus({ preventScroll: true });
@@ -332,7 +335,7 @@ function MenuBar(menus) {
 				// console.log({ key, item_els, item_els_by_accelerator, matching_item_els });
 				if (matching_item_els.length) {
 					if (matching_item_els.length === 1) {
-						// it's unambiguous, go ahead and activate it
+						// it's not ambiguous, so go ahead and activate it
 						const menu_item_el = matching_item_els[0];
 						// click() doesn't work for menu buttons at the moment,
 						// and also we want to highlight the first item in the menu
@@ -368,7 +371,8 @@ function MenuBar(menus) {
 	function MenuPopup(menu_items, { parentMenuPopup } = {}) {
 		this.parentMenuPopup = parentMenuPopup;
 		this.menuItems = menu_items;
-		this.itemElements = []; // one-to-one with menuItems (note: not all itemElements have class .menu-item) (@TODO: unify terminology)
+		this.itemElements = []; // one-to-one with menuItems
+		// @TODO: unify terminology: separators are in itemElements but don't have class .menu-item; are they menu items?
 
 		const menu_popup_el = E("div", {
 			class: "menu-popup",
@@ -376,7 +380,7 @@ function MenuBar(menus) {
 			tabIndex: "-1",
 			role: "menu",
 		});
-		menu_popup_el.style.touchAction = "pan-y"; // will allow for scrolling overflowing menus in the future, but prevent event delay and double tap to zoom
+		menu_popup_el.style.touchAction = "pan-y"; // allow for scrolling overflowing menus (in the future), but prevent event delay and double tap to zoom
 		menu_popup_el.style.outline = "none";
 		const menu_popup_table_el = E("table", { class: "menu-popup-table", role: "presentation" });
 		menu_popup_el.appendChild(menu_popup_table_el);
@@ -388,9 +392,9 @@ function MenuBar(menus) {
 		menu_popup_el.addEventListener("keydown", handleKeyDown);
 
 		menu_popup_el.addEventListener("pointerleave", () => {
-			// if there's a submenu popup, highlight the item for that, otherwise nothing
+			// If there's a submenu popup, highlight the item for that, otherwise nothing.
 
-			// could use aria-expanded for selecting this, alternatively
+			// (could querySelector on aria-expanded instead of looping here, alternatively)
 			for (const submenu of submenus) {
 				if (submenu.submenu_popup_el.style.display !== "none") {
 					this.highlight(submenu.item_el);
@@ -401,8 +405,9 @@ function MenuBar(menus) {
 		});
 
 		menu_popup_el.addEventListener("focusin", (e) => {
-			// prevent focus going to menu items; as designed, it works with aria-activedescendant and focus on the menu popup itself
-			// (on desktop when clicking (and dragging out) then pressing a key, or on mobile when tapping, a focus ring was visible, and it wouldn't go away with keyboard navigation either)
+			// Prevent focus going to menu items. As designed, it works with aria-activedescendant and focus on the menu popup itself.
+			// (on desktop when clicking (and dragging out) then pressing a key, or on mobile when tapping, a focus ring was visible,
+			// and it wouldn't go away with keyboard navigation either (because it was only changing aria-activedescendant presumably?))
 			menu_popup_el.focus({ preventScroll: true });
 		});
 
@@ -467,11 +472,17 @@ function MenuBar(menus) {
 				item_el.id = `menu-item-${uid()}`;
 				item_el.tabIndex = -1; // may be needed for aria-activedescendant in some browsers?
 				item_el.setAttribute("role", item.checkbox ? item.checkbox.type === "radio" ? "menuitemradio" : "menuitemcheckbox" : "menuitem");
-				// prevent announcing the SHORTCUT (distinct from the hotkey, which would already not be announced unless it's e.g. a translated string like "새로 만들기 (&N)")
-				// remove_hotkey so it doesn't announce an ampersand
+				// By default a screen reader will read the label of the menu item and its shortcut.
+				// The shortcut is noisy (albeit potentially useful), so I'm disabling it to match system behavior (at least with Orca).
+				// The access key is not read if it's part of a word like "&New", as it's just an underlined letter,
+				// but it is read in translated labels like "새로 만들기 (&N)".
+				// The remove_hotkey() is so it doesn't announce an ampersand from the access key.
 				item_el.setAttribute("aria-label", remove_hotkey(item.label || item.item));
 				// include the shortcut semantically; if you want to display the shortcut differently than aria-keyshortcuts syntax,
 				// provide both ariaKeyShortcuts and shortcutLabel (old API: shortcut)
+				// @TODO: why am I doing `|| item.shortcutLabel` here? isn't that kinda against the point?
+				// if you're providing just shortcutLabel, maybe you're indicating that it's not aria-keyshortcuts syntax,
+				// like for a non-keyboard shortcut? "Swipe Up", "Blink Twice", "Clap", "Mouse Wheel", etc.
 				item_el.setAttribute("aria-keyshortcuts", item.ariaKeyShortcuts || item.shortcut || item.shortcutLabel);
 
 				if (item.description) {
@@ -504,9 +515,10 @@ function MenuBar(menus) {
 						item_el.setAttribute("aria-checked", checked ? "true" : "false");
 					}
 				});
-				// You may ask, why not call `send_info_event` in `highlight`?
-				// Consider the case where you hover to open a menu, and it sets highlight to none,
-				// it shouldn't reset the status bar. It needs to be more based on the pointer and keyboard interactions directly.
+				// Why not call `send_info_event` in `highlight`?
+				// Consider the case where you hover to open a submenu: it highlights nothing,
+				// but it shouldn't reset the status bar.
+				// So it needs to be more directly based on the pointer and keyboard interactions.
 				// *Maybe* it could be a parameter (to `highlight`) if that's really helpful, but it's probably not.
 				// *Maybe* it could look at more of the overall state within `highlight`,
 				// but could it distinguish hovering an outer vs an inner item if two are highlighted?
@@ -516,8 +528,8 @@ function MenuBar(menus) {
 				});
 				item_el.addEventListener("pointerleave", (event) => {
 					if (
-						menu_popup_el.style.display !== "none" && // not "left" due to closing
-						event.pointerType !== "touch" // not "left" as in finger lifting off
+						menu_popup_el.style.display !== "none" && // pointer hasn't "left" due to closing
+						event.pointerType !== "touch" // pointer hasn't "left" as in finger lifting off
 					) {
 						send_info_event();
 					}
@@ -805,7 +817,7 @@ function MenuBar(menus) {
 
 		const menu_id = menus_key.replace("&", "").replace(/ /g, "-").toLowerCase();
 		menu_button_el.classList.add(`${menu_id}-menu-button`);
-		// menu_popup_el.id = `${menu_id}-menu-popup-${uid()}`; // id is created by MenuPopup and changing it breaks the data-semantic-parent relationship
+		// menu_popup_el.id = `${menu_id}-menu-popup-${uid()}`; // id is set by MenuPopup and changing it breaks the `data-semantic-parent` relationship
 		menu_popup_el.style.display = "none";
 		menu_button_el.innerHTML = `<span>${display_hotkey(menus_key)}</span>`; // span is for button offset effect on press
 		menu_button_el.tabIndex = -1;
