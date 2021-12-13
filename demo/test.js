@@ -67,22 +67,22 @@ let radio_value;
 const menus = {
 	"&Dialogs": [
 		{
-			item: "&Generic",
+			label: "&Generic",
 			action: () => {
 				const $w = $Window({ title: "Dialog", resizable: false, maximizeButton: false, minimizeButton: false });
 				$w.$content.html("<p>Hello world.</p>");
 				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
 				$w.center();
 			},
-			shortcut: "Ctrl+Boring",
+			shortcutLabel: "Ctrl+Boring",
 		},
 	],
 	"&Submenus": [
 		{
-			item: "&Physics",
+			label: "&Physics",
 			submenu: [
 				{
-					item: "&Schrödinger's Checkbox",
+					label: "&Schrödinger's Checkbox",
 					checkbox: {
 						check: () => {
 							return Math.random() < 0.5;
@@ -92,13 +92,13 @@ const menus = {
 			]
 		},
 		{
-			item: "&Many Items",
+			label: "&Many Items",
 			submenu: [
 				{
 					radioItems: new Array(100).fill(0).map((_, i) => ({
-						item: `Radio ${i}`,
+						label: `Radio ${i}`,
 						value: i,
-						shortcut: `Ctrl+${i}`,
+						shortcutLabel: `Ctrl+${i}`,
 					})),
 					getValue: () => radio_value,
 					setValue: (new_value) => {
@@ -109,26 +109,26 @@ const menus = {
 			],
 		},
 		{
-			item: "&No Items",
+			label: "&No Items",
 			submenu: [],
 		},
 		{
-			item: "&Disabled",
+			label: "&Disabled",
 			submenu: [],
 			enabled: false,
 		},
 		{
-			item: "&Many Submenus",
+			label: "&Many Submenus",
 			// this can get very slow to load with a lot of submenus, because it creates the DOM structure for the entire thing
 			// so I've limited it for now, maybe later we can make it render as needed, perhaps optionally; I'm not sure of the implications on accessibility
 			submenu: new Array(3).fill(0).map((_, i) => ({
-				item: `Submenu ${i}`,
+				label: `Submenu ${i}`,
 				submenu: [
 					{
-						item: "We Need To Go Deeper",
+						label: "We Need To Go Deeper",
 						submenu: [
 							{
-								item: "And We're Going Deeper",
+								label: "And We're Going Deeper",
 								// I was hoping to make this infinite, using a getter, but it tries to build an infinite menu up front
 								// (so I had to limit it)
 								// can't do something like http://orteil.dashnet.org/nested apparently (without more thought)
@@ -137,12 +137,12 @@ const menus = {
 										if (n > 5) {
 											return [
 												{
-													item: "Okay, that's deep enough",
+													label: "Okay, that's deep enough",
 												}
 											];
 										}
 										return new Array(2).fill(0).map((_, i) => ({
-											item: `Recursion ${n} Submenu ${i}`,
+											label: `Recursion ${n} Submenu ${i}`,
 											get submenu() {
 												return recursive_submenu(n + 1);
 											}
@@ -154,67 +154,67 @@ const menus = {
 						]
 					},
 					...new Array(100).fill(0).map((_, j) => ({
-						item: `Submenu ${i}.${j}`,
+						label: `Submenu ${i}.${j}`,
 						checkbox: {
 							check: function () { return this.pointless_checkbox_value; },
 							toggle: function () { this.pointless_checkbox_value = !this.pointless_checkbox_value; }
 						},
-						shortcut: `Ctrl+${i}.${j}`,
+						shortcutLabel: `Ctrl+${i}.${j}`,
 					}))
 				]
 			}))
 		},
 		{
-			item: "&Not A Submenu",
+			label: "&Not A Submenu",
 		},
 	],
 	"&Enabled": [
 		{
-			item: "No action",
-			shortcut: "Ctrl+Fake",
+			label: "No action",
+			shortcutLabel: "Ctrl+Fake",
 		},
 		{
-			item: "Disabled",
+			label: "Disabled",
 			enabled: false,
-			shortcut: "Ctrl+Fake",
+			shortcutLabel: "Ctrl+Fake",
 		},
 		{
-			item: "Disabled Checked",
+			label: "Disabled Checked",
 			enabled: false,
-			shortcut: "Ctrl+Fake",
+			shortcutLabel: "Ctrl+Fake",
 			checkbox: {
 				check: () => true,
 				toggle: () => { }
 			},
 		},
 		{
-			item: "Disabled Submenu",
+			label: "Disabled Submenu",
 			enabled: false,
-			shortcut: "Ctrl+Fake",
+			shortcutLabel: "Ctrl+Fake",
 			submenu: [],
 		},
 		{
-			item: "disabled: true?",
+			label: "disabled: true?",
 			disabled: true,
-			shortcut: "Ctrl+Fake",
+			shortcutLabel: "Ctrl+Fake",
 		},
 		MENU_DIVIDER,
 		{
-			item: "Disable the below item",
+			label: "Disable the below item",
 			checkbox: {
 				check: () => disable_an_item,
 				toggle: () => disable_an_item = !disable_an_item,
 			},
-			shortcut: "Ctrl+Fake",
+			shortcutLabel: "Ctrl+Fake",
 		},
 		{
-			item: "Conditionally disabled",
+			label: "Conditionally disabled",
 			enabled: () => !disable_an_item,
-			shortcut: "Ctrl+Fake",
+			shortcutLabel: "Ctrl+Fake",
 		},
 		MENU_DIVIDER,
 		{
-			item: "Show All &Icons As Disabled",
+			label: "Show All &Icons As Disabled",
 			checkbox: {
 				check: () => document.body.classList.contains("show-disabled-icons"),
 				toggle: () => document.body.classList.toggle("show-disabled-icons"),
@@ -223,48 +223,48 @@ const menus = {
 	],
 	"Access Keys (&A)": [
 		{
-			item: "&At Start",
+			label: "&At Start",
 		},
 		{
-			item: "At &Middle Word",
+			label: "At &Middle Word",
 		},
 		{
-			item: "In Mid&dle",
+			label: "In Mid&dle",
 		},
 		{
-			item: "Ampersand At End? &",
+			label: "Ampersand At End? &",
 		},
 		{
-			item: "Escaping && with &&&&",
+			label: "Escaping && with &&&&",
 		},
 		{
-			item: "Not escaped but floating & (no letter after)",
+			label: "Not escaped but floating & (no letter after)",
 		},
 		{
-			item: "&",
+			label: "&",
 			shortcutLabel: "(Just '&')",
 		},
 		{
-			item: "&&",
+			label: "&&",
 			shortcutLabel: "(Just '&&')",
 		},
 		{
-			item: "No access key",
+			label: "No access key",
 		},
 		{
-			item: "Duplicate access key (&A)",
+			label: "Duplicate access key (&A)",
 		},
 		{
-			item: "Another duplicate (implicit)",
+			label: "Another duplicate (implicit)",
 		},
 		{
-			item: "&Multiple &Supposed &Access Keys",
+			label: "&Multiple &Supposed &Access Keys",
 		},
 	],
 	"&Loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong Menu Button Text": [
 	],
 	"&Help": new Array(100).fill(0).map((_, i) => ({
-		item: new Array(i + 3).fill("A").join(""),
+		label: new Array(i + 3).fill("A").join(""),
 	})),
 };
 

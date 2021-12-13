@@ -3,19 +3,19 @@ let radio_state = "foo";
 const menus = {
 	"&File": [
 		{
-			item: "&Open",
+			label: "&Open",
 			action: () => {
 				const $w = $Window({ title: "Ali Baba and the Forty Thieves", resizable: false, maximizeButton: false, minimizeButton: false });
 				$w.$content.html("<p>\"Open Sesame!\"</p>");
 				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
 				$w.center();
 			},
-			shortcut: "Ctrl+O",
+			shortcutLabel: "Ctrl+O",
 			description: "Shows a silly dialog box.",
 		},
 		MENU_DIVIDER,
 		{
-			item: "&Brexit",
+			label: "&Brexit",
 			action: () => {
 				const $w = $Window({ title: "Membership Status", resizable: false, maximizeButton: false, minimizeButton: false });
 				$w.$content.html("<p>You have left the EU.</p>");
@@ -27,7 +27,7 @@ const menus = {
 	],
 	"&View": [
 		{
-			item: "&Nothingness",
+			label: "&Nothingness",
 			checkbox: {
 				check: () => nothingness_state,
 				toggle: () => {
@@ -37,10 +37,10 @@ const menus = {
 			description: "Tick a meaningless checkbox.",
 		},
 		{
-			item: "&Physics",
+			label: "&Physics",
 			submenu: [
 				{
-					item: "&Schrödinger's Checkbox",
+					label: "&Schrödinger's Checkbox",
 					checkbox: {
 						check: () => {
 							// this.cat_is_alive = this.cat_is_alive ?? Math.random() > 0.5;
@@ -54,9 +54,9 @@ const menus = {
 			description: "Contains a stupid physics joke.",
 		},
 		{
-			item: "&Checkboxes",
+			label: "&Checkboxes",
 			submenu: new Array(100).fill(0).map((_, i) => ({
-				item: `Item ${i}`,
+				label: `Item ${i}`,
 				checkbox: {
 					check: function () {
 						this.pointless_checkbox_value = this.pointless_checkbox_value ?? Math.sin((i / 5) ** 2) > 0;
@@ -64,25 +64,25 @@ const menus = {
 					},
 					toggle: function () { this.pointless_checkbox_value = !this.pointless_checkbox_value; }
 				},
-				shortcut: `Ctrl+${i}`,
+				shortcutLabel: `Ctrl+${i}`,
 			})),
 			description: "Contains many checkbox items.",
 		},
 		{
-			item: "&Radio Buttons",
+			label: "&Radio Buttons",
 			submenu: [
 				{
 					radioItems: [
 						{
-							item: "&Foo",
+							label: "&Foo",
 							value: "foo",
 						},
 						{
-							item: "&Bar",
+							label: "&Bar",
 							value: "bar",
 						},
 						{
-							item: "&Baz",
+							label: "&Baz",
 							value: "baz",
 						},
 					],
@@ -95,20 +95,20 @@ const menus = {
 	],
 	"&Edit": [
 		{
-			item: "Copy",
+			label: "Copy",
 			action: () => {
 				const $w = $Window({ title: "Radio Message", resizable: false, maximizeButton: false, minimizeButton: false });
 				$w.$content.html("<p>\"Over and out!\"</p>");
 				$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
 				$w.center();
 			},
-			shortcut: "Ctrl+C",
+			shortcutLabel: "Ctrl+C",
 			description: "Shows a pointless dialog.",
 		},
 		{
-			item: "Paste",
+			label: "Paste",
 			enabled: false,
-			shortcut: "Ctrl+V",
+			shortcutLabel: "Ctrl+V",
 			description: "This menu item is disabled.",
 		},
 	],
