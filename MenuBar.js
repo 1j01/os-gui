@@ -58,15 +58,20 @@ const AccessKeys = {
 		}
 		return null;
 	},
-	remove: function (label) {
+	toText: function (label) {
 		// Removes the access key indicator from the label.
 		// This is like toHTML() but for plain text.
 		// Note: while often access keys are part of a word, like "&New",
 		// in translations they are often indicated separately, like "새로 만들기 (&N)",
 		// since the access key stays the same, but the letter is no longer part of the word (or even the alphabet).
 		// This doesn't remove strings like " (&N)", it will just remove the "&" and leave "새로 만들기 (N)".
-		// (@TODO: should it unescape "&&" to "&"? don't want to double-unescape, so need to think about it.)
-		return label.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
+		const index = this.indexOf(label);
+		if (index >= 0) {
+			return this.unescape(label.substring(0, index)) + this.unescape(label.substring(index + 1));
+		}
+		return this.unescape(label);
+		// old version, not un-escaping:
+		// return label.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
 	},
 	toHTML: function (label) {
 		// Returns the label with the access key underlined (or with whatever .menu-hotkey styling), HTML-escaped.
@@ -532,10 +537,10 @@ function MenuBar(menus) {
 				// The shortcut is noisy (albeit potentially useful), so I'm disabling it to match system behavior (at least with Orca).
 				// The access key is not read if it's part of a word like "&New", as it's just an underlined letter,
 				// but it is read in translated labels like "새로 만들기 (&N)".
-				// The AccessKeys.remove() is so it doesn't announce an ampersand from the access key.
+				// The AccessKeys.toText() is so it doesn't announce an ampersand from the access key.
 				if (item.label || item.item) {
 					// deprecation notice for item.item is handled below, don't need to duplicate the warning
-					item_el.setAttribute("aria-label", AccessKeys.remove(item.label || item.item));
+					item_el.setAttribute("aria-label", AccessKeys.toText(item.label || item.item));
 				}
 				// Include the shortcut semantically.
 				// TODO: automatically include the access key, while the specific menu (or menu bar) is focused, and update docs to note this
