@@ -214,29 +214,80 @@ Property `toggle` should be a function that toggles the state of the option, how
 
 A radio group specification is an object with the following properties:
 
-* `radioItems`: an array of menu item specifications to create a radio button group. Unlike `submenu`, the items are included directly in this menu. It is recommended to separate the radio options from other menu items with a `MENU_DIVIDER`.
+* `radioItems`: an array of menu item specifications to create a radio button group. Unlike `submenu`, the items are included directly in this menu. It is recommended to separate the radio group from other menu items with a `MENU_DIVIDER`.
 * `getValue`: a function that should return the value of the selected radio item.
 * `setValue`: a function that should change the state to the given value, in an application-specific way.
-* `ariaLabel` (optional): a string to use as the `aria-label` for the radio group.
+* `ariaLabel` (optional): a string to use as the `aria-label` for the radio group (for screen reader accessibility)
 
 ### Access Keys
 
-Menus can be navigated with contextual hotkeys known as "access keys".
+Menus can be navigated with contextual hotkeys known as **access keys**.
 
 Place an ampersand before a letter in a menu button or menu item's label to make it an access key.
 Microsoft has [documentation on access keys](https://docs.microsoft.com/windows/apps/design/input/access-keys),
 including guidelines for choosing access keys.
 Generally the first letter is a good choice.
 
-If a menu item doesn't define an access key, the first letter of the label is used.
+If a menu item doesn't define an access key, the first letter of the label can be used to access it.
 
 For menu buttons, you need to hold Alt when pressing the button's access key, but for menu items in menu popups you must press the key directly, as Alt will close the menus.
 
 If there are multiple menu items with the same access key, it will cycle between them without activating them.
-You should try to make the access keys unique, including between access keys and first letters of menu items without defined access keys.
+You should try to make the access keys unique, including between defined access keys and the first letters of menu items without defined access keys.
 (This behavior is observed in Windows 98, in Explorer's Favorites menu, where you can make bookmarks with the first letter matching the access keys of other menu items.)
 
 <!-- @TODO: this section is an awkward mix of explaining what access keys are, how they work, and how to implement them; should restructure -->
+
+There is an `AccessKeys` object exported by `MenuBar.js`, with functions for dealing with access keys:
+
+#### `AccessKeys.escape(label)`
+
+Escapes ampersands in the given label, so that they are not interpreted as access keys.
+
+This is useful for dynamic menus, like a history menu that uses page titles as labels. You don't want ampersands to be spuriously interpreted as access keys, or double ampersands to be interpreted as a single ampersand.
+
+#### `AccessKeys.unescape(label)`
+
+Un-escapes all double ampersands in the label.
+
+For rendering, use [`toHTML`](#accesskeys-tohtml-label) or [`toFragment`](#accesskeys-tofragment-label) instead.
+
+<!-- #### `AccessKeys.indexOf(label)`
+
+Returns the index of the ampersand that defines an access key, or -1 if not present.
+
+Internal use only. -->
+
+#### `AccessKeys.has(label)`
+
+Returns true if the label has an access key.
+
+#### `AccessKeys.get(label)`
+
+Returns the access key for the given label, or null if none.
+
+`MenuBar` handles access keys automatically, but if you're including access keys for other UI elements, you need to handle them yourself, and you can use this rather than hard-coding the access key, so it doesn't need to be changed in two places.
+
+#### `AccessKeys.remove(label)`
+
+Removes the access key indicator (`&`) from the label.
+This is like [`toHTML`](#accesskeys-tohtml-label) but for plain text.
+
+Note: while often access keys are part of a word, like "&New",
+in translations they are often indicated separately, like "새로 만들기 (&N)",
+since the access key stays the same, but the letter is no longer part of the word (or even the alphabet).
+This doesn't remove strings like " (&N)", it will just remove the "&" and leave "새로 만들기 (N)".
+
+(@TODO: should it unescape "&&" to "&"? don't want to double-unescape, so need to think about it. i think it probably should.)
+
+#### `AccessKeys.toHTML(label)`
+
+Returns HTML (with proper escaping) with the access key as a `<span class='menu-hotkey'>` element.
+
+#### `AccessKeys.toFragment(label)`
+
+Returns a [`DocumentFragment`](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment) with the access key as a `<span class='menu-hotkey'>` element.
+
 
 ### `$Window(options)`
 
