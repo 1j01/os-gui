@@ -112,14 +112,24 @@ const AccessKeys = {
 
 // @TODO: support dynamic menus (e.g. a list of history entries, contextually shown options, or a contextually named "Undo <action>" label; Explorer has all these things)
 
-// TODO: support copy/pasting text in jspaint's Text tool textarea from the menus
-// probably by recording document.activeElement on pointer down,
-// and restoring focus before executing menu item actions.
-
 const MENU_DIVIDER = "MENU_DIVIDER";
 
 const MAX_MENU_NESTING = 1000;
 
+let last_focus_outside_menus = null;
+function track_focus() {
+	if (
+		document.activeElement &&
+		document.activeElement.tagName !== "BODY" &&
+		document.activeElement.tagName !== "HTML" &&
+		!document.activeElement.closest(".menus, .menu-popup")
+	) {
+		last_focus_outside_menus = document.activeElement;
+	}
+}
+window.addEventListener("focusin", track_focus);
+window.addEventListener("focusout", track_focus);
+	
 let internal_z_counter = 1;
 function get_new_menu_z_index() {
 	// integrate with the OS window z-indexes, if applicable
@@ -170,9 +180,19 @@ function MenuBar(menus) {
 		}
 	};
 
-	const refocus_window = () => {
+	const refocus_outside_menus = () => {
+		if (last_focus_outside_menus) {
+			last_focus_outside_menus.focus();
+			// in case element was removed from DOM, or became unfocusable,
+			// we should fallback to focusing the containing window
+			if (document.activeElement === last_focus_outside_menus) {
+				return;
+			}
+		}
 		const window_el = menus_el.closest(".window");
 		if (window_el) {
+			// This will refocus the last focused element in the window,
+			// or the first control in the window if there was no last focused element.
 			window_el.dispatchEvent(new CustomEvent("refocus-window"));
 		}
 	};
@@ -357,7 +377,7 @@ function MenuBar(menus) {
 			case "Alt":
 				// close all menus and refocus the last focused control in the window
 				close_menus();
-				refocus_window();
+				refocus_outside_menus();
 				e.preventDefault();
 				break;
 			case "Space":
@@ -785,7 +805,10 @@ function MenuBar(menus) {
 						menu_popup_el.dispatchEvent(new CustomEvent("update"), {});
 					} else if (item.action) {
 						close_menus();
-						refocus_window(); // before action, so things like copy/paste have a better chance of working
+						// refocus_outside_menus is before action, so that things like copy/paste can work
+						// (using the original focused textarea/input/etc.)
+						// and so the action can focus things, like a new dialog box
+						refocus_outside_menus();
 						item.action();
 					}
 				};
@@ -905,8 +928,8 @@ function MenuBar(menus) {
 		menu_button_el.addEventListener("pointerdown", e => {
 			if (menu_button_el.classList.contains("active")) {
 				menu_button_el.dispatchEvent(new CustomEvent("release", {}));
-				refocus_window();
-				e.preventDefault(); // needed for refocus_window() to work
+				refocus_outside_menus();
+				e.preventDefault(); // needed for refocus_outside_menus() to work
 			} else {
 				open_top_level_menu(e.type);
 			}

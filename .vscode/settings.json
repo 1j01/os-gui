@@ -62,6 +62,7 @@
 		"titlebar",
 		"tohtml",
 		"unfocus",
+		"unfocusable",
 		"unhighlight",
 		"unhovered",
 		"uninteractive",
