@@ -1,4 +1,5 @@
 const svg = document.getElementById("physics-teaser");
+const svgLink = svg.closest("a");
 
 function createElementSVG(tag, attrs) {
 	const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
@@ -84,6 +85,17 @@ add_ball({ x: 100, y: 100, numPoints: 10, rotationSpeed: 5, vx: -5, vy: 2 });
 function lerp(a, b, t) {
 	return a + (b - a) * t;
 }
+function average_points(points) {
+	let averageX = 0;
+	let averageY = 0;
+	for (const point of points) {
+		averageX += point.x;
+		averageY += point.y;
+	}
+	averageX /= points.length;
+	averageY /= points.length;
+	return { x: averageX, y: averageY };
+}
 function animate() {
 	for (const point of points) {
 		point.vx += point.fx;
@@ -136,16 +148,9 @@ function animate() {
 		point2.fy -= force * dy;
 	}
 
-	let averageX = 0;
-	let averageY = 0;
-	for (const point of points) {
-		averageX += point.x;
-		averageY += point.y;
-	}
-	averageX /= points.length;
-	averageY /= points.length;
-
-	svg.style.clipPath = `circle(${clipPathRadius}px at ${averageX}px ${averageY}px)`;
+	// using parent <a> element for iOS Safari, where clip-path on the SVG gives different results
+	const center = average_points(points);
+	svgLink.style.clipPath = `circle(${clipPathRadius}px at ${center.x}px ${center.y}px)`;
 
 	if (inViewport) {
 		requestAnimationFrame(animate);
@@ -167,6 +172,7 @@ window.addEventListener('resize', possiblyAnimate);
 setTimeout(possiblyAnimate, 100);
 
 svg.onpointerdown = () => {
+	// expand and contract
 	for (const connection of connections) {
 		connection.targetDistance *= 2;
 		clipPathRadius = 100;
@@ -179,3 +185,27 @@ svg.onpointerdown = () => {
 svg.onselectstart = (event) => {
 	event.preventDefault();
 };
+
+// iOS Safari ignores clip-path as far as interaction goes,
+// so we need to manually ignore interaction outside the clip-path.
+svgLink.onclick =
+svgLink.onauxclick =
+svgLink.onpointerdown =
+svgLink.onpointerup =
+svgLink.oncontextmenu = (event) => {
+	if (!insideClipPath(event)) {
+		event.preventDefault();
+		svgLink.style.pointerEvents = "none";
+		setTimeout(() => {
+			svgLink.style.pointerEvents = "auto";
+		}, 100);
+		return;
+	}
+};
+function insideClipPath(event) {
+	const center = average_points(points);
+	const rect = svg.getBoundingClientRect();
+	const mouseX = event.clientX - rect.left;
+	const mouseY = event.clientY - rect.top;
+	return Math.hypot(mouseX - center.x, mouseY - center.y) < clipPathRadius;
+}
