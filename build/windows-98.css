@@ -356,10 +356,10 @@ body > .window-titlebar {
 	top: 0;
 	right: 0;
 	bottom: 0;
+	mask-image: var(--sprite-image);
+	mask-position: var(--sprite-x) var(--sprite-y);
 	-webkit-mask-image: var(--sprite-image);
-	        mask-image: var(--sprite-image);
 	-webkit-mask-position: var(--sprite-x) var(--sprite-y);
-	        mask-position: var(--sprite-x) var(--sprite-y);
 	background-color: rgb(0, 0, 0);
 	background-color: var(--ButtonText);
 }
@@ -523,16 +523,16 @@ so I think I'll immitate that. (I might change it later) */
 }
 /* Note: viewBox is needed for scaling the SVG, used in JS Paint's Eye Gaze Mode */
 .menu-item-checkbox-area::after {
+	mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
 	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
-	        mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
 }
 .menu-item-checkbox-area.radio::after {
+	mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
 	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
-	        mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
 }
 .has-submenu .menu-item-submenu-area::after {
+	mask-image: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
 	-webkit-mask-image: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
-	        mask-image: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
 }
 .has-submenu .menu-item-submenu-area.point-right::after {
 	transform: scaleX(-1);
