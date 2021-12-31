@@ -21,7 +21,7 @@ let animating = false;
 const friction = 0.2;
 const coefficientOfRestitution = 0.8;
 
-function add_point(options) {
+function addPoint(options) {
 	const point = Object.assign({
 		x: 0,
 		y: 0,
@@ -43,7 +43,7 @@ function add_point(options) {
 	return point;
 }
 
-function add_connection(point1, point2, targetDistance = 10) {
+function addConnection(point1, point2, targetDistance = 10) {
 	const connection = {
 		point1,
 		point2,
@@ -57,12 +57,12 @@ function add_connection(point1, point2, targetDistance = 10) {
 	return connection;
 }
 
-function add_ball({ x = 0, y = 0, vx = 0, vy = 0, numPoints = 10, targetDistance = 50, startRadius = 50, rotationSpeed = 0, pointOptions } = {}) {
+function addBall({ x = 0, y = 0, vx = 0, vy = 0, numPoints = 10, targetDistance = 50, startRadius = 50, rotationSpeed = 0, pointOptions } = {}) {
 	let ballPoints = [];
 	let ballConnections = [];
 	for (let i = 0; i < numPoints; i++) {
 		const angle = i / numPoints * Math.PI * 2;
-		const point = add_point({
+		const point = addPoint({
 			x: x + Math.cos(angle) * startRadius,
 			y: y + Math.sin(angle) * startRadius,
 			vx: Math.cos(angle + Math.PI / 2) * rotationSpeed + vx,
@@ -73,19 +73,19 @@ function add_ball({ x = 0, y = 0, vx = 0, vy = 0, numPoints = 10, targetDistance
 	}
 	for (const point1 of ballPoints) {
 		for (const point2 of ballPoints) {
-			const connection = add_connection(point1, point2, targetDistance);
+			const connection = addConnection(point1, point2, targetDistance);
 			ballConnections.push(connection);
 		}
 	}
 	return { ballPoints, ballConnections };
 }
 
-add_ball({ x: 100, y: 100, numPoints: 10, rotationSpeed: 5, vx: -5, vy: 2 });
+addBall({ x: 100, y: 100, numPoints: 10, rotationSpeed: 5, vx: -5, vy: 2 });
 
 function lerp(a, b, t) {
 	return a + (b - a) * t;
 }
-function average_points(points) {
+function averagePoints(points) {
 	let averageX = 0;
 	let averageY = 0;
 	for (const point of points) {
@@ -149,7 +149,7 @@ function animate() {
 	}
 
 	// using parent <a> element for iOS Safari, where clip-path on the SVG gives different results
-	const center = average_points(points);
+	const center = averagePoints(points);
 	svgLink.style.clipPath = `circle(${clipPathRadius}px at ${center.x}px ${center.y}px)`;
 
 	if (inViewport) {
@@ -203,7 +203,7 @@ svgLink.oncontextmenu = (event) => {
 	}
 };
 function insideClipPath(event) {
-	const center = average_points(points);
+	const center = averagePoints(points);
 	const rect = svg.getBoundingClientRect();
 	const mouseX = event.clientX - rect.left;
 	const mouseY = event.clientY - rect.top;
