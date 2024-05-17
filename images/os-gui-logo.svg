@@ -168,22 +168,6 @@
          d="m 41.263629,88.477431 v 0.709001 h 2.360063 2.402437 2.360063 v -0.709001 c -0.02117,-0.296332 -0.137398,-0.539689 -0.338481,-0.730188 -0.211666,-0.1905 -0.444687,-0.306978 -0.719853,-0.328145 h -5.016231 c -0.127,0.02117 -0.254372,0.05277 -0.381372,0.116272 -0.127,0.0635 -0.232896,0.137811 -0.328145,0.23306 -0.09525,0.09525 -0.169044,0.201147 -0.232544,0.328146 -0.0635,0.127 -0.105937,0.253856 -0.105937,0.380855 z"
          inkscape:label="O top" />
     </g>
-    <rect
-       style="fill:#cccccc;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
-       id="rect30385-3"
-       width="1.003032"
-       height="1.003032"
-       x="45.094162"
-       y="87.847961"
-       inkscape:label="Maximize button" />
-    <rect
-       style="fill:#cccccc;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
-       id="rect30385-3-6"
-       width="1.003032"
-       height="1.003032"
-       x="43.620739"
-       y="87.847961"
-       inkscape:label="Minimize button" />
     <g
        id="g1030"
        transform="translate(0,0.16198592)"
@@ -197,33 +181,51 @@
          y="87.685974"
          inkscape:label="Button surface" />
       <path
+         id="path30606"
          style="display:inline;fill:#cccccc;stroke:#000000;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
-         d="m 46.859845,87.949784 0.444466,0.44739"
-         id="path30571"
-         sodipodi:nodetypes="cc"
-         inkscape:label="Diagonal line" />
+         inkscape:label="Close icon"
+         d="m 46.835155,88.404102 0.471423,-0.447565 m -0.446733,-0.0068 0.444466,0.44739" />
+    </g>
+    <g
+       id="g2"
+       inkscape:label="Maximize button">
+      <rect
+         style="fill:#cccccc;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
+         id="rect30385-3"
+         width="1.003032"
+         height="1.003032"
+         x="45.094162"
+         y="87.847961"
+         inkscape:label="Button surface" />
+      <rect
+         style="display:inline;fill:#cccccc;stroke:#000000;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
+         id="rect31961"
+         height="0.48541456"
+         x="45.361328"
+         y="88.109734"
+         width="0.48199999"
+         ry="0.027467046"
+         inkscape:label="Maximize icon" />
+    </g>
+    <g
+       id="g1"
+       inkscape:label="Minimize button"
+       transform="translate(-1.1458333e-6)">
+      <rect
+         style="fill:#cccccc;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
+         id="rect30385-3-6"
+         width="1.003032"
+         height="1.003032"
+         x="43.620739"
+         y="87.847961"
+         inkscape:label="Button surface" />
       <path
          style="display:inline;fill:#cccccc;stroke:#000000;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
-         d="m 46.835155,88.404102 0.471423,-0.447565"
-         id="path30606"
+         d="m 43.880885,88.624831 h 0.479089"
+         id="path31688"
          sodipodi:nodetypes="cc"
-         inkscape:label="Diagonal line" />
+         inkscape:label="Minimize icon" />
     </g>
-    <path
-       style="display:inline;fill:#cccccc;stroke:#000000;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
-       d="m 43.880885,88.624831 h 0.479089"
-       id="path31688"
-       sodipodi:nodetypes="cc"
-       inkscape:label="Minimize icon" />
-    <rect
-       style="display:inline;fill:#cccccc;stroke:#000000;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
-       id="rect31961"
-       height="0.48541456"
-       x="45.361328"
-       y="88.109734"
-       width="0.48199999"
-       ry="0.027467046"
-       inkscape:label="Maximize icon" />
     <use
        x="0"
        y="0"
