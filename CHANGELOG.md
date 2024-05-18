@@ -12,7 +12,68 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
-Nothing here yet.
+### Deprecated
+
+- [Deprecate `item` in favor of `label` for menu item labels](https://github.com/1j01/os-gui/commit/c14be98e1f1f4211a8a8bb47470796750184e740)
+- [Deprecate `shortcut` in favor of `shortcutLabel` and `ariaKeyShortcuts`](https://github.com/1j01/os-gui/commit/92541cb3d22c0f5de2fbd11c02fe21713a033203)
+  - `aria-keyshortcuts` needs "Control" spelled out, and for macOS "Meta" for the command key, unlike the traditional visual representations. Hence the separation of concerns.
+
+
+### Added
+- `AccessKeys` API for parsing and rendering labels with access keys (syntax: `&` defines the following character as the access key, `&&` escapes an ampersand)
+  - `AccessKeys.escape(label)` escapes ampersands by doubling them
+  - `AccessKeys.unescape(label)` unescapes ampersands by removing one of each pair
+  - `AccessKeys.has(label)` returns whether the label has an access key
+  - `AccessKeys.get(label)` returns the access key character, or `null` if there isn't one
+  - `AccessKeys.toText(label)` returns plain text without access key syntax
+  - `AccessKeys.toHTML(label)` returns HTML with `<span class="menu-hotkey">` around the access key (uses `AccessKeys.toFragment` for security)
+  - `AccessKeys.toFragment(label)` returns a `DocumentFragment` with `<span class="menu-hotkey">` wrapping the access key character
+  - (In the future, the CSS class "menu-hotkey" may be renamed to "access-key", perhaps with a prefix.)
+- Add radio menu item support
+  - In menu item lists, you can include radio groups by including an object with a `radioItems`, `getValue`, `setValue`, and optionally `ariaLabel` properties.
+  <!-- - b9595e1b58f1fe2897bc5a4cf68e8f30a3d94cdf
+  - 3e8eaa9e5c1e51107f57e665273e74e088c3dca2
+  - 81694e13d37dd4026b78edf3b8f5fb6a65515c05
+  - 08cd001bcde6c0ede84a2a1bba5801c7b853916f -->
+
+### Changed
+- [Handle synthetic events, including when pointerId is not given](https://github.com/1j01/os-gui/commit/70000c0ccfb674003784c258be68c575dea7e8d6)
+  - This is for jspaint, which triggers pointerup when pressing both mouse buttons to cancel a drawing gesture, and on blur.
+- [Make menu bars wrap to multiple rows when needed](https://github.com/1j01/os-gui/commit/43268608093dd47b2b91581e865ebd6431ce0e91)
+- [Close menus if focus leaves menu popups and menu bar](https://github.com/1j01/os-gui/commit/14c099567bc3ec91fcaf8f1257dc9c6ae127e80f)
+  - If you click on the empty space on the menu bar, it should close menus, not just unhighlight.
+  - This also seems to fix the case where a window is closed while menus are open (you can test this with the Trigger Station in test.html)
+- [Improve menu bar code and some behavior](https://github.com/1j01/os-gui/commit/8afb7111f2170fcd23095e9f77808ccfc0f0b362)
+  - Prevent some unnecessary DOM updates with highlighting and opening/closing.
+  - Check for specific menu bar instance when testing focus
+  - Make menu bar only ever close its own menu popups
+  - Reduce redundancy in menu closing code
+  - Fix cycling behavior with Up key: pressing up in a menu opened by clicking (such that the first item isn't automatically highlighted) now goes to the bottom item, instead of the top item (or the second-to-bottom item if you had hovered a menu item within and then moved the mouse out). It still focuses the top item if you open the menu via up/down arrow as this matches the Windows 98 behavior for using the keyboard.
+  - This commit might actually break closing menu popups in the case that the menu bar is removed from the DOM, because it relies on sending events...
+    - (I'm not sure if I followed up on this.)
+- [Use event.key instead of event.keyCode](https://github.com/1j01/os-gui/commit/8d34ddebc2d087dccd3b49f79e1c0fa261c7b9fc)
+- [Prevent entering disabled submenus [with the keyboard?]](https://github.com/1j01/os-gui/commit/c423ae66943f852f71b0b4caac35e5e30b3c483c)
+- [Don't dispatch update events when hovering menu items](https://github.com/1j01/os-gui/commit/36a13fdb67b4774aeb032c8602f8deaed7ba33b3)
+  - This only affects the Schrödinger's Checkbox as far as I know, and arguably makes it more thematic, since it only changes when "observing" it.
+  - (Should it be called Schrödinger's Tick, btw? haha, gross.)
+- [Make menu popups inherit the theme from the menu bar](https://github.com/1j01/os-gui/commit/56024aa8180d71641903a921251ecaaeca35ef6a)
+- [Patch drag handling for Eye Gaze Mode in JS Paint](https://github.com/1j01/os-gui/commit/cf5143ded2a41640d5df7182f4e9fcbbafc9ec6f)
+- [Fix menu button border offset on press, and oscillating menu opening when hovering between two menu buttons](https://github.com/1j01/os-gui/commit/fe4070424b8df15935435a5ac281a26ae655720a)
+  - ([Next two commits added explanation and simplified slightly](https://github.com/1j01/os-gui/compare/fe4070424b8df15935435a5ac281a26ae655720a..8be71e281db04322b4e2b572392fb5d3846f705b))
+- [Fix: keep menu button highlighted if clicked to close](https://github.com/1j01/os-gui/commit/7216e2c9784a8e88a00b3d84edc9d3b4457ab392)
+- [Highlight/open menus when moving mouse at all while over menu button](https://github.com/1j01/os-gui/commit/78c1216463da1061eeea816287a5ffe79b041f97)
+- [Fix: don't trigger menu items if holding Ctrl](https://github.com/1j01/os-gui/commit/8a4b596c58cf57c7fbca567437ab4c1013054014)
+  - For example, in Paint, with the Help menu open, Ctrl+A shouldn't open About Paint, it should Select All, using the app-global keyboard shortcut.
+- SVG icons for checkbox/radio/submenu icons are now defined in CSS using `mask-image`
+  - Should fix scaling in JS Paint's Eye Gaze Mode
+- [Fix subpixel issues with menu button borders, and margin-bottom (and greatly simplify, by adding a wrapper span)](https://github.com/1j01/os-gui/commit/750f08c69f3f16a78efb7fe852a2ef015306e5f7)
+- [Refocus last focused control outside menus on close to support copy/paste](https://github.com/1j01/os-gui/commit/cac0db341eb834e6042fedec814bbe6e3f4882d4)
+  - This generalizes refocusing the last focused control within the window to also work for controls outside the window, I think?
+
+### Fixed
+
+see Changed
+
 
 </details>
 
