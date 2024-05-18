@@ -48,7 +48,8 @@
 		"$MenuBar.js",
 		"MenuBar.js",
 		"$Window.js",
-		"parse-theme.js"
+		"parse-theme.js",
+		"os-gui.d.ts"
 	],
 	"scripts": {
 		"start": "run-p watch-css live-server",
@@ -58,6 +59,7 @@
 		"live-server": "live-server"
 	},
 	"devDependencies": {
+		"@types/jquery": "^3.5.30",
 		"autoprefixer": "10.3.3",
 		"live-server": "1.2.1",
 		"mkdirp": "1.0.4",
