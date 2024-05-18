@@ -141,9 +141,9 @@ See examples in the [demo code](./demo/demo.js).
 
 Closes any menus that are open.
 
-#### `setKeyboardScope(...elements)`
+#### `setKeyboardScope(...eventTargets)`
 
-Hotkeys like <kbd>Alt</kbd> will be handled at the level of the given element.
+Hotkeys like <kbd>Alt</kbd> will be handled at the level of the given element(s) or event target(s).
 
 By default, the scope is `window` (global), for the case of a single-page application where the menu bar is at the top.
 If you are putting the menu bar in a window, you should call this with the window's element:
@@ -155,7 +155,7 @@ or better yet,
 ```js
 $window.setMenuBar(menu_bar);
 ```
-which takes care of the keyboard scope for you.
+which takes care of the keyboard scope for you, while attaching the menu bar to the window.
 
 Note that some keyboard behavior is always handled if the menu bar has focus.
 
