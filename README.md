@@ -564,6 +564,8 @@ Also run `npm i` when pulling in changes from the repository, in case there are 
 
 Run `npm start` to open a development server. It will open a demo page in your default browser. Changes to the library will be automatically recompiled, and the page will automatically reload.
 
+Run `npm run lint` to run type checking (and any other linting tasks).
+
 It's a good idea to close the server when updating or installing dependencies; otherwise you may run into EPERM issues.
 
 The styles are written with [PostCSS](https://postcss.org/), for mixins and other transforms.  
