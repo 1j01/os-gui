@@ -313,6 +313,8 @@ interface OSGUICheckbox {
 	check: () => boolean;
 	/** A function to toggle something application-specific. */
 	toggle: () => void;
+	/** To create radio items, see the documentation on radio groups. Don't use this directly. */
+	private type?: "checkbox" | "radio";
 }
 
 interface OSGUIMenuItem {
