@@ -390,6 +390,8 @@ interface AccessKeys {
 	toHTML(label: string): string;
 	/** Returns a `DocumentFragment` with `<span class="menu-hotkey">` wrapping the access key character. */
 	toFragment(label: string): DocumentFragment;
+	/** Returns the index of the ampersand that defines an access key, or -1 if not present. */
+	private indexOf(label: string): number;
 }
 
 
