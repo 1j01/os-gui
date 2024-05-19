@@ -1,6 +1,7 @@
 /**
  * @param {string} data 
  * @returns {Record<string, string | Record<string, string>>}
+ * @private
  */
 function parseINIString(data) {
 	var regex = {
@@ -210,6 +211,7 @@ function renderThemeGraphics(cssProperties) {
 /**
  * @param {HTMLElement} element 
  * @returns {Record<string, string>}
+ * @private
  */
 function getThemeCSSProperties(element) {
 	const keys = [
@@ -266,6 +268,7 @@ function getThemeCSSProperties(element) {
 /**
  * @param {HTMLElement} target 
  * @param {HTMLElement} source 
+ * @private
  */
 function inheritTheme(target, source) {
 	applyCSSProperties(getThemeCSSProperties(source), { element: target, recurseIntoIframes: true });
