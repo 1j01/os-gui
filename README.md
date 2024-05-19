@@ -487,6 +487,10 @@ Calls the listener when the window is closed (after the close event is emitted, 
 
 Whether the window has been closed.
 
+#### `icons`
+
+The icons of the window at different sizes, as set by `options.icons` or `setIcons()`.
+
 #### `$content`
 
 *jQuery object.*  

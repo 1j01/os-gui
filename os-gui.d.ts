@@ -192,7 +192,7 @@ interface OSGUIWindow {
 	/**
 	 * Icons representing the window at different sizes.
 	 */
-	private icons: OSGUIIcons;
+	icons: OSGUIIcons;
 
 	/**
 	 * The titlebar icon.
