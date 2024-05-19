@@ -456,6 +456,29 @@ It automatically closes the window when clicked. There's no (good) way to preven
 If you need any other behavior, just create a `<button>` and add it to the window's content area.
 
 Returns a jQuery object.
+
+#### `addChildWindow($window)`
+
+Defines a window as a child. For tool windows, the focus state will be shared with the parent window.
+
+This is used internally when you set `options.parentWindow` when creating a window.
+
+#### `onFocus(listener)`
+
+Calls the listener when the window is (visually?) focused.
+
+#### `onBlur(listener)`
+
+Calls the listener when the window (visually?) loses focus.
+
+#### `onClosed(listener)`
+
+Calls the listener when the window is closed (after the close event is emitted, and if it wasn't prevented).
+
+#### `closed`
+
+Whether the window has been closed.
+
 #### `$content`
 
 *jQuery object.*  
@@ -466,6 +489,11 @@ Where you can append contents to the window.
 *jQuery object.*  
 The titlebar of the window, including the title, window buttons, and possibly an icon.
 
+#### `$title_area`
+
+*jQuery object.*  
+Wrapper around the title. Don't use this. Use `$title` or `$titlebar` instead, if possible.
+
 #### `$title`
 
 *jQuery object.*  
@@ -475,6 +503,16 @@ The title portion of the titlebar.
 
 *jQuery object.*  
 The close button.
+
+#### `$minimize`
+
+*jQuery object.*  
+The minimize button.
+
+#### `$maximize`
+
+*jQuery object.*  
+The maximize button.
 
 #### `element`
 
