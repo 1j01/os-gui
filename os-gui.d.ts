@@ -309,8 +309,12 @@ type OSGUIIcon = string | { srcset: string } | Node;
 const MENU_DIVIDER = "MENU_DIVIDER";
 
 interface OSGUICheckbox {
+	/** A function to check whether the checkbox is checked. */
 	check: () => boolean;
+	/** A function to toggle something application-specific. */
 	toggle: () => void;
+	/** To create radio items, see the documentation on radio groups. Don't use this directly. */
+	private type: "checkbox" | "radio";
 }
 
 interface OSGUIMenuItem {
@@ -341,6 +345,11 @@ interface OSGUIMenuItem {
 	submenu?: OSGUIMenuFragment[];
 	/** For implementing a status bar. An `info` event is emitted when rolling over the item with this description. */
 	description: string;
+
+	/** @deprecated A label for the item. Use `label` instead. */
+	item?: string;
+	/** @deprecated */
+	shortcut?: string;
 }
 
 interface OSGUIRadioItem extends OSGUIMenuItem {
