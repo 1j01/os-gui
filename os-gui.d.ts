@@ -111,6 +111,33 @@ interface OSGUIWindow {
 	$Button(text: string, action: () => void): JQuery<HTMLButtonElement>;
 
 	/**
+	 * Defines a window as a child. For tool windows, the focus state will be shared with the parent window.
+	 * 
+	 * This is used internally when you set `options.parentWindow` when creating a window.
+	 */
+	addChildWindow(childWindow: OSGUI$Window): void;
+
+	/**
+	 * Calls the listener when the window is (visually?) focused.
+	 * Returns a function to remove the listener.
+	 */
+	onFocus(listener: () => void): () => void;
+
+
+	/**
+	 * Calls the listener when the window (visually?) loses focus.
+	 * Returns a function to remove the listener.
+	 */
+	onBlur(listener: () => void): () => void;
+
+
+	/**
+	 * Calls the listener when the window is closed (after the close event is emitted, and if it wasn't prevented).
+	 * Returns a function to remove the listener.
+	 */
+	onClosed(listener: () => void): () => void;
+
+	/**
 	 * *jQuery object.*  
 	 * Where you can append contents to the window.
 	 */
@@ -121,6 +148,12 @@ interface OSGUIWindow {
 	 * The titlebar of the window, including the title, window buttons, and possibly an icon.
 	 */
 	$titlebar: JQuery<HTMLElement>;
+
+	/**
+	 * *jQuery object.*  
+	 * Wrapper around the title. Don't use this. Use `$title` or `$titlebar` instead, if possible.
+	 */
+	$title_area: JQuery<HTMLElement>;
 
 	/**
 	 * *jQuery object.*  
@@ -135,9 +168,26 @@ interface OSGUIWindow {
 	$x: JQuery<HTMLButtonElement>;
 
 	/**
+	 * *jQuery object.*  
+	 * The minimize button.
+	 */
+	$minimize: JQuery<HTMLButtonElement>;
+
+	/**
+	 * *jQuery object.*  
+	 * The maximize button.
+	 */
+	$maximize: JQuery<HTMLButtonElement>;
+
+	/**
 	 * The DOM element that represents the window.
 	 */
 	element: HTMLElement;
+
+	/**
+	 * Whether the window has been closed.
+	 */
+	closed: boolean;
 }
 
 /**
@@ -145,7 +195,7 @@ interface OSGUIWindow {
  * 
  * This was a bad design decision.
  */
-type OSGUI$Window = JQuery<HTMLElement> & OSGUIWindow;
+type OSGUI$Window = JQuery<HTMLElement & { $window: OSGUI$Window }> & OSGUIWindow;
 
 /**
  * Creates a new window.
