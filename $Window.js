@@ -1,10 +1,13 @@
 ((exports) => {
 
 // TODO: E\("([a-z]+)"\) -> "<$1>" or get rid of jQuery as a dependency
-function E(tagName) {
-	return document.createElement(tagName);
-}
 
+const E = document.createElement.bind(document);
+
+/**
+ * @param {Element} element 
+ * @returns {string}
+ */
 function element_to_string(element) {
 	// returns a CSS-selector-like string for the given element
 	// if (element instanceof Element) { // doesn't work with different window.Element from iframes
@@ -22,6 +25,10 @@ function element_to_string(element) {
 	}
 }
 
+/**
+ * @param {Element} container_el
+ * @returns {JQuery<HTMLElement>}
+ */
 function find_tabstops(container_el) {
 	const $el = $(container_el);
 	// This function finds focusable controls, but not necessarily all of them;
@@ -55,7 +62,9 @@ function find_tabstops(container_el) {
 	// Radio buttons should be treated as a group with one tabstop.
 	// If there's no selected ("checked") radio, it should still visit the group,
 	// but if there is a selected radio in the group, it should skip all unselected radios in the group.
+	/** @type {Record<string, HTMLElement>} */
 	const radios = {}; // best radio found so far, per group
+	/** @type {HTMLElement[]} */
 	const to_skip = [];
 	for (const el of $controls.toArray()) {
 		if (el.nodeName.toLowerCase() === "input" && el.type === "radio") {
@@ -82,16 +91,26 @@ var $G = $(window);
 
 $Window.Z_INDEX = 5;
 
+/** @type {OSGUI$Window[]} */
 var minimize_slots = []; // for if there's no taskbar
 
 // @TODO: make this a class,
 // instead of a weird pseudo-class
-function $Window(options) {
-	options = options || {};
+/**
+ * @param {OSGUIWindowOptions} [options]
+ * @returns {OSGUI$Window}
+ */
+function $Window(options = {}) {
 	// @TODO: handle all option defaults here
 	// and validate options.
 
-	var $w = $(E("div")).addClass("window os-window").appendTo("body");
+	// WOW, this is ugly. It's kind of impressive, almost.
+	var $w = /** @type {OSGUI$Window} */(
+		$(
+			/** @type {HTMLElement & { $window: OSGUI$Window; }}*/(
+				/** @type {unknown} */(E("div"))
+			)
+		).addClass("window os-window").appendTo("body"));
 	$w[0].$window = $w;
 	$w.element = $w[0];
 	$w[0].id = `os-window-${Math.random().toString(36).substr(2, 9)}`;
@@ -111,7 +130,7 @@ function $Window(options) {
 		$w.$maximize = $(E("button")).addClass("window-maximize-button window-action-maximize window-button").appendTo($w.$titlebar);
 		$w.$maximize.attr("aria-label", "Maximize or restore window"); // @TODO: specific text for the state
 		if (!options.resizable) {
-			$w.$maximize.attr("disabled", true);
+			$w.$maximize.prop("disabled", true);
 		}
 		$w.$maximize.append("<span class='window-button-icon'></span>");
 	}
@@ -290,6 +309,7 @@ function $Window(options) {
 	};
 	$w.setDimensions(options);
 
+	/** @type {OSGUI$Window[]} */
 	let child_$windows = [];
 	$w.addChildWindow = ($child_window) => {
 		child_$windows.push($child_window);
@@ -309,7 +329,7 @@ function $Window(options) {
 		$event_target.triggerHandler("blur");
 	};
 	$w.focus = () => {
-		// showAsFocused();	
+		// showAsFocused();
 		$w.bringToFront();
 		refocus();
 	};
@@ -363,6 +383,7 @@ function $Window(options) {
 		window.addEventListener("blur", global_focus_update_handler);
 		window.addEventListener("focus", global_focus_update_handler);
 
+		/** @param {HTMLIFrameElement} iframe */
 		function setupIframe(iframe) {
 			if (!focus_update_handlers_by_container.has(iframe)) {
 				const iframe_update_focus = make_focus_in_out_handler(iframe, false);
@@ -373,6 +394,7 @@ function $Window(options) {
 				setTimeout(() => { // for iframe src to be set? I forget.
 					// Note: try must be INSIDE setTimeout, not outside, to work.
 					try {
+						/** @param {() => void} callback */
 						const wait_for_iframe_load = (callback) => {
 							// Note: error may occur accessing iframe.contentDocument; this must be handled by the caller.
 							// To that end, this function must access it synchronously, to allow the caller to handle the error.
@@ -404,6 +426,7 @@ function $Window(options) {
 			}
 		}
 
+		/** @param {Document | Element} container_node */
 		function observeIframes(container_node) {
 			const observer = new MutationObserver((mutations) => {
 				for (const mutation of mutations) {
@@ -424,6 +447,11 @@ function $Window(options) {
 
 		observeIframes($w.$content[0]);
 
+		/**
+		 * @param {Element} logical_container_el 
+		 * @param {boolean} is_root 
+		 * @returns {(event: FocusEvent | null) => void}
+		 */
 		function make_focus_in_out_handler(logical_container_el, is_root) {
 			// In case of iframes, logical_container_el is the iframe, and container_node is the iframe's contentDocument.
 			// container_node is not a parameter here because it can change over time, may be an empty document before the iframe is loaded.
@@ -567,11 +595,13 @@ function $Window(options) {
 
 	$w.css("touch-action", "none");
 
+	/** @type {HTMLElement | null | undefined} */
 	let minimize_target_el = null; // taskbar button (optional)
 	$w.setMinimizeTarget = function (new_taskbar_button_el) {
 		minimize_target_el = new_taskbar_button_el;
 	};
 
+	/** @type {{$task: JQuery<HTMLElement>} | undefined} */
 	let task;
 	Object.defineProperty($w, "task", {
 		get() {
@@ -583,6 +613,7 @@ function $Window(options) {
 		},
 	});
 
+	/** @type {{ position: string; left: string; top: string; width: string; height: string; }} */
 	let before_minimize;
 	$w.minimize = () => {
 		minimize_target_el = minimize_target_el || task?.$task[0];
@@ -622,6 +653,7 @@ function $Window(options) {
 				}
 				const to_x = $w._minimize_slot_index * (to_width + spacing) + 10;
 				const titlebar_height = $w.$titlebar.outerHeight();
+				/** @type {{ position: string; left: string; top: string; width: string; height: string; }} */
 				let before_unminimize;
 				const instantly_minimize = () => {
 					before_minimize = {
@@ -734,6 +766,7 @@ function $Window(options) {
 		}
 	};
 
+	/** @type {{ position: string; left: string; top: string; width: string; height: string; }} */
 	let before_maximize;
 	$w.maximize = () => {
 		if (!options.resizable) {
@@ -845,10 +878,16 @@ function $Window(options) {
 	var last_focus_by_container = new Map(); // element to restore focus to, by container
 	var focus_update_handlers_by_container = new Map(); // event handlers by container; note use as a flag to avoid adding multiple handlers
 	var debug_svg_by_container = new Map(); // visualization
+	/** @type {SVGSVGElement[]} */
 	var debug_svgs_in_window = []; // visualization
 	var warned_iframes = new WeakSet(); // prevent spamming console
 
+	/**
+	 * @param {HTMLIFrameElement} iframe 
+	 * @param {Error} error 
+	 */
 	const warn_iframe_access = (iframe, error) => {
+		/** @param {string} message */
 		const log_template = (message) => [`OS-GUI.js failed to access an iframe (${element_to_string(iframe)}) for focus integration.
 ${message}
 Original error:
@@ -878,6 +917,12 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		}
 	};
 
+	/**
+	 * @param {Document} document 
+	 * @param {Element} container_el 
+	 * @param {Element} descendant_el 
+	 * @param {boolean} is_root 
+	 */
 	const debug_focus_tracking = (document, container_el, descendant_el, is_root) => {
 		if (!$Window.DEBUG_FOCUS) {
 			return;
@@ -902,6 +947,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		svg._is_root = is_root;
 		animate_debug_focus_tracking();
 	};
+	/** @param {SVGSVGElement} svg */
 	const update_debug_focus_tracking = (svg) => {
 		const container_el = svg._container_el;
 		const descendant_el = svg._descendant_el;
@@ -953,6 +999,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			svg.appendChild(line_el);
 		}
 	};
+	/** @type {number} */
 	let debug_animation_frame_id;
 	const animate_debug_focus_tracking = () => {
 		cancelAnimationFrame(debug_animation_frame_id);
@@ -996,10 +1043,12 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		}
 		if ($tabstops.length) {
 			if ($tabstops[0].tagName === "IFRAME") {
+				const iframe = /** @type {HTMLIFrameElement} */ ($tabstops[0]);
 				try {
-					refocus($tabstops[0]); // not .contentDocument.body because we want the container tracked by last_focus_by_container
+					refocus(iframe); // not .contentDocument.body because we want the container tracked by last_focus_by_container
 				} catch (e) {
-					warn_iframe_access($tabstops[0], e);
+					// @ts-ignore
+					warn_iframe_access(iframe, e);
 				}
 			} else {
 				$tabstops[0].focus({ preventScroll: true });
@@ -1012,10 +1061,13 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		}
 		container_el.focus({ preventScroll: true });
 		if (container_el.tagName === "IFRAME") {
+			const iframe = /** @type {HTMLIFrameElement} */ (container_el);
 			try {
-				refocus(container_el.contentDocument.body);
+				// @ts-ignore
+				refocus(iframe.contentDocument.body);
 			} catch (e) {
-				warn_iframe_access(container_el, e);
+				// @ts-ignore
+				warn_iframe_access(iframe, e);
 			}
 		}
 	};
@@ -1040,6 +1092,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		// debug_focus_tracking(document, window, e.target);
 	});
 
+	/** @param {Event} event */
 	function handle_pointer_activation(event) {
 		// console.log("handle_pointer_activation", event.type, event.target);
 		$w.bringToFront();
@@ -1076,6 +1129,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			// If something programmatically got focus, don't refocus.
 			if (
 				document.activeElement &&
+				// @ts-ignore (just in case)
 				document.activeElement !== document &&
 				document.activeElement !== document.body &&
 				document.activeElement !== $w.$content[0] &&
@@ -1098,7 +1152,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 
 				$w.one("pointerup pointercancel", () => {
 					requestAnimationFrame(() => { // this seems to make it more reliable in regards to double clicking
-						if (!getSelection().toString().trim()) {
+						if (!getSelection()?.toString().trim()) {
 							refocus();
 						}
 					});
@@ -1123,7 +1177,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			return;
 		}
 		const $buttons = $w.$content.find("button");
-		const $focused = $(document.activeElement);
+		// XXX: Lying a little bit here, but TS seems confused otherwise, giving the type as JQueryStatic
+		const $focused = $(/** @type {HTMLElement} */(document.activeElement));
 		const focused_index = $buttons.index($focused);
 		switch (e.keyCode) {
 			case 40: // Down
@@ -1229,7 +1284,17 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 
 	$G.on("resize", $w.bringTitleBarInBounds);
 
-	var drag_offset_x, drag_offset_y, drag_pointer_x, drag_pointer_y, drag_pointer_id;
+	/** @type {number} */
+	var drag_offset_x;
+	/** @type {number} */
+	var drag_offset_y;
+	/** @type {number} */
+	var drag_pointer_x;
+	/** @type {number} */
+	var drag_pointer_y;
+	/** @type {number} */
+	var drag_pointer_id;
+	/** @param {JQuery.TriggeredEvent} e */
 	var update_drag = (e) => {
 		const pointerId = e.pointerId ?? e.originalEvent?.pointerId; // originalEvent doesn't exist for triggerHandler()
 		if (
@@ -1263,6 +1328,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			return;
 		}
 		button.classList.add("pressing");
+		/** @param {JQuery.TriggeredEvent} event */
 		const release = (event) => {
 			// blur is just to handle the edge case of alt+tabbing/ctrl+tabbing away
 			if (event && event.type === "blur") {
@@ -1371,8 +1437,18 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				cursor,
 			});
 
+			/** @type {{ x: number, y: number, width: number, height: number }} */
 			let rect;
-			let resize_offset_x, resize_offset_y, resize_pointer_x, resize_pointer_y, resize_pointer_id;
+			/** @type {number} */
+			let resize_offset_x;
+			/** @type {number} */
+			let resize_offset_y;
+			/** @type {number} */
+			let resize_pointer_x;
+			/** @type {number} */
+			let resize_pointer_y;
+			/** @type {number} */
+			let resize_pointer_id;
 			$handle.on("pointerdown", (e) => {
 				e.preventDefault();
 
@@ -1502,8 +1578,12 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		return $w.title();
 	};
 	let animating_titlebar = false;
-	let when_done_animating_titlebar = []; // queue of functions to call when done animating,
-	// so maximize() / minimize() / restore() eventually gives the same result as if there was no animation
+	/**
+	 * queue of functions to call when done animating,
+	 * so maximize() / minimize() / restore() eventually gives the same result as if there was no animation
+	 * @type {(() => void)[]}
+	 */
+	let when_done_animating_titlebar = [];
 	$w.animateTitlebar = (from, to, callback = () => { }) => {
 		// flying titlebar animation
 		animating_titlebar = true;
@@ -1545,6 +1625,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		$eye_leader.on("transitionend transitioncancel", handle_transition_completion);
 		setTimeout(handle_transition_completion, duration_ms * 1.2);
 	};
+	/** @param {boolean} [force] */
 	$w.close = (force) => {
 		if (force && force !== true) {
 			throw new TypeError("force must be a boolean or undefined, not " + Object.prototype.toString.call(force));
@@ -1581,6 +1662,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	};
 	$w.closed = false;
 
+	/** @type {MenuBar | null} */
 	let current_menu_bar;
 	// @TODO: should this be like setMenus(menu_definitions)?
 	// It seems like setMenuBar(menu_bar) might be prone to bugs
@@ -1610,8 +1692,12 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	return $w;
 }
 
+/**
+ * @param {string} title
+ * @returns {OSGUI$Window}
+ */
 function $FormWindow(title) {
-	var $w = new $Window();
+	var $w = $Window();
 
 	$w.title(title);
 	$w.$form = $(E("form")).appendTo($w.$content);
