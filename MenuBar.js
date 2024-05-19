@@ -1,7 +1,13 @@
 ((exports) => {
 
-function E(nodeName, attrs) {
-	const el = document.createElement(nodeName);
+/**
+ * @template {keyof HTMLElementTagNameMap} K
+ * @param {K} tagName
+ * @param {Record<string, string>} [attrs]
+ * @returns {HTMLElementTagNameMap[K]}
+ */
+function E(tagName, attrs) {
+	const el = document.createElement(tagName);
 	if (attrs) {
 		for (const key in attrs) {
 			if (key === "class") {
@@ -24,6 +30,7 @@ function uid() {
 
 // & defines access keys (contextual hotkeys) in menus and buttons and form labels, which get underlined in the UI.
 // & can be escaped by doubling it, e.g. "&Taskbar && Start Menu" for "Taskbar & Start Menu" with T as the access key.
+/** @type {AccessKeys} */
 const AccessKeys = {
 	escape: function (label) {
 		// Escapes all ampersands in the label, so that they are not treated as access keys.
@@ -116,6 +123,7 @@ const MENU_DIVIDER = "MENU_DIVIDER";
 
 const MAX_MENU_NESTING = 1000;
 
+/** @type {Element | null} */
 let last_focus_outside_menus = null;
 function track_focus() {
 	if (
@@ -140,6 +148,10 @@ function get_new_menu_z_index() {
 	return (++internal_z_counter) + MAX_MENU_NESTING;
 }
 
+/**
+ * @param {OSGUIMenuFragment[]} menus 
+ * @constructor
+ */
 function MenuBar(menus) {
 	if (!(this instanceof MenuBar)) {
 		return new MenuBar(menus);
@@ -159,17 +171,31 @@ function MenuBar(menus) {
 
 	let selecting_menus = false; // state where you can glide between menus without clicking
 
+	/**
+	 * @type {{
+	 *		menu_button_el: HTMLElement,
+	 *		menu_popup_el: HTMLElement,
+	 *		menus_key: string,
+	 *		access_key: string,
+	 *		open_top_level_menu: (source: "click" | "keydown") => void,
+	 *	}[]}
+	 */
 	const top_level_menus = [];
-	let top_level_menu_index = -1; // index of the top level menu that's most recently open, or highlighted
-	let active_menu_popup; // most nested open MenuPopup
+	/** index of the top level menu that's most recently open, or highlighted */
+	let top_level_menu_index = -1;
+	/** most nested open MenuPopup
+	 * @type {MenuPopup | undefined} */
+	let active_menu_popup;
 
 	// There can be multiple menu bars instantiated from the same menu definitions,
 	// so this can't be a map of menu item to submenu, it has to be of menu item ELEMENTS to submenu.
 	// (or you know, it could work totally differently, this is just one way to do it)
-	// This is for entering submenus.
+	/** This is for entering submenus.
+	 * @type {WeakMap<HTMLElement, MenuPopup>} */
 	const submenu_popup_by_menu_item_el = new WeakMap();
 
-	// This is for exiting submenus.
+	/** This is for exiting submenus.
+	 * @type {WeakMap<HTMLElement, HTMLElement>} */
 	const parent_item_el_by_popup_el = new WeakMap();
 
 	const close_menus = () => {
@@ -197,6 +223,7 @@ function MenuBar(menus) {
 		}
 	};
 
+	/** @param {number | string} new_index_or_menu_key */
 	const top_level_highlight = (new_index_or_menu_key) => {
 		const new_index = typeof new_index_or_menu_key === "string" ?
 			Object.keys(menus).indexOf(new_index_or_menu_key) :
@@ -220,6 +247,7 @@ function MenuBar(menus) {
 		}
 	});
 
+	/** @param {OSGUIMenuItem} item */
 	const is_disabled = item => {
 		if (typeof item.enabled === "function") {
 			return !item.enabled();
@@ -230,19 +258,20 @@ function MenuBar(menus) {
 		}
 	};
 
+	/** @param {OSGUIMenuItem} item */
 	function send_info_event(item) {
 		// @TODO: in a future version, give the whole menu item definition (or null)
 		const description = item?.description || "";
-		if (window.jQuery) {
+		if (typeof jQuery !== "undefined") {
 			// old API (using jQuery's "extraParameters"), made forwards compatible with new API (event.detail)
-			const event = new window.jQuery.Event("info", { detail: { description } });
+			const event = new jQuery.Event("info", { detail: { description } });
 			const extraParam = {
 				toString() {
 					console.warn("jQuery extra parameter for info event is deprecated, use event.detail instead");
 					return description;
 				},
 			};
-			window.jQuery(menus_el).trigger(event, extraParam);
+			jQuery(menus_el).trigger(event, extraParam);
 		} else {
 			menus_el.dispatchEvent(new CustomEvent("info", { detail: { description } }));
 		}

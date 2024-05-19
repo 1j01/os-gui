@@ -6,13 +6,15 @@
 	// document.head.appendChild(script);
 
 	var xhr = new XMLHttpRequest();
+	// @ts-ignore
 	xhr.open("GET", document.currentScript.src.replace("$", ""), false);
 	xhr.send();
 	eval(xhr.responseText);
 	
+	/** @param {OSGUIMenuFragment[]} menus */
 	function $MenuBar(menus) {
 		console?.warn?.("$MenuBar is deprecated. Use `new MenuBar(menus).element` instead.");
-		return jQuery(new MenuBar(menus).element);
+		return jQuery(MenuBar(menus).element);
 	}
 
 	exports.$MenuBar = $MenuBar;
