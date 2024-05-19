@@ -137,6 +137,10 @@ Returns an object with property `element`, which you should then append to the D
 
 See examples in the [demo code](./demo/demo.js).
 
+#### `element`
+
+The DOM element that represents the menu bar.
+
 #### `closeMenus()`
 
 Closes any menus that are open.
