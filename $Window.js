@@ -170,8 +170,11 @@ function $Window(options = {}) {
 	} else if (options.icon) {
 		// old terrible API using globals that you have to define
 		console.warn("DEPRECATED: use options.icons instead of options.icon, e.g. new $Window({icons: {16: 'app-16x16.png', any: 'app-icon.svg'}})");
+		// @ts-ignore
 		if (typeof $Icon !== "undefined" && typeof TITLEBAR_ICON_SIZE !== "undefined") {
+			// @ts-ignore
 			$w.icon_name = options.icon;
+			// @ts-ignore
 			$w.$icon = $Icon(options.icon, TITLEBAR_ICON_SIZE).prependTo($w.$titlebar);
 		} else {
 			throw new Error("Use {icon: img_element} or {icons: {16: url_or_img_element}} options");
@@ -199,8 +202,13 @@ function $Window(options = {}) {
 		} else if ($w.icons["any"]) {
 			icon_size = "any";
 		} else {
+			// isFinite(parseFloat("123xyz")) // true
+			// isFinite("123xyz") // false
+			// isFinite(parseFloat(null)) // false
+			// isFinite(null) // true
+			// @ts-ignore
 			const sizes = Object.keys($w.icons).filter(size => isFinite(size) && isFinite(parseFloat(size)));
-			sizes.sort((a, b) => Math.abs(a - target_icon_size) - Math.abs(b - target_icon_size));
+			sizes.sort((a, b) => Math.abs(parseFloat(a) - target_icon_size) - Math.abs(parseFloat(b) - target_icon_size));
 			icon_size = sizes[0];
 		}
 		if (icon_size) {
@@ -240,6 +248,7 @@ function $Window(options = {}) {
 	$w.setIconByID = (icon_name) => {
 		console.warn("DEPRECATED: use $w.setIcons(icons) instead of $w.setIconByID(icon_name)");
 		var old_$icon = $w.$icon;
+		// @ts-ignore
 		$w.$icon = $Icon(icon_name, TITLEBAR_ICON_SIZE);
 		old_$icon.replaceWith($w.$icon);
 		$w.icon_name = icon_name;

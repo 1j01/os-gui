@@ -2,6 +2,13 @@ const repel_force_slider = document.getElementById("repel-force-slider");
 const gravity_force_slider = document.getElementById("gravity-force-slider");
 const pause_checkbox = document.getElementById("pause-checkbox");
 
+if (!repel_force_slider || !gravity_force_slider || !pause_checkbox) {
+	throw new Error("Couldn't find the sliders or checkbox");
+}
+if (!(repel_force_slider instanceof HTMLInputElement) || !(gravity_force_slider instanceof HTMLInputElement) || !(pause_checkbox instanceof HTMLInputElement)) {
+	throw new Error("Unexpected type for the sliders or checkbox");
+}
+
 const $mothership = $Window({
 	title: 'Mothership',
 	outerWidth: 400,
@@ -22,6 +29,22 @@ const ship_image_urls = [
 	"https://i.postimg.cc/sXsTS1sQ/ship-16-colour-transparent.png",
 	"https://i.postimg.cc/pTCqBxL0/Spaceship-tut.png",
 ];
+/** 
+ * @type {{
+ * 	x: number,
+ * 	y: number,
+ * 	velocityX: number,
+ * 	velocityY: number,
+ * 	z: number,
+ * 	clipping: boolean,
+ * 	crossedDuringThisContainment: boolean,
+ * 	$window: OSGUI$Window,
+ * 	lagged_x?: number,
+ * 	lagged_y?: number,
+ * 	prev_x?: number,
+ * 	prev_y?: number,
+ * }[]}
+ */
 const objects = [];
 const n_objects = ship_image_urls.length * 2;
 
@@ -73,11 +96,11 @@ const animate = () => {
 			const targetX = motherRect.left + motherRect.width / 2 + 100;
 			const targetY = motherRect.top + motherRect.height / 2;
 			const dist = Math.hypot(targetX - o.x, targetY - o.y);
-			const repelForce = repel_force_slider.value / 100;
+			const repelForce = repel_force_slider.valueAsNumber / 100;
 			o.velocityX -= (targetX - o.x) / dist * repelForce;
 			o.velocityY -= (targetY - o.y) / dist * repelForce;
 			
-			const gravityForce = gravity_force_slider.value / 20000;
+			const gravityForce = gravity_force_slider.valueAsNumber / 20000;
 			o.velocityX -= (o.x - (motherRect.left + motherRect.width / 2)) * gravityForce;
 			o.velocityY -= (o.y - (motherRect.top + motherRect.height / 2)) * gravityForce;
 			for (let j = 0; j < objects.length; j++) {
@@ -128,7 +151,7 @@ const animate = () => {
 				o.crossedDuringThisContainment = true;
 				o.clipping = !o.clipping;
 				objects.sort((a, b) => a.z - b.z);
-				objects.sort((a, b) => b.clipping - a.clipping);
+				objects.sort((a, b) => Number(b.clipping) - Number(a.clipping));
 				objects.forEach((object, index) => { object.z = index; });
 			}
 		} else if (!containedByMothership) {
