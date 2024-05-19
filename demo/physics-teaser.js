@@ -1,15 +1,55 @@
-const svg = document.getElementById("physics-teaser");
-const svgLink = svg.closest("a");
+const svgMaybe = document.getElementById("physics-teaser");
+if (!svgMaybe) {
+	throw new Error("Couldn't find the SVG element");
+}
+const svgLinkMaybe = svgMaybe.closest("a");
+if (!svgLinkMaybe) {
+	throw new Error("Couldn't find the parent link anchor element");
+}
 
+// Typescript doesn't narrow the type to non-null inside functions below.
+// To be fair, named functions can be used above the const declarations,
+// but it doesn't use the fact that there are no calls before the const declarations.
+const svg = svgMaybe;
+const svgLink = svgLinkMaybe;
+
+/**
+ * @param {string} tag 
+ * @param {Record<string, string | number>} attrs 
+ * @returns {SVGElement}
+ */
 function createElementSVG(tag, attrs) {
 	const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
 	for (let k in attrs) {
-		el.setAttribute(k, attrs[k]);
+		el.setAttribute(k, attrs[k].toString());
 	}
 	return el;
 }
 
+/**
+ * @typedef {{
+ * 	x: number,
+ * 	y: number,
+ * 	vx: number,
+ * 	vy: number,
+ * 	fx: number,
+ * 	fy: number,
+ * 	color: string,
+ * 	circle: SVGElement,
+ * }} PhysicsPoint
+ * 
+ * @typedef {{
+ * 	point1: PhysicsPoint,
+ * 	point2: PhysicsPoint,
+ * 	targetDistance: number,
+ * 	line1: SVGElement,
+ * 	line2: SVGElement,
+ * }} PhysicsConnection
+ */
+
+/** @type {PhysicsPoint[]} */
 let points = [];
+/** @type {PhysicsConnection[]} */
 let connections = [];
 
 const pointRadius = 3;
@@ -21,7 +61,13 @@ let animating = false;
 const friction = 0.2;
 const coefficientOfRestitution = 0.8;
 
+/**
+ * @param {Partial<PhysicsPoint>} options 
+ * @returns {PhysicsPoint}
+ */
 function addPoint(options) {
+	/** @type {PhysicsPoint} */
+	// @ts-ignore (Doesn't have `circle` yet; could restructure, but since `circle` has a circular dependency, it might be uglier)
 	const point = Object.assign({
 		x: 0,
 		y: 0,
@@ -43,6 +89,12 @@ function addPoint(options) {
 	return point;
 }
 
+/**
+ * @param {PhysicsPoint} point1 
+ * @param {PhysicsPoint} point2 
+ * @param {number} [targetDistance]
+ * @returns {PhysicsConnection}
+ */
 function addConnection(point1, point2, targetDistance = 10) {
 	const connection = {
 		point1,
@@ -57,6 +109,20 @@ function addConnection(point1, point2, targetDistance = 10) {
 	return connection;
 }
 
+/**
+ * @param {{
+ * 	x?: number,
+ * 	y?: number,
+ * 	vx?: number,
+ * 	vy?: number,
+ * 	numPoints?: number,
+ * 	targetDistance?: number,
+ * 	startRadius?: number,
+ * 	rotationSpeed?: number,
+ * 	pointOptions?: Partial<PhysicsPoint>,
+ * }} options
+ * @returns {{ ballPoints: PhysicsPoint[], ballConnections: PhysicsConnection[] }}
+ */
 function addBall({ x = 0, y = 0, vx = 0, vy = 0, numPoints = 10, targetDistance = 50, startRadius = 50, rotationSpeed = 0, pointOptions } = {}) {
 	let ballPoints = [];
 	let ballConnections = [];
@@ -82,9 +148,19 @@ function addBall({ x = 0, y = 0, vx = 0, vy = 0, numPoints = 10, targetDistance 
 
 addBall({ x: 100, y: 100, numPoints: 10, rotationSpeed: 5, vx: -5, vy: 2 });
 
+/**
+ * @param {number} a 
+ * @param {number} b 
+ * @param {number} t 
+ * @returns {number}
+ */
 function lerp(a, b, t) {
 	return a + (b - a) * t;
 }
+/**
+ * @param {{x: number, y: number}[]} points 
+ * @returns {{x: number, y: number}}
+ */
 function averagePoints(points) {
 	let averageX = 0;
 	let averageY = 0;
@@ -102,8 +178,8 @@ function animate() {
 		point.vy += point.fy;
 		point.x += point.vx;
 		point.y += point.vy;
-		point.circle.setAttribute("cx", point.x);
-		point.circle.setAttribute("cy", point.y);
+		point.circle.setAttribute("cx", `${point.x}`);
+		point.circle.setAttribute("cy", `${point.y}`);
 		if (point.x < border) {
 			point.x = border;
 			point.vx *= -coefficientOfRestitution;
@@ -129,14 +205,14 @@ function animate() {
 	}
 	for (const connection of connections) {
 		const { point1, point2, line1, line2, targetDistance } = connection;
-		line1.setAttribute("x1", lerp(point1.x, point2.x, 0.2));
-		line1.setAttribute("y1", lerp(point1.y, point2.y, 0.2));
-		line1.setAttribute("x2", lerp(point1.x, point2.x, 0.4));
-		line1.setAttribute("y2", lerp(point1.y, point2.y, 0.4));
-		line2.setAttribute("x1", lerp(point1.x, point2.x, 0.6));
-		line2.setAttribute("y1", lerp(point1.y, point2.y, 0.6));
-		line2.setAttribute("x2", lerp(point1.x, point2.x, 0.8));
-		line2.setAttribute("y2", lerp(point1.y, point2.y, 0.8));
+		line1.setAttribute("x1", `${lerp(point1.x, point2.x, 0.2)}`);
+		line1.setAttribute("y1", `${lerp(point1.y, point2.y, 0.2)}`);
+		line1.setAttribute("x2", `${lerp(point1.x, point2.x, 0.4)}`);
+		line1.setAttribute("y2", `${lerp(point1.y, point2.y, 0.4)}`);
+		line2.setAttribute("x1", `${lerp(point1.x, point2.x, 0.6)}`);
+		line2.setAttribute("y1", `${lerp(point1.y, point2.y, 0.6)}`);
+		line2.setAttribute("x2", `${lerp(point1.x, point2.x, 0.8)}`);
+		line2.setAttribute("y2", `${lerp(point1.y, point2.y, 0.8)}`);
 		const distanceBetweenPointsReckoned = Math.hypot((point1.x + point1.vx) - (point2.x + point2.vx), (point1.y + point1.vy) - (point2.y + point2.vy));
 		const distanceDiff = distanceBetweenPointsReckoned - targetDistance;
 		const force = distanceDiff * 0.01 / (distanceBetweenPointsReckoned + 1);
@@ -182,12 +258,14 @@ svg.onpointerdown = () => {
 		}
 	}
 };
+/** @param {Event} event */
 svg.onselectstart = (event) => {
 	event.preventDefault();
 };
 
 // iOS Safari ignores clip-path as far as interaction goes,
 // so we need to manually ignore interaction outside the clip-path.
+/** @param {MouseEvent} event */
 svgLink.onclick =
 svgLink.onauxclick =
 svgLink.onpointerdown =
@@ -202,6 +280,7 @@ svgLink.oncontextmenu = (event) => {
 		return;
 	}
 };
+/** @param {MouseEvent} event */
 function insideClipPath(event) {
 	const center = averagePoints(points);
 	const rect = svg.getBoundingClientRect();
