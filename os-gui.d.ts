@@ -153,7 +153,7 @@ interface OSGUIWindow {
 	 * *jQuery object.*  
 	 * Wrapper around the title. Don't use this. Use `$title` or `$titlebar` instead, if possible.
 	 */
-	$title_area: JQuery<HTMLElement>;
+	private $title_area: JQuery<HTMLElement>;
 
 	/**
 	 * *jQuery object.*  
@@ -188,6 +188,16 @@ interface OSGUIWindow {
 	 * Whether the window has been closed.
 	 */
 	closed: boolean;
+
+	/**
+	 * Icons representing the window at different sizes.
+	 */
+	private icons: OSGUIIcons;
+
+	/**
+	 * The titlebar icon.
+	 */
+	private $icon: JQuery<HTMLElement>;
 }
 
 /**
@@ -292,6 +302,10 @@ interface OSGUIWindowOptions {
 
 	};
 
+	/** @deprecated */
+	$component?: JQuery<HTMLElement>;
+	/** @deprecated */
+	icon?: string | { srcset: string } | Node;
 }
 
 /**

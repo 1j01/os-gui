@@ -499,8 +499,10 @@ The titlebar of the window, including the title, window buttons, and possibly an
 
 #### `$title_area`
 
+PRIVATE: Don't use this. Use `$title` or `$titlebar` instead, if possible.
+
 *jQuery object.*  
-Wrapper around the title. Don't use this. Use `$title` or `$titlebar` instead, if possible.
+Wrapper around the title.
 
 #### `$title`
 
@@ -521,6 +523,13 @@ The minimize button.
 
 *jQuery object.*  
 The maximize button.
+
+#### `$icon`
+
+PRIVATE: Don't use this.
+
+*jQuery object.*  
+The titlebar icon.
 
 #### `element`
 
