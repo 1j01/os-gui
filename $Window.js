@@ -1694,10 +1694,10 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 
 /**
  * @param {string} title
- * @returns {OSGUI$Window}
+ * @returns {OSGUI$FormWindow}
  */
 function $FormWindow(title) {
-	var $w = $Window();
+	var $w = /** @type {OSGUI$FormWindow} */($Window());
 
 	$w.title(title);
 	$w.$form = $(E("form")).appendTo($w.$content);
