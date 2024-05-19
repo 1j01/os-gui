@@ -459,19 +459,27 @@ Returns a jQuery object.
 
 #### `addChildWindow($window)`
 
+PRIVATE: don't use this.
+
 Defines a window as a child. For tool windows, the focus state will be shared with the parent window.
 
 This is used internally when you set `options.parentWindow` when creating a window.
 
 #### `onFocus(listener)`
 
+EXPERIMENTAL: This is a potential new API for events when dependency on jQuery is removed.Not available for all events. Inspired by Webamp's API which is probably inspired by React's API.
+
 Calls the listener when the window is (visually?) focused.
 
 #### `onBlur(listener)`
 
+EXPERIMENTAL: potential new API for events
+
 Calls the listener when the window (visually?) loses focus.
 
 #### `onClosed(listener)`
+
+EXPERIMENTAL: potential new API for events
 
 Calls the listener when the window is closed (after the close event is emitted, and if it wasn't prevented).
 

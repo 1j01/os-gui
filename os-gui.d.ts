@@ -115,27 +115,27 @@ interface OSGUIWindow {
 	 * 
 	 * This is used internally when you set `options.parentWindow` when creating a window.
 	 */
-	addChildWindow(childWindow: OSGUI$Window): void;
+	private addChildWindow(childWindow: OSGUI$Window): void;
 
 	/**
 	 * Calls the listener when the window is (visually?) focused.
 	 * Returns a function to remove the listener.
 	 */
-	onFocus(listener: () => void): () => void;
+	private onFocus(listener: () => void): () => void;
 
 
 	/**
 	 * Calls the listener when the window (visually?) loses focus.
 	 * Returns a function to remove the listener.
 	 */
-	onBlur(listener: () => void): () => void;
+	private onBlur(listener: () => void): () => void;
 
 
 	/**
 	 * Calls the listener when the window is closed (after the close event is emitted, and if it wasn't prevented).
 	 * Returns a function to remove the listener.
 	 */
-	onClosed(listener: () => void): () => void;
+	private onClosed(listener: () => void): () => void;
 
 	/**
 	 * *jQuery object.*  
