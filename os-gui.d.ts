@@ -198,6 +198,24 @@ interface OSGUIWindow {
 type OSGUI$Window = JQuery<HTMLElement & { $window: OSGUI$Window }> & OSGUIWindow;
 
 /**
+ * A window with a form, for some kinds of dialogs.
+ */
+interface OSGUIFormWindow extends OSGUIWindow {
+	$form: JQuery<HTMLFormElement>;
+	$main: JQuery<HTMLDivElement>;
+	$buttons: JQuery<HTMLDivElement>;
+	/** @override This version of $Button() prevents the form from submitting and the window from closing. */
+	$Button(text: string, action: () => void): JQuery<HTMLButtonElement>;
+}
+
+/**
+ * A jQuery object extended with OS-GUI.js form form window methods and properties.
+ * 
+ * This was a bad design decision.
+ */
+type OSGUI$FormWindow = JQuery<HTMLElement & { $window: OSGUI$FormWindow }> & OSGUIFormWindow;
+
+/**
  * Creates a new window.
  */
 function $Window(options?: OSGUIWindowOptions): OSGUI$Window;
@@ -205,7 +223,7 @@ function $Window(options?: OSGUIWindowOptions): OSGUI$Window;
 /**
  * Creates a new form window.
  */
-function $FormWindow(title: string): OSGUI$Window;
+function $FormWindow(title: string): OSGUI$FormWindow;
 
 interface OSGUIWindowOptions {
 
