@@ -426,7 +426,7 @@ type CSSProps = Record<string, string> | CSSStyleDeclaration;
  * 
  * Automatically renders dynamic theme graphics, and includes them in the CSS properties.
  */
-function parseThemeFileString(themeString);
+function parseThemeFileString(themeString: string): Record<string, string>;
 
 /**
  * Applies CSS properties to the DOM tree.
@@ -451,13 +451,13 @@ function applyCSSProperties(cssProperties: CSSProps, options: { element: HTMLEle
  * applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), { element });
  * ```
  */
-function renderThemeGraphics(cssProperties: CSSProps);
+function renderThemeGraphics(cssProperties: CSSProps): Record<string, string>;
 
 /**
  * Exports a CSS file for a theme. Assumes that the theme graphics are already rendered.
  * Includes a "generated file" comment.
  */
-function makeThemeCSSFile(cssProperties: CSSProps);
+function makeThemeCSSFile(cssProperties: CSSProps): string;
 
 /**
  * Initializes an SVG filter that can be used to make icons appear disabled.
