@@ -2,7 +2,7 @@ const repel_force_slider = document.getElementById("repel-force-slider");
 const gravity_force_slider = document.getElementById("gravity-force-slider");
 const pause_checkbox = document.getElementById("pause-checkbox");
 
-const $mothership = new $Window({
+const $mothership = $Window({
 	title: 'Mothership',
 	outerWidth: 400,
 	outerHeight: 300,
@@ -26,7 +26,7 @@ const objects = [];
 const n_objects = ship_image_urls.length * 2;
 
 for (let i = 0; i < n_objects; ++i) {
-	const $window = new $Window({
+	const $window = $Window({
 		title: "Ship " + i,
 	});
 	$window.$content.append(
