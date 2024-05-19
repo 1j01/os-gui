@@ -268,7 +268,7 @@ const menus = {
 	})),
 };
 
-$main_test_window = new $Window({
+$main_test_window = $Window({
 	title: "Test Station",
 	resizable: false,
 	icons: { 16: "https://win98icons.alexmeub.com/icons/png/application_hammer_grouppol-0.png" },
@@ -319,7 +319,7 @@ $main_test_window.$content.css({
 	marginRight: "0.5em",
 	marginLeft: "0.5em",
 });
-$tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $main_test_window });
+$tool_window_1 = $Window({ title: "Tool Window", toolWindow: true, parentWindow: $main_test_window });
 $tool_window_1.$content.append(`
 	<p>This tool window has controls in it:</p>
 	<input type="text" placeholder="Text input">
@@ -328,7 +328,7 @@ $tool_window_1.$content.append(`
 $main_test_window.on("close", (event) => {
 	console.log("Main test window close event");
 	event.preventDefault();
-	const $confirm_window = new $Window({
+	const $confirm_window = $Window({
 		title: "Confirm Close",
 		parentWindow: $main_test_window,
 		resizable: false,
@@ -443,7 +443,7 @@ $tool_window_1.css({
 });
 
 function test_selectable_text() {
-	$selection_test_window = new $Window({
+	$selection_test_window = $Window({
 		title: "Selectable Text",
 		resizable: true,
 		icons: {
@@ -467,7 +467,7 @@ function test_selectable_text() {
 }
 
 function test_iframes() {
-	$iframe_test_window = new $Window({
+	$iframe_test_window = $Window({
 		title: "Iframe Window",
 		resizable: true,
 		icons: {
@@ -512,7 +512,7 @@ function test_iframes() {
 
 function test_icon_sizes() {
 	const emoji_el = $("<span/>").text("📷")[0];
-	$icon_test_window = new $Window({
+	$icon_test_window = $Window({
 		title: "Icon Size Test — and a Long Titlebar Text (also known as a window caption)",
 		resizable: true,
 		icons: {
@@ -557,7 +557,7 @@ function test_icon_sizes() {
 }
 
 function test_triggering() {
-	$trigger_test_window = new $Window({
+	$trigger_test_window = $Window({
 		title: "Trigger Station",
 		resizable: true,
 		icons: {
@@ -671,7 +671,7 @@ function test_triggering() {
 }
 
 function test_window_theme() {
-	$theme_test_window = new $Window({
+	$theme_test_window = $Window({
 		title: "Window Theme Applier",
 		resizable: false,
 		icons: {
