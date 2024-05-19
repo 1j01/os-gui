@@ -1,8 +1,14 @@
 for (const w of document.querySelectorAll(".window")) {
+	if (!(w instanceof HTMLElement)) throw new Error("Unexpected type for window element");
 	graphic_glitch(w);
 }
+/**
+ * @param {HTMLElement} w The window element to apply the graphic glitch to.
+ */
 function graphic_glitch(w) {
+	/** @type {[number, number][]} */
 	var pos_history = [];
+	/** @type {SVGFEOffsetElement[]} */
 	var feOffsets = [];
 	var max_pos_history = 100;
 	var filter_id = `graphic-glitch-${Math.random()}`;
@@ -20,6 +26,7 @@ function graphic_glitch(w) {
 	var animate = () => {
 		requestAnimationFrame(animate);
 		var current_rect = w.getBoundingClientRect();
+		/** @type {[number, number]} */
 		var current_pos = [current_rect.left, current_rect.top];
 		if (pos_history.length > max_pos_history) {
 			pos_history.length = 0;
@@ -54,14 +61,14 @@ function graphic_glitch(w) {
 			for (let i = 0; i < feOffsets.length; i++) {
 				const feOffset = feOffsets[i];
 				const [x, y] = pos_history[i];
-				feOffset.setAttribute("dx", x - current_pos[0]);
-				feOffset.setAttribute("dy", y - current_pos[1]);
+				feOffset.setAttribute("dx", `${x - current_pos[0]}`);
+				feOffset.setAttribute("dy", `${y - current_pos[1]}`);
 			}
 
-			filter.setAttribute("x", Math.min(0, 10 - current_rect.left));
-			filter.setAttribute("y", Math.min(0, 10 - current_rect.top));
-			filter.setAttribute("width", innerWidth);
-			filter.setAttribute("height", innerHeight);
+			filter.setAttribute("x", `${Math.min(0, 10 - current_rect.left)}`);
+			filter.setAttribute("y", `${Math.min(0, 10 - current_rect.top)}`);
+			filter.setAttribute("width", `${innerWidth}`);
+			filter.setAttribute("height", `${innerHeight}`);
 		}
 	};
 	animate();

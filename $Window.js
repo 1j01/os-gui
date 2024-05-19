@@ -5,18 +5,21 @@
 const E = document.createElement.bind(document);
 
 /**
- * @param {Element} element 
+ * @param {Element | object | null | undefined} element 
  * @returns {string}
  */
 function element_to_string(element) {
 	// returns a CSS-selector-like string for the given element
 	// if (element instanceof Element) { // doesn't work with different window.Element from iframes
-	if (typeof element === "object" && "tagName" in element) {
+	if (element && typeof element === "object" && "tagName" in element) {
 		return element.tagName.toLowerCase() +
 			(element.id ? "#" + element.id : "") +
 			(element.className ? "." + element.className.split(" ").join(".") : "") +
+			// @ts-ignore (duck typing is better here for cross-iframe code)
 			(element.src ? `[src="${element.src}"]` : "") + // Note: not escaped; may not actually work as a selector (but this is for debugging)
+			// @ts-ignore (duck typing is better here for cross-iframe code)
 			(element.srcdoc ? "[srcdoc]" : "") + // (srcdoc can be long)
+			// @ts-ignore (duck typing is better here for cross-iframe code)
 			(element.href ? `[href="${element.href}"]` : "");
 	} else if (element) {
 		return element.constructor.name;
@@ -67,15 +70,21 @@ function find_tabstops(container_el) {
 	/** @type {HTMLElement[]} */
 	const to_skip = [];
 	for (const el of $controls.toArray()) {
+		// @ts-ignore
 		if (el.nodeName.toLowerCase() === "input" && el.type === "radio") {
+			// @ts-ignore
 			if (radios[el.name]) {
+				// @ts-ignore
 				if (el.checked) {
+					// @ts-ignore
 					to_skip.push(radios[el.name]);
+					// @ts-ignore
 					radios[el.name] = el;
 				} else {
 					to_skip.push(el);
 				}
 			} else {
+				// @ts-ignore
 				radios[el.name] = el;
 			}
 		}
