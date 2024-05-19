@@ -258,7 +258,7 @@ function MenuBar(menus) {
 		}
 	};
 
-	/** @param {OSGUIMenuItem} item */
+	/** @param {OSGUIMenuItem} [item] */
 	function send_info_event(item) {
 		// @TODO: in a future version, give the whole menu item definition (or null)
 		const description = item?.description || "";
@@ -278,7 +278,10 @@ function MenuBar(menus) {
 	}
 
 
-	// attached to menu bar and floating popups (which are not descendants of the menu bar)
+	/**
+	 * attached to menu bar and floating popups (which are not descendants of the menu bar)
+	 * @param {KeyboardEvent} e
+	 */
 	function handleKeyDown(e) {
 		if (e.defaultPrevented) {
 			return;
@@ -477,11 +480,18 @@ function MenuBar(menus) {
 
 	menus_el.addEventListener("keydown", handleKeyDown);
 
-	// TODO: API for context menus (i.e. floating menu popups)
+	// TODO: expose API for context menus (i.e. floating menu popups)
+	/**
+	 * A floating menu popup.
+	 * @param {OSGUIMenuFragment[]} menu_items 
+	 * @param {{ parentMenuPopup?: MenuPopup }} [options]
+	 */
 	function MenuPopup(menu_items, { parentMenuPopup } = {}) {
 		this.parentMenuPopup = parentMenuPopup;
 		this.menuItems = menu_items;
-		this.itemElements = []; // one-to-one with menuItems
+		/** one-to-one with menuItems
+		 * @type {HTMLElement[]} */
+		this.itemElements = [];
 		// @TODO: unify terminology: separators are in itemElements but don't have class .menu-item; are they menu items?
 
 		const menu_popup_el = E("div", {
@@ -497,6 +507,13 @@ function MenuBar(menus) {
 
 		this.element = menu_popup_el;
 
+		/**
+		 * @type {{
+		 * 	item_el: HTMLElement,
+		 * 	submenu_popup_el: HTMLElement,
+		 * 	submenu_popup: MenuPopup,
+		 * }[]}
+		 */
 		let submenus = [];
 
 		menu_popup_el.addEventListener("keydown", handleKeyDown);
@@ -521,11 +538,15 @@ function MenuBar(menus) {
 			menu_popup_el.focus({ preventScroll: true });
 		});
 
+		/** @type {HTMLElement | null} */
 		let last_item_el;
+		/** @param {number | HTMLElement} index_or_element */
 		this.highlight = (index_or_element) => { // index includes separators
-			let item_el = index_or_element;
+			let item_el;
 			if (typeof index_or_element === "number") {
 				item_el = this.itemElements[index_or_element];
+			} else {
+				item_el = index_or_element;
 			}
 			if (last_item_el && last_item_el !== item_el) {
 				last_item_el.classList.remove("highlight");
@@ -556,12 +577,17 @@ function MenuBar(menus) {
 			}
 		};
 
+		/**
+		 * @param {HTMLElement} parent_element 
+		 * @param {OSGUIMenuItem | "MENU_DIVIDER"} item 
+		 * @param {number} item_index 
+		 */
 		const add_menu_item = (parent_element, item, item_index) => {
 			const row_el = E("tr", { class: "menu-row" });
 			this.itemElements.push(row_el);
 			parent_element.appendChild(row_el);
 			if (item === MENU_DIVIDER) {
-				const td_el = E("td", { colspan: 4 });
+				const td_el = E("td", { colspan: "4" });
 				const hr_el = E("hr", { class: "menu-hr" });
 				// hr_el.setAttribute("role", "separator"); // this is the implicit ARIA role for <hr>
 				// and setting it on the <tr> might cause problems due to multiple elements with the role
@@ -664,7 +690,10 @@ function MenuBar(menus) {
 					checkbox_area_el.classList.add("checkbox");
 				}
 
-				let open_submenu, submenu_popup_el;
+				/** @type {(highlight_first?: boolean) => void} */
+				let open_submenu;
+				/** @type {HTMLDivElement} */
+				let submenu_popup_el;
 				if (item.submenu) {
 					item_el.classList.add("has-submenu"); // @TODO: remove this, and use [aria-haspopup] instead (note true = menu)
 					submenu_area_el.classList.toggle("point-right", get_direction() === "rtl");
@@ -775,7 +804,10 @@ function MenuBar(menus) {
 					//   (but if you move outside menus AFTER the submenu has opened, it should start the closing timeout)
 					// @TODO: make this more robust in general! Make some automated tests.
 
-					let open_tid, close_tid;
+					/** @type {number | null} */
+					let open_tid;
+					/** @type {number | null} */
+					let close_tid;
 					submenu_popup_el.addEventListener("pointerenter", () => {
 						if (open_tid) { clearTimeout(open_tid); open_tid = null; }
 						if (close_tid) { clearTimeout(close_tid); close_tid = null; }
