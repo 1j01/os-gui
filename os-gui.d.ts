@@ -198,6 +198,16 @@ interface OSGUIWindow {
 	 * The titlebar icon.
 	 */
 	private $icon: JQuery<HTMLElement>;
+
+	/**
+	 * @deprecated The titlebar icon name.
+	 */
+	private icon_name: string;
+
+	/**
+	 * @deprecated Returns the titlebar icon name.
+	 */
+	getIconName(): string;
 }
 
 /**
