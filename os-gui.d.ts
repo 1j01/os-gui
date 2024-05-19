@@ -344,7 +344,7 @@ interface OSGUIMenuItem {
 	/** An array of menu item specifications to create a submenu */
 	submenu?: OSGUIMenuFragment[];
 	/** For implementing a status bar. An `info` event is emitted when rolling over the item with this description. */
-	description: string;
+	description?: string;
 
 	/** @deprecated A label for the item. Use `label` instead. */
 	item?: string;

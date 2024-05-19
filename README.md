@@ -213,7 +213,7 @@ Menu item specifications are either `MENU_DIVIDER` (a constant indicating a hori
 	* Property `toggle` should be a function that toggles the state of the option, however you're storing it; called when clicked.
 * `enabled` (optional): can be `false` to unconditionally disable the item, or a function that determines whether the item should be enabled, returning `true` to enable the item, `false` to disable.
 * `submenu` (optional): an array of menu item specifications to create a submenu
-* `description`: for implementing a status bar; an [`info` event](#event-info) is emitted when rolling over the item with this description
+* `description` (optional): for implementing a status bar; an [`info` event](#event-info) is emitted when rolling over the item with this description
 * `value` (optional): for radio items, the value of the item; can be any type, but `===` is used to determine whether the item is checked.
 
 A radio group specification is an object with the following properties:
