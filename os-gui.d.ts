@@ -309,7 +309,9 @@ type OSGUIIcon = string | { srcset: string } | Node;
 const MENU_DIVIDER = "MENU_DIVIDER";
 
 interface OSGUICheckbox {
+	/** A function to check whether the checkbox is checked. */
 	check: () => boolean;
+	/** A function to toggle something application-specific. */
 	toggle: () => void;
 }
 
