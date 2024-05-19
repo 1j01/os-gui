@@ -1724,7 +1724,31 @@ function $FormWindow(title) {
 	return $w;
 }
 
+class OSGUIWindow {
+
+}
+
+	function $Window (options) {
+		const w = new OSGUIWindow(options);
+		const $w = $(w.element);
+		return new Proxy(w, {
+			get: (target, prop, receiver) => {
+				if (prop in target) {
+					return target[prop];
+				} else if (prop in $w) {
+					console.warn("Deprecated access to jQuery interface of $Window; prefer using `.element` property.");
+					return $w[prop];
+				} else {
+					console.warn("Access to undefined property/method of $Window:", prop);
+					return undefined;
+				}
+			},
+		});
+
+	};
+	
 exports.$Window = $Window;
 exports.$FormWindow = $FormWindow;
-
+exports.OSGUIWindow = OSGUIWindow;
+	
 })(window);
