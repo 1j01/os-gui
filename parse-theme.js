@@ -1,11 +1,17 @@
+/**
+ * @param {string} data 
+ * @returns {Record<string, string | Record<string, string>>}
+ */
 function parseINIString(data) {
 	var regex = {
 		section: /^\s*\[\s*([^\]]*)\s*\]\s*$/,
 		param: /^\s*([^=]+?)\s*=\s*(.*?)\s*$/,
 		comment: /^\s*;.*$/
 	};
+	/** @type {Record<string, string | Record<string, string>>} */
 	var value = {};
 	var lines = data.split(/[\r\n]+/);
+	/** @type {string | null} */
 	var section = null;
 	lines.forEach(function (line) {
 		if (regex.comment.test(line)) {
@@ -13,28 +19,45 @@ function parseINIString(data) {
 		} else if (regex.param.test(line)) {
 			var match = line.match(regex.param);
 			if (section) {
+				// @ts-ignore (could refactor to store section as an object, and use match result instead of test)
 				value[section][match[1]] = match[2];
 			} else {
+				// @ts-ignore (could refactor to use match result instead of test)
 				value[match[1]] = match[2];
 			}
 		} else if (regex.section.test(line)) {
 			var match = line.match(regex.section);
+			// @ts-ignore (could refactor to use match result instead of test)
 			value[match[1]] = {};
+			// @ts-ignore (could refactor to use match result instead of test)
 			section = match[1];
 		} else if (line.length == 0 && section) {
+			// REALLY?? An empty line resets the section?? Dubious!
+			// What does Windows do?
 			section = null;
 		};
 	});
 	return value;
 }
 
-// takes a CSSStyleDeclaration or simple object of CSS properties
+/**
+ * @param {Record<string, string> | CSSStyleDeclaration} cssProperties
+ * @returns {Record<string, string>}
+ */
 function renderThemeGraphics(cssProperties) {
-	var getProp = (propName) => cssProperties.getPropertyValue ? cssProperties.getPropertyValue(propName) : cssProperties[propName];
+	/**
+	 * @param {string} propName 
+	 * @returns {string}
+	 */
+	var getProp = (propName) => typeof cssProperties.getPropertyValue === "function" ? cssProperties.getPropertyValue(propName) : cssProperties[propName];
 
 	var canvas = document.createElement("canvas");
 	canvas.width = canvas.height = 2;
 	var ctx = canvas.getContext("2d");
+	if (!ctx) {
+		console.error("Failed to get 2d context for canvas to render theme graphics");
+		return {};
+	}
 	ctx.fillStyle = getProp("--ButtonFace");
 	ctx.fillRect(0, 1, 1, 1);
 	ctx.fillRect(1, 0, 1, 1);
@@ -58,6 +81,10 @@ function renderThemeGraphics(cssProperties) {
 
 	var arrow_canvas = document.createElement("canvas");
 	var arrow_ctx = arrow_canvas.getContext("2d");
+	if (!arrow_ctx) {
+		console.error("Failed to get 2d context for canvas to render arrow graphics for theme");
+		return {};
+	}
 	arrow_canvas.width = arrow_width;
 	arrow_canvas.height = arrow_size;
 	arrow_ctx.fillStyle = "white";
@@ -106,6 +133,11 @@ function renderThemeGraphics(cssProperties) {
 	// $("h1").append(arrow_canvas).append(canvas);
 	ctx.restore();
 
+	/**
+	 * @param {number} border_size 
+	 * @param {string} svg_contents
+	 * @returns {string}
+	 */
 	function border_image(border_size, svg_contents) {
 		var base_size = 8;
 		var border_size = border_size;
@@ -175,6 +207,10 @@ function renderThemeGraphics(cssProperties) {
 	};
 }
 
+/**
+ * @param {HTMLElement} element 
+ * @returns {Record<string, string>}
+ */
 function getThemeCSSProperties(element) {
 	const keys = [
 		"--checker",
@@ -219,6 +255,7 @@ function getThemeCSSProperties(element) {
 		"--WindowText",
 	];
 	const style = window.getComputedStyle(element);
+	/** @type {Record<string, string>} */
 	const result = {};
 	for (const key of keys) {
 		result[key] = style.getPropertyValue(key);
@@ -226,6 +263,10 @@ function getThemeCSSProperties(element) {
 	return result;
 }
 
+/**
+ * @param {HTMLElement} target 
+ * @param {HTMLElement} source 
+ */
 function inheritTheme(target, source) {
 	applyCSSProperties(getThemeCSSProperties(source), { element: target, recurseIntoIframes: true });
 }
@@ -260,6 +301,10 @@ function inheritTheme(target, source) {
 
 // NonClientMetricsStruct.readStructs(NonClientMetrics_buffer, 0, 1)[0];
 
+/**
+ * @param {string} themeIni 
+ * @returns {Record<string, string> | undefined}
+ */
 function parseThemeFileString(themeIni) {
 	// .theme is a renamed .ini text file
 	// .themepack is a renamed .cab file, and parsing it as .ini seems to work well enough for the most part, as the .ini data appears in plain,
@@ -280,6 +325,7 @@ function parseThemeFileString(themeIni) {
 		}
 	}
 
+	/** @type {Record<string, string>} */
 	var cssProperties = {};
 	for (var k in colors) {
 		cssProperties[`--${k}`] = colors[k];
@@ -290,9 +336,16 @@ function parseThemeFileString(themeIni) {
 	return cssProperties;
 }
 
+/**
+ * @param {Record<string, string> | CSSStyleDeclaration} cssProperties
+ * @param {{ element?: HTMLElement, recurseIntoIframes?: boolean } | HTMLElement} options
+ */
 function applyCSSProperties(cssProperties, options = {}) {
 	// @TODO: clean up deprecated argument handling
-	let element, recurseIntoIframes;
+	/** @type {HTMLElement} */
+	let element;
+	/** @type {boolean} */
+	let recurseIntoIframes;
 	if ("tagName" in options) {
 		console.warn("deprecated: use options argument to applyCSSProperties, e.g. applyCSSProperties(cssProperties, { element: document.documentElement, recurseIntoIframes: true })");
 		element = options;
@@ -301,7 +354,11 @@ function applyCSSProperties(cssProperties, options = {}) {
 		({ element = document.documentElement, recurseIntoIframes = false } = options);
 	}
 
-	var getProp = (propName) => cssProperties.getPropertyValue ? cssProperties.getPropertyValue(propName) : cssProperties[propName];
+	/**
+	 * @param {string} propName 
+	 * @returns {string}
+	 */
+	var getProp = (propName) => typeof cssProperties.getPropertyValue === "function" ? cssProperties.getPropertyValue(propName) : cssProperties[propName];
 	for (var k in cssProperties) {
 		element.style.setProperty(k, getProp(k));
 	}
@@ -319,6 +376,10 @@ function applyCSSProperties(cssProperties, options = {}) {
 	}
 }
 
+/**
+ * @param {Record<string, string>} cssProperties
+ * @returns {string}
+ */
 function makeThemeCSSFile(cssProperties) {
 	var css = `
 /* This is a generated file. */
