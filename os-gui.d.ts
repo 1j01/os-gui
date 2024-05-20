@@ -5,6 +5,12 @@ interface OSGUIWindow {
 	title(text: string): void;
 	title(): string;
 
+
+	/**
+	 * Returns the current title of the window. Alternative to `title()`.
+	 */
+	getTitle(): string;
+
 	/**
 	 * Closes the window.
 	 */
@@ -118,6 +124,11 @@ interface OSGUIWindow {
 	private addChildWindow(childWindow: OSGUI$Window): void;
 
 	/**
+	 * Flying titlebar animation.
+	 */
+	private animateTitlebar(from: DOMRect, to: DOMRect, callback: () => void): void;
+
+	/**
 	 * Calls the listener when the window is (visually?) focused.
 	 * Returns a function to remove the listener.
 	 */
@@ -200,14 +211,27 @@ interface OSGUIWindow {
 	private $icon: JQuery<HTMLElement>;
 
 	/**
-	 * @deprecated The titlebar icon name.
+	 * @deprecated The titlebar icon name/ID.
 	 */
 	private icon_name: string;
 
 	/**
-	 * @deprecated Returns the titlebar icon name.
+	 * @deprecated Returns the titlebar icon name/ID.
 	 */
 	getIconName(): string;
+
+	/**
+	 * @deprecated Sets the titlebar icon name/ID.
+	 */
+	setIconByID(id: string): void;
+
+	/**
+	 * @deprecated Taskbar item.
+	 */
+	task: {
+		updateIcon(): void;
+		updateTitle(): void;
+	};
 }
 
 /**
