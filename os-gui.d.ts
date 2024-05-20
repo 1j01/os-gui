@@ -1,10 +1,12 @@
 interface OSGUIWindow {
 	/**
 	 * Sets the title, or if `text` isn't passed, returns the current title of the window.
+	 * 
+	 * Uses jQuery getter/setter function idiom.
 	 */
-	title(text: string): void;
+	title(text: string): OSGUI$Window;
 	title(): string;
-
+	// title(text?: string): OSGUI$Window | string; // union of overloads isn't helping
 
 	/**
 	 * Returns the current title of the window. Alternative to `title()`.
