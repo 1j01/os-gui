@@ -1581,7 +1581,10 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		return $b;
 	};
 	$w.title = title => {
-		if (title) {
+		// title("") should clear the title
+		// title(5) should set the title to "5"
+		// title() should return the title
+		if (typeof title !== "undefined") {
 			$w.$title.text(title);
 			$w.trigger("title-change");
 			if ($w.task) {

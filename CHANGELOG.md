@@ -69,6 +69,8 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - [Fix subpixel issues with menu button borders, and margin-bottom (and greatly simplify, by adding a wrapper span)](https://github.com/1j01/os-gui/commit/750f08c69f3f16a78efb7fe852a2ef015306e5f7)
 - [Refocus last focused control outside menus on close to support copy/paste](https://github.com/1j01/os-gui/commit/cac0db341eb834e6042fedec814bbe6e3f4882d4)
   - This generalizes refocusing the last focused control within the window to also work for controls outside the window, I think?
+- Fix setting window title to empty string
+  - Previously, it returned the window title
 
 ### Fixed
 
