@@ -1580,7 +1580,14 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			});
 		return $b;
 	};
-	$w.title = title => {
+	/**
+	 * @typedef {{
+	 * 	(text: string): OSGUI$Window;
+	 * 	(): string;
+	 * }} titleMethodOverloads
+	*/
+	// https://github.com/Microsoft/TypeScript/issues/25590#issuecomment-968906682
+	$w.title = /** @type {titleMethodOverloads} */ ((title) => {
 		// title("") should clear the title
 		// title(5) should set the title to "5"
 		// title() should return the title
@@ -1594,7 +1601,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		} else {
 			return $w.$title.text();
 		}
-	};
+	});
+
 	$w.getTitle = () => {
 		return $w.title();
 	};
