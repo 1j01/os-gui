@@ -172,7 +172,7 @@ function averagePoints(points) {
 	averageY /= points.length;
 	return { x: averageX, y: averageY };
 }
-function animate() {
+function animatePhysicsTeaser() {
 	for (const point of points) {
 		point.vx += point.fx;
 		point.vy += point.fy;
@@ -229,7 +229,7 @@ function animate() {
 	svgLink.style.clipPath = `circle(${clipPathRadius}px at ${center.x}px ${center.y}px)`;
 
 	if (inViewport) {
-		requestAnimationFrame(animate);
+		requestAnimationFrame(animatePhysicsTeaser);
 	} else {
 		animating = false;
 	}
@@ -240,7 +240,7 @@ function possiblyAnimate() {
 	inViewport = rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
 	if (inViewport && !animating) {
 		animating = true;
-		animate();
+		animatePhysicsTeaser();
 	}
 }
 window.addEventListener('scroll', possiblyAnimate);
