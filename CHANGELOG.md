@@ -15,12 +15,13 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Deprecated
 
 - [Deprecate `item` in favor of `label` for menu item labels](https://github.com/1j01/os-gui/commit/c14be98e1f1f4211a8a8bb47470796750184e740)
+  - This is just a clearer name for the property.
 - [Deprecate `shortcut` in favor of `shortcutLabel` and `ariaKeyShortcuts`](https://github.com/1j01/os-gui/commit/92541cb3d22c0f5de2fbd11c02fe21713a033203)
   - `aria-keyshortcuts` needs "Control" spelled out, and for macOS "Meta" for the command key, unlike the traditional visual representations. Hence the separation of concerns.
 
 
 ### Added
-- `AccessKeys` API for parsing and rendering labels with access keys (syntax: `&` defines the following character as the access key, `&&` escapes an ampersand)
+- `AccessKeys` API for parsing and rendering labels with access keys (syntax: `&` defines the following character as the access key, `&&` inserts one literal ampersand)
   - `AccessKeys.escape(label)` escapes ampersands by doubling them
   - `AccessKeys.unescape(label)` unescapes ampersands by removing one of each pair
   - `AccessKeys.has(label)` returns whether the label has an access key
@@ -28,13 +29,31 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `AccessKeys.toText(label)` returns plain text without access key syntax
   - `AccessKeys.toHTML(label)` returns HTML with `<span class="menu-hotkey">` around the access key (uses `AccessKeys.toFragment` for security)
   - `AccessKeys.toFragment(label)` returns a `DocumentFragment` with `<span class="menu-hotkey">` wrapping the access key character
+  - private `AccessKeys.indexOf(label)` (don't use this)
   - (In the future, the CSS class "menu-hotkey" may be renamed to "access-key", perhaps with a prefix.)
 - Add radio menu item support
-  - In menu item lists, you can include radio groups by including an object with a `radioItems`, `getValue`, `setValue`, and optionally `ariaLabel` properties.
-  <!-- - b9595e1b58f1fe2897bc5a4cf68e8f30a3d94cdf
-  - 3e8eaa9e5c1e51107f57e665273e74e088c3dca2
-  - 81694e13d37dd4026b78edf3b8f5fb6a65515c05
-  - 08cd001bcde6c0ede84a2a1bba5801c7b853916f -->
+  - In menu item lists, you can create radio groups by including an object with `radioItems`, `getValue`, `setValue`, and optionally `ariaLabel` properties, in the list of menu items.
+    - `radioItems` is an array of menu item specifications, which can also include `value` for the option value.
+  - (Commits: [1](https://github.com/1j01/os-gui/commit/b9595e1b58f1fe2897bc5a4cf68e8f30a3d94cdf), [2](https://github.com/1j01/os-gui/commit/3e8eaa9e5c1e51107f57e665273e74e088c3dca2), [3](https://github.com/1j01/os-gui/commit/81694e13d37dd4026b78edf3b8f5fb6a65515c05), [4](https://github.com/1j01/os-gui/commit/08cd001bcde6c0ede84a2a1bba5801c7b853916f))
+- TypeScript types for the whole library
+  - Type declarations are included as part of the `os-gui` package, in [`os-gui.d.ts`](os-gui.d.ts)
+- `$Window` methods:
+  - experimental `onFocus`, `onBlur`, and `onClosed` API for events (looking to remove dependency on jQuery)
+  - private `addChildWindow($window)` (don't use this)
+- `$Window` properties:
+  - `closed`: Whether the window has been closed.
+  - `icons`: The icons of the window at different sizes, as set by `options.icons` or `setIcons()`.
+  - `$minimize` (the minimize button)
+  - `$maximize` (the maximize button)
+  - private `$title_area` (don't use this)
+  - private `$icon` (don't use this)
+- `$Window` property `element` (already mentioned but now has a section like other properties)
+- Menu item specification properties:
+  - `shortcutLabel` for defining the label of the shortcut key combination separately from the `ariaKeyShortcuts` property; this replaces the old `shortcut` property
+  - `ariaKeyShortcuts` for defining the access key combination for the menu item. Must follow [aria-keyshortcuts](https://www.w3.org/TR/wai-aria-1.1/#aria-keyshortcuts) syntax.
+  - `label` for defining the label of the menu item; this replaces the old `item` property
+  - `value` (only for radio items) for defining a radio option value
+- Docs for positioning windows
 
 ### Changed
 - [Handle synthetic events, including when pointerId is not given](https://github.com/1j01/os-gui/commit/70000c0ccfb674003784c258be68c575dea7e8d6)
@@ -66,11 +85,13 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - For example, in Paint, with the Help menu open, Ctrl+A shouldn't open About Paint, it should Select All, using the app-global keyboard shortcut.
 - SVG icons for checkbox/radio/submenu icons are now defined in CSS using `mask-image`
   - Should fix scaling in JS Paint's Eye Gaze Mode
+  - (Commits: [1](https://github.com/1j01/os-gui/commit/b174a4ef9cc391b5cd6a5f661995f597995e2b1e), [2](https://github.com/1j01/os-gui/commit/22d82e00545fa6e575a06303020740c649687018))
 - [Fix subpixel issues with menu button borders, and margin-bottom (and greatly simplify, by adding a wrapper span)](https://github.com/1j01/os-gui/commit/750f08c69f3f16a78efb7fe852a2ef015306e5f7)
 - [Refocus last focused control outside menus on close to support copy/paste](https://github.com/1j01/os-gui/commit/cac0db341eb834e6042fedec814bbe6e3f4882d4)
   - This generalizes refocusing the last focused control within the window to also work for controls outside the window, I think?
-- Fix setting window title to empty string
-  - Previously, it returned the window title
+- [Fix setting window title to empty string](https://github.com/1j01/os-gui/commit/596488acea8d5234f7c11f4914dd1c1d15592b16)
+  - Previously, it returned the current window title instead of clearing it, due to incorrect handling of falsy values when differentiating between getter/setter method signatures.
+- `MenuBar` menu item property `description` is now optional.
 
 ### Fixed
 
@@ -82,7 +103,7 @@ see Changed
 ## [0.6.0] - 2021-11-01
 
 ### Deprecated
-- `$window.task` way of interfacing with a taskbar; use `$window.setMinimizeTarget(taskbarButtonElement)` instead, and events `icon-change` and `title-change` to update the button.
+- `$window.task` way of interfacing with a taskbar. Use `$window.setMinimizeTarget(taskbarButtonElement)` instead, and events `icon-change` and `title-change` to update the button.
 
 ### Added
 - `MenuBar` method `closeMenus()` to close any open menus.
@@ -108,7 +129,7 @@ see Changed
 ## [0.5.0] - 2021-10-29
 
 ### Deprecated
-- `$Window`'s terrible `options.icon` API; use the new, versatile `options.icons` instead. No more ugly globals you have to define! Example: `new $Window({icons: {16: 'app-16x16.png', any: 'app-icon.svg'}})`
+- `$Window`'s terrible `options.icon` API. Use the new, versatile `options.icons` instead. No more ugly globals you have to define! Example: `new $Window({icons: {16: 'app-16x16.png', any: 'app-icon.svg'}})`
 - `setIconByID()`, use `setIcons(icons)` instead (with same format as `options.icons`)
 - `getIconName()`, use `$window.icons` instead perhaps, or avoid it entirely
 
