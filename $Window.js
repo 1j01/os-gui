@@ -594,6 +594,7 @@ function $Window(options = {}) {
 						// trigger focusin events for iframes
 						// @TODO: probably don't need showAsFocused() here since it'll be handled externally (on this simulated focusin),
 						// and might not need a lot of other logic frankly if I'm simulating focusin events
+						/** @type {Element | null | undefined} */
 						let el = logical_container_el;
 						while (el) {
 							// console.log("dispatching focusin event for", el);
@@ -602,7 +603,7 @@ function $Window(options = {}) {
 								target: el,
 								view: el.ownerDocument.defaultView,
 							}));
-							el = el.currentView?.frameElement;
+							el = el.ownerDocument.defaultView?.frameElement;
 						}
 					}
 				} else if (is_root) {
