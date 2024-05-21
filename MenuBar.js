@@ -203,7 +203,7 @@ function MenuBar(menus) {
 	const close_menus = () => {
 		for (const { menu_button_el } of top_level_menus) {
 			if (menu_button_el.getAttribute("aria-expanded") === "true") {
-				menu_button_el.dispatchEvent(new CustomEvent("release"), {});
+				menu_button_el.dispatchEvent(new CustomEvent("release", {}));
 			}
 		}
 	};
@@ -740,7 +740,7 @@ function MenuBar(menus) {
 
 						// console.log("open_submenu — submenu_popup_el.style.zIndex", submenu_popup_el.style.zIndex, "$Window.Z_INDEX", $Window.Z_INDEX, "menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex);
 						// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
-						submenu_popup_el.dispatchEvent(new CustomEvent("update"), {});
+						submenu_popup_el.dispatchEvent(new CustomEvent("update", {}));
 						if (highlight_first) {
 							submenu_popup.highlight(0);
 							send_info_event(submenu_popup.menuItems[0]);
@@ -866,7 +866,7 @@ function MenuBar(menus) {
 						if (item.checkbox.toggle) {
 							item.checkbox.toggle();
 						}
-						menu_popup_el.dispatchEvent(new CustomEvent("update"), {});
+						menu_popup_el.dispatchEvent(new CustomEvent("update", {}));
 					} else if (item.action) {
 						close_menus();
 						// refocus_outside_menus is before action, so that things like copy/paste can work
@@ -1031,7 +1031,7 @@ function MenuBar(menus) {
 			// setTimeout(() => { console.log("after timeout, menus_el.closest('.window').style.zIndex", menus_el.closest(".window").style.zIndex); }, 0);
 			top_level_highlight(menus_key);
 
-			menu_popup_el.dispatchEvent(new CustomEvent("update"), {});
+			menu_popup_el.dispatchEvent(new CustomEvent("update", {}));
 
 			selecting_menus = true;
 
