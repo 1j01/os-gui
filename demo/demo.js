@@ -58,6 +58,7 @@ const demo_menus = {
 			label: "&Checkboxes",
 			submenu: new Array(100).fill(0).map((_, i) => ({
 				label: `Item ${i}`,
+				description: `Toggles item ${i}.`,
 				checkbox: {
 					check: function () {
 						// @ts-ignore
@@ -78,18 +79,22 @@ const demo_menus = {
 						{
 							label: "&Foo",
 							value: "foo",
+							description: "Sets the radio state to \"foo\".",
 						},
 						{
 							label: "&Bar",
 							value: "bar",
+							description: "Sets the radio state to \"bar\".",
 						},
 						{
 							label: "&Baz",
 							value: "baz",
+							description: "Sets the radio state to \"baz\".",
 						},
 					],
 					getValue: () => radio_state,
 					setValue: (new_value) => { radio_state = new_value; },
+					ariaLabel: "Example radio group",
 				},
 			],
 			description: "Contains radio button menu items.",
