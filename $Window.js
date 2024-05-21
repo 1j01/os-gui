@@ -904,7 +904,7 @@ function $Window(options = {}) {
 
 	/**
 	 * @param {HTMLIFrameElement} iframe 
-	 * @param {Error} error 
+	 * @param {Error | unknown} error 
 	 */
 	const warn_iframe_access = (iframe, error) => {
 		/** @param {string} message */
@@ -1067,7 +1067,6 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				try {
 					refocus(iframe); // not .contentDocument.body because we want the container tracked by last_focus_by_container
 				} catch (e) {
-					// @ts-ignore
 					warn_iframe_access(iframe, e);
 				}
 			} else {
@@ -1086,7 +1085,6 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				// @ts-ignore
 				refocus(iframe.contentDocument.body);
 			} catch (e) {
-				// @ts-ignore
 				warn_iframe_access(iframe, e);
 			}
 		}
