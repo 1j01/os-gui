@@ -354,7 +354,7 @@ interface OSGUIWindowOptions {
  * - or a DOM node if you want full control (e.g. to use an `<svg>` or a font icon or an emoji).
  */
 type OSGUIIcons = { [size: string]: OSGUIIcon };
-type OSGUIIcon = string | { srcset: string } | Node;
+type OSGUIIcon = string | { src: string } | { srcset: string } | Node;
 
 const MENU_DIVIDER = "MENU_DIVIDER";
 

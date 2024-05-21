@@ -214,15 +214,17 @@ function $Window(options = {}) {
 		if (icon_size) {
 			const icon = $w.icons[icon_size];
 			let icon_element;
-			if (icon.nodeType !== undefined) {
+			if (typeof icon === "object" && "cloneNode" in icon) {
 				icon_element = icon.cloneNode(true);
 			} else {
 				icon_element = E("img");
 				const $icon = $(icon_element);
-				if (icon.srcset) {
+				if (typeof icon === "string") {
+					$icon.attr("src", icon);
+				} else if ("srcset" in icon) {
 					$icon.attr("srcset", icon.srcset);
 				} else {
-					$icon.attr("src", icon.src || icon);
+					$icon.attr("src", icon.src);
 				}
 				$icon.attr({
 					width: icon_size,
