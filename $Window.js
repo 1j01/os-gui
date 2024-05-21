@@ -120,6 +120,7 @@ function $Window(options = {}) {
 				/** @type {unknown} */(E("div"))
 			)
 		).addClass("window os-window").appendTo("body"));
+	// TODO: A $Window.fromElement (or similar) static method using a Map would be better for type checking.
 	$w[0].$window = $w;
 	$w.element = $w[0];
 	$w[0].id = `os-window-${Math.random().toString(36).substr(2, 9)}`;

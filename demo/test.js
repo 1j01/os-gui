@@ -1,8 +1,20 @@
-const full_height_checkbox = document.getElementById('full-height-checkbox');
-const rtl_checkbox = document.getElementById('rtl-checkbox');
-const debug_focus_checkbox = document.getElementById('debug-focus-checkbox');
-const override_transition_duration_checkbox = document.getElementById('override-transition-duration-checkbox');
-const taskbar_checkbox = document.getElementById('taskbar-checkbox');
+const full_height_checkbox_maybe = document.getElementById('full-height-checkbox');
+const rtl_checkbox_maybe = document.getElementById('rtl-checkbox');
+const debug_focus_checkbox_maybe = document.getElementById('debug-focus-checkbox');
+const override_transition_duration_checkbox_maybe = document.getElementById('override-transition-duration-checkbox');
+const taskbar_checkbox_maybe = document.getElementById('taskbar-checkbox');
+if (!full_height_checkbox_maybe || !rtl_checkbox_maybe || !debug_focus_checkbox_maybe || !override_transition_duration_checkbox_maybe || !taskbar_checkbox_maybe) {
+	throw new Error("Missing checkbox(es)");
+}
+if (!(full_height_checkbox_maybe instanceof HTMLInputElement) || !(rtl_checkbox_maybe instanceof HTMLInputElement) || !(debug_focus_checkbox_maybe instanceof HTMLInputElement) || !(override_transition_duration_checkbox_maybe instanceof HTMLInputElement) || !(taskbar_checkbox_maybe instanceof HTMLInputElement)) {
+	throw new Error("Unexpected type for checkbox(es)");
+}
+const full_height_checkbox = full_height_checkbox_maybe;
+const rtl_checkbox = rtl_checkbox_maybe;
+const debug_focus_checkbox = debug_focus_checkbox_maybe;
+const override_transition_duration_checkbox = override_transition_duration_checkbox_maybe;
+const taskbar_checkbox = taskbar_checkbox_maybe;
+
 function update_full_height() {
 	document.body.style.height = document.documentElement.style.height = full_height_checkbox.checked ? "100%" : "";
 }
@@ -20,12 +32,16 @@ function update_taskbar() {
 		document.getElementById("with-taskbar-text").hidden = false;
 		document.getElementById("without-taskbar-text").hidden = true;
 		for (const window_el of document.querySelectorAll(".os-window")) {
+			// @ts-ignore (TODO: A $Window.fromElement (or similar) static method using a Map would be better)
+			// (or something like $Window.allWindows)
 			window_el.$window.setMinimizeTarget(document.getElementById("minimize-target"));
 		}
 	} else {
 		document.getElementById("with-taskbar-text").hidden = true;
 		document.getElementById("without-taskbar-text").hidden = false;
 		for (const window_el of document.querySelectorAll(".os-window")) {
+			// @ts-ignore (TODO: A $Window.fromElement (or similar) static method using a Map would be better)
+			// (or something like $Window.allWindows)
 			window_el.$window.setMinimizeTarget(null);
 		}
 	}
@@ -46,11 +62,14 @@ document.getElementById("no-focus").addEventListener("mousedown", function (e) {
 	e.preventDefault();
 });
 document.getElementById("no-focus-button").addEventListener("click", function (e) {
+	if (!(e.target instanceof HTMLElement)) { throw new Error("Unexpected type for event target"); }
 	e.target.textContent = "Clicked Button";
 });
 
 document.getElementById("minimize-target").addEventListener("click", function (e) {
 	for (const window_el of document.querySelectorAll(".os-window")) {
+		// @ts-ignore (TODO: A $Window.fromElement (or similar) static method using a Map would be better)
+		// (or something like $Window.allWindows)
 		window_el.$window.unminimize();
 	}
 });
@@ -333,8 +352,8 @@ $main_test_window.on("close", (event) => {
 		title: "Confirm Close",
 		parentWindow: $main_test_window,
 		resizable: false,
-		width: 400,
-		height: 200,
+		// innerWidth: 400,
+		// innerHeight: 200,
 		maximizeButton: false,
 		minimizeButton: false,
 	});
@@ -531,12 +550,13 @@ function test_icon_sizes() {
 		</label></p>
 	`);
 	$icon_test_window.$content.find("#any-size").on("change", (e) => {
+		if (!(e.target instanceof HTMLInputElement)) { throw new Error("Unexpected type for event target"); }
 		$icon_test_window.icons.any = e.target.checked ? emoji_el : null;
 	});
 	for (const size of [8, 16, 24, 32, 48, 64, 128]) {
 		const initially_selected = $icon_test_window.getTitlebarIconSize() === size;
 		const $button = $(`<button class="toggle">${size}px</button>`)
-			.attr("aria-pressed", initially_selected)
+			.attr("aria-pressed", initially_selected ? "true" : "false")
 			.addClass(initially_selected ? "selected" : "")
 			.css("font-weight", $icon_test_window.icons[size] ? "bold" : "normal")
 			.appendTo($icon_test_window.$content);
@@ -547,7 +567,7 @@ function test_icon_sizes() {
 			emoji_el.style.fontSize = `${size * 0.9}px`; // before setTitlebarIconSize() which clones it
 			$icon_test_window.setTitlebarIconSize(size);
 			$icon_test_window.$content.find("button.selected").removeClass("selected").attr("aria-pressed", false);
-			$button.addClass("selected").attr("aria-pressed", true);
+			$button.addClass("selected").attr("aria-pressed", "true");
 		});
 	}
 	$icon_test_window.css({
@@ -558,7 +578,7 @@ function test_icon_sizes() {
 }
 
 function test_triggering() {
-	$trigger_test_window = new $Window({
+	const $trigger_test_window = new $Window({
 		title: "Trigger Station",
 		resizable: true,
 		icons: {
@@ -613,6 +633,9 @@ function test_triggering() {
 		<p>Currently "click" events don't refocus, but "mousedown" and "pointerdown" do.</p>
 	`);
 	const delay_input = $trigger_test_window.$content.find("#delay-input")[0];
+	if (!(delay_input instanceof HTMLInputElement)) {
+		throw new Error("Expected delay input to be an <input> element");
+	}
 	let delay = parseInt(delay_input.value);
 	delay_input.addEventListener("change", () => {
 		delay = parseInt(delay_input.value);
@@ -713,6 +736,9 @@ function test_window_theme() {
 		</div>
 	`);
 	const select = $theme_test_window.$content.find("#theme-select")[0];
+	if (!(select instanceof HTMLSelectElement)) {
+		throw new Error("Expected theme select to be an <select> element");
+	}
 	let theme_id = select.value;
 	select.addEventListener("change", () => {
 		theme_id = select.value;
@@ -835,7 +861,7 @@ $main_test_window.find("#test-tabstop-wrapping").on("click", test_tabstop_wrappi
 $main_test_window.find("#test-selection").on("click", test_selectable_text);
 $main_test_window.find("#test-triggering").on("click", test_triggering);
 
-window_themes = {
+const window_themes = {
 	"windows-default": {
 		"--ActiveBorder": "rgb(192, 192, 192)",
 		"--ActiveTitle": "rgb(0, 0, 128)",

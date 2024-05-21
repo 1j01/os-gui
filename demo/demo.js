@@ -60,10 +60,11 @@ const demo_menus = {
 				label: `Item ${i}`,
 				checkbox: {
 					check: function () {
-						this.pointless_checkbox_value = this.pointless_checkbox_value ?? Math.sin((i / 5) ** 2) > 0;
-						return this.pointless_checkbox_value;
+						// @ts-ignore
+						return this._pointless_checkbox_value;
 					},
-					toggle: function () { this.pointless_checkbox_value = !this.pointless_checkbox_value; }
+					toggle: function () { this._pointless_checkbox_value = !this._pointless_checkbox_value; },
+					_pointless_checkbox_value: Math.sin((i / 5) ** 2) > 0,
 				},
 				shortcutLabel: `Ctrl+${i}`,
 			})),
@@ -148,6 +149,7 @@ $(() => {
 	const $status_bar = $("<div class='status-bar inset-shallow' style='height:1.5em;line-height:1.5em;font-size:12px;margin-top:2px;'>").appendTo($app_window_2.$content);
 	$(app_window_2_menu_bar.element).on("info", (event, info) => {
 		// info = `event.detail.description: ${event.detail.description}, jQuery second arg: ${info}`; // testing
+		// @ts-ignore (Hm, kind of annoying that the `detail` is typed as a number here... A simple custom listener API could be better.)
 		info = event.detail.description; // new API
 		$status_bar.text(info);
 	});
@@ -182,6 +184,7 @@ $(() => {
 	fake_closing($app_window_3);
 
 	// Position the windows within the demo page, in the flow of text, but freely moveable
+	/** @type {[OSGUI$Window, JQuery<HTMLElement> & {_new_offset?: {top: number, left: number}, _old_offset?: {top: number, left: number}}][]} */
 	const $windows_and_$positioners = [
 		[$app_window_1, $("#app-window-example")],
 		[$tool_window_1, $("#tool-window-example")],
@@ -242,7 +245,7 @@ $(() => {
 	// Handle toggle buttons
 	$("button.toggle").on("click", (e) => {
 		$(e.target).toggleClass("selected");
-		$(e.target).attr("aria-pressed", $(e.target).hasClass("selected"));
+		$(e.target).attr("aria-pressed", $(e.target).hasClass("selected") ? "true" : "false");
 	});
 
 	// Load themes on drag and drop (.theme/.themepack files)

@@ -907,7 +907,7 @@ function MenuBar(menus) {
 		}
 		let init_index = 0;
 		for (const item of menu_items) {
-			if (item.radioItems) {
+			if (typeof item === "object" && "radioItems" in item) {
 				const tbody = E("tbody", { role: "group" }); // multiple tbody elements are allowed, can be used for grouping rows,
 				// and in this case providing an ARIA role for the radio group.
 				if (item.ariaLabel) {

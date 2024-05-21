@@ -116,7 +116,7 @@ interface OSGUIWindow {
 	 * If you need any other behavior, just create a `<button>` and add it to the window's content area.
 	 * Returns a jQuery object.
 	 */
-	$Button(text: string, action: () => void): JQuery<HTMLButtonElement>;
+	$Button(text: string, action?: () => void): JQuery<HTMLButtonElement>;
 
 	/**
 	 * Defines a window as a child. For tool windows, the focus state will be shared with the parent window.
@@ -267,6 +267,10 @@ type OSGUI$FormWindow = JQuery<HTMLElement & { $window: OSGUI$FormWindow }> & OS
 interface $WindowConstructor {
 	new (options?: OSGUIWindowOptions): OSGUI$Window;
 	(options?: OSGUIWindowOptions): OSGUI$Window;
+
+	DEBUG_FOCUS?: boolean;
+	OVERRIDE_TRANSITION_DURATION?: number;
+	Z_INDEX: number;
 }
 
 /**
@@ -365,7 +369,7 @@ interface OSGUICheckbox {
 	/** A function to check whether the checkbox is checked. */
 	check: () => boolean;
 	/** A function to toggle something application-specific. */
-	toggle: () => void;
+	toggle?: () => void;
 	/** To create radio items, see the documentation on radio groups. Don't use this directly. */
 	private type?: "checkbox" | "radio";
 }
