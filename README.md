@@ -395,7 +395,9 @@ Current behavior is that it *toggles* maximization. This may change in the futur
 
 #### `unminimize()`
 
-Restores the window from minimized state. If the window is not minimized, this method does nothing.
+PRIVATE: don't use this. Use `restore()` instead.
+
+Restores the window from minimized state.
 
 #### `restore()`
 

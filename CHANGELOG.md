@@ -40,7 +40,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `$Window` methods:
   - experimental `onFocus`, `onBlur`, and `onClosed` API for events (looking to remove dependency on jQuery)
   - private `addChildWindow($window)` (don't use this)
-  - private `unminimize()` to restore a minimized window, as an alternative to `restore()` which also handles unmaximizing
+  - private `unminimize()` (don't use this)
 - `$Window` properties:
   - `closed`: Whether the window has been closed.
   - `icons`: The icons of the window at different sizes, as set by `options.icons` or `setIcons()`.

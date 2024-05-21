@@ -40,7 +40,7 @@ interface OSGUIWindow {
 	/**
 	 * Restores the window from minimized state.
 	 */
-	unminimize(): void;
+	private unminimize(): void;
 
 	/**
 	 * Maximizes the window. While maximized, the window will use `position: fixed`, so it will not scroll with the page.
