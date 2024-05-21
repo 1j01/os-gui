@@ -51,6 +51,7 @@
 		"parse-theme.js",
 		"os-gui.d.ts"
 	],
+	"types": "os-gui.d.ts",
 	"scripts": {
 		"lint": "tsc --noEmit --pretty --project tsconfig.json",
 		"start": "run-p watch-css live-server",
