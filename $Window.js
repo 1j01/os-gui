@@ -775,7 +775,7 @@ function $Window(options = {}) {
 			return;
 		}
 		if ($w.hasClass("minimized-without-taskbar")) {
-			$w.minimize();
+			$w.minimize(); // handles unminimization from this state
 			return;
 		}
 		if ($w.is(":hidden")) {
@@ -871,7 +871,7 @@ function $Window(options = {}) {
 		if ($w.is(".minimized-without-taskbar, .minimized")) {
 			$w.unminimize();
 		} else if ($w.is(".maximized")) {
-			$w.maximize();
+			$w.maximize(); // toggles maximization
 		}
 	};
 	// must not pass event to functions by accident; also methods may not be defined yet

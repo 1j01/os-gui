@@ -393,6 +393,10 @@ Maximizes the window. While maximized, the window will use `position: fixed`, so
 
 Current behavior is that it *toggles* maximization. This may change in the future. Also, if minimized, it will restore instead of maximizing. Basically, it does what the maximize button does, rather than simply what the method name suggests.
 
+#### `unminimize()`
+
+Restores the window from minimized state. If the window is not minimized, this method does nothing.
+
 #### `restore()`
 
 Restores the window from minimized or maximized state. If the window is not minimized or maximized, this method does nothing.
