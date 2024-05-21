@@ -152,7 +152,7 @@ function renderThemeGraphics(cssProperties) {
 		// 	</g>
 		// </svg>`;
 		var svg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="${view_size}px" height="${view_size}px" viewBox="0 0 ${view_size} ${view_size}">
-			${svg_contents.replace(/(d|x|y|width|height|stroke-width)="[^"]*"/g, (attr) => attr.replace(/\d+/g, (n) => n * scale))}
+			${svg_contents.replace(/(d|x|y|width|height|stroke-width)="[^"]*"/g, (attr) => attr.replace(/\d+/g, (n) => `${Number(n) * scale}`))}
 		</svg>`;
 		var url = `data:image/svg+xml,${encodeURIComponent(svg)}`;
 		return `url("${url}") ${slice_size} / ${border_size}px`;
@@ -316,6 +316,11 @@ function parseThemeFileString(themeIni) {
 	var colors = theme["Control Panel\\Colors"];
 	if (!colors) {
 		alert("Invalid theme file, no [Control Panel\\Colors] section");
+		console.log(theme);
+		return;
+	}
+	if (typeof colors !== "object") {
+		alert("Invalid theme file, 'Control Panel\\Colors' is not a section");
 		console.log(theme);
 		return;
 	}

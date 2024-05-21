@@ -418,6 +418,7 @@ function $Window(options = {}) {
 						const wait_for_iframe_load = (callback) => {
 							// Note: error may occur accessing iframe.contentDocument; this must be handled by the caller.
 							// To that end, this function must access it synchronously, to allow the caller to handle the error.
+							// @ts-ignore
 							if (iframe.contentDocument.readyState == "complete") {
 								callback();
 							} else {

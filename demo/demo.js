@@ -1,6 +1,6 @@
 let nothingness_state = true;
 let radio_state = "foo";
-const menus = {
+const demo_menus = {
 	"&File": [
 		{
 			label: "&Open",
@@ -116,7 +116,7 @@ const menus = {
 // wait for page load (could alternatively just move the script so it executes after the elements are declared)
 $(() => {
 	// Create menu bar
-	const menubar = new MenuBar(menus);
+	const menubar = MenuBar(demo_menus);
 	$(menubar.element).appendTo("#menubar-example");
 
 	// Create demo windows
@@ -131,7 +131,7 @@ $(() => {
 	fake_closing($tool_window_1);
 
 	const $app_window_2 = $Window({ title: "Application Example", resizable: true });
-	const app_window_2_menu_bar = new MenuBar(menus);
+	const app_window_2_menu_bar = new MenuBar(demo_menus);
 	$app_window_2.setMenuBar(app_window_2_menu_bar);
 	$app_window_2.$content.css({
 		padding: 0,
@@ -167,7 +167,7 @@ $(() => {
 
 	const $app_window_3 = $Window({ title: "Right-To-Left Example", resizable: true });
 	$app_window_3.css("direction", "rtl");
-	$app_window_3.setMenuBar(new MenuBar(menus));
+	$app_window_3.setMenuBar(new MenuBar(demo_menus));
 	$app_window_3.$content.css({
 		padding: 0,
 		display: "flex",
