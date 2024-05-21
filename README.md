@@ -385,9 +385,13 @@ Removes focus from the window. If focus is outside the window, it is left unchan
 
 Minimizes the window. If `$window.task.$task` is defined it will use that as a target for minimizing, otherwise the window will minimize to the bottom of the screen.
 
+Current behavior is that it *toggles* minimization. This may change in the future.
+
 #### `maximize()`
 
 Maximizes the window. While maximized, the window will use `position: fixed`, so it will not scroll with the page.
+
+Current behavior is that it *toggles* maximization. This may change in the future. Also, if minimized, it will restore instead of maximizing. Basically, it does what the maximize button does, rather than simply what the method name suggests.
 
 #### `restore()`
 
