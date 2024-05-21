@@ -14,7 +14,7 @@
 	/** @param {OSGUIMenuFragment[]} menus */
 	function $MenuBar(menus) {
 		console?.warn?.("$MenuBar is deprecated. Use `new MenuBar(menus).element` instead.");
-		return jQuery(MenuBar(menus).element);
+		return jQuery(new MenuBar(menus).element);
 	}
 
 	exports.$MenuBar = $MenuBar;
