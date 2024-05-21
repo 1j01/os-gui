@@ -189,7 +189,14 @@ $(() => {
 	fake_closing($app_window_3);
 
 	// Position the windows within the demo page, in the flow of text, but freely moveable
-	/** @type {[OSGUI$Window, JQuery<HTMLElement> & {_new_offset?: {top: number, left: number}, _old_offset?: {top: number, left: number}}][]} */
+
+	/** @type {WeakMap<HTMLElement, {top: number, left: number} | undefined>} */
+	const new_offsets = new WeakMap();
+
+	/** @type {WeakMap<HTMLElement, {top: number, left: number} | undefined>} */
+	const old_offsets = new WeakMap();
+
+	/** @type {[OSGUI$Window, JQuery<HTMLElement>][]} */
 	const $windows_and_$positioners = [
 		[$app_window_1, $("#app-window-example")],
 		[$tool_window_1, $("#tool-window-example")],
@@ -197,28 +204,33 @@ $(() => {
 		[$tool_window_2, $("#tool-window-2-positioner")],
 		[$app_window_3, $("#app-window-3-positioner")],
 	];
+
 	function position_windows() {
+		// Make measurements first in a separate loop to prevent layout thrashing (untested performance optimization)
 		for (const [$window, $positioning_el] of $windows_and_$positioners) {
-			// in a separate loop to prevent layout thrashing (untested performance optimization)
-			$positioning_el._new_offset = $positioning_el.offset();
+			const new_offset = $positioning_el.offset();
+			new_offsets.set($positioning_el[0], new_offset);
 		}
+
+		// Then apply the new positions
 		for (const [$window, $positioning_el] of $windows_and_$positioners) {
-			const { _new_offset, _old_offset } = $positioning_el;
-			if (
-				_new_offset.top !== _old_offset?.top ||
-				_new_offset.left !== _old_offset?.left
-			) {
+			const new_offset = new_offsets.get($positioning_el[0]);
+			const old_offset = old_offsets.get($positioning_el[0]);
+			if (!new_offset) { continue; } // Type narrowing. May skip if the element is not visible, perhaps?
+
+			if (!old_offset || new_offset.top !== old_offset.top || new_offset.left !== old_offset.left) {
 				$window.restore(); // in case it was minimized or maximized
 				$window.css({
-					left: _new_offset.left,
-					top: _new_offset.top,
+					left: new_offset.left,
+					top: new_offset.top,
 					width: "",
 					height: "",
 				});
-				$positioning_el._old_offset = _new_offset;
+				old_offsets.set($positioning_el[0], new_offset);
 			}
 		}
 	}
+
 	$(window).on("resize", position_windows);
 	position_windows();
 
@@ -235,7 +247,7 @@ $(() => {
 			setTimeout(() => {
 				// Restore position
 				const $positioning_el = $windows_and_$positioners.find(([$other_window]) => $window === $other_window)[1];
-				$window.restore(); // in case it was minimized or maximized
+				$window.restore(); // in case it was minimized or maximized (TODO: avoid animation, which can cause incorrect positioning)
 				$window.css({
 					left: $positioning_el.offset().left,
 					top: $positioning_el.offset().top,
