@@ -264,7 +264,10 @@ type OSGUI$FormWindow = JQuery<HTMLElement & { $window: OSGUI$FormWindow }> & OS
 /**
  * Creates a new window.
  */
-function $Window(options?: OSGUIWindowOptions): OSGUI$Window;
+interface $WindowConstructor {
+	new (options?: OSGUIWindowOptions): OSGUI$Window;
+	(options?: OSGUIWindowOptions): OSGUI$Window;
+}
 
 /**
  * Creates a new form window.
@@ -429,7 +432,10 @@ interface MenuBar {
 
 type OSGUIMenuFragment = OSGUIMenuItem | OSGUIRadioGroup | typeof MENU_DIVIDER;
 
-function MenuBar(menus: OSGUIMenuFragment[]): MenuBar;
+interface MenuBarConstructor {
+	new (menus: OSGUIMenuFragment[]): MenuBar;
+	(menus: OSGUIMenuFragment[]): MenuBar;
+}
 
 /** @deprecated use MenuBar instead of $MenuBar; jQuery is no longer required for menus. */
 function $MenuBar(menus: OSGUIMenuFragment[]): JQuery<HTMLElement>;
@@ -512,10 +518,12 @@ function makeBlackToInsetFilter();
 
 
 // ESM when? maybe next major version
+const MenuBar: MenuBarConstructor;
+const $Window: $WindowConstructor;
 interface Window {
-	$Window: typeof $Window;
+	$Window: $WindowConstructor;
 	$FormWindow: typeof $FormWindow;
-	MenuBar: typeof MenuBar;
+	MenuBar: MenuBarConstructor;
 	$MenuBar: typeof $MenuBar;
 	MENU_DIVIDER: typeof MENU_DIVIDER;
 	AccessKeys: typeof AccessKeys;
