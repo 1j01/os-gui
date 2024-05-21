@@ -9,7 +9,7 @@ if (!(repel_force_slider instanceof HTMLInputElement) || !(gravity_force_slider 
 	throw new Error("Unexpected type for the sliders or checkbox");
 }
 
-const $mothership = $Window({
+const $mothership = new $Window({
 	title: 'Mothership',
 	outerWidth: 400,
 	outerHeight: 300,
@@ -49,7 +49,7 @@ const objects = [];
 const n_objects = ship_image_urls.length * 2;
 
 for (let i = 0; i < n_objects; ++i) {
-	const $window = $Window({
+	const $window = new $Window({
 		title: "Ship " + i,
 	});
 	$window.$content.append(

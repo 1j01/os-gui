@@ -120,17 +120,17 @@ $(() => {
 	$(menubar.element).appendTo("#menubar-example");
 
 	// Create demo windows
-	const $app_window_1 = $Window({ title: "Application Window", resizable: true });
+	const $app_window_1 = new $Window({ title: "Application Window", resizable: true });
 	$app_window_1.$content.append(`
 		<p>This is a window that can be moved around and resized.</p>
 	`);
 	fake_closing($app_window_1);
 
-	const $tool_window_1 = $Window({ title: "Tool Window", toolWindow: true });
+	const $tool_window_1 = new $Window({ title: "Tool Window", toolWindow: true });
 	$tool_window_1.$content.text("This is a tool window.");
 	fake_closing($tool_window_1);
 
-	const $app_window_2 = $Window({ title: "Application Example", resizable: true });
+	const $app_window_2 = new $Window({ title: "Application Example", resizable: true });
 	const app_window_2_menu_bar = new MenuBar(demo_menus);
 	$app_window_2.setMenuBar(app_window_2_menu_bar);
 	$app_window_2.$content.css({
@@ -158,14 +158,14 @@ $(() => {
 		showDefaultStatus();
 	});
 	fake_closing($app_window_2);
-	const $tool_window_2 = $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_2 });
+	const $tool_window_2 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_2 });
 	$tool_window_2.$content.text("This tool window is a child of the app window.");
 	fake_closing($tool_window_2);
 	$app_window_2.on("closed", () => {
 		$tool_window_2.close();
 	});
 
-	const $app_window_3 = $Window({ title: "Right-To-Left Example", resizable: true });
+	const $app_window_3 = new $Window({ title: "Right-To-Left Example", resizable: true });
 	$app_window_3.css("direction", "rtl");
 	$app_window_3.setMenuBar(new MenuBar(demo_menus));
 	$app_window_3.$content.css({
