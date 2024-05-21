@@ -391,6 +391,7 @@ function applyCSSProperties(cssProperties, options = {}) {
 function makeThemeCSSFile(cssProperties) {
 	var css = `
 /* This is a generated file. */
+/* spell-checker: disable */
 :root {
 `;
 	for (var k in cssProperties) {

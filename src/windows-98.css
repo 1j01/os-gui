@@ -307,7 +307,7 @@ body > .window-titlebar {
 }
 /* Note: In Windows 98, normal menu bars have an inset highlight if you use Esc and then the arrow keys,
 whereas Explorer's menu bars are outset and match the hover effect, which I feel makes more sense,
-so I think I'll immitate that. (I might change it later) */
+so I think I'll imitate that. (I might change it later) */
 /* Also, to prevent duplicate highlight (via keyboard + mouse), and lingering highlight with touch, I'm using a class, rather than :hover/:focus/:active */
 .menu-button.highlight {
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
@@ -355,16 +355,22 @@ so I think I'll immitate that. (I might change it later) */
 }
 /* Note: viewBox is needed for scaling the SVG, used in JS Paint's Eye Gaze Mode */
 .menu-item-checkbox-area::after {
+	/* spell-checker: disable */
 	mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
 	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
+	/* spell-checker: enable */
 }
 .menu-item-checkbox-area.radio::after {
+	/* spell-checker: disable */
 	mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
 	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
+	/* spell-checker: enable */
 }
 .has-submenu .menu-item-submenu-area::after {
+	/* spell-checker: disable */
 	mask-image: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
 	-webkit-mask-image: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
+	/* spell-checker: enable */
 }
 .has-submenu .menu-item-submenu-area.point-right::after {
 	transform: scaleX(-1);
