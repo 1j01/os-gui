@@ -1152,8 +1152,11 @@ function MenuBar(menus) {
 
 	set_keyboard_scope(window);
 
+	/** @type {HTMLElement} */
 	this.element = menus_el;
+	/** @type {() => void} */
 	this.closeMenus = close_menus;
+	/** @type {(...elements: EventTarget[]) => void} */
 	this.setKeyboardScope = set_keyboard_scope;
 }
 
