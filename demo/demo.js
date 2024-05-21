@@ -1,5 +1,6 @@
 let nothingness_state = true;
 let radio_state = "foo";
+/** @type {OSGUITopLevelMenus} */
 const demo_menus = {
 	"&File": [
 		{

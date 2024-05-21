@@ -431,14 +431,16 @@ interface MenuBar {
 }
 
 type OSGUIMenuFragment = OSGUIMenuItem | OSGUIRadioGroup | typeof MENU_DIVIDER;
+// I wish I didn't make the top level special, but it's an object instead of an array.
+type OSGUITopLevelMenus = Record<string, OSGUIMenuFragment[]>;
 
 interface MenuBarConstructor {
-	new (menus: OSGUIMenuFragment[]): MenuBar;
-	(menus: OSGUIMenuFragment[]): MenuBar;
+	new (menus: OSGUITopLevelMenus): MenuBar;
+	(menus: OSGUITopLevelMenus): MenuBar;
 }
 
 /** @deprecated use MenuBar instead of $MenuBar; jQuery is no longer required for menus. */
-function $MenuBar(menus: OSGUIMenuFragment[]): JQuery<HTMLElement>;
+function $MenuBar(menus: OSGUITopLevelMenus): JQuery<HTMLElement>;
 
 interface AccessKeys {
 	/** Escapes ampersands in a label by doubling them. */

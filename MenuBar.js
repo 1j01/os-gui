@@ -149,7 +149,7 @@ function get_new_menu_z_index() {
 }
 
 /**
- * @param {OSGUIMenuFragment[]} menus 
+ * @param {OSGUITopLevelMenus} menus
  * @constructor
  */
 function MenuBar(menus) {

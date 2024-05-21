@@ -64,6 +64,7 @@ let $theme_test_window;
 
 let disable_an_item = false;
 let radio_value;
+/** @type {OSGUITopLevelMenus} */
 const menus = {
 	"&Dialogs": [
 		{
