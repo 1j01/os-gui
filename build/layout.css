@@ -81,7 +81,7 @@ body > .window-titlebar {
 	width: auto;
 }
 /* @TODO: rename .access-key */
-/* @TODO: what are these !importants about? */
+/* @TODO: what are these !important flags about? */
 .menu-hotkey {
 	display: inline !important;
 }
