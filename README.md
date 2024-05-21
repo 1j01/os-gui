@@ -565,6 +565,22 @@ Can be used to update a taskbar button's label.
 Can be used to update a taskbar button's icon.
 Use `$window.getIconAtSize(size)` to get an appropriate icon.
 
+### Positioning Windows
+
+Other than `center()`, there is no API specifically for positioning windows.
+
+You can use `$window.css({ top: "500px", left: "500px" })` to set the position of the window.
+
+You can also set `position` to `fixed` or `absolute` to position the window relative to the viewport or the nearest positioned ancestor, respectively.
+
+Note that stylesheets can't be used (without `!important`) to position the window, because the library uses inline styles to position the window, which take precedence.
+
+I may extend `setDimensions()` in the future to allow positioning the window in addition to sizing it,
+or add a `setPosition()` method.
+
+You can pass `options.constrainRect` to dynamically constrain the window position and size during dragging and resizing.
+
+
 ### Theming
 
 `parse-theme.js` contains functions for parsing and applying themes.
