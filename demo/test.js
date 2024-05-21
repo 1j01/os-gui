@@ -215,6 +215,7 @@ const menus = {
 		},
 		{
 			label: "disabled: true?",
+			// @ts-ignore (not part of the API; maybe should be, since DOM uses `disabled` as an attribute, not `enabled`)
 			disabled: true,
 			shortcutLabel: "Ctrl+Fake",
 		},

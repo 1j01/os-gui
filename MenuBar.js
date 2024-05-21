@@ -123,7 +123,7 @@ const MENU_DIVIDER = "MENU_DIVIDER";
 
 const MAX_MENU_NESTING = 1000;
 
-/** @type {Element | null} */
+/** @type {HTMLElement | null} */
 let last_focus_outside_menus = null;
 function track_focus() {
 	if (
@@ -132,7 +132,7 @@ function track_focus() {
 		document.activeElement.tagName !== "HTML" &&
 		!document.activeElement.closest(".menus, .menu-popup")
 	) {
-		last_focus_outside_menus = document.activeElement;
+		last_focus_outside_menus = /** @type {HTMLElement} */(document.activeElement);
 	}
 }
 window.addEventListener("focusin", track_focus);
@@ -164,9 +164,11 @@ function MenuBar(menus) {
 	});
 	menus_el.style.touchAction = "none";
 
-	// returns writing/layout direction, "ltr" or "rtl"
+	/**
+	 * @returns {"ltr" | "rtl"} writing/layout direction
+	 */
 	function get_direction() {
-		return window.get_direction ? window.get_direction() : getComputedStyle(menus_el).direction;
+		return window.get_direction ? window.get_direction() : /** @type {"ltr" | "rtl"} */(getComputedStyle(menus_el).direction);
 	}
 
 	let selecting_menus = false; // state where you can glide between menus without clicking
@@ -292,6 +294,7 @@ function MenuBar(menus) {
 		const menu_popup_el = active_menu_popup_el || top_level_menu?.menu_popup_el;
 		const parent_item_el = parent_item_el_by_popup_el.get(active_menu_popup_el);
 		const highlighted_item_el = menu_popup_el?.querySelector(".menu-item.highlight");
+		if (!(highlighted_item_el instanceof HTMLElement)) { throw new Error("highlighted_item_el is not an HTMLElement"); }
 
 		// console.log("keydown", e.key, { target: e.target, active_menu_popup_el, top_level_menu, menu_popup_el, parent_item_el, highlighted_item_el });
 

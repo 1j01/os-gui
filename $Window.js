@@ -276,9 +276,11 @@ function $Window(options = {}) {
 		}
 	}, 0);
 
-	// returns writing/layout direction, "ltr" or "rtl"
+	/**
+	 * @returns {"ltr" | "rtl"} writing/layout direction
+	 */
 	function get_direction() {
-		return window.get_direction ? window.get_direction() : getComputedStyle($w[0]).direction;
+		return window.get_direction ? window.get_direction() : /** @type {"ltr" | "rtl"} */(getComputedStyle($w[0]).direction);
 	}
 
 	// This is very silly, using jQuery's event handling to implement simpler event handling.

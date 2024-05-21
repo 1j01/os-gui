@@ -538,4 +538,7 @@ interface Window {
 	renderThemeGraphics: typeof renderThemeGraphics;
 	makeThemeCSSFile: typeof makeThemeCSSFile;
 	makeBlackToInsetFilter: typeof makeBlackToInsetFilter;
+	// Provided by user (used by the library if present)
+	get_direction?: () => "ltr" | "rtl";
+	debugKeepMenusOpen?: boolean;
 }

@@ -217,7 +217,10 @@ $(() => {
 	$(window).on("resize", position_windows);
 	position_windows();
 
-	// Fake closing the windows (hide and fade back in), for demo purposes
+	/**
+	 * Fake closing the windows (hide and fade back in), for demo purposes
+	 * @param {OSGUI$Window} $window
+	 */
 	function fake_closing($window) {
 		$window.on("close", (event) => {
 			event.preventDefault();
@@ -249,6 +252,9 @@ $(() => {
 	});
 
 	// Load themes on drag and drop (.theme/.themepack files)
+	/**
+	 * @param {File} file
+	 */
 	async function loadThemeFile(file) {
 		const fileText = await file.text();
 		const cssProperties = parseThemeFileString(fileText);
@@ -268,7 +274,7 @@ $(() => {
 	$("html").on("drop", (event) => {
 		event.preventDefault();
 		event.stopPropagation();
-		const files = [...event.originalEvent.dataTransfer.files];
+		const files = [...event.originalEvent?.dataTransfer?.files ?? []];
 		for (const file of files) {
 			if (file.name.match(/\.theme(pack)?$/i)) {
 				loadThemeFile(file);
