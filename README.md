@@ -579,16 +579,24 @@ Use `$window.getIconAtSize(size)` to get an appropriate icon.
 
 Other than `center()`, there is no API specifically for positioning windows.
 
-You can use `$window.css({ top: "500px", left: "500px" })` to set the position of the window.
+You can use `$window.css({ top: "500px", left: "500px" })` to set the position of the window. This is a [jQuery method](https://api.jquery.com/css/).
 
 You can also set `position` to `fixed` or `absolute` to position the window relative to the viewport or the nearest positioned ancestor, respectively.
 
-Note that stylesheets can't be used (without `!important`) to position the window, because the library uses inline styles to position the window, which take precedence.
+If you want to position a window relative to another window, you can use `$otherWindow.element.getBoundingClientRect()` to get the bounding rectangle of the other window, and then use that to position the window. This is a [built-in DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect). For example:
+```js
+const otherRect = $otherWindow.element.getBoundingClientRect();
+$window.css({
+	top: otherRect.top + "px",
+	left: (otherRect.right + 10) + "px",
+});
+```
 
-I may extend `setDimensions()` in the future to allow positioning the window in addition to sizing it,
-or add a `setPosition()` method.
-
-You can pass `options.constrainRect` to dynamically constrain the window position and size during dragging and resizing.
+#### Notes:
+- Stylesheets can't be used (without `!important`) to position the window, because the library uses inline styles to position the window, which take precedence.
+- If either window has dynamic content, such as images, you should wait for the content to load before measuring and positioning windows. Alternatively, you can make the layout fixed, by specifying sizes for all images/similar, or a fixed size for the window.
+- I may extend `setDimensions()` in the future to allow positioning the window in addition to sizing it, or add a `setPosition()` method.
+- You can pass `options.constrainRect` to dynamically constrain the window position and size during dragging and resizing.
 
 
 ### Theming
