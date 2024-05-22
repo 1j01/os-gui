@@ -454,6 +454,7 @@ interface MenuBarConstructor {
 /** @deprecated use MenuBar instead of $MenuBar; jQuery is no longer required for menus. */
 function $MenuBar(menus: OSGUITopLevelMenus): JQuery<HTMLElement>;
 
+const AccessKeys: AccessKeys;
 interface AccessKeys {
 	/** Escapes ampersands in a label by doubling them. */
 	escape(label: string): string;
