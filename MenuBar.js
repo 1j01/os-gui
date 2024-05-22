@@ -342,7 +342,7 @@ function MenuBar(menus) {
 					if (menu_was_open) {
 						new_top_level_menu.open_top_level_menu("keydown");
 					} else {
-						menu_button_el?.dispatchEvent(new CustomEvent("release"), {});
+						menu_button_el?.dispatchEvent(new CustomEvent("release", {}));
 						target_button_el.focus({ preventScroll: true });
 						// Note case where menu is closed, menu button is hovered, then menu bar is unhovered,
 						// rehovered (outside any buttons), and unhovered, and THEN you try to go to the next menu.
