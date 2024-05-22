@@ -360,7 +360,7 @@ function MenuBar(menus) {
 				// if (menu_popup_el && menu_popup_el.style.display !== "none") && highlighted_item_el) {
 				if (active_menu_popup) {
 					const cycle_dir = down ? 1 : -1;
-					const item_els = [...menu_popup_el.querySelectorAll(".menu-item")];
+					const item_els = /** @type {HTMLElement[]} */([...menu_popup_el.querySelectorAll(".menu-item")]);
 					const from_index = item_els.indexOf(highlighted_item_el);
 					let to_index = (from_index + cycle_dir + item_els.length) % item_els.length;
 					if (from_index === -1) {
@@ -729,7 +729,7 @@ function MenuBar(menus) {
 						item_el.setAttribute("aria-expanded", "true");
 
 						submenu_popup_el.style.display = "";
-						submenu_popup_el.style.zIndex = get_new_menu_z_index();
+						submenu_popup_el.style.zIndex = `${get_new_menu_z_index()}`;
 						submenu_popup_el.setAttribute("dir", get_direction());
 						if (window.inheritTheme) {
 							window.inheritTheme(submenu_popup_el, menu_popup_el);
@@ -828,6 +828,7 @@ function MenuBar(menus) {
 					});
 					menu_popup_el.addEventListener("pointerenter", (event) => {
 						// console.log(event.target.closest(".menu-item"));
+						// @ts-ignore
 						if (event.target.closest(".menu-item") === item_el) {
 							return;
 						}
@@ -1019,7 +1020,7 @@ function MenuBar(menus) {
 			menu_button_el.classList.add("active");
 			menu_button_el.setAttribute("aria-expanded", "true");
 			menu_popup_el.style.display = "";
-			menu_popup_el.style.zIndex = get_new_menu_z_index();
+			menu_popup_el.style.zIndex = `${get_new_menu_z_index()}`;
 			menu_popup_el.setAttribute("dir", get_direction());
 			if (window.inheritTheme) {
 				window.inheritTheme(menu_popup_el, menus_el);

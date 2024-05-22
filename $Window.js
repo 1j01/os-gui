@@ -100,7 +100,7 @@ var $G = $(window);
 
 $Window.Z_INDEX = 5;
 
-/** @type {OSGUI$Window[]} */
+/** @type {(OSGUI$Window | null)[]} */
 var minimize_slots = []; // for if there's no taskbar
 
 // @TODO: make this a class,
@@ -302,6 +302,9 @@ function $Window(options = {}) {
 	$w.onBlur = make_simple_listenable("blur");
 	$w.onClosed = make_simple_listenable("closed");
 
+	/**
+	 * @param {{ innerWidth?: number, innerHeight?: number, outerWidth?: number, outerHeight?: number }} options
+	 */
 	$w.setDimensions = ({ innerWidth, innerHeight, outerWidth, outerHeight }) => {
 		let width_from_frame, height_from_frame;
 		// It's good practice to make all measurements first, then update the DOM.
@@ -677,7 +680,7 @@ function $Window(options = {}) {
 					minimize_slots[i] = $w;
 				}
 				const to_x = $w._minimize_slot_index * (to_width + spacing) + 10;
-				const titlebar_height = $w.$titlebar.outerHeight();
+				const titlebar_height = $w.$titlebar.outerHeight() ?? 0;
 				/** @type {{ position: string; left: string; top: string; width: string; height: string; }} */
 				let before_unminimize;
 				const instantly_minimize = () => {
@@ -710,9 +713,9 @@ function $Window(options = {}) {
 						$w.css({
 							position: "fixed",
 							top: `calc(100% - ${titlebar_height + 5}px)`,
-							left: to_x,
-							width: to_width,
-							height: titlebar_height,
+							left: `${to_x}`,
+							width: `${to_width}`,
+							height: `${titlebar_height}`,
 						});
 					}
 				};

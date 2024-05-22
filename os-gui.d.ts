@@ -81,6 +81,7 @@ interface OSGUIWindow {
 	 * (Also, the types could be loosened to allow mixing outer/inner for width/height, although that's a LITTLE bit questionable. Might have a use case, not sure.)
 	 */
 	setDimensions(dimensions: { innerWidth?: number; innerHeight?: number } | { outerWidth?: number; outerHeight?: number }): void;
+	// setDimensions(dimensions: ({ innerWidth?: number } | { outerWidth?: number }) & ({ innerHeight?: number } | { outerHeight?: number })): void;
 
 	/**
 	 * Changes the icon(s) of the window. `icons` is in the same format as `options.icons`.
@@ -239,6 +240,8 @@ interface OSGUIWindow {
 		updateIcon(): void;
 		updateTitle(): void;
 	};
+
+	private _minimize_slot_index: number;
 }
 
 /**
