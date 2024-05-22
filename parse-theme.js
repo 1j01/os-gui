@@ -50,7 +50,7 @@ function renderThemeGraphics(cssProperties) {
 	 * @param {string} propName 
 	 * @returns {string}
 	 */
-	var getProp = (propName) => typeof cssProperties.getPropertyValue === "function" ? cssProperties.getPropertyValue(propName) : cssProperties[propName];
+	var getProp = (propName) => typeof cssProperties.getPropertyValue === "function" ? cssProperties.getPropertyValue(propName) : /** @type {Record<string, string>} */(cssProperties)[propName];
 
 	var canvas = document.createElement("canvas");
 	canvas.width = canvas.height = 2;
@@ -366,7 +366,7 @@ function applyCSSProperties(cssProperties, options = {}) {
 	 * @param {string} propName 
 	 * @returns {string}
 	 */
-	var getProp = (propName) => typeof cssProperties.getPropertyValue === "function" ? cssProperties.getPropertyValue(propName) : cssProperties[propName];
+	var getProp = (propName) => typeof cssProperties.getPropertyValue === "function" ? cssProperties.getPropertyValue(propName) : /** @type {Record<string, string>} */(cssProperties)[propName];
 	for (var k in cssProperties) {
 		element.style.setProperty(k, getProp(k));
 	}
@@ -375,7 +375,7 @@ function applyCSSProperties(cssProperties, options = {}) {
 		var iframes = element.querySelectorAll("iframe");
 		for (var i = 0; i < iframes.length; i++) {
 			try {
-				applyCSSProperties(cssProperties, { element: iframes[i].contentDocument.documentElement, recurseIntoIframes: true });
+				applyCSSProperties(cssProperties, { element: iframes[i].contentDocument?.documentElement, recurseIntoIframes: true });
 			} catch (error) {
 				// ignore
 				// @TODO: share warning with $Window's iframe handling

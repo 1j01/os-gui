@@ -178,7 +178,7 @@ function MenuBar(menus) {
 	 *		menu_button_el: HTMLElement,
 	 *		menu_popup_el: HTMLElement,
 	 *		menus_key: string,
-	 *		access_key: string,
+	 *		access_key: string | null,
 	 *		open_top_level_menu: (source: "click" | "keydown") => void,
 	 *	}[]}
 	 */
@@ -292,7 +292,7 @@ function MenuBar(menus) {
 		const top_level_menu = top_level_menus[top_level_menu_index];
 		const { menu_button_el, open_top_level_menu } = top_level_menu || {};
 		const menu_popup_el = active_menu_popup_el || top_level_menu?.menu_popup_el;
-		const parent_item_el = parent_item_el_by_popup_el.get(active_menu_popup_el);
+		const parent_item_el = active_menu_popup_el ? parent_item_el_by_popup_el.get(active_menu_popup_el) : undefined;
 		const highlighted_item_el = menu_popup_el?.querySelector(".menu-item.highlight");
 		if (!(highlighted_item_el instanceof HTMLElement)) { throw new Error("highlighted_item_el is not an HTMLElement"); }
 
@@ -1095,6 +1095,9 @@ function MenuBar(menus) {
 		}
 		close_menus();
 	});
+	/**
+	 * @param {PointerEvent} event
+	 */
 	function close_menus_on_click_outside(event) {
 		if (event.target?.closest?.(".menus") === menus_el || event.target?.closest?.(".menu-popup")) {
 			return;
@@ -1117,6 +1120,9 @@ function MenuBar(menus) {
 	});
 
 	let keyboard_scope_elements = [];
+	/**
+	 * @param {...EventTarget} elements
+	 */
 	function set_keyboard_scope(...elements) {
 		for (const el of keyboard_scope_elements) {
 			el.removeEventListener("keydown", keyboard_scope_keydown);
@@ -1126,6 +1132,9 @@ function MenuBar(menus) {
 			el.addEventListener("keydown", keyboard_scope_keydown);
 		}
 	}
+	/**
+	 * @param {KeyboardEvent} e
+	 */
 	function keyboard_scope_keydown(e) {
 		// Close menus if the user presses almost any key combination
 		// e.g. if you look in the menu to remember a shortcut,
@@ -1144,8 +1153,9 @@ function MenuBar(menus) {
 			// but stuff after this is should not be handled at the same time as something else
 		}
 		if (e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey) { // Alt held
+			// Should the access key for top level menus default to the first letter, like menu items?
 			const menu = top_level_menus.find((menu) =>
-				menu.access_key.toLowerCase() === e.key.toLowerCase()
+				menu.access_key?.toLowerCase() === e.key.toLowerCase()
 			);
 			if (menu) {
 				e.preventDefault();
