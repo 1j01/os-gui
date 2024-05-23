@@ -12,6 +12,12 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+- Nothing here yet.
+
+</details>
+
+## [0.7.0] - 2024-05-23
+
 ### Deprecated
 
 - [Deprecate `item` in favor of `label` for menu item labels](https://github.com/1j01/os-gui/commit/c14be98e1f1f4211a8a8bb47470796750184e740)
@@ -26,18 +32,19 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `AccessKeys.unescape(label)` unescapes ampersands by removing one of each pair
   - `AccessKeys.has(label)` returns whether the label has an access key
   - `AccessKeys.get(label)` returns the access key character, or `null` if there isn't one
-  - `AccessKeys.remove(label)` returns plain text without access key indicator, like toText() but with a special case to remove parentheticals such as " (&N)" rather than just the ampersand
+  - `AccessKeys.remove(label)` returns plain text without access key indicator, like `AccessKeys.toText()` but with a special case to remove parentheticals such as " (&N)" rather than just the ampersand
   - `AccessKeys.toText(label)` returns plain text without access key syntax
   - `AccessKeys.toHTML(label)` returns HTML with `<span class="menu-hotkey">` around the access key (uses `AccessKeys.toFragment` for security)
   - `AccessKeys.toFragment(label)` returns a `DocumentFragment` with `<span class="menu-hotkey">` wrapping the access key character
   - private `AccessKeys.indexOf(label)` (don't use this)
   - (In the future, the CSS class "menu-hotkey" may be renamed to "access-key", perhaps with a prefix.)
-- Add radio menu item support
-  - In menu item lists, you can create radio groups by including an object with `radioItems`, `getValue`, `setValue`, and optionally `ariaLabel` properties, in the list of menu items.
+- Radio menu item support
+  - In menu item lists, you can create radio groups by including an object with `radioItems`, `getValue`, `setValue`, and optionally `ariaLabel` properties.
     - `radioItems` is an array of menu item specifications, which can also include `value` for the option value.
   - (Commits: [1](https://github.com/1j01/os-gui/commit/b9595e1b58f1fe2897bc5a4cf68e8f30a3d94cdf), [2](https://github.com/1j01/os-gui/commit/3e8eaa9e5c1e51107f57e665273e74e088c3dca2), [3](https://github.com/1j01/os-gui/commit/81694e13d37dd4026b78edf3b8f5fb6a65515c05), [4](https://github.com/1j01/os-gui/commit/08cd001bcde6c0ede84a2a1bba5801c7b853916f))
 - TypeScript types for the whole library
   - Type declarations are included as part of the `os-gui` package, in [`os-gui.d.ts`](os-gui.d.ts)
+  - You may need to reference the declarations file explicitly in your `tsconfig.json`'s `include` or `files` array, or use a `/// <reference path="node_modules/os-gui/os-gui.d.ts" />` directive. I'm not sure how exactly this is supposed to work.
 - `$Window` methods:
   - experimental `onFocus`, `onBlur`, and `onClosed` API for events (looking to remove dependency on jQuery)
   - private `addChildWindow($window)` (don't use this)
@@ -45,8 +52,8 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `$Window` properties:
   - `closed`: Whether the window has been closed.
   - `icons`: The icons of the window at different sizes, as set by `options.icons` or `setIcons()`.
-  - `$minimize` (the minimize button)
-  - `$maximize` (the maximize button)
+  - `$minimize`: the minimize button
+  - `$maximize`: the maximize button
   - private `$title_area` (don't use this)
   - private `$icon` (don't use this)
 - `$Window` property `element` (already mentioned but now has a section like other properties)
@@ -99,8 +106,6 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 see Changed
 
-
-</details>
 
 ## [0.6.0] - 2021-11-01
 
@@ -319,7 +324,8 @@ see Changed
 - Window component is now an app window instead of a tool window, to aid reintegration with 98.js.org; jspaint will come later.
 - Window component is styled with `.os-window` now, altho it includes both classes `os-window` and `window`.
 
-[Unreleased]: https://github.com/1j01/os-gui/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/1j01/os-gui/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/1j01/os-gui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/1j01/os-gui/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/1j01/os-gui/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/1j01/os-gui/compare/v0.4.0...v0.4.1

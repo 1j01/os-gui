@@ -2,6 +2,7 @@
 	"name": "os-gui",
 	"description": "Retro OS styles & components for the web",
 	"version": "0.6.0",
+	"homepage": "https://os-gui.js.org",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/1j01/os-gui.git"
