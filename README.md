@@ -277,18 +277,24 @@ Returns the access key for the given label, or null if none.
 Removes the access key indicator (`&`) from the label, and un-escapes any double ampersands.
 This is like [`toHTML`](#accesskeys-tohtml-label) but for plain text.
 
-Note: while often access keys are part of a word, like "&New",
+**Note**: while often access keys are part of a word, like "&New",
 in translations they are often indicated separately, like "새로 만들기 (&N)",
 since the access key stays the same, but the letter is no longer part of the word (or even the alphabet).
-This doesn't remove strings like " (&N)", it will just remove the "&" and leave "새로 만들기 (N)".
+This function doesn't remove strings like " (&N)", it will remove only the "&" and leave "새로 만들기 (N)".
 
 #### `AccessKeys.toHTML(label)`
 
 Returns HTML (with proper escaping) with the access key as a `<span class='menu-hotkey'>` element.
 
+**Security note**: It is safe to use the result of this function in HTML element content, as it escapes the label. It is not safe to use in an attribute value, but this is not the intended usage.
+
+**Layout note**: you may want to surround the result with `<span style="white-space: pre">` to prevent whitespace from collapsing if the access key is next to a space.
+
 #### `AccessKeys.toFragment(label)`
 
 Returns a [`DocumentFragment`](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment) with the access key as a `<span class='menu-hotkey'>` element.
+
+**Layout note**: you may want to surround the result with `<span style="white-space: pre">` to prevent whitespace from collapsing if the access key is next to a space.
 
 
 ### `$Window(options)`
