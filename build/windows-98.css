@@ -245,9 +245,7 @@ button:not(.lightweight).toggle.selected, button:not(.lightweight).pressed {
 button:not(.lightweight).toggle.selected, button:not(.lightweight).pressed {
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
-	-ms-interpolation-mode: nearest-neighbor;
-	    image-rendering: -moz-crisp-edges;
-	    image-rendering: pixelated;
+	image-rendering: pixelated;
 }
 
 .os-window .window-titlebar,
@@ -332,9 +330,7 @@ body > .window-titlebar {
 	/* background-image: url("images/titlebar-buttons.png"); */
 	--sprite-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAKCAYAAADo3z3CAAAAoUlEQVRIS9VVWw7AIAib9z/0FpZgCOFRgpluf9MClhYdV++7gfDhYLxYDw+UyiHd5F8S5lr6zNa6Xpv/KwhHOahQpLB1+CwfycgYrwmE0WK8MTsIR1aOGsR+NYkkYzN5/pGwVA9xA/diq8LeHCKuQxQ+aoYt2yJWtpSNZth0edRpGVC5eGQcSg4hXLml3fdpBeHs8evWyPKX9ruXVqnYCeAHA8IyC9K2kmkAAAAASUVORK5CYII=");
 	--sprite-y: 0;
-	-ms-interpolation-mode: nearest-neighbor;
-	    image-rendering: -moz-crisp-edges;
-	    image-rendering: pixelated;
+	image-rendering: pixelated;
 	width: 12px;
 	height: 10px;
 	position: relative;
@@ -605,9 +601,7 @@ so I think I'll imitate that. (I might change it later) */
 .scrollbar {
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
-	-ms-interpolation-mode: nearest-neighbor;
-	    image-rendering: -moz-crisp-edges;
-	    image-rendering: pixelated;
+	image-rendering: pixelated;
 }
 .scrollbar-thumb {
 	background-color: rgb(192, 192, 192);
@@ -626,9 +620,7 @@ so I think I'll imitate that. (I might change it later) */
 .scrollbar-track-piece:hover:active {
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
-	-ms-interpolation-mode: nearest-neighbor;
-	    image-rendering: -moz-crisp-edges;
-	    image-rendering: pixelated;
+	image-rendering: pixelated;
 	background-color: white;
 	background-blend-mode: difference;
 	/* background-attachment: fixed; breaks the checkered background in chrome */
@@ -656,9 +648,7 @@ so I think I'll imitate that. (I might change it later) */
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
 	background-image: var(--scrollbar-arrows-ButtonText);
-	-ms-interpolation-mode: nearest-neighbor;
-	    image-rendering: -moz-crisp-edges;
-	    image-rendering: pixelated;
+	image-rendering: pixelated;
 	width: 13px;
 	width: var(--scrollbar-size);
 	height: 13px;
