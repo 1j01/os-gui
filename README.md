@@ -675,7 +675,7 @@ Run `npm start` to open a development server. It will open a demo page in your d
 
 Run `npm run lint` to run type checking and spell checking (and any other linting tasks).
 
-Run `npm test` to run the tests.
+Run `npm test` to run the tests, or `npm run coverage` to run the tests and generate a coverage report.
 
 It's a good idea to close the server when updating or installing dependencies; otherwise you may run into EPERM issues.
 
