@@ -143,10 +143,12 @@ function track_focus() {
 	) {
 		last_focus_outside_menus = /** @type {HTMLElement} */(document.activeElement);
 	}
+	}
+if (typeof window !== "undefined") {
+	window.addEventListener("focusin", track_focus);
+	window.addEventListener("focusout", track_focus);
 }
-window.addEventListener("focusin", track_focus);
-window.addEventListener("focusout", track_focus);
-	
+
 let internal_z_counter = 1;
 function get_new_menu_z_index() {
 	// integrate with the OS window z-indexes, if applicable
@@ -1187,4 +1189,5 @@ exports.MenuBar = MenuBar;
 exports.AccessKeys = AccessKeys;
 exports.MENU_DIVIDER = MENU_DIVIDER;
 
-})(window);
+// @ts-ignore
+})(typeof module !== "undefined" ? module.exports : window);

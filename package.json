@@ -53,6 +53,7 @@
 	],
 	"types": "os-gui.d.ts",
 	"scripts": {
+		"test": "mocha",
 		"lint-cspell": "cspell-cli lint .",
 		"lint-tsc": "tsc --noEmit --pretty --project tsconfig.json",
 		"lint": "npm-run-all --continue-on-error --serial lint-*",
@@ -63,10 +64,16 @@
 		"live-server": "live-server"
 	},
 	"devDependencies": {
+		"@types/chai": "^4.3.16",
+		"@types/jsdom": "^21.1.6",
+		"@types/mocha": "^10.0.6",
 		"autoprefixer": "10.3.3",
+		"chai": "^4.4.1",
 		"cspell-cli": "^8.8.1",
+		"jsdom": "^24.0.0",
 		"live-server": "1.2.1",
 		"mkdirp": "1.0.4",
+		"mocha": "^10.4.0",
 		"npm-run-all": "4.1.5",
 		"postcss-cli": "8.3.1",
 		"postcss-url": "10.1.3",
