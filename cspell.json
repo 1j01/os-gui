@@ -5,6 +5,7 @@
 		"out",
 		"dist",
 		"build",
+		"coverage",
 		"images",
 		"CNAME"
 	],
