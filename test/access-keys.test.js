@@ -18,7 +18,7 @@ beforeEach(() => {
 
 describe('AccessKeys', function () {
 	describe('escape', function () {
-		it('should escape single ampersands', function () {
+		it('should escape a stranded ampersand', function () {
 			expect(AccessKeys.escape('Save & Exit')).to.equal('Save && Exit');
 		});
 
@@ -28,6 +28,10 @@ describe('AccessKeys', function () {
 
 		it('should escape adjacent ampersands', function () {
 			expect(AccessKeys.escape('Save && Exit')).to.equal('Save &&&& Exit');
+		});
+
+		it('should escape embedded ampersands', function () {
+			expect(AccessKeys.escape('Foo&bar baz&quux')).to.equal('Foo&&bar baz&&quux');
 		});
 
 	});
@@ -47,6 +51,10 @@ describe('AccessKeys', function () {
 
 		it('should unescape triple ampersands (partially) I suppose', function () {
 			expect(AccessKeys.unescape('Invalid &&& Access Key')).to.equal('Invalid && Access Key');
+		});
+
+		it('should unescape quadruple ampersands', function () {
+			expect(AccessKeys.unescape('true &&&& false')).to.equal('true && false');
 		});
 	});
 
@@ -124,7 +132,7 @@ describe('AccessKeys', function () {
 		});
 
 		it('should un-escape double ampersands', function () {
-			expect(AccessKeys.remove('Foo && Bar && Baz')).to.equal('Foo & Bar & Baz');
+			expect(AccessKeys.remove('Foo && Bar&&Baz')).to.equal('Foo & Bar&Baz');
 		});
 
 		it('should only remove one access key ampersand (the one actually treated as an access key)', function () {
@@ -158,7 +166,7 @@ describe('AccessKeys', function () {
 		});
 
 		it('should un-escape double ampersands', function () {
-			expect(AccessKeys.toText('Foo && Bar && Baz')).to.equal('Foo & Bar & Baz');
+			expect(AccessKeys.toText('Foo && Bar&&Baz')).to.equal('Foo & Bar&Baz');
 		});
 
 		it('should only remove one access key ampersand (the one actually treated as an access key)', function () {
