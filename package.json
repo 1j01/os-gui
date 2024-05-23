@@ -62,7 +62,11 @@
 		"prestart": "mkdirp build",
 		"prewatch": "mkdirp build",
 		"watch-css": "postcss src/**/*.css --base src --dir build --map --watch --poll",
-		"live-server": "live-server"
+		"live-server @NOTE 1": "The dot at the end is needed as a workaround, see https://github.com/tapio/live-server/issues/178#issuecomment-438231084",
+		"live-server @NOTE 2": "I'd like to ignore *.map too, but I don't know how to get it to work cross-platform.",
+		"live-server @NOTE 3": "I'm not sure if I want coverage/ to be ignored, but I could make a separate script for live reloading the coverage report. That said, I might just use the live server built into VS Code for that.",
+		"live-server @NOTE 4": "It may be more reasonable to use a middleware for this logic, see https://github.com/tapio/live-server/issues/178#issuecomment-404471184",
+		"live-server": "live-server --ignore=node_modules/,.git/,.history/,.idea/,.vscode/,test/,coverage/,package.json,package-lock.json,README.md,LICENSE,CNAME,CHANGELOG.md,os-gui.d.ts,postcss.config.js,cspell.json,.gitignore,.gitattributes ."
 	},
 	"devDependencies": {
 		"@types/chai": "^4.3.16",
