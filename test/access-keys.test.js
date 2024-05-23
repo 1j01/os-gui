@@ -130,6 +130,10 @@ describe('AccessKeys', function () {
 		it('should only remove one access key ampersand (the one actually treated as an access key)', function () {
 			expect(AccessKeys.remove('&Foo, &Bar, &Baz')).to.equal('Foo, &Bar, &Baz');
 		});
+
+		it('should preserve a parenthetical with an ampersand, unescaping it', function () {
+			expect(AccessKeys.remove('I like ampersands (&&)')).to.equal('I like ampersands (&)');
+		});
 	});
 
 	describe('toText', function () {
