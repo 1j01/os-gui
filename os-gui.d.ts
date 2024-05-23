@@ -464,7 +464,9 @@ interface AccessKeys {
 	has(label: string): boolean;
 	/** Returns the access key character, or `null` if there isn't one. */
 	get(label: string): string | null;
-	/** Returns plain text without access key syntax. */
+	/** Returns plain text without access key indicator, like toText() but with a special case to remove parentheticals such as " (&N)" rather than just the ampersand. */
+	remove(label: string): string;
+	/** Returns plain text without access key syntax. Leaves the access key letter even if it's a separate part of the label like "Foo (&1)" which becomes "Foo (1)". */
 	toText(label: string): string;
 	/** Returns HTML with `<span class="menu-hotkey">` around the access key (uses `AccessKeys.toFragment` for security). */
 	toHTML(label: string): string;

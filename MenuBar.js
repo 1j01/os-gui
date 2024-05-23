@@ -65,6 +65,15 @@ const AccessKeys = {
 		}
 		return null;
 	},
+	remove: function (label) {
+		// Removes the access key from the label.
+		// Like toText() but with a special case to remove parentheticals like " (&N)".
+		const parentheticalRegex = /\s?\(&.\)/;
+		if (parentheticalRegex.test(label)) {
+			return this.unescape(label.replace(parentheticalRegex, ""));
+		}
+		return this.toText(label);
+	},
 	toText: function (label) {
 		// Removes the access key indicator from the label.
 		// This is like toHTML() but for plain text.

@@ -26,6 +26,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `AccessKeys.unescape(label)` unescapes ampersands by removing one of each pair
   - `AccessKeys.has(label)` returns whether the label has an access key
   - `AccessKeys.get(label)` returns the access key character, or `null` if there isn't one
+  - `AccessKeys.remove(label)` returns plain text without access key indicator, like toText() but with a special case to remove parentheticals such as " (&N)" rather than just the ampersand
   - `AccessKeys.toText(label)` returns plain text without access key syntax
   - `AccessKeys.toHTML(label)` returns HTML with `<span class="menu-hotkey">` around the access key (uses `AccessKeys.toFragment` for security)
   - `AccessKeys.toFragment(label)` returns a `DocumentFragment` with `<span class="menu-hotkey">` wrapping the access key character

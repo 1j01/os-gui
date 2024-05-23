@@ -272,6 +272,11 @@ Returns the access key for the given label, or null if none.
 
 `MenuBar` handles access keys automatically, but if you're including access keys for other UI elements, you need to handle them yourself, and you can use this rather than hard-coding the access key, so it doesn't need to be changed in two places.
 
+#### `AccessKeys.remove(label)`
+
+Removes the access key indicator (`&`) from the label, and un-escapes any double ampersands.
+Also removes a parenthetical access key indicator, like " (&N)", as a special case.
+
 #### `AccessKeys.toText(label)`
 
 Removes the access key indicator (`&`) from the label, and un-escapes any double ampersands.
@@ -281,6 +286,7 @@ This is like [`toHTML`](#accesskeys-tohtml-label) but for plain text.
 in translations they are often indicated separately, like "새로 만들기 (&N)",
 since the access key stays the same, but the letter is no longer part of the word (or even the alphabet).
 This function doesn't remove strings like " (&N)", it will remove only the "&" and leave "새로 만들기 (N)".
+If you want that behavior, use `AccessKeys.remove(label)`.
 
 #### `AccessKeys.toHTML(label)`
 
