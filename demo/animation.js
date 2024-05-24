@@ -67,7 +67,7 @@ for (let i = 0; i < n_objects; ++i) {
 				});
 			})
 	);
-	
+
 	const motherRect = $mothership.$content[0].getBoundingClientRect();
 	const object = {
 		x: motherRect.left + motherRect.width / 2,
@@ -99,7 +99,7 @@ const animate = () => {
 			const repelForce = repel_force_slider.valueAsNumber / 100;
 			o.velocityX -= (targetX - o.x) / dist * repelForce;
 			o.velocityY -= (targetY - o.y) / dist * repelForce;
-			
+
 			const gravityForce = gravity_force_slider.valueAsNumber / 20000;
 			o.velocityX -= (o.x - (motherRect.left + motherRect.width / 2)) * gravityForce;
 			o.velocityY -= (o.y - (motherRect.top + motherRect.height / 2)) * gravityForce;

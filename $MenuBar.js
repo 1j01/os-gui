@@ -10,7 +10,7 @@
 	xhr.open("GET", document.currentScript.src.replace("$", ""), false);
 	xhr.send();
 	eval(xhr.responseText);
-	
+
 	/** @param {OSGUITopLevelMenus} menus */
 	function $MenuBar(menus) {
 		console?.warn?.("$MenuBar is deprecated. Use `new MenuBar(menus).element` instead.");

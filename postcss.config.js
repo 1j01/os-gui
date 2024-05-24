@@ -4,7 +4,7 @@ module.exports = ctx => ({
 	plugins: {
 		precss: true,
 		autoprefixer: true,
-		"postcss-url": {url: "inline"},
+		"postcss-url": { url: "inline" },
 		// cssnano: ctx.env === "production" ? {} : false
 	}
 })

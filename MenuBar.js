@@ -143,7 +143,7 @@ function track_focus() {
 	) {
 		last_focus_outside_menus = /** @type {HTMLElement} */(document.activeElement);
 	}
-	}
+}
 if (typeof window !== "undefined") {
 	window.addEventListener("focusin", track_focus);
 	window.addEventListener("focusout", track_focus);
@@ -656,7 +656,7 @@ function MenuBar(menus) {
 					label_el.appendChild(AccessKeys.toFragment(item.item));
 					console.warn("Menu item option `item` is deprecated; use `label` instead.");
 				}
-				
+
 				if (item.shortcutLabel) {
 					shortcut_el.textContent = item.shortcutLabel;
 				} else if (item.shortcut) {
@@ -697,7 +697,7 @@ function MenuBar(menus) {
 						send_info_event();
 					}
 				});
-				
+
 				if (item.checkbox?.type === "radio") {
 					checkbox_area_el.classList.add("radio");
 				} else if (item.checkbox) {
