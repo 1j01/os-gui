@@ -1,4 +1,82 @@
 {
+	// .-------------------.
+	// | Exclusions        |
+	// '-------------------'
+	// This hides files from the file tree as well as search results.
+	"files.exclude": {
+		"**/node_modules": true,
+		"**/out": true,
+	},
+	// This affects Find In Files (Ctrl+Shift+F), Go To File (Ctrl+P), and Quick Search.
+	"search.exclude": {
+		"**/images": true,
+		"**/lib": true,
+		"**/build": true,
+		"**/dist": true,
+		"**/coverage": true,
+		// The package lock file contains a lot of repetation, and is usually noise in search results.
+		// You can often search with `npm ls` if you want to check if a package is installed,
+		// and what depends on what.
+		"package-lock.json": true,
+	},
+	// Prevent accidental editing.
+	// This can always be overridden with the command "File: Toggle Active Editor Read-only in Session"
+	"files.readonlyInclude": {
+		"build/**": true,
+		// Docusaurus temporary files
+		".docusaurus/**": true,
+		// Node.js
+		"node_modules/**": true,
+		"package-lock.json": true,
+	},
+	// .-------------------.
+	// | Intellisense      |
+	// '-------------------'
+	// Use local TypeScript version instead of the one bundled with VS Code.
+	// You may need to run "TypeScript: Select TypeScript Version..." and choose "Use workspace version"
+	// or that command might just set this setting for you, I'm not sure.
+	// Go to a TS or JS file for the command to show up in the command palette.
+	"typescript.tsdk": "node_modules/typescript/lib",
+	// .-------------------.
+	// | Formatting        |
+	// '-------------------'
+	"editor.formatOnSave": true,
+	"editor.insertSpaces": false,
+	"editor.detectIndentation": false,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "always",
+	},
+	"javascript.preferences.importModuleSpecifierEnding": "js",
+	"typescript.preferences.importModuleSpecifierEnding": "js",
+	"html.format.unformattedContentDelimiter": "<!--no_format-->",
+	"[javascript]": {
+		"editor.formatOnSave": false, // TODO: enable this after converting to ESM (removing top-level IIFEs)
+	},
+	"[css]": {
+		// The CSS in this project uses PostCSS.
+		// If you have the "csstools.postcss" extension installed,
+		// the language will be recognized as "[postcss]" instead of "[css]",
+		// but if you don't, this potentially avoids broken formatting.
+		// The built in CSS formatter is also very newline-happy.
+		"editor.formatOnSave": false,
+	},
+	"[markdown]": {
+		// Formatting markdown tables automatically is cool, but doesn't allow padding cells to avoid superflous git diffs.
+		// I'm not sure there's much utility in formatting markdown files automatically.
+		"editor.formatOnSave": false,
+	},
+	// Note: this doesn't apply to "JSON with comments" files, such as this one. That's [jsonc].
+	"[json]": {
+		// npm respects different indent styles, but always adds a newline at the end of package.json/package-lock.json,
+		// so this avoids ping-ponging changes in git.
+		// This could be applied to all files for consistency, but it may introduce noise if all files aren't formatted at once.
+		"files.insertFinalNewline": true,
+		// Maintaining current indentation for now, but could remove this for consistency.
+		"editor.detectIndentation": true,
+	},
+	// .-------------------.
+	// | Theming           |
+	// '-------------------'
 	"workbench.colorTheme": "Hardcore Theme",
 	// "workbench.colorTheme": "windows-nt", 
 	"workbench.iconTheme": "windows-nt-icons",
