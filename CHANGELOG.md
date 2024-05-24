@@ -12,7 +12,9 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
-- Nothing here yet.
+### Fixed
+
+- Fixed an assertion error that was thrown when navigating menus with the keyboard, due to an overly broad condition. (I asserted that the type was HTMLElement, but needed to assert that it was *either null or* an HTMLElement. The assertion was just for type narrowing.)
 
 </details>
 

@@ -305,7 +305,10 @@ function MenuBar(menus) {
 		const menu_popup_el = active_menu_popup_el || top_level_menu?.menu_popup_el;
 		const parent_item_el = active_menu_popup_el ? parent_item_el_by_popup_el.get(active_menu_popup_el) : undefined;
 		const highlighted_item_el = menu_popup_el?.querySelector(".menu-item.highlight");
-		if (!(highlighted_item_el instanceof HTMLElement)) { throw new Error("highlighted_item_el is not an HTMLElement"); }
+		if (highlighted_item_el && !(highlighted_item_el instanceof HTMLElement)) {
+			// type narrowing; should never happen; could use querySelector<HTMLElement>() instead if switching to TypeScript
+			throw new Error("Unexpected type for highlighted item element");
+		}
 
 		// console.log("keydown", e.key, { target: e.target, active_menu_popup_el, top_level_menu, menu_popup_el, parent_item_el, highlighted_item_el });
 
@@ -372,6 +375,7 @@ function MenuBar(menus) {
 				if (active_menu_popup) {
 					const cycle_dir = down ? 1 : -1;
 					const item_els = /** @type {HTMLElement[]} */([...menu_popup_el.querySelectorAll(".menu-item")]);
+					// @ts-ignore
 					const from_index = item_els.indexOf(highlighted_item_el);
 					let to_index = (from_index + cycle_dir + item_els.length) % item_els.length;
 					if (from_index === -1) {
