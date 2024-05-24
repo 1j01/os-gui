@@ -1,468 +1,541 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>OS GUI — Windows 98 CSS+JS Library Demo</title>
-		<link href="build/layout.css" rel="stylesheet" type="text/css">
-		<link href="build/windows-98.css" rel="stylesheet" type="text/css">
-		<link href="build/windows-default.css" rel="stylesheet" title="Windows Default" type="text/css">
-		<link href="build/peggys-pastels.css" rel="alternate stylesheet" title="Peggy's Pastels" type="text/css">
-		<link rel="icon" href="images/os-gui-favicon.png" type="image/png">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<style>
-			html,
-			body {
-				height: 100%;
-				margin: 0;
-				display: flex;
-				flex-direction: column;
+
+<head>
+	<meta charset="utf-8">
+	<title>OS GUI — Windows 98 CSS+JS Library Demo</title>
+	<link href="build/layout.css" rel="stylesheet" type="text/css">
+	<link href="build/windows-98.css" rel="stylesheet" type="text/css">
+	<link href="build/windows-default.css" rel="stylesheet" title="Windows Default" type="text/css">
+	<link href="build/peggys-pastels.css" rel="alternate stylesheet" title="Peggy's Pastels" type="text/css">
+	<link rel="icon" href="images/os-gui-favicon.png" type="image/png">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		html,
+		body {
+			height: 100%;
+			margin: 0;
+			display: flex;
+			flex-direction: column;
+		}
+
+		body {
+			font-family: sans-serif;
+			/*background-color: var(--Background);*/
+			background-color: var(--InfoWindow);
+			color: var(--InfoText);
+			/* background-color: var(--ButtonFace);
+			color: var(--ButtonText); */
+		}
+
+		main,
+		footer {
+			padding: 1em;
+		}
+
+		main {
+			flex: 1;
+		}
+
+		nav {
+			text-align: center;
+			font-size: 2em;
+			margin-top: 1em;
+			margin-bottom: 1em;
+		}
+
+		footer {
+			flex: 0 0 auto;
+			text-align: center;
+			background: var(--ButtonFace);
+			color: var(--ButtonText);
+		}
+
+		button:not(.window-button) {
+			padding: 3px;
+		}
+
+		p>button {
+			vertical-align: bottom;
+			/* so text in a paragraph following the button flows with consistent line spacing (vertical rhythm) */
+		}
+
+		.window-content {
+			padding: 1em;
+		}
+
+		#buttons-demo td button {
+			width: 100%;
+			max-width: 200px;
+		}
+
+		#buttons-demo,
+		#insets-outsets-demo {
+			border-collapse: collapse;
+		}
+
+		#buttons-demo td,
+		#insets-outsets-demo td {
+			padding: 0.5em;
+		}
+
+		/* can't use <col> for this because I'm conditionally changing the display property with a media query */
+		#buttons-demo td:first-child,
+		#insets-outsets-demo td:first-child {
+			background: var(--ButtonFace);
+			color: var(--ButtonText);
+		}
+
+		#insets-outsets-demo td:first-of-type div {
+			padding: 10px;
+		}
+
+		td:nth-child(2) code {
+			display: block;
+			background: white;
+			color: black;
+		}
+
+		@media (max-width: 800px) {
+			.demo-table {
+				display: block;
 			}
-			body {
-				font-family: sans-serif;
-				/*background-color: var(--Background);*/
-				background-color: var(--InfoWindow);
-				color: var(--InfoText);
-				/* background-color: var(--ButtonFace);
-				color: var(--ButtonText); */
+
+			.demo-table tr {
+				display: block;
 			}
-			main,
-			footer {
-				padding: 1em;
-			}
-			main {
-				flex: 1;
-			}
-			nav {
-				text-align: center;
-				font-size: 2em;
-				margin-top: 1em;
-				margin-bottom: 1em;
-			}
-			footer {
-				flex: 0 0 auto;
-				text-align: center;
-				background: var(--ButtonFace);
-				color: var(--ButtonText);
-			}
-			button:not(.window-button) {
-				padding: 3px;
-			}
-			p > button {
-				vertical-align: bottom; /* so text in a paragraph following the button flows with consistent line spacing (vertical rhythm) */
-			}
-			.window-content {
-				padding: 1em;
-			}
-			#buttons-demo td button {
-				width: 100%;
-				max-width: 200px;
-			}
-			#buttons-demo,
-			#insets-outsets-demo {
-				border-collapse: collapse;
-			}
-			#buttons-demo td,
-			#insets-outsets-demo td {
+
+			.demo-table tr td {
+				display: block;
 				padding: 0.5em;
 			}
-			/* can't use <col> for this because I'm conditionally changing the display property with a media query */
-			#buttons-demo td:first-child,
-			#insets-outsets-demo td:first-child {
-				background: var(--ButtonFace);
-				color: var(--ButtonText);
+
+			.demo-table colgroup,
+			.demo-table col {
+				display: none;
+			}
+		}
+
+		.scrollbar-demo {
+			display: inline-block;
+			padding: 0 15px;
+		}
+
+		.scrollbar-demo .scrollbar-track.vertical,
+		.scrollbar-demo .scrollbar.vertical {
+			width: var(--scrollbar-size);
+		}
+
+		.scrollbar-demo .scrollbar-track.vertical {
+			height: 50px;
+		}
+
+		.scrollbar-demo .scrollbar-thumb.vertical {
+			height: 20px;
+		}
+
+		body {
+			overflow: scroll;
+			/* show off the custom scrollbars :) */
+		}
+
+		#logo-heading {
+			margin: 0.1em 0;
+			line-height: 1;
+			font-size: min(100px, 12vw);
+			text-align: center;
+			white-space: nowrap;
+			/* picked for metric compatibility - with each other, mainly; it's not that good of a match though for Laser Corps, the font I used for the logo */
+			/* I could do selectable text in a bullet proof way if I wanted, by specifying the sizes of spans per letter. */
+			font-family: Arial, Helvetica, Liberation Sans, FreeSans, sans-serif;
+			letter-spacing: 0.25em;
+		}
+
+		#logo-heading>span {
+			background: url('images/os-gui-logo.svg');
+			background-repeat: no-repeat;
+			background-size: contain;
+			background-position: center;
+			color: transparent;
+		}
+
+		/* Why two elements? Well if you make part of the link fly away, it makes clicking the link unreliable,
+		given that the link is no longer under your mouse. So if you're animating a link or button,
+		it's useful to separate the click target from the visual element that is animating. */
+		#spaceship-graphic {
+			display: inline-block;
+			width: 8em;
+			height: calc(8em * (164 / 241));
+			vertical-align: middle;
+			position: relative;
+		}
+
+		#spaceship-graphic::after {
+			content: "";
+			display: inline-block;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			background: url("https://i.postimg.cc/pTCqBxL0/Spaceship-tut.png");
+			width: 164px;
+			height: 241px;
+			transform: translate(-50%, -50%) scale(0.5) rotate(.25turn);
+			transition: transform 1s;
+		}
+
+		#spaceship-link:active #spaceship-graphic::after,
+		#spaceship-link:focus #spaceship-graphic::after {
+			transform: translate(-50%, -50%) translateX(460px) scale(0.3) rotate(.25turn);
+		}
+	</style>
+</head>
+
+<body>
+	<script src="demo/lib/jquery-3.3.1.js"></script>
+	<script src="MenuBar.js"></script>
+	<script src="$Window.js"></script>
+	<script src="parse-theme.js"></script>
+	<script src="demo/demo.js"></script>
+	<main>
+		<h1 id="logo-heading"><span>OS-GUI.JS</span></h1>
+		<nav>
+			<a href="https://github.com/1j01/os-gui">GitHub</a>
+			&middot;
+			<a href="https://npmjs.com/package/os-gui">npm</a>
+			&middot;
+			<a href="https://github.com/1j01/os-gui/blob/master/CHANGELOG.md">Changelog</a>
+			&middot;
+			<a href="#components">Components</a>
+			&middot;
+			<a href="#demos">Demos</a>
+			<!-- &middot; -->
+			<!-- <a href="#themes">Themes</a> -->
+		</nav>
+		<p>
+			<b>OS-GUI.js</b> is a JavaScript and CSS library for creating operating system-like user interfaces.
+			The default theme is an accurate recreation of Windows 98's appearance.
+		</p>
+		<p>
+			You can find the source code and docs on <a href="https://github.com/1j01/os-gui">GitHub</a>.
+			This page also acts as documentation. You may want to view <a href="demo.js">this page's source code.</a>
+		</p>
+		<br>
+		<br>
+		<h2><a id="components"></a>MenuBar</h2>
+		<p>
+			The MenuBar component is an application menu bar.
+			It supports command menu items, checkbox menu items, and submenus.
+			It works with screen readers, and is keyboard/mouse/touch accessible.
+			You can jump to menu items by pressing the first letter of the item's label, or if defined, an access key.
+			Access keys are defined in the item's label by putting an ampersand (<code>&amp;</code>) before the letter.
+		</p>
+		<div>
+			<div id="menubar-example" style="height: 21px;"></div>
+		</div>
+		<h2>Application Window</h2>
+		<p>
+			Application windows are windows that can be dragged around, closed, minimized, and
+			are usually resizable and maximizable.
+		</p>
+		<p>
+			Windows 98's flying titlebar animation is implemented for maximizing, minimizing, and restoring.
+		</p>
+		<p>
+			Even without defining a taskbar, app windows can be minimized.
+			It works similarly to how it does in Windows 98 if you end the Explorer task.
+		</p>
+		<div>
+			<div id="app-window-example" style="height: 135px;"></div>
+		</div>
+		<h2>Tool Window</h2>
+		<p>
+			Tool windows have a smaller titlebar, and are generally not resizable, maximizable, or minimizable.
+			They share their focus with the application window they're in, at least visually.
+		</p>
+		<p>
+			Tool windows that have no parent window are shown as focused as long as the browser window is focused.
+			This is useful for web applications where the browser window takes the place of the application window.
+		</p>
+		<div>
+			<div id="tool-window-example" style="height: 90px;"></div>
+		</div>
+		<h2>Combined Application Example</h2>
+		<p>This example shows an app window with a tool window and a menu bar.</p>
+		<p>The tool window shares focus with the parent app window, and always stays on top of it's parent.</p>
+		<p><b>Tip:</b> Remember to listen for the <code>closed</code> event on the application window
+			to close any tool windows.</p>
+		<div style="position: relative;" id="combined-application-positioners">
+			<div id="app-window-2-positioner"></div>
+			<div id="tool-window-2-positioner" style="position: absolute;"></div>
+		</div>
+		<style>
+			#combined-application-positioners {
+				height: 220px;
 			}
 
-			#insets-outsets-demo td:first-of-type div {
-				padding: 10px;
+			#tool-window-2-positioner {
+				left: 400px;
+				top: 30px;
 			}
 
-			td:nth-child(2) code {
-				display: block;
-				background: white;
-				color: black;
-			}
-
-			@media (max-width: 800px) {
-				.demo-table {
-					display: block;
+			@media screen and (max-width: 800px) {
+				#combined-application-positioners {
+					height: 260px;
 				}
-				.demo-table tr {
-					display: block;
+
+				#tool-window-2-positioner {
+					left: 20px;
+					top: 100px;
 				}
-				.demo-table tr td {
-					display: block;
-					padding: 0.5em;
-				}
-				.demo-table colgroup,
-				.demo-table col {
-					display: none;
-				}
-			}
-
-			.scrollbar-demo {
-				display: inline-block;
-				padding: 0 15px;
-			}
-			.scrollbar-demo .scrollbar-track.vertical,
-			.scrollbar-demo .scrollbar.vertical {
-				width: var(--scrollbar-size);
-			}
-			.scrollbar-demo .scrollbar-track.vertical {
-				height: 50px;
-			}
-			.scrollbar-demo .scrollbar-thumb.vertical {
-				height: 20px;
-			}
-
-			body {
-				overflow: scroll; /* show off the custom scrollbars :) */
-			}
-
-			#logo-heading {
-				margin: 0.1em 0;
-				line-height: 1;
-				font-size: min(100px, 12vw);
-				text-align: center;
-				white-space: nowrap;
-				/* picked for metric compatibility - with each other, mainly; it's not that good of a match though for Laser Corps, the font I used for the logo */
-				/* I could do selectable text in a bullet proof way if I wanted, by specifying the sizes of spans per letter. */
-				font-family: Arial, Helvetica, Liberation Sans, FreeSans, sans-serif;
-				letter-spacing: 0.25em;
-			}
-			#logo-heading > span {
-				background: url('images/os-gui-logo.svg');
-				background-repeat: no-repeat;
-				background-size: contain;
-				background-position: center;
-				color: transparent;
-			}
-
-			/* Why two elements? Well if you make part of the link fly away, it makes clicking the link unreliable,
-			given that the link is no longer under your mouse. So if you're animating a link or button,
-			it's useful to separate the click target from the visual element that is animating. */
-			#spaceship-graphic {
-				display: inline-block;
-				width: 8em;
-				height: calc(8em * (164 / 241));
-				vertical-align: middle;
-				position: relative;
-			}
-			#spaceship-graphic::after {
-				content: "";
-				display: inline-block;
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				background: url("https://i.postimg.cc/pTCqBxL0/Spaceship-tut.png");
-				width: 164px;
-				height: 241px;
-				transform: translate(-50%, -50%) scale(0.5) rotate(.25turn);
-				transition: transform 1s;
-			}
-			#spaceship-link:active #spaceship-graphic::after,
-			#spaceship-link:focus #spaceship-graphic::after {
-				transform: translate(-50%, -50%) translateX(460px) scale(0.3) rotate(.25turn);
 			}
 		</style>
-	</head>
-	<body>
-		<script src="demo/lib/jquery-3.3.1.js"></script>
-		<script src="MenuBar.js"></script>
-		<script src="$Window.js"></script>
-		<script src="parse-theme.js"></script>
-		<script src="demo/demo.js"></script>
-		<main>
-			<h1 id="logo-heading"><span>OS-GUI.JS</span></h1>
-			<nav>
-				<a href="https://github.com/1j01/os-gui">GitHub</a>
-				&middot;
-				<a href="https://npmjs.com/package/os-gui">npm</a>
-				&middot;
-				<a href="https://github.com/1j01/os-gui/blob/master/CHANGELOG.md">Changelog</a>
-				&middot;
-				<a href="#components">Components</a>
-				&middot;
-				<a href="#demos">Demos</a>
-				<!-- &middot; -->
-				<!-- <a href="#themes">Themes</a> -->
-			</nav>
-			<p>
-				<b>OS-GUI.js</b> is a JavaScript and CSS library for creating operating system-like user interfaces.
-				The default theme is an accurate recreation of Windows 98's appearance.
-			</p>
-			<p>
-				You can find the source code and docs on <a href="https://github.com/1j01/os-gui">GitHub</a>.
-				This page also acts as documentation. You may want to view <a href="demo.js">this page's source code.</a>
-			</p>
-			<br>
-			<br>
-			<h2><a id="components"></a>MenuBar</h2>
-			<p>
-				The MenuBar component is an application menu bar. It supports command menu items, checkbox menu items, and submenus.
-				It works with screen readers, and is keyboard/mouse/touch accessible.
-				You can jump to menu items by pressing the first letter of the item's label, or if defined, an access key.
-				Access keys are defined in the item's label by putting an ampersand (<code>&amp;</code>) before the letter.
-			</p>
-			<div>
-				<div id="menubar-example" style="height: 21px;"></div>
-			</div>
-			<h2>Application Window</h2>
-			<p>
-				Application windows are windows that can be dragged around, closed, minimized, and are usually resizable and maximizable.
-			</p>
-			<p>
-				Windows 98's flying titlebar animation is implemented for maximizing, minimizing, and restoring.
-			</p>
-			<p>
-				Even without defining a taskbar, app windows can be minimized.
-				It works similarly to how it does in Windows 98 if you end the Explorer task.
-			</p>
-			<div>
-				<div id="app-window-example" style="height: 135px;"></div>
-			</div>
-			<h2>Tool Window</h2>
-			<p>
-				Tool windows have a smaller titlebar, and are generally not resizable, maximizable, or minimizable.
-				They share their focus with the application window they're in, at least visually.
-			</p>
-			<p>
-				Tool windows that have no parent window are shown as focused as long as the browser window is focused.
-				This is useful for web applications where the browser window takes the place of the application window.
-			</p>
-			<div>
-				<div id="tool-window-example" style="height: 90px;"></div>
-			</div>
-			<h2>Combined Application Example</h2>
-			<p>This example shows an app window with a tool window and a menu bar.</p>
-			<p>The tool window shares focus with the parent app window, and always stays on top of it's parent.</p>
-			<p><b>Tip:</b> Remember to listen for the <code>closed</code> event on the application window to close any tool windows.</p>
-			<div style="position: relative;" id="combined-application-positioners">
-				<div id="app-window-2-positioner"></div>
-				<div id="tool-window-2-positioner" style="position: absolute;"></div>
-			</div>
-			<style>
-				#combined-application-positioners {
-					height: 220px;
-				}
-				#tool-window-2-positioner {
-					left: 400px;
-					top: 30px;
-				}
-				@media screen and (max-width: 800px) {
-					#combined-application-positioners {
-						height: 260px;
-					}
-					#tool-window-2-positioner {
-						left: 20px;
-						top: 100px;
-					}
-				}
-			</style>
-			<h2>Right-To-Left Support</h2>
-			<p>OS-GUI supports right-to-left languages with a flipped layout. Keyboard navigation is flipped appropriately (for entering/exiting submenus).</p>
-			<p>You can specify the standard HTML attribute
-				<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir"><code>dir="rtl"</code></a>
-				or CSS property
-				<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/direction"><code>direction: rtl</code></a>
-				to control the layout direction.
-			</p>
-			<div style="position: relative; height: 200px;">
-				<div id="app-window-3-positioner"></div>
-			</div>
-			<h2>Buttons</h2>
-			<p>You can go <em>bananas with buttons!</em></p>
-			<p>Come on down to Isaiah's Button Emporium, we've got all the buttons, we've got <em>gray buttons</em>... and... <em>more-gray</em> buttons!</p>
-			<p><b>Tip</b>: You should use verbs for button labels when possible. For demo purposes, labels here describe the button type.</p>
-			<table id="buttons-demo" class="demo-table">
-				<col style="/* background/color set elsewhere */ width: 150px;"/>
-				<col style="background: var(--InfoWindow); color: var(--InfoText);"/>
-				<col/>
-				<tr>
-					<td><button>Basic button</button></td>
-					<td><code>&lt;button&gt;Basic button&lt;/button&gt;</code></td>
-					<td>A normal command button.</td>
-				</tr>
-				<tr>
-					<td><button disabled>Disabled button</button></td>
-					<td><code>&lt;button disabled&gt;Disabled button&lt;/button&gt;</code></td>
-					<td>Use the standard <code>disabled</code> attribute to mark buttons as disabled.</td>
-				</tr>
-				<tr>
-					<td><button class="default">Default button</button></td>
-					<td><code>&lt;button class="default"&gt;Default button&lt;/button&gt;</code></td>
-					<td>
-						The default action that will be triggered if you hit Enter.
-						The default should change to whatever button you tab to, or if you tab to another control in a form, return to the original default button.
-						<!-- This style is also shown when a focused button becomes disabled... and you can even get it
-							<a href="https://i.imgur.com/WICAL98.png">where it shows two buttons with the so-called "default" style</a>
-							(neither disabled!).
-							<em>OK</em>, will apply, not <em>Apply</em> (when you hit Enter).
-							Well, actually OK <em>does</em> apply, so maybe it's an intentional choice...
-						-->
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<button class="toggle selected" aria-pressed="true" id="demo-toggle-button">Toggle button</button>
-					</td>
-					<td>
-						<code>&lt;button class="toggle selected" aria-pressed="true"&gt;Toggle button&lt;/button&gt;</code>
-					</td>
-					<td>
-						Add the <code>selected</code> class to show the button as pressed.
-						Include the <code>toggle</code> class to make it a toggle button.
-						You should also provide <code>aria-pressed</code> or <code>aria-expanded</code> attributes as appropriate.
-						Examples: Start button, taskbar buttons, List/Details buttons in file open/save dialogs.
-						Tool buttons in Paint look a bit different.
-					</td>
-				</tr>
-				<!-- TODO: <tr>
-					<td>
-						<label>
-							<input type="checkbox">
-							<span class="button">Toggle button</span>
-						</label>
-					</td>
-					<td>
-						A styled checkbox.
-					</td>
-				</tr> -->
-				<tr>
-					<td>
-						<button class="lightweight" tabindex="-1">Lightweight button</button>
-					</td>
-					<td>
-						<code>&lt;button class="lightweight" tabindex="-1"&gt;Lightweight button&lt;/button&gt;</code>
-					</td>
-					<td>
-						No border until hover. Used for menu and toolbar buttons. Generally not focusable.
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<button class="lightweight" disabled tabindex="-1">Lightweight disabled</button>
-					</td>
-					<td>
-						<code>&lt;button class="lightweight" disabled tabindex="-1"&gt;Lightweight disabled&lt;/button&gt;</code>
-					</td>
-					<td>Use the standard <code>disabled</code> attribute to mark buttons as disabled.</td>
-				</tr>
-			</table>
-			<h2>Scrollbars</h2>
-			<p>
-				Scrollbars are automatically styled in webkit-based/blink-based browsers (Chrome/Chromium/Opera/Edge, etc.),
-				but for Firefox you could use <a href="https://kingsora.github.io/OverlayScrollbars/#!overview">OverlayScrollbars</a>
-				or perhaps <a href="https://grsmto.github.io/simplebar/">SimpleBar</a>.
-			</p>
-			<p>
-				The triangle graphics are rendered dynamically based on the theme colors and <code>--scrollbar-size</code> CSS variable.
-				Graphics are prerendered at a default size in each theme's CSS file,
-				but you can update the graphics with:
-			</p>
-			<pre style="overflow: auto;">applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), {element, recurseIntoIframes: true});</pre>
-			<div id="scrollbar-demos" style="height: 270px; overflow: auto;">
-				<div class="scrollbar-demo">
-					<div class="scrollbar-button decrement horizontal" style="display: inline-block;"></div><div class="scrollbar-button increment horizontal" style="display: inline-block;"></div>
-					<div class="scrollbar-button decrement vertical"></div>
-					<div class="scrollbar-button increment vertical"></div>
-					<br>
-					<div class="scrollbar-button decrement horizontal disabled" style="display: inline-block;"></div><div class="scrollbar-button increment horizontal disabled" style="display: inline-block;"></div>
-					<!-- <div class="scrollbar-button decrement vertical disabled"></div>
-					<div class="scrollbar-button increment vertical disabled"></div> -->
-					<br>
-					<div class="scrollbar vertical">
-						<div class="scrollbar-button decrement vertical disabled"></div>
-						<div class="scrollbar-track vertical">
-							<div class="scrollbar-track-piece decrement vertical"></div>
-							<div class="scrollbar-thumb vertical"></div>
-							<div class="scrollbar-track-piece increment vertical"></div>
-						</div>
-						<div class="scrollbar-button increment vertical disabled"></div>
+		<h2>Right-To-Left Support</h2>
+		<p>OS-GUI supports right-to-left languages with a flipped layout. Keyboard navigation is flipped appropriately
+			(for entering/exiting submenus).</p>
+		<p>You can specify the standard HTML attribute
+			<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir"><code>dir="rtl"</code></a>
+			or CSS property
+			<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/direction"><code>direction: rtl</code></a>
+			to control the layout direction.
+		</p>
+		<div style="position: relative; height: 200px;">
+			<div id="app-window-3-positioner"></div>
+		</div>
+		<h2>Buttons</h2>
+		<p>You can go <em>bananas with buttons!</em></p>
+		<p>Come on down to Isaiah's Button Emporium, we've got all the buttons, we've got <em>gray buttons</em>...
+			and... <em>more-gray</em> buttons!</p>
+		<p><b>Tip</b>: You should use verbs for button labels when possible. For demo purposes, labels here describe the
+			button type.</p>
+		<table id="buttons-demo" class="demo-table">
+			<col style="/* background/color set elsewhere */ width: 150px;" />
+			<col style="background: var(--InfoWindow); color: var(--InfoText);" />
+			<col />
+			<tr>
+				<td><button>Basic button</button></td>
+				<td><code>&lt;button&gt;Basic button&lt;/button&gt;</code></td>
+				<td>A normal command button.</td>
+			</tr>
+			<tr>
+				<td><button disabled>Disabled button</button></td>
+				<td><code>&lt;button disabled&gt;Disabled button&lt;/button&gt;</code></td>
+				<td>Use the standard <code>disabled</code> attribute to mark buttons as disabled.</td>
+			</tr>
+			<tr>
+				<td><button class="default">Default button</button></td>
+				<td><code>&lt;button class="default"&gt;Default button&lt;/button&gt;</code></td>
+				<td>
+					The default action that will be triggered if you hit Enter.
+					The default should change to whatever button you tab to, or if you tab to another control in a form,
+					return to the original default button.
+					<!-- This style is also shown when a focused button becomes disabled... and you can even get it
+					<a href="https://i.imgur.com/WICAL98.png">where it shows two buttons with the so-called "default" style</a>
+					(neither disabled!).
+					<em>OK</em>, will apply, not <em>Apply</em> (when you hit Enter).
+					Well, actually OK <em>does</em> apply, so maybe it's an intentional choice...
+					-->
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<button class="toggle selected" aria-pressed="true" id="demo-toggle-button">Toggle button</button>
+				</td>
+				<td>
+					<code>&lt;button class="toggle selected" aria-pressed="true"&gt;Toggle button&lt;/button&gt;</code>
+				</td>
+				<td>
+					Add the <code>selected</code> class to show the button as pressed.
+					Include the <code>toggle</code> class to make it a toggle button.
+					You should also provide <code>aria-pressed</code> or <code>aria-expanded</code> attributes
+					as appropriate.
+					Examples: Start button, taskbar buttons, List/Details buttons in file open/save dialogs.
+					Tool buttons in Paint look a bit different.
+				</td>
+			</tr>
+			<!-- TODO: <tr>
+				<td>
+					<label>
+						<input type="checkbox">
+						<span class="button">Toggle button</span>
+					</label>
+				</td>
+				<td>
+					A styled checkbox.
+				</td>
+			</tr> -->
+			<tr>
+				<td>
+					<button class="lightweight" tabindex="-1">Lightweight button</button>
+				</td>
+				<td>
+					<code>&lt;button class="lightweight" tabindex="-1"&gt;Lightweight button&lt;/button&gt;</code>
+				</td>
+				<td>
+					No border until hover. Used for menu and toolbar buttons. Generally not focusable.
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<button class="lightweight" disabled tabindex="-1">Lightweight disabled</button>
+				</td>
+				<td>
+					<code>&lt;button class="lightweight" disabled tabindex="-1"&gt;Lightweight disabled&lt;/button&gt;</code>
+				</td>
+				<td>Use the standard <code>disabled</code> attribute to mark buttons as disabled.</td>
+			</tr>
+		</table>
+		<h2>Scrollbars</h2>
+		<p>
+			Scrollbars are automatically styled in webkit-based/blink-based browsers (Chrome/Chromium/Opera/Edge, etc.),
+			but for Firefox you could use
+			<a href="https://kingsora.github.io/OverlayScrollbars/#!overview">OverlayScrollbars</a>
+			or perhaps
+			<a href="https://grsmto.github.io/simplebar/">SimpleBar</a>.
+		</p>
+		<p>
+			The triangle graphics are rendered dynamically based on the theme colors and <code>--scrollbar-size</code>
+			CSS variable.
+			Graphics are prerendered at a default size in each theme's CSS file,
+			but you can update the graphics with:
+		</p>
+		<pre
+			style="overflow: auto;">applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), {element, recurseIntoIframes: true});</pre>
+		<div id="scrollbar-demos" style="height: 270px; overflow: auto;">
+			<div class="scrollbar-demo">
+				<div class="scrollbar-button decrement horizontal" style="display: inline-block;"></div>
+				<div class="scrollbar-button increment horizontal" style="display: inline-block;"></div>
+				<div class="scrollbar-button decrement vertical"></div>
+				<div class="scrollbar-button increment vertical"></div>
+				<br>
+				<div class="scrollbar-button decrement horizontal disabled" style="display: inline-block;"></div>
+				<div class="scrollbar-button increment horizontal disabled" style="display: inline-block;"></div>
+				<!-- <div class="scrollbar-button decrement vertical disabled"></div>
+				<div class="scrollbar-button increment vertical disabled"></div> -->
+				<br>
+				<div class="scrollbar vertical">
+					<div class="scrollbar-button decrement vertical disabled"></div>
+					<div class="scrollbar-track vertical">
+						<div class="scrollbar-track-piece decrement vertical"></div>
+						<div class="scrollbar-thumb vertical"></div>
+						<div class="scrollbar-track-piece increment vertical"></div>
 					</div>
+					<div class="scrollbar-button increment vertical disabled"></div>
 				</div>
 			</div>
-			<h2>Insets & Outsets</h2>
-			<table id="insets-outsets-demo" class="demo-table">
-				<col style="background: var(--ButtonFace); color: var(--ButtonText); width: 150px;"/>
-				<col style="background: var(--InfoWindow); color: var(--InfoText);"/>
-				<col/>
-				<tr>
-					<td>
-						<div class="inset-shallow"></div>
-					</td>
-					<td>
-						<code>&lt;div class="inset-shallow"&gt;&lt;/div&gt;</code>
-					</td>
-					<td>
-						Examples: tray in taskbar, status bar sections, tool options in Paint, Length/Position boxes in Sound Recorder
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="outset-shallow"></div>
-					</td>
-					<td>
-						<code>&lt;div class="outset-shallow"&gt;&lt;/div&gt;</code>
-					</td>
-					<td>
-						Examples: lightweight action buttons on hover
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="inset-deep"></div>
-					</td>
-					<td>
-						<code>&lt;div class="inset-deep"&gt;&lt;/div&gt;</code>
-					</td>
-					<td>
-						Examples: text inputs, content panes for pages in Help Topics or Internet Explorer
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="outset-deep"></div>
-					</td>
-					<td>
-						<code>&lt;div class="outset-deep"&gt;&lt;/div&gt;</code>
-					</td>
-					<td>
-						Examples: slider handle in Sound Recorder, buttons
-					</td>
-				</tr>
-			</table>
-			<!-- <div style="padding: 2em" class="outset-deep">Here's perhaps a panel, styled with <code>class="outset-deep"</code></div> -->
-			<h2><a id="demos"></a>Crazy Animation Demo</h2>
-			<p>Check out the interactive <a href="demo/animation.html" id="spaceship-link">spaceship animation demo<span id="spaceship-graphic"></span></a></p>
-			<h2>The Kitchen Sink</h2>
-			<p>
-				<!-- <img alt="" src="https://win98icons.alexmeub.com/icons/png/registration-0.png" width="32" height="32" style="vertical-align: middle">
+		</div>
+		<h2>Insets & Outsets</h2>
+		<table id="insets-outsets-demo" class="demo-table">
+			<col style="background: var(--ButtonFace); color: var(--ButtonText); width: 150px;" />
+			<col style="background: var(--InfoWindow); color: var(--InfoText);" />
+			<col />
+			<tr>
+				<td>
+					<div class="inset-shallow"></div>
+				</td>
+				<td>
+					<code>&lt;div class="inset-shallow"&gt;&lt;/div&gt;</code>
+				</td>
+				<td>
+					Examples: tray in taskbar, status bar sections, tool options in Paint,
+					Length/Position boxes in Sound Recorder
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="outset-shallow"></div>
+				</td>
+				<td>
+					<code>&lt;div class="outset-shallow"&gt;&lt;/div&gt;</code>
+				</td>
+				<td>
+					Examples: lightweight action buttons on hover
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="inset-deep"></div>
+				</td>
+				<td>
+					<code>&lt;div class="inset-deep"&gt;&lt;/div&gt;</code>
+				</td>
+				<td>
+					Examples: text inputs, content panes for pages in Help Topics or Internet Explorer
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="outset-deep"></div>
+				</td>
+				<td>
+					<code>&lt;div class="outset-deep"&gt;&lt;/div&gt;</code>
+				</td>
+				<td>
+					Examples: slider handle in Sound Recorder, buttons
+				</td>
+			</tr>
+		</table>
+		<!-- <div style="padding: 2em" class="outset-deep">Here's perhaps a panel, styled with <code>class="outset-deep"</code></div> -->
+		<h2><a id="demos"></a>Crazy Animation Demo</h2>
+		<p>Check out the interactive
+			<a href="demo/animation.html" id="spaceship-link">
+				spaceship animation demo<span id="spaceship-graphic"></span>
+			</a>
+		</p>
+		<h2>The Kitchen Sink</h2>
+		<p>
+			<!-- <img alt="" src="https://win98icons.alexmeub.com/icons/png/registration-0.png" width="32" height="32" style="vertical-align: middle">
 				<img alt="" src="https://win98icons.alexmeub.com/icons/png/msconfig-0.png" width="32" height="32" style="vertical-align: middle"> -->
-				<img alt="" src="https://win98icons.alexmeub.com/icons/png/tools_gear-0.png" width="32" height="32" style="vertical-align: middle">
-				<!-- <a href=".."><img alt="OS GUI" src="../images/os-gui-logo-simple-italic.svg" height="32" style="vertical-align: middle"></a> — Tests -->
-				<img alt="" src="https://win98icons.alexmeub.com/icons/png/doctor_watson.png" width="32" height="32" style="vertical-align: middle">
-				<img alt="" src="https://win98icons.alexmeub.com/icons/png/accessibility_two_windows.png" width="32" height="32" style="vertical-align: middle;" />
-				<img alt="" src="https://win98icons.alexmeub.com/icons/png/accessibility_big_keys.png" width="32" height="32" style="vertical-align: middle;" />
-				<img alt="" src="https://win98icons.alexmeub.com/icons/png/html-3.png" width="32" height="32" style="vertical-align: middle;" />
-				<img alt="" src="https://win98icons.alexmeub.com/icons/png/file_lines-0.png" width="32" height="32" style="vertical-align: middle;" />
-				<img alt="" src="https://win98icons.alexmeub.com/icons/png/camera3_network-3.png" width="32" height="32" style="vertical-align: middle;" />
-				<img alt="" src="https://win98icons.alexmeub.com/icons/png/themes-2.png" width="32" height="32" style="vertical-align: middle;" />
-				<img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAl1JREFUWEfVVltywyAMFBeLc7EacC+W5GClswIRWQY/Ejcz5SvBoF1pV7IdqRUiJfx1ehM72EhEyRG5ROTD/Ig+fvR3xQI4/nyNQiCjMqNCAjvT5Ch43p/xPAos5+dBnEuUcmhk+pMASOR9rgsecyVOAl9U28rhx5xxJsAFOn11g4ZAKRMg8pFl+DCBmAnESBQCJ/5ZAjG4NI6Jpm9IsGyOs7SYZRVjTPC342QDMQF4ICQKATrkJZe8929XpQYA+PV6rSDDMMySjNCirHEcyTm+eg4BC75W3svlQtM0kZfefFMLB3BktHcBHOtUArr0a0Rut1t9/G8IxDzIyXf8whL8VQUALuLCrWJjTaZJQEptiR2RQIPDNZjmXIpn6+Q2alUALYi2e5XAGriQER5dAvf7feFHW4HeGRgU2drMc//kJTIsCCD7VmBcEgIA6IGjapgVZVDVsvdkYAI6VQTXU8+WYQ/44/HgayDM8YwHtAzlY2vvGKJ25mVs82dDWToJkQSPBBwVHIYhD3S1Ei4eeclow4nD5TNSSFhPiHxNAorM5otGhgx6vWU4VESTQGwNrlqSYWubwhdbo9YOGSGu3Y89TcCCLwiU8nMs0ajljrXMbdkkZgt8QWANtJrLjNdW5lJKbTicg+Y2Ib0hBpQzTQ9I6Tt9zXfVzF9ovkZAfMCzYcMDdXZoMDPrN8GtBNqI+pl0VSXfM+CRzHtlZhkwToteWpbn9+OzY1pvuV2Zr+nMlSyGtLMF+0lGrDIm/0Tf99ze6qaWBPrcU+dSFQM8M7CQ7rn9FQJNMmd8iuvAv0XzaDC1qAqpAAAAAElFTkSuQmCC" width="32" height="32" style="vertical-align: middle;" />
-			</p>
-			<p>Anything I want to test ends up in <a href="demo/test.html">the kitchen sink</a>. There's lots of little applets for testing, like a theme applier.</p>
-			<h2>A Physics Sandbox</h2>
-			<a href="https://1j01.github.io/pbj-sandbox/" style="display: block;"><svg style="width: 100%; height: 150px;" id="physics-teaser"></svg></a>
-			<p><a href="https://1j01.github.io/pbj-sandbox/" style="font-size:1.4em">PBJ Sandbox</a> is a point-based physics toy where you can build structures out of springy connections. The interface uses os-gui.js, with two custom themes.</p>
-			<h2>A Full Web Desktop</h2>
-			<a href="https://98.js.org/"><img src="images/98.js.svg" height="200"></a>
-			<p><a href="https://98.js.org/" style="font-size:1.4em">98.js.org</a> is a web-based recreation of the Windows 98 desktop, including Paint, Sound Recorder, Solitaire, and more.</p>
-			<h2>The project that started it all</h2>
-			<a href="https://jspaint.app"><img src="images/jspaint.svg" height="200"></a>
-			<p><a href="https://jspaint.app" style="font-size:1.4em">JS Paint</a> is a detailed clone of MS Paint from Windows 98, with many <a href="https://github.com/1j01/jspaint#readme">extra features</a>.</p>
-		</main>
-		<footer>
-			Open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
-		</footer>
-		<script async src="demo/physics-teaser.js"></script>
-	</body>
+			<img alt="" src="https://win98icons.alexmeub.com/icons/png/tools_gear-0.png" width="32" height="32"
+				style="vertical-align: middle">
+			<!-- <a href=".."><img alt="OS GUI" src="../images/os-gui-logo-simple-italic.svg" height="32" style="vertical-align: middle"></a> — Tests -->
+			<img alt="" src="https://win98icons.alexmeub.com/icons/png/doctor_watson.png" width="32" height="32"
+				style="vertical-align: middle">
+			<img alt="" src="https://win98icons.alexmeub.com/icons/png/accessibility_two_windows.png" width="32"
+				height="32" style="vertical-align: middle;" />
+			<img alt="" src="https://win98icons.alexmeub.com/icons/png/accessibility_big_keys.png" width="32"
+				height="32" style="vertical-align: middle;" />
+			<img alt="" src="https://win98icons.alexmeub.com/icons/png/html-3.png" width="32" height="32"
+				style="vertical-align: middle;" />
+			<img alt="" src="https://win98icons.alexmeub.com/icons/png/file_lines-0.png" width="32" height="32"
+				style="vertical-align: middle;" />
+			<img alt="" src="https://win98icons.alexmeub.com/icons/png/camera3_network-3.png" width="32" height="32"
+				style="vertical-align: middle;" />
+			<img alt="" src="https://win98icons.alexmeub.com/icons/png/themes-2.png" width="32" height="32"
+				style="vertical-align: middle;" />
+			<img alt=""
+				src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAl1JREFUWEfVVltywyAMFBeLc7EacC+W5GClswIRWQY/Ejcz5SvBoF1pV7IdqRUiJfx1ehM72EhEyRG5ROTD/Ig+fvR3xQI4/nyNQiCjMqNCAjvT5Ch43p/xPAos5+dBnEuUcmhk+pMASOR9rgsecyVOAl9U28rhx5xxJsAFOn11g4ZAKRMg8pFl+DCBmAnESBQCJ/5ZAjG4NI6Jpm9IsGyOs7SYZRVjTPC342QDMQF4ICQKATrkJZe8929XpQYA+PV6rSDDMMySjNCirHEcyTm+eg4BC75W3svlQtM0kZfefFMLB3BktHcBHOtUArr0a0Rut1t9/G8IxDzIyXf8whL8VQUALuLCrWJjTaZJQEptiR2RQIPDNZjmXIpn6+Q2alUALYi2e5XAGriQER5dAvf7feFHW4HeGRgU2drMc//kJTIsCCD7VmBcEgIA6IGjapgVZVDVsvdkYAI6VQTXU8+WYQ/44/HgayDM8YwHtAzlY2vvGKJ25mVs82dDWToJkQSPBBwVHIYhD3S1Ei4eeclow4nD5TNSSFhPiHxNAorM5otGhgx6vWU4VESTQGwNrlqSYWubwhdbo9YOGSGu3Y89TcCCLwiU8nMs0ajljrXMbdkkZgt8QWANtJrLjNdW5lJKbTicg+Y2Ib0hBpQzTQ9I6Tt9zXfVzF9ovkZAfMCzYcMDdXZoMDPrN8GtBNqI+pl0VSXfM+CRzHtlZhkwToteWpbn9+OzY1pvuV2Zr+nMlSyGtLMF+0lGrDIm/0Tf99ze6qaWBPrcU+dSFQM8M7CQ7rn9FQJNMmd8iuvAv0XzaDC1qAqpAAAAAElFTkSuQmCC"
+				width="32" height="32" style="vertical-align: middle;" />
+		</p>
+		<p>Anything I want to test ends up in <a href="demo/test.html">the kitchen sink</a>.
+			There's lots of little applets for testing, like a theme applier.</p>
+		<h2>A Physics Sandbox</h2>
+		<a href="https://1j01.github.io/pbj-sandbox/" style="display: block;">
+			<svg style="width: 100%; height: 150px;" id="physics-teaser"></svg>
+		</a>
+		<p>
+			<a href="https://1j01.github.io/pbj-sandbox/" style="font-size:1.4em">PBJ Sandbox</a>
+			is a point-based physics toy where you can build structures out of springy connections.
+			The interface uses os-gui.js, with two custom themes.
+		</p>
+		<h2>A Full Web Desktop</h2>
+		<a href="https://98.js.org/"><img src="images/98.js.svg" height="200"></a>
+		<p>
+			<a href="https://98.js.org/" style="font-size:1.4em">98.js.org</a>
+			is a web-based recreation of the Windows 98 desktop,
+			including Paint, Sound Recorder, Solitaire, and more.
+		</p>
+		<h2>The project that started it all</h2>
+		<a href="https://jspaint.app"><img src="images/jspaint.svg" height="200"></a>
+		<p>
+			<a href="https://jspaint.app" style="font-size:1.4em">JS Paint</a>
+			is a detailed clone of MS Paint from Windows 98,
+			with many <a href="https://github.com/1j01/jspaint#readme">extra features</a>.
+		</p>
+	</main>
+	<footer>
+		Open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
+	</footer>
+	<script async src="demo/physics-teaser.js"></script>
+</body>
+
 </html>

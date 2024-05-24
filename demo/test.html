@@ -1,71 +1,88 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>OS GUI — Windows 98 CSS+JS Library Tests</title>
-		<link href="../build/layout.css" rel="stylesheet" type="text/css">
-		<link href="../build/windows-98.css" rel="stylesheet" type="text/css">
-		<link href="../build/windows-default.css" rel="stylesheet" title="Windows Default" type="text/css">
-		<link href="../build/peggys-pastels.css" rel="alternate stylesheet" title="Peggy's Pastels" type="text/css">
-		<link rel="icon" href="../images/os-gui-favicon.png" type="image/png">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-	</head>
-	<body>
-		<script src="lib/jquery-3.3.1.js"></script>
-		<script src="../MenuBar.js"></script>
-		<script src="../$Window.js"></script>
-		<script src="../parse-theme.js"></script>
-		<header>
-			<h1>
-				<!-- <img alt="" src="https://win98icons.alexmeub.com/icons/png/registration-0.png" width="32" height="32" style="vertical-align: middle"> -->
-				<!-- <img alt="" src="https://win98icons.alexmeub.com/icons/png/msconfig-0.png" width="32" height="32" style="vertical-align: middle"> -->
-				<img alt="" src="https://win98icons.alexmeub.com/icons/png/tools_gear-0.png" width="32" height="32" style="vertical-align: middle">
-				<a href=".."><img alt="OS GUI" src="../images/os-gui-logo-simple-italic.svg" height="32" style="vertical-align: middle"></a> — Tests
-				<img alt="" src="https://win98icons.alexmeub.com/icons/png/doctor_watson.png" width="32" height="32" style="vertical-align: middle">
-			</h1>
-			
-			<p>Welcome to the OS-GUI.js kitchen sink. For fuller demos, see <a href="../">the homepage</a>.</p>
-		</header>
-		<main>
-			<br><br><br>
-			<div style="display: flex; gap: 30px;">
-				<label><input type="checkbox" id="full-height-checkbox"> Full Height Body</label>
-				<label><input type="checkbox" id="rtl-checkbox"> Right-To-Left</label>
-				<label><input type="checkbox" id="debug-focus-checkbox"> Debug Focus</label>
-				<label><input type="checkbox" id="override-transition-duration-checkbox"> Debug Flying Titlebar</label>
-				<label><input type="checkbox" id="taskbar-checkbox"> Taskbar</label>
-			</div>
-			<br><br><br>
-			<div id="no-focus" style="background-color: beige; color: #000;">
-				You can't focus me, not even this <button id="no-focus-button">button</button>.
-				<span id="without-taskbar-text">This is useful for taskbars, for example.</span>
-				<span id="with-taskbar-text" hidden>This is analogous to a taskbar. <button id="minimize-target">I am Minimize Target for all windows.</button></span>
-			</div>
-			<br><br><br>
-			<h2>Manual Tests</h2>
-			<p>See $Window.js comment <i>"Test cases where it should refocus the last focused control in the window"</i> for many manual tests.</p>
-			<p>In Trigger Station applet, clicking Focus Now button should focus a window.</p>
-			<p>Test that menus, submenus, and child windows close, when closing a window (on a delay).</p>
-			<p>Trigger pointerdown/mousedown then click off the main window quickly, and it should be refocused.</p>
-			<p>(For click event, I'm not sure but I think it shouldn't focus, because you may want to trigger an action by calling `click()` and that shouldn't refocus; does `click()` generate a bubbling click event though?)</p>
-			<p>Test that focus is shown on both the tool window and the parent window when focus lies within the tool window.</p>
-			<p>Test that controls in nested iframes get refocused when refocusing a window. Note that the innermost button is unstyled and may not get a focus ring unless you then use the keyboard.</p>
-			<p>Tool windows probably shouldn't focus controls automatically on click, they're mainly supposed to keep the parent focused. @TODO?</p>
-			<p>Clicking title bar button should not show a focus ring, or store it as the last focused control.
-				It should keep focus on whatever was focused before the title bar button was clicked.</p>
-			<p>Clicking in a window with no focusable controls should focus the window-content itself.</p>
-			<br><br><br>
-		</main>
-		<hr>
-		<footer>
-			OS-GUI is open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
-		</footer>
-		<script src="test.js"></script>
-		<style>
-			.show-disabled-icons img {
-				filter: saturate(0%) opacity(50%); /* fallback until SVG filter is initialized */
-				filter: url("#os-gui-black-to-inset-filter");
-			}
-		</style>
-	</body>
+
+<head>
+	<meta charset="utf-8">
+	<title>OS GUI — Windows 98 CSS+JS Library Tests</title>
+	<link href="../build/layout.css" rel="stylesheet" type="text/css">
+	<link href="../build/windows-98.css" rel="stylesheet" type="text/css">
+	<link href="../build/windows-default.css" rel="stylesheet" title="Windows Default" type="text/css">
+	<link href="../build/peggys-pastels.css" rel="alternate stylesheet" title="Peggy's Pastels" type="text/css">
+	<link rel="icon" href="../images/os-gui-favicon.png" type="image/png">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+	<script src="lib/jquery-3.3.1.js"></script>
+	<script src="../MenuBar.js"></script>
+	<script src="../$Window.js"></script>
+	<script src="../parse-theme.js"></script>
+	<header>
+		<h1>
+			<!-- <img alt="" src="https://win98icons.alexmeub.com/icons/png/registration-0.png" width="32" height="32" style="vertical-align: middle"> -->
+			<!-- <img alt="" src="https://win98icons.alexmeub.com/icons/png/msconfig-0.png" width="32" height="32" style="vertical-align: middle"> -->
+			<img alt="" src="https://win98icons.alexmeub.com/icons/png/tools_gear-0.png" width="32" height="32"
+				style="vertical-align: middle">
+			<a href=".."><img alt="OS GUI" src="../images/os-gui-logo-simple-italic.svg" height="32"
+					style="vertical-align: middle"></a>
+			— Tests
+			<img alt="" src="https://win98icons.alexmeub.com/icons/png/doctor_watson.png" width="32" height="32"
+				style="vertical-align: middle">
+		</h1>
+
+		<p>Welcome to the OS-GUI.js kitchen sink. For fuller demos, see <a href="../">the homepage</a>.</p>
+	</header>
+	<main>
+		<br><br><br>
+		<div style="display: flex; gap: 30px;">
+			<label><input type="checkbox" id="full-height-checkbox"> Full Height Body</label>
+			<label><input type="checkbox" id="rtl-checkbox"> Right-To-Left</label>
+			<label><input type="checkbox" id="debug-focus-checkbox"> Debug Focus</label>
+			<label><input type="checkbox" id="override-transition-duration-checkbox"> Debug Flying Titlebar</label>
+			<label><input type="checkbox" id="taskbar-checkbox"> Taskbar</label>
+		</div>
+		<br><br><br>
+		<div id="no-focus" style="background-color: beige; color: #000;">
+			You can't focus me, not even this <button id="no-focus-button">button</button>.
+			<span id="without-taskbar-text">This is useful for taskbars, for example.</span>
+			<span id="with-taskbar-text" hidden>
+				This is analogous to a taskbar.
+				<button id="minimize-target">I am Minimize Target for all windows.</button>
+			</span>
+		</div>
+		<br><br><br>
+		<h2>Manual Tests</h2>
+		<p>See $Window.js comment <i>"Test cases where it should refocus the last focused control in the window"</i>
+			for many manual tests.</p>
+		<p>In Trigger Station applet, clicking Focus Now button should focus a window.</p>
+		<p>Test that menus, submenus, and child windows close, when closing a window (on a delay).</p>
+		<p>Trigger pointerdown/mousedown then click off the main window quickly, and it should be refocused.</p>
+		<p>(For click event, I'm not sure but I think it shouldn't focus, because you may want to trigger an action by
+			calling `click()` and that shouldn't refocus; does `click()` generate a bubbling click event though?)</p>
+		<p>Test that focus is shown on both the tool window and the parent window
+			when focus lies within the tool window.</p>
+		<p>Test that controls in nested iframes get refocused when refocusing a window.
+			Note that the innermost button is unstyled and may not get a focus ring unless you then use the keyboard.
+		</p>
+		<p>Tool windows probably shouldn't focus controls automatically on click,
+			they're mainly supposed to keep the parent focused. @TODO?</p>
+		<p>Clicking title bar button should not show a focus ring, or store it as the last focused control.
+			It should keep focus on whatever was focused before the title bar button was clicked.</p>
+		<p>Clicking in a window with no focusable controls should focus the window-content itself.</p>
+		<br><br><br>
+	</main>
+	<hr>
+	<footer>
+		OS-GUI is open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
+	</footer>
+	<script src="test.js"></script>
+	<style>
+		.show-disabled-icons img {
+			filter: saturate(0%) opacity(50%);
+			/* fallback until SVG filter is initialized */
+			filter: url("#os-gui-black-to-inset-filter");
+		}
+	</style>
+</body>
+
 </html>

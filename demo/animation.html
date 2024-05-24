@@ -1,100 +1,118 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>OS GUI: Animation Demo</title>
-		<link href="../build/layout.css" rel="stylesheet" type="text/css">
-		<link href="../build/windows-98.css" rel="stylesheet" type="text/css">
-		<link href="../build/windows-default.css" rel="alternate stylesheet" title="Windows Default" type="text/css">
-		<link href="../build/peggys-pastels.css" rel="stylesheet" title="Peggy's Pastels" type="text/css">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<style>
-			html,
-			body {
-				height: 100%;
-				margin: 0;
-				display: flex;
-				flex-direction: column;
-				overflow: hidden;
-			}
-			body {
-				font-family: sans-serif;
-				/*background-color: var(--Background);*/
-				background-color: var(--InfoWindow);
-				color: var(--InfoText);
-				/* background-color: var(--ButtonFace);
-				color: var(--ButtonText); */
-			}
-			main,
-			footer {
-				padding: 1em;
-			}
-			main {
-				flex: 1;
-				background-color: rgb(48, 32, 54);
-				background-image: url("https://i.postimg.cc/XqDLT8Fd/Space005.png");
-				background-size: cover;
-				background-position: center;
-				color: white;
-			}
-			main a {
-				color: aqua;
-			}
-			footer {
-				flex: 0 0 auto;
-				text-align: center;
-				background: var(--ButtonFace);
-				color: var(--ButtonText);
-			}
-			#controls {
-				display: flex;
-				flex-direction: column;
-			}
-			#controls > * {
-				margin-bottom: 0.5em;
-			}
-			.slider-item {
-				display: flex;
-				flex-direction: row;
-				align-items: center;
-				justify-content: space-between;
-				width: 460px;
-			}
-		</style>
-	</head>
-	<body>
-		<script src="lib/jquery-3.3.1.js"></script>
-		<script src="../MenuBar.js"></script>
-		<script src="../$Window.js"></script>
-		<script src="../parse-theme.js"></script>
-		<main>
-			<h1><a href="index.html"><img src="../images/os-gui-logo-laser-italic.svg" alt="os-gui.js" style="height: 60px"></a></h1>
-			<h2>Animation Demo</h2>
-			<div id="controls">
-				<label class="checkbox-item">
-					<input type="checkbox" id="pause-checkbox">
-					Pause and interact with all the windows :)
-				</label>
-				<label class="slider-item">
-					Repel Force (between ships):
-					<input type="range" id="repel-force-slider" min="0" max="100" step="1" value="50">
-				</label>
-				<label class="slider-item">
-					Gravity (towards mothership):
-					<input type="range" id="gravity-force-slider" min="0" max="100" step="1" value="50">
-				</label>
-			</div>
-			<h3>Credits</h3>
-			<p>
-				Ship graphics by <a href="https://opengameart.org/content/2d-spaceships-0">Wubitog and Scorpio</a>
-				and <a href="https://opengameart.org/content/little-spaceship-0">Tsa Tse</a>.
-				<br>Background by <a href="https://opengameart.org/content/space-backgrounds-with-stars-and-nubular">Soluna Software</a>.
-				<br>Space station is a 3D model by <a href="https://www.cgtrader.com/3d-models/space/spaceship/sci-fi-space-station-10f9d89f-8fda-48d3-9975-45f1b3d0600d">Squir</a>.
-			</p>
-		</main>
-		<footer>
-			Open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
-		</footer>
-		<script src="animation.js"></script>
-	</body>
+
+<head>
+	<meta charset="utf-8">
+	<title>OS GUI: Animation Demo</title>
+	<link href="../build/layout.css" rel="stylesheet" type="text/css">
+	<link href="../build/windows-98.css" rel="stylesheet" type="text/css">
+	<link href="../build/windows-default.css" rel="alternate stylesheet" title="Windows Default" type="text/css">
+	<link href="../build/peggys-pastels.css" rel="stylesheet" title="Peggy's Pastels" type="text/css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		html,
+		body {
+			height: 100%;
+			margin: 0;
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+		}
+
+		body {
+			font-family: sans-serif;
+			/*background-color: var(--Background);*/
+			background-color: var(--InfoWindow);
+			color: var(--InfoText);
+			/* background-color: var(--ButtonFace);
+			color: var(--ButtonText); */
+		}
+
+		main,
+		footer {
+			padding: 1em;
+		}
+
+		main {
+			flex: 1;
+			background-color: rgb(48, 32, 54);
+			background-image: url("https://i.postimg.cc/XqDLT8Fd/Space005.png");
+			background-size: cover;
+			background-position: center;
+			color: white;
+		}
+
+		main a {
+			color: aqua;
+		}
+
+		footer {
+			flex: 0 0 auto;
+			text-align: center;
+			background: var(--ButtonFace);
+			color: var(--ButtonText);
+		}
+
+		#controls {
+			display: flex;
+			flex-direction: column;
+		}
+
+		#controls>* {
+			margin-bottom: 0.5em;
+		}
+
+		.slider-item {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			width: 460px;
+		}
+	</style>
+</head>
+
+<body>
+	<script src="lib/jquery-3.3.1.js"></script>
+	<script src="../MenuBar.js"></script>
+	<script src="../$Window.js"></script>
+	<script src="../parse-theme.js"></script>
+	<main>
+		<h1>
+			<a href="index.html">
+				<img src="../images/os-gui-logo-laser-italic.svg" alt="os-gui.js" style="height: 60px">
+			</a>
+		</h1>
+		<h2>Animation Demo</h2>
+		<div id="controls">
+			<label class="checkbox-item">
+				<input type="checkbox" id="pause-checkbox">
+				Pause and interact with all the windows :)
+			</label>
+			<label class="slider-item">
+				Repel Force (between ships):
+				<input type="range" id="repel-force-slider" min="0" max="100" step="1" value="50">
+			</label>
+			<label class="slider-item">
+				Gravity (towards mothership):
+				<input type="range" id="gravity-force-slider" min="0" max="100" step="1" value="50">
+			</label>
+		</div>
+		<h3>Credits</h3>
+		<p>
+			Ship graphics by <a href="https://opengameart.org/content/2d-spaceships-0">Wubitog and Scorpio</a>
+			and <a href="https://opengameart.org/content/little-spaceship-0">Tsa Tse</a>.
+			<br>
+			Background by
+			<a href="https://opengameart.org/content/space-backgrounds-with-stars-and-nubular">Soluna Software</a>.
+			<br>Space station is a 3D model by
+			<a href="https://www.cgtrader.com/3d-models/space/spaceship/sci-fi-space-station-10f9d89f-8fda-48d3-9975-45f1b3d0600d">Squir</a>.
+		</p>
+	</main>
+	<footer>
+		Open source <a href="https://github.com/1j01/os-gui">on GitHub</a>.
+	</footer>
+	<script src="animation.js"></script>
+</body>
+
 </html>
