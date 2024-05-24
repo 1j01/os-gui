@@ -1,7 +1,7 @@
 {
 	"name": "os-gui",
 	"description": "Retro OS styles & components for the web",
-	"version": "0.7.0",
+	"version": "0.7.1",
 	"homepage": "https://os-gui.js.org",
 	"repository": {
 		"type": "git",
