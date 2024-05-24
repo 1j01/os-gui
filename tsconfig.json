@@ -1,6 +1,7 @@
 {
   "exclude": [
     "**/coverage",
+    "**/build",
     "**/lib"
   ],
   "compilerOptions": {

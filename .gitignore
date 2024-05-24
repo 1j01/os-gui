@@ -1,5 +1,16 @@
 # including build/ for demo for now, much simpler than setting up a deploy to gh-pages with built files included
+# TODO: publish to gh-pages branch, hopefully with a new Docusaurus site
 # build/
+
+# ignore dist/ for future npm package structure
+# (Right now I have some files published at root (un-compiled), some in build/,
+# but dist/ is a better name since it doesn't imply all files are compiled)
+dist/
+
+# Docusaurus build directory
+*/build/
+# Docusaurus temporary files
+.docusaurus/
 
 # Istanbul test code coverage reports
 coverage/
