@@ -12,11 +12,15 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+Nothing here yet.
+
+</details>
+
+## [0.7.1] - 2024-05-24
+
 ### Fixed
 
 - Fixed an assertion error that was thrown when navigating menus with the keyboard, due to an overly broad condition. (I asserted that the type was HTMLElement, but needed to assert that it was *either null or* an HTMLElement. The assertion was just for type narrowing.)
-
-</details>
 
 ## [0.7.0] - 2024-05-23
 
@@ -326,7 +330,8 @@ see Changed
 - Window component is now an app window instead of a tool window, to aid reintegration with 98.js.org; jspaint will come later.
 - Window component is styled with `.os-window` now, altho it includes both classes `os-window` and `window`.
 
-[Unreleased]: https://github.com/1j01/os-gui/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/1j01/os-gui/compare/v0.7.1...HEAD
+[0.7.1]: https://github.com/1j01/os-gui/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/1j01/os-gui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/1j01/os-gui/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/1j01/os-gui/compare/v0.4.1...v0.5.0
