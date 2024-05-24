@@ -5,9 +5,13 @@
 	// "workbench.iconTheme": "vsclassic-icon-theme"
 	// Customize "Hardcore Theme"
 	"workbench.colorCustomizations": {
-		"sideBar.foreground": "#999" // fix contrast (but still leave it pretty dim)
+		"[Hardcore Theme]": {
+			// "sideBar.foreground": "#999" // fix contrast (but still leave it pretty dim); seems like this is no longer needed; did they fix this and pick the exact color value I did?
+		},
 	},
 	"editor.tokenColorCustomizations": {
-		"comments": "#7e9dac", // contrast with inline suggestions
+		"[Hardcore Theme]": {
+			"comments": "#7e9dac", // contrast with inline suggestions
+		}
 	},
 }
