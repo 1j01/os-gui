@@ -336,7 +336,12 @@ interface OSGUIWindowOptions {
 	/** The minimum height of the window contents (when resizing), in pixels. */
 	minInnerHeight?: number;
 
-	/** A function that can be used to constrain the window to a particular rectangle. Takes and returns a rectangle object with `x`, `y`, `width`, and `height` properties. `x_axis` and `y_axis` define what is being dragged `-1` for left and top, `1` for right and bottom, and `0` for middle. Note that the window will always be constrained to not move past the minimum width and height. */
+	/**
+	 * A function that can be used to constrain the window to a particular rectangle.
+	 * Takes and returns a rectangle object with `x`, `y`, `width`, and `height` properties.
+	 * `x_axis` and `y_axis` define what is being dragged `-1` for left and top, `1` for right and bottom,
+	 * and `0` for middle. Note that the window will always be constrained to not move past the minimum width and height.
+	 */
 	constrainRect?: (rect: { x: number; y: number; width: number; height: number }, x_axis: -1 | 0 | 1, y_axis: -1 | 0 | 1) => { x: number; y: number; width: number; height: number };
 
 	/**

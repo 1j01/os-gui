@@ -347,7 +347,10 @@ The DOM node can be accessed with `$window.element`, and the `$Window` object ca
 
 `options.minInnerHeight`: The minimum height of the window contents (when resizing), in pixels.
 
-`options.constrainRect(rect, x_axis, y_axis)`: A function that can be used to constrain the window to a particular rectangle. Takes and returns a rectangle object with `x`, `y`, `width`, and `height` properties. `x_axis` and `y_axis` define what is being dragged `-1` for left and top, `1` for right and bottom, and `0` for middle. Note that the window will always be constrained to not move past the minimum width and height.
+`options.constrainRect(rect, x_axis, y_axis)`: A function that can be used to constrain the window to a particular rectangle.
+Takes and returns a rectangle object with `x`, `y`, `width`, and `height` properties.
+`x_axis` and `y_axis` define what is being dragged: `-1` for left and top, `1` for right and bottom, and `0` for middle.
+Note that the window will always be constrained to not move past the minimum width and height.
 
 `options.iframes`: Contains options for controlling iframe integration.
 By default OS-GUI will try to enhance iframes with logic to:
