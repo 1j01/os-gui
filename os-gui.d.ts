@@ -502,7 +502,7 @@ function parseThemeFileString(themeString: string): Record<string, string>;
  * If `recurseIntoIframes` is true, then the properties will be applied to all `<iframe>` elements within the element as well.
  * This only works with same-origin iframes.
  */
-function applyCSSProperties(cssProperties: CSSProps, options: { element: HTMLElement, recurseIntoIframes?: boolean });
+function applyCSSProperties(cssProperties: CSSProps, options: { element?: HTMLElement, recurseIntoIframes?: boolean });
 
 /**
  * Can be used to update theme graphics (scrollbar icons, etc.) for a specific section of the page. Used by the demo to show variations.
