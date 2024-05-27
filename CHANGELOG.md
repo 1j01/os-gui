@@ -14,7 +14,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Fixed
 
-- Marked `element` as optional in `applyCSSProperties` options, in type declarations.
+- Marked `options.element` and `options` as optional in `applyCSSProperties` type declarations.
 
 </details>
 
