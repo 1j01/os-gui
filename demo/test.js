@@ -74,14 +74,21 @@ document.getElementById("minimize-target").addEventListener("click", function (e
 	}
 });
 
+/** @type {OSGUI$Window} */
 let $main_test_window;
+/** @type {OSGUI$Window} */
 let $tool_window_1;
+/** @type {OSGUI$Window} */
 let $selection_test_window;
+/** @type {OSGUI$Window} */
 let $iframe_test_window;
+/** @type {OSGUI$Window} */
 let $icon_test_window;
+/** @type {OSGUI$Window} */
 let $theme_test_window;
 
 let disable_an_item = false;
+/** @type {number} */
 let radio_value;
 /** @type {OSGUITopLevelMenus} */
 const menus = {
@@ -153,6 +160,10 @@ const menus = {
 								// (so I had to limit it)
 								// can't do something like http://orteil.dashnet.org/nested apparently (without more thought)
 								get submenu() {
+									/**
+									 * @param {number} n  recursion level
+									 * @returns {OSGUIMenuItem[]}
+									 */
 									function recursive_submenu(n) {
 										if (n > 5) {
 											return [
@@ -370,7 +381,7 @@ $main_test_window.on("closed", () => {
 	console.log("Main test window closed");
 	$tool_window_1.close();
 });
-const open_recursive_dialog = (x, y) => {
+const open_recursive_dialog = (/** @type {number} */ x, /** @type {number} */ y) => {
 	const $w = $Window({
 		title: "Recursive Dialog", resizable: false, maximizeButton: false, minimizeButton: false,
 		icons: {
@@ -770,6 +781,11 @@ function test_window_theme() {
 	$theme_test_window.focus();
 }
 
+/**
+ * @param {Element | null} element
+ * @param {string} theme_id
+ * @param {string | undefined} [unset]
+ */
 function apply_theme_to_el(element, theme_id, unset) {
 	const props = Object.assign({},
 		window_themes[theme_id],
@@ -784,6 +800,12 @@ function apply_theme_to_el(element, theme_id, unset) {
 	element.classList.add("theme-point");
 }
 
+/**
+ * Prompts the user to pick an element matching a selector.
+ * @param {string} selector
+ * @param {(element: Element | null)=> void} callback
+ * @param {string} [message]
+ */
 function pick_el(selector, callback, message = "Select an element.") {
 	const $overlay_message = $("<div/>").text(message).css({
 		position: "fixed",
@@ -810,6 +832,7 @@ function pick_el(selector, callback, message = "Select an element.") {
 		// cursor: "crosshair",
 		cursor: "pointer",
 	}).appendTo("body").hide();
+	/** @type {Element | null} */
 	let current_el = null;
 	const cleanup = () => {
 		$overlay_message.remove();
@@ -823,14 +846,14 @@ function pick_el(selector, callback, message = "Select an element.") {
 		callback(current_el);
 	});
 
-	const keydown = (e) => {
+	const keydown = (/** @type {KeyboardEvent} */ e) => {
 		if (e.key === "Escape") {
 			cleanup();
 			e.preventDefault();
 			e.stopImmediatePropagation();
 		}
 	};
-	const pointermove = (e) => {
+	const pointermove = (/** @type {PointerEvent} */ e) => {
 		const matched_el = document.elementsFromPoint(e.clientX, e.clientY)
 			.find((el) => el.matches(selector) && !el.matches(".target-overlay"));
 		if (matched_el) {
@@ -847,7 +870,7 @@ function pick_el(selector, callback, message = "Select an element.") {
 			$target_overlay.hide();
 		}
 	};
-	const pointerdown = (e) => {
+	const pointerdown = (/** @type {PointerEvent} */ e) => {
 		e.preventDefault(); // prevent focus change
 	};
 	addEventListener("keydown", keydown, true);
