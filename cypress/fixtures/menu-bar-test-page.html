@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>OS GUI — MenuBar component tests</title>
+	<link href="../../build/layout.css" rel="stylesheet" type="text/css">
+	<link href="../../build/windows-98.css" rel="stylesheet" type="text/css">
+	<link href="../../build/windows-default.css" rel="stylesheet" title="Windows Default" type="text/css">
+	<link href="../../build/peggys-pastels.css" rel="alternate stylesheet" title="Peggy's Pastels" type="text/css">
+	<link rel="icon" href="../../images/os-gui-favicon.png" type="image/png">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+	<!-- <script src="../../lib/jquery-3.3.1.js"></script> -->
+	<script src="../../MenuBar.js"></script>
+	<!-- <script src="../../$Window.js"></script> -->
+	<!-- <script src="../../parse-theme.js"></script> -->
+	<script>
+		const sampleMenus = {
+			"&File": [
+				{
+					label: "&Open",
+					action: () => {
+						const $w = $Window({ title: "Ali Baba and the Forty Thieves", resizable: false, maximizeButton: false, minimizeButton: false });
+						$w.$content.html("<p>\"Open Sesame!\"</p>");
+						$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
+						$w.center();
+					},
+					shortcutLabel: "Ctrl+O",
+					description: "Shows a silly dialog box.",
+				},
+				MENU_DIVIDER,
+				{
+					label: "&Brexit",
+					action: () => {
+						const $w = $Window({ title: "Membership Status", resizable: false, maximizeButton: false, minimizeButton: false });
+						$w.$content.html("<p>You have left the EU.</p>");
+						$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
+						$w.center();
+					},
+					description: "Shows a stupid dialog box.",
+				}
+			],
+			"&View": [
+				{
+					label: "&Nothingness",
+					checkbox: {
+						check: () => nothingness_state,
+						toggle: () => {
+							nothingness_state = !nothingness_state;
+						}
+					},
+					description: "Tick a meaningless checkbox.",
+				},
+				{
+					label: "&Physics",
+					submenu: [
+						{
+							label: "&Schrödinger's Checkbox",
+							checkbox: {
+								check: () => {
+									// this.cat_is_alive = this.cat_is_alive ?? Math.random() > 0.5;
+									// return this.cat_is_alive;
+									return Math.random() > 0.5;
+								}
+							},
+							description: "The checked state is indeterminate until observed.",
+						},
+					],
+					description: "Contains a stupid physics joke.",
+				},
+				{
+					label: "&Checkboxes",
+					submenu: new Array(100).fill(0).map((_, i) => ({
+						label: `Item ${i}`,
+						description: `Toggles item ${i}.`,
+						checkbox: {
+							check: function () {
+								// @ts-ignore
+								return this._pointless_checkbox_value;
+							},
+							toggle: function () { this._pointless_checkbox_value = !this._pointless_checkbox_value; },
+							_pointless_checkbox_value: Math.sin((i / 5) ** 2) > 0,
+						},
+						shortcutLabel: `Ctrl+${i}`,
+					})),
+					description: "Contains many checkbox items.",
+				},
+				{
+					label: "&Radio Buttons",
+					submenu: [
+						{
+							radioItems: [
+								{
+									label: "&Foo",
+									value: "foo",
+									description: "Sets the radio state to \"foo\".",
+								},
+								{
+									label: "&Bar",
+									value: "bar",
+									description: "Sets the radio state to \"bar\".",
+								},
+								{
+									label: "&Baz",
+									value: "baz",
+									description: "Sets the radio state to \"baz\".",
+								},
+							],
+							getValue: () => radio_state,
+							setValue: (new_value) => { radio_state = new_value; },
+							ariaLabel: "Example radio group",
+						},
+					],
+					description: "Contains radio button menu items.",
+				},
+			],
+			"&Edit": [
+				{
+					label: "Copy",
+					action: () => {
+						const $w = $Window({ title: "Radio Message", resizable: false, maximizeButton: false, minimizeButton: false });
+						$w.$content.html("<p>\"Over and out!\"</p>");
+						$w.$Button("OK", () => $w.close()).focus().css({ width: 100 });
+						$w.center();
+					},
+					shortcutLabel: "Ctrl+C",
+					description: "Shows a pointless dialog.",
+				},
+				{
+					label: "Paste",
+					enabled: false,
+					shortcutLabel: "Ctrl+V",
+					description: "This menu item is disabled.",
+				},
+			],
+		};
+
+		const testMenuBar = new MenuBar(sampleMenus);
+		document.body.appendChild(testMenuBar.element);
+	</script>
+</body>
+
+</html>
