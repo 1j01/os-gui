@@ -273,7 +273,7 @@ type OSGUI$FormWindow = JQuery<HTMLElement & { $window: OSGUI$FormWindow }> & OS
  * Creates a new window.
  */
 interface $WindowConstructor {
-	new (options?: OSGUIWindowOptions): OSGUI$Window;
+	new(options?: OSGUIWindowOptions): OSGUI$Window;
 	(options?: OSGUIWindowOptions): OSGUI$Window;
 
 	DEBUG_FOCUS?: boolean;
@@ -452,7 +452,7 @@ type OSGUIMenuFragment = OSGUIMenuItem | OSGUIRadioGroup | typeof MENU_DIVIDER;
 type OSGUITopLevelMenus = Record<string, OSGUIMenuFragment[]>;
 
 interface MenuBarConstructor {
-	new (menus: OSGUITopLevelMenus): MenuBar;
+	new(menus: OSGUITopLevelMenus): MenuBar;
 	(menus: OSGUITopLevelMenus): MenuBar;
 }
 
