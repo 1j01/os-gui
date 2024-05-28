@@ -15,6 +15,9 @@ dist/
 # Istanbul test code coverage reports
 coverage/
 
+# Cypress generates screenshots when tests fail
+cypress/screenshots/
+
 # Logs
 logs
 *.log
