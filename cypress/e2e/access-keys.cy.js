@@ -1,20 +1,4 @@
-const { expect } = require('chai');
-const { JSDOM } = require('jsdom');
-const { AccessKeys } = require('../MenuBar');
-
-beforeEach(() => {
-	const dom = new JSDOM(
-		`<html>
-			<body>
-			</body>
-		</html>`,
-		{ url: 'http://localhost' },
-	);
-
-	// @ts-ignore
-	globalThis.window = dom.window;
-	globalThis.document = dom.window.document;
-});
+const { AccessKeys } = require('../../MenuBar');
 
 describe('AccessKeys', function () {
 	describe('escape', function () {
