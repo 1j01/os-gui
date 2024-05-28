@@ -679,6 +679,10 @@ Run `npm start` to open a development server. It will open a demo page in your d
 Run `npm run lint` to run type checking and spell checking (and any other linting tasks).
 
 Run `npm test` to run the tests.
+This also saves coverage reports to the `coverage` directory,
+but note that it only records code covered by unit tests,
+i.e. code imported directly into the tests, not code loaded in the page context,
+as this requires further setup for instrumentation.
 
 It's a good idea to close the server when updating or installing dependencies; otherwise you may run into EPERM issues.
 
