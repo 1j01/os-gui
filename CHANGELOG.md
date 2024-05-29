@@ -12,6 +12,12 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+Nothing here yet.
+
+</details>
+
+## [0.7.2] - 2024-05-29
+
 ### Fixed
 
 - Marked `options.element` and `options` as optional in `applyCSSProperties` type declarations.
@@ -20,8 +26,6 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - (Also changed type of `private $icon` to `JQuery<Node>`)
 - (Added `dock` method requirement to deprecated `$component` option of `$Window` constructor, in type declarations.)
 - (Removed weird `$G.off("scroll", onscroll);` for non-existent `onscroll` in `$Window.js`. This didn't cause an error, since `onscroll` is a global event, but it shouldn't have been there.)
-
-</details>
 
 ## [0.7.1] - 2024-05-24
 
@@ -337,7 +341,8 @@ see Changed
 - Window component is now an app window instead of a tool window, to aid reintegration with 98.js.org; jspaint will come later.
 - Window component is styled with `.os-window` now, altho it includes both classes `os-window` and `window`.
 
-[Unreleased]: https://github.com/1j01/os-gui/compare/v0.7.1...HEAD
+[Unreleased]: https://github.com/1j01/os-gui/compare/v0.7.2...HEAD
+[0.7.2]: https://github.com/1j01/os-gui/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/1j01/os-gui/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/1j01/os-gui/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/1j01/os-gui/compare/v0.5.0...v0.6.0
