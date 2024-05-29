@@ -458,7 +458,9 @@ function $Window(options = {}) {
 			const observer = new MutationObserver((mutations) => {
 				for (const mutation of mutations) {
 					for (const node of mutation.addedNodes) {
+						// @ts-ignore (this will ignore text nodes and such just fine)
 						if (node.tagName == "IFRAME") {
+							// @ts-ignore (not using instanceof for type narrowing, since this needs to work with across iframe contexts)
 							setupIframe(node);
 						}
 					}
@@ -484,6 +486,7 @@ function $Window(options = {}) {
 			// container_node is not a parameter here because it can change over time, may be an empty document before the iframe is loaded.
 
 			return function handle_focus_in_out(event) {
+				// @ts-ignore (not using instanceof for type narrowing, since this needs to work with across iframe contexts)
 				const container_node = logical_container_el.tagName == "IFRAME" ? logical_container_el.contentDocument : logical_container_el;
 				const document = container_node.ownerDocument ?? container_node;
 				// is this equivalent?
