@@ -359,7 +359,7 @@ interface OSGUIWindowOptions {
 	};
 
 	/** @deprecated */
-	$component?: JQuery<HTMLElement>;
+	$component?: JQuery<HTMLElement> & { dock: () => void };
 	/** @deprecated */
 	icon?: string | { srcset: string } | Node;
 }
