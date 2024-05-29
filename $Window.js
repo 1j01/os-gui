@@ -286,8 +286,8 @@ function $Window(options = {}) {
 	// This is very silly, using jQuery's event handling to implement simpler event handling.
 	// But I'll implement it in a non-silly way at least when I remove jQuery. Maybe sooner.
 	const $event_target = $({});
-	const make_simple_listenable = (name) => {
-		return (callback) => {
+	const make_simple_listenable = (/** @type {string} */ name) => {
+		return (/** @type {() => void} */ callback) => {
 			const fn = () => {
 				callback();
 			};
