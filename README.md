@@ -460,7 +460,8 @@ Returns the size of the window's title bar icon.
 
 #### `getIconAtSize(size)`
 
-Picks the closest icon size that's available, and returns a unique DOM node (i.e. cloned).
+Picks the closest icon size that's available, and returns a unique DOM node (i.e. cloned),
+or `null` if no icons are defined.
 
 This can be used for representing the window in the taskbar.
 

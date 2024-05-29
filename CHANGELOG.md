@@ -16,6 +16,8 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 - Marked `options.element` and `options` as optional in `applyCSSProperties` type declarations.
 - Added missing `force` parameter to `$Window`'s `close` method in type declarations and documentation.
+- Changed `getIconAtSize` return type to `Node | null` (from `HTMLElement`) in type declarations, and mentioned that it can return `null` in the documentation.
+- (Also changed type of `private $icon` to `JQuery<Node>`)
 - (Added `dock` method requirement to deprecated `$component` option of `$Window` constructor, in type declarations.)
 - (Removed weird `$G.off("scroll", onscroll);` for non-existent `onscroll` in `$Window.js`. This didn't cause an error, since `onscroll` is a global event, but it shouldn't have been there.)
 

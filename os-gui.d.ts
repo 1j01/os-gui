@@ -102,7 +102,7 @@ interface OSGUIWindow {
 	 * Picks the closest icon size that's available, and returns a unique DOM node (i.e. cloned).
 	 * This can be used for representing the window in the taskbar.
 	 */
-	getIconAtSize(size: number): HTMLElement;
+	getIconAtSize(size: number): Node | null;
 
 	/**
 	 * Appends the menu bar to the window, and sets the keyboard scope for the menu bar's hotkeys to the window.
@@ -216,7 +216,7 @@ interface OSGUIWindow {
 	/**
 	 * The titlebar icon.
 	 */
-	private $icon: JQuery<HTMLElement>;
+	private $icon: JQuery<Node>;
 
 	/**
 	 * @deprecated The titlebar icon name/ID.

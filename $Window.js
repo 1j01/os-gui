@@ -186,7 +186,8 @@ function $Window(options = {}) {
 	$w.setTitlebarIconSize = function (target_icon_size) {
 		if ($w.icons) {
 			$w.$icon?.remove();
-			$w.$icon = $($w.getIconAtSize(target_icon_size));
+			const iconNode = $w.getIconAtSize(target_icon_size);
+			$w.$icon = iconNode ? $(iconNode) : $();
 			$w.$icon.prependTo($w.$titlebar);
 		}
 		iconSize = target_icon_size;
