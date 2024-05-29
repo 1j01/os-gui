@@ -1,4 +1,4 @@
-interface OSGUIWindow {
+declare interface OSGUIWindow {
 	/**
 	 * Sets the title, or if `text` isn't passed, returns the current title of the window.
 	 * 
@@ -249,12 +249,12 @@ interface OSGUIWindow {
  * 
  * This was a bad design decision.
  */
-type OSGUI$Window = JQuery<HTMLElement & { $window: OSGUI$Window }> & OSGUIWindow;
+declare type OSGUI$Window = JQuery<HTMLElement & { $window: OSGUI$Window }> & OSGUIWindow;
 
 /**
  * A window with a form, for some kinds of dialogs.
  */
-interface OSGUIFormWindow extends OSGUIWindow {
+declare interface OSGUIFormWindow extends OSGUIWindow {
 	$form: JQuery<HTMLFormElement>;
 	$main: JQuery<HTMLDivElement>;
 	$buttons: JQuery<HTMLDivElement>;
@@ -267,12 +267,12 @@ interface OSGUIFormWindow extends OSGUIWindow {
  * 
  * This was a bad design decision.
  */
-type OSGUI$FormWindow = JQuery<HTMLElement & { $window: OSGUI$FormWindow }> & OSGUIFormWindow;
+declare type OSGUI$FormWindow = JQuery<HTMLElement & { $window: OSGUI$FormWindow }> & OSGUIFormWindow;
 
 /**
  * Creates a new window.
  */
-interface $WindowConstructor {
+declare interface $WindowConstructor {
 	new(options?: OSGUIWindowOptions): OSGUI$Window;
 	(options?: OSGUIWindowOptions): OSGUI$Window;
 
@@ -284,9 +284,9 @@ interface $WindowConstructor {
 /**
  * Creates a new form window.
  */
-function $FormWindow(title: string): OSGUI$FormWindow;
+declare function $FormWindow(title: string): OSGUI$FormWindow;
 
-interface OSGUIWindowOptions {
+declare interface OSGUIWindowOptions {
 
 	/** Sets the initial window caption. */
 	title?: string;
@@ -373,12 +373,12 @@ interface OSGUIWindowOptions {
  * - or an object with `srcset` if you want support different pixel densities,
  * - or a DOM node if you want full control (e.g. to use an `<svg>` or a font icon or an emoji).
  */
-type OSGUIIcons = { [size: string]: OSGUIIcon };
-type OSGUIIcon = string | { src: string } | { srcset: string } | Node;
+declare type OSGUIIcons = { [size: string]: OSGUIIcon };
+declare type OSGUIIcon = string | { src: string } | { srcset: string } | Node;
 
-const MENU_DIVIDER = "MENU_DIVIDER";
+declare const MENU_DIVIDER = "MENU_DIVIDER";
 
-interface OSGUICheckbox {
+declare interface OSGUICheckbox {
 	/** A function to check whether the checkbox is checked. */
 	check: () => boolean;
 	/** A function to toggle something application-specific. */
@@ -387,7 +387,7 @@ interface OSGUICheckbox {
 	private type?: "checkbox" | "radio";
 }
 
-interface OSGUIMenuItem {
+declare interface OSGUIMenuItem {
 	/** A label for the item; ampersands define access keys (to use a literal ampersand, use `&&`) */
 	label: string;
 	/**
@@ -422,12 +422,12 @@ interface OSGUIMenuItem {
 	shortcut?: string;
 }
 
-interface OSGUIRadioItem extends OSGUIMenuItem {
+declare interface OSGUIRadioItem extends OSGUIMenuItem {
 	/** A value associated with the radio option; can be any type, but `===` is used to determine whether the item is checked. */
 	value: any;
 }
 
-interface OSGUIRadioGroup {
+declare interface OSGUIRadioGroup {
 	/** an array of menu item specifications to create a radio button group. Unlike `submenu`, the items are included directly in this menu. It is recommended to separate the radio group from other menu items with a `MENU_DIVIDER`. */
 	radioItems: OSGUIRadioItem[];
 	/** a function that should return the value of the selected radio item. */
@@ -438,7 +438,7 @@ interface OSGUIRadioGroup {
 	ariaLabel?: string;
 }
 
-interface MenuBar {
+declare interface MenuBar {
 	/** The DOM element that represents the menu bar. */
 	element: HTMLElement;
 	/** Closes any menus that are open. */
@@ -447,20 +447,20 @@ interface MenuBar {
 	setKeyboardScope(...elements: EventTarget[]): void;
 }
 
-type OSGUIMenuFragment = OSGUIMenuItem | OSGUIRadioGroup | typeof MENU_DIVIDER;
+declare type OSGUIMenuFragment = OSGUIMenuItem | OSGUIRadioGroup | typeof MENU_DIVIDER;
 // I wish I didn't make the top level special, but it's an object instead of an array.
-type OSGUITopLevelMenus = Record<string, OSGUIMenuFragment[]>;
+declare type OSGUITopLevelMenus = Record<string, OSGUIMenuFragment[]>;
 
-interface MenuBarConstructor {
+declare interface MenuBarConstructor {
 	new(menus: OSGUITopLevelMenus): MenuBar;
 	(menus: OSGUITopLevelMenus): MenuBar;
 }
 
 /** @deprecated use MenuBar instead of $MenuBar; jQuery is no longer required for menus. */
-function $MenuBar(menus: OSGUITopLevelMenus): JQuery<HTMLElement>;
+declare function $MenuBar(menus: OSGUITopLevelMenus): JQuery<HTMLElement>;
 
-const AccessKeys: AccessKeys;
-interface AccessKeys {
+declare const AccessKeys: AccessKeys;
+declare interface AccessKeys {
 	/** Escapes ampersands in a label by doubling them. */
 	escape(label: string): string;
 	/** Unescapes ampersands in a label by removing one of each pair. */
@@ -483,14 +483,14 @@ interface AccessKeys {
 
 
 // TODO: does CSSStyleDeclaration already satisfy the Record<string, string> type?
-type CSSProps = Record<string, string> | CSSStyleDeclaration;
+declare type CSSProps = Record<string, string> | CSSStyleDeclaration;
 
 /**
  * Parses an INI file string into CSS properties.
  * 
  * Automatically renders dynamic theme graphics, and includes them in the CSS properties.
  */
-function parseThemeFileString(themeString: string): Record<string, string>;
+declare function parseThemeFileString(themeString: string): Record<string, string>;
 
 /**
  * Applies CSS properties to the DOM tree.
@@ -502,7 +502,7 @@ function parseThemeFileString(themeString: string): Record<string, string>;
  * If `recurseIntoIframes` is true, then the properties will be applied to all `<iframe>` elements within the element as well.
  * This only works with same-origin iframes.
  */
-function applyCSSProperties(cssProperties: CSSProps, options?: { element?: HTMLElement, recurseIntoIframes?: boolean });
+declare function applyCSSProperties(cssProperties: CSSProps, options?: { element?: HTMLElement, recurseIntoIframes?: boolean });
 
 /**
  * Can be used to update theme graphics (scrollbar icons, etc.) for a specific section of the page. Used by the demo to show variations.
@@ -515,13 +515,13 @@ function applyCSSProperties(cssProperties: CSSProps, options?: { element?: HTMLE
  * applyCSSProperties(renderThemeGraphics(getComputedStyle(element)), { element });
  * ```
  */
-function renderThemeGraphics(cssProperties: CSSProps): Record<string, string>;
+declare function renderThemeGraphics(cssProperties: CSSProps): Record<string, string>;
 
 /**
  * Exports a CSS file for a theme. Assumes that the theme graphics are already rendered.
  * Includes a "generated file" comment.
  */
-function makeThemeCSSFile(cssProperties: CSSProps): string;
+declare function makeThemeCSSFile(cssProperties: CSSProps): string;
 
 /**
  * Initializes an SVG filter that can be used to make icons appear disabled.
@@ -536,13 +536,13 @@ function makeThemeCSSFile(cssProperties: CSSProps): string;
  * ```
  */
 
-function makeBlackToInsetFilter();
+declare function makeBlackToInsetFilter();
 
 
 // ESM when? maybe next major version
-const MenuBar: MenuBarConstructor;
-const $Window: $WindowConstructor;
-interface Window {
+declare const MenuBar: MenuBarConstructor;
+declare const $Window: $WindowConstructor;
+declare interface Window {
 	$Window: $WindowConstructor;
 	$FormWindow: typeof $FormWindow;
 	MenuBar: MenuBarConstructor;
