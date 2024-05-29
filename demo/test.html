@@ -44,8 +44,8 @@
 		<br><br><br>
 		<div id="no-focus" style="background-color: beige; color: #000;">
 			You can't focus me, not even this <button id="no-focus-button">button</button>.
-			<span id="without-taskbar-text">This is useful for taskbars, for example.</span>
-			<span id="with-taskbar-text" hidden>
+			<span class="without-taskbar-text">This is useful for taskbars, for example.</span>
+			<span class="with-taskbar-text">
 				This is analogous to a taskbar.
 				<button id="minimize-target">I am Minimize Target for all windows.</button>
 			</span>
@@ -81,6 +81,14 @@
 			filter: saturate(0%) opacity(50%);
 			/* fallback until SVG filter is initialized */
 			filter: url("#os-gui-black-to-inset-filter");
+		}
+
+		:root.taskbar-enabled .without-taskbar-text {
+			display: none;
+		}
+
+		:root:not(.taskbar-enabled) .with-taskbar-text {
+			display: none;
 		}
 	</style>
 </body>

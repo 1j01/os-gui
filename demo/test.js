@@ -28,17 +28,14 @@ function update_override_animation_duration() {
 	$Window.OVERRIDE_TRANSITION_DURATION = override_transition_duration_checkbox.checked ? 5000 : undefined;
 }
 function update_taskbar() {
+	document.documentElement.classList.toggle("taskbar-enabled", taskbar_checkbox.checked);	
 	if (taskbar_checkbox.checked) {
-		document.getElementById("with-taskbar-text").hidden = false;
-		document.getElementById("without-taskbar-text").hidden = true;
 		for (const window_el of document.querySelectorAll(".os-window")) {
 			// @ts-ignore (TODO: A $Window.fromElement (or similar) static method using a Map would be better)
 			// (or something like $Window.allWindows)
 			window_el.$window.setMinimizeTarget(document.getElementById("minimize-target"));
 		}
 	} else {
-		document.getElementById("with-taskbar-text").hidden = true;
-		document.getElementById("without-taskbar-text").hidden = false;
 		for (const window_el of document.querySelectorAll(".os-window")) {
 			// @ts-ignore (TODO: A $Window.fromElement (or similar) static method using a Map would be better)
 			// (or something like $Window.allWindows)
