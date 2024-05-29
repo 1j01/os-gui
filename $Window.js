@@ -1238,7 +1238,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 						$focused.off("focusout", release);
 						$(window).off("keyup", keyup);
 					};
-					const keyup = (e) => {
+					const keyup = (/** @type {{ keyCode: number; }} */ e) => {
 						if (e.keyCode === 32 || e.keyCode === 13) {
 							release();
 						}
