@@ -1506,14 +1506,14 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 
 				// handle_pointermove(e); // was useful for checking that the offset is correct (should not do anything, if it's correct!)
 			});
-			function handle_pointermove(e) {
+			function handle_pointermove(/** @type {JQuery.TriggeredEvent} */ e) {
 				const pointerId = e.pointerId ?? e.originalEvent?.pointerId; // originalEvent doesn't exist for triggerHandler()
 				if (pointerId !== resize_pointer_id && pointerId !== undefined) { return; } // (allowing synthetic events to affect the drag without pointerId)
 				resize_pointer_x = e.clientX;
 				resize_pointer_y = e.clientY;
 				update_resize();
 			}
-			function end_resize(e) {
+			function end_resize(/** @type {JQuery.TriggeredEvent} */ e) {
 				const pointerId = e.pointerId ?? e.originalEvent?.pointerId; // originalEvent doesn't exist for triggerHandler()
 				if (pointerId !== resize_pointer_id && pointerId !== undefined) { return; } // (allowing synthetic events to affect the drag without pointerId)
 				$G.off("pointermove", handle_pointermove);
