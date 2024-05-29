@@ -188,7 +188,8 @@ const menus = {
 						label: `Submenu ${i}.${j}`,
 						checkbox: {
 							check: function () { return this.pointless_checkbox_value; },
-							toggle: function () { this.pointless_checkbox_value = !this.pointless_checkbox_value; }
+							toggle: function () { this.pointless_checkbox_value = !this.pointless_checkbox_value; },
+							pointless_checkbox_value: false,
 						},
 						shortcutLabel: `Ctrl+${i}.${j}`,
 					}))
