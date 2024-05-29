@@ -720,11 +720,7 @@ function test_window_theme() {
 	});
 	$theme_test_window.$content.append(`
 		<div style="margin: 10px;">
-			<select id="theme-select">
-				<option value="windows-default">Windows Default</option>
-				<option value="peggys-pastels" selected>Peggy's Pastels</option>
-				<option value="blue">Blue</option>
-			</select>
+			<select id="theme-select"></select>
 		</div>
 		<div style="margin: 10px;">
 			<button id="theme-self">
@@ -753,9 +749,23 @@ function test_window_theme() {
 	if (!(select instanceof HTMLSelectElement)) {
 		throw new Error("Expected theme select to be an <select> element");
 	}
-	let theme_id = select.value;
+	/** @type {Record<ThemeID, string>} */
+	const names = {
+		"windows-default": "Windows Default",
+		"peggys-pastels": "Peggy's Pastels",
+		"blue": "Blue",
+	};
+	for (const id of /** @type {(ThemeID)[]} */(Object.keys(window_themes))) {
+		const option = document.createElement("option");
+		option.value = id;
+		option.textContent = names[id];
+		select.appendChild(option);
+	}
+	/** @type {ThemeID} */
+	let theme_id = "peggys-pastels"; // to contrast the default; otherwise it may appear to do nothing
+	select.value = theme_id;
 	select.addEventListener("change", () => {
-		theme_id = select.value;
+		theme_id = /** @type {ThemeID} */ (select.value);
 	});
 	$theme_test_window.$content.find("#theme-self").on("click", () => {
 		apply_theme_to_el($theme_test_window[0], theme_id);
@@ -782,9 +792,10 @@ function test_window_theme() {
 	$theme_test_window.focus();
 }
 
+/** @typedef {keyof typeof window_themes} ThemeID */
 /**
  * @param {Element | null} element
- * @param {string} theme_id
+ * @param {ThemeID} theme_id
  * @param {string | undefined} [unset]
  */
 function apply_theme_to_el(element, theme_id, unset) {
