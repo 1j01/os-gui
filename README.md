@@ -380,9 +380,11 @@ Returns a jQuery object with additional methods and properties:
 
 Sets the title, or if `text` isn't passed, returns the current title of the window.
 
-#### `close()`
+#### `close(force=false)`
 
 Closes the window.
+
+If `force` is `true`, the "close" event will not be emitted, and the window will be closed immediately.
 
 #### `focus()`
 

@@ -16,7 +16,7 @@ interface OSGUIWindow {
 	/**
 	 * Closes the window.
 	 */
-	close(): void;
+	close(force?: boolean): void;
 
 	/**
 	 * Tries to focus something within the window, in this order of priority:

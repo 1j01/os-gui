@@ -15,6 +15,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Fixed
 
 - Marked `options.element` and `options` as optional in `applyCSSProperties` type declarations.
+- Added missing `force` parameter to `$Window`'s `close` method in type declarations and documentation.
 
 </details>
 
