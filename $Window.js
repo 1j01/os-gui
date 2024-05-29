@@ -1425,7 +1425,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		const HANDLE_TOP = HANDLE_START;
 		const HANDLE_BOTTOM = HANDLE_END;
 
-		[
+		/** @type {[(0 | -1 | 1), (0 | -1 | 1)][]} */
+		const handle_positions = [
 			[HANDLE_TOP, HANDLE_RIGHT], // ↗
 			[HANDLE_TOP, HANDLE_MIDDLE], // ↑
 			[HANDLE_TOP, HANDLE_LEFT], // ↖
@@ -1434,7 +1435,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			[HANDLE_BOTTOM, HANDLE_MIDDLE], // ↓
 			[HANDLE_BOTTOM, HANDLE_RIGHT], // ↘
 			[HANDLE_MIDDLE, HANDLE_RIGHT], // →
-		].forEach(([y_axis, x_axis]) => {
+		];
+		handle_positions.forEach(([y_axis, x_axis]) => {
 			// const resizes_height = y_axis !== HANDLE_MIDDLE;
 			// const resizes_width = x_axis !== HANDLE_MIDDLE;
 			const $handle = $("<div>").addClass("handle").appendTo($w);
