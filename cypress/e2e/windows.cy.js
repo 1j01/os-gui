@@ -331,5 +331,119 @@ describe('$Window Component', () => {
 			});
 		});
 	});
+
+	describe("focus management", () => {
+		// Test cases where it should refocus the last focused control in the window:
+		// - Click in the blank space of the window
+		//   - Click in blank space again now that something's focused
+		// - Click on the window title bar
+		//   - Click on title bar buttons
+		// - Closing a second window should focus the first window
+		//   - Open a dialog window from an app window that has a tool window, then close the dialog window
+		//     - @TODO: Even if the tool window has controls, it should focus the parent window, I think
+		// - Clicking on a control in the window should focus said control
+		// - Clicking on a disabled control in the window should focus the window
+		//   - Make sure to test this with another window previously focused
+		// - Simulated clicks (important for JS Paint's eye gaze and speech recognition modes)
+		// - (@TODO: Should clicking a child window focus the parent window?)
+		// - After potentially selecting text but not selecting anything
+		// It should NOT refocus when:
+		// - Clicking on a control in a different window
+		// - When other event handlers set focus
+		//   - Using the keyboard to focus something outside the window, such as a menu popup
+		//   - Clicking a control that focuses something outside the window
+		//     - Button that opens another window (e.g. Recursive Dialog button in tests)
+		//     - Button that focuses a control in another window (e.g. Focus Other button in tests)
+		// - Trying to select text
+
+		it("should focus the window when clicking in the blank space of the window", () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+				});
+				$window.$content.append('<p>Click in the blank space of the window</p>');
+				cy.get('.window').should('not.have.focus');
+				cy.get('.window-content').click();
+				cy.get('.window-content').should('have.focus');
+			});
+		});
+		it("should focus the window when clicking on the title bar", () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+				});
+				$window.$content.append('<p>Click on the title bar</p>');
+				cy.get('.window').should('not.have.focus');
+				cy.get('.window-titlebar').click();
+				cy.get('.window-content').should('have.focus');
+			});
+		});
+		it("should focus a control in the window when clicking it", () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+				});
+				$window.$content.append('<form><input type="text" id="input" value="Click me"><textarea id="textarea">Text area</textarea></form>');
+				cy.get('#input').should('not.have.focus');
+				cy.get('#input').click();
+				cy.get('#input').should('have.focus');
+				cy.get('body').click({ force: true });
+				cy.get('#input').should('not.have.focus');
+				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.body); });
+				// refocusing logic should not override clicking a specific control
+				cy.get('#textarea').click();
+				cy.get('#textarea').should('have.focus');
+			});
+		});
+		// I think Cypress's focus simulation logic breaks these tests.
+		// It seems like a pain to debug, given that it's essentially three layers of focus management, maybe four:
+		// - The OS-GUI.js library's management (mimicking an operating system)
+		// - Cypress's focus management (mimicking a browser)
+		// - The browser's focus management
+		// - The operating system's focus management (can largely ignore this)
+		// That said, I haven't digged into this beyond stepping in the debugger into "interceptFocus" from `cypress_runner.js`.
+		// I expected there would be problems with testing focus, but at least I got some tests working.
+		it.skip("should focus the last focused control in the window when clicking a disabled control", () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+				});
+				$window.$content.append('<button id="disabled-button" disabled>Can\'t click me</button><button id="enabled-button">Click me</button>');
+				// cy.get('#disabled-button').click({ force: true });
+				cy.get('#disabled-button').trigger('pointerdown', { which: 1, force: true });
+				// cy.get('.window-content').should('have.focus');
+				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.querySelector('.window-content')); });
+				cy.get('#enabled-button').click();
+				cy.get('#enabled-button').should('have.focus');
+				// cy.get('#disabled-button').click({ force: true });
+				cy.get('#disabled-button').trigger('pointerdown', { which: 1, force: true });
+				cy.get('#enabled-button').should('have.focus');
+				cy.get('body').click({ force: true });
+				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.body); });
+				// cy.get('#disabled-button').click({ force: true });
+				cy.get('#disabled-button').trigger('pointerdown', { which: 1, force: true });
+				cy.get('#enabled-button').should('have.focus');
+			});
+		});
+		it.skip("should focus the last focused control in the window when closing another window that was focused", () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Original Window',
+				});
+				$window.$content.append('<p>Window originally having focus <textarea id="textarea">Text area</textarea></p>');
+				cy.get('#textarea').focus();
+				cy.get('#textarea').should('have.focus');
+				const $window2 = win.$Window({
+					title: 'Popup Window',
+				});
+				$window2.$content.append('<p>Window taking focus temporarily</p><p><button id="close-popup">Close</button></p>');
+				cy.get('#close-popup').focus();
+				cy.get('#close-popup').should('have.focus');
+				cy.get('.window-close-button').last().click();
+				// cy.get('#textarea').should('have.focus');
+				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.getElementById('textarea')); });
+			});
+		});
+	});
 });
 
