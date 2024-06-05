@@ -1502,7 +1502,13 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				resize_pointer_y = e.clientY;
 				resize_pointer_id = (e.pointerId ?? e.originalEvent?.pointerId); // originalEvent doesn't exist for triggerHandler()
 
-				$handle[0].setPointerCapture(resize_pointer_id); // keeps cursor consistent when mouse moves over other elements
+				try {
+					$handle[0].setPointerCapture(resize_pointer_id); // keeps cursor consistent when mouse moves over other elements
+				} catch (error) {
+					// Prevent error from failing test; Cypress sends synthetic events that aren't trusted; I could pass a pointerId but not an active pointer id
+					// NotFoundError: Failed to execute 'setPointerCapture' on 'Element': No active pointer with the given id is found.
+					console.warn("Failed to capture pointer for resize handle drag:", error);
+				}
 
 				// handle_pointermove(e); // was useful for checking that the offset is correct (should not do anything, if it's correct!)
 			});

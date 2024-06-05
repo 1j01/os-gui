@@ -7,7 +7,7 @@ describe('$Window Component', () => {
 	});
 
 	// TODO: test menu bar in window; should be hidden when minimized (FIXME), and should be visible when restored; keyboard scope
-	// also resizing, and focus management with iframes and setting z-index, tabstop wrapping...
+	// also focus management with iframes and setting z-index, tabstop wrapping...
 	// minimize() while minimized, maximize() while maximized, restore() while normal, close() after closing, etc.
 
 	it('should minimize to the bottom left by default', () => {
@@ -176,6 +176,32 @@ describe('$Window Component', () => {
 			$window.$content.append('<p>Close me!</p>').css("padding", "30px");
 			cy.get('.window-close-button').click();
 			cy.get('.window').should('not.exist');
+		});
+	});
+
+	it('can be resized horizontally by dragging the left edge', () => {
+		cy.window().then((win) => {
+			const $window = win.$Window({
+				title: 'Resizable Window',
+				resizable: true,
+			});
+			$window.$content.append('<p>Resize me!</p>').css("padding", "30px");
+			const rect = $window.element.getBoundingClientRect();
+			const leftHandlePos = { x: rect.left, y: rect.top + rect.height / 2 };
+			const leftHandle = win.document.elementFromPoint(leftHandlePos.x, leftHandlePos.y);
+			cy.wrap(leftHandle).trigger('pointerdown', { which: 1 });
+			// Try moving in both axes to test that only one direction is allowed
+			cy.wrap(leftHandle).trigger('pointermove', { clientX: leftHandlePos.x - 50, clientY: leftHandlePos.y - 50 });
+			cy.then(() => {
+				const newRect = $window.element.getBoundingClientRect();
+				expect(newRect.left).to.be.lessThan(rect.left);
+				expect(newRect.right).to.be.closeTo(rect.right, 1);
+				expect(newRect.top).to.be.closeTo(rect.top, 1);
+				expect(newRect.bottom).to.be.closeTo(rect.bottom, 1);
+			});
+			cy.wrap(leftHandle).trigger('pointerup', { force: true });
+
+			// TODO: test corner handles, default clamping, and `options.constrainRect` API clamping
 		});
 	});
 });
