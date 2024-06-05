@@ -1683,6 +1683,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			$component.detach();
 		}
 		$w.closed = true;
+		minimize_slots[$w._minimize_slot_index] = null;
+
 		$event_target.triggerHandler("closed");
 		$w.trigger("closed");
 		// TODO: change usages of "close" to "closed" where appropriate

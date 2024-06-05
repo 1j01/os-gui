@@ -35,11 +35,11 @@ describe('$Window Component', () => {
 						title: 'Test Window 3',
 						minimizeButton: true,
 					});
-					$window.close(); // free up slot
+					$window.close(); // free up slot (unminimizing should also do this)
 					$window3.minimize();
 					cy.get('.window').should('have.length', 2);
 					cy.get('.window').last().should('have.css', 'bottom', '-3px');
-					// cy.get('.window').last().should('have.css', 'left', '10px'); // FIXME: it's getting placed in the third slot, not the first
+					cy.get('.window').last().should('have.css', 'left', '10px');
 				});
 			});
 		});
