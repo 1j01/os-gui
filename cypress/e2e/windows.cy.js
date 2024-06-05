@@ -244,5 +244,92 @@ describe('$Window Component', () => {
 			});
 		});
 	});
+
+	describe('getIconAtSize()', () => {
+		it('should return an icon of the requested size', () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+					icons: {
+						16: new Text('16x16 placeholder'),
+						32: new Text('32x32 placeholder'),
+						any: new Text('any size placeholder'),
+					},
+				});
+				expect($window.getIconAtSize(16)).to.have.property('textContent', '16x16 placeholder');
+				expect($window.getIconAtSize(32)).to.have.property('textContent', '32x32 placeholder');
+			});
+		});
+		it('should return an icon of the closest size if none match and no "any" size is provided', () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+					icons: {
+						16: new Text('16x16 placeholder'),
+						32: new Text('32x32 placeholder'),
+					},
+				});
+				expect($window.getIconAtSize(0)).to.have.property('textContent', '16x16 placeholder');
+				expect($window.getIconAtSize(17)).to.have.property('textContent', '16x16 placeholder');
+				expect($window.getIconAtSize(30)).to.have.property('textContent', '32x32 placeholder');
+				expect($window.getIconAtSize(300)).to.have.property('textContent', '32x32 placeholder');
+			});
+		});
+		it('should return the "any" size icon if provided and none match exactly', () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+					icons: {
+						16: new Text('16x16 placeholder'),
+						32: new Text('32x32 placeholder'),
+						any: new Text('any size placeholder'),
+					},
+				});
+				expect($window.getIconAtSize(17)).to.have.property('textContent', 'any size placeholder');
+				expect($window.getIconAtSize(30)).to.have.property('textContent', 'any size placeholder');
+				expect($window.getIconAtSize(32)).to.have.property('textContent', '32x32 placeholder');
+			});
+		});
+	});
+
+	describe('setIcons()', () => {
+		it('should set the icons of the window', () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+				});
+				$window.setIcons({
+					16: new Text('16x16 placeholder'),
+					32: new Text('32x32 placeholder'),
+					any: new Text('any size placeholder'),
+				});
+				expect($window.getIconAtSize(16)).to.have.property('textContent', '16x16 placeholder');
+				expect($window.getIconAtSize(32)).to.have.property('textContent', '32x32 placeholder');
+				expect($window.getIconAtSize(17)).to.have.property('textContent', 'any size placeholder');
+				expect($window.getIconAtSize(30)).to.have.property('textContent', 'any size placeholder');
+
+				// It's actually not wrapped in an element, which is a little weird.
+				// If you pass it a text node, it's added directly to the titlebar.
+				cy.get('.window').contains('16x16 placeholder');
+			});
+		});
+		it('should clear the icons if called with an empty object', () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+					icons: {
+						16: new Text('16x16 placeholder'),
+						32: new Text('32x32 placeholder'),
+						any: new Text('any size placeholder'),
+					},
+				});
+				$window.setIcons({});
+				expect($window.getIconAtSize(16)).to.be.null;
+				expect($window.getIconAtSize(32)).to.be.null;
+				expect($window.getIconAtSize(17)).to.be.null;
+				expect($window.getIconAtSize(30)).to.be.null;
+			});
+		});
+	});
 });
 
