@@ -717,9 +717,9 @@ function $Window(options = {}) {
 						$w.css({
 							position: "fixed",
 							top: `calc(100% - ${titlebar_height + 5}px)`,
-							left: `${to_x}`,
-							width: `${to_width}`,
-							height: `${titlebar_height}`,
+							left: `${to_x}px`,
+							width: `${to_width}px`,
+							height: `${titlebar_height}px`,
 						});
 					}
 				};

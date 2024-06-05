@@ -12,7 +12,9 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
-Nothing here yet.
+### Fixed
+
+- Fixed positioning of windows when minimized without a taskbar.
 
 </details>
 
