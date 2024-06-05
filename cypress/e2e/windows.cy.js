@@ -204,5 +204,45 @@ describe('$Window Component', () => {
 			// TODO: test corner handles, default clamping, and `options.constrainRect` API clamping
 		});
 	});
+
+	describe('title()', () => {
+		it('should set the title of the window', () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+				});
+				cy.get('.window-title').should('have.text', 'Test Window');
+				cy.then(() => {
+					$window.title('New Title');
+				});
+				cy.get('.window-title').should('have.text', 'New Title');
+				cy.then(() => {
+					// @ts-ignore
+					$window.title(420);
+				});
+				cy.get('.window-title').should('have.text', '420');
+			});
+		});
+		it('should clear the title if given an empty string', () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+				});
+				cy.get('.window-title').should('have.text', 'Test Window');
+				cy.then(() => {
+					$window.title('');
+				});
+				cy.get('.window-title').should('have.text', '');
+			});
+		});
+		it('should return the current title if called without arguments', () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+				});
+				expect($window.title()).to.equal('Test Window');
+			});
+		});
+	});
 });
 
