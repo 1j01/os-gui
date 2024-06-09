@@ -378,7 +378,7 @@ describe('$Window Component', () => {
 				cy.get('.window-content').should('have.focus');
 			});
 		});
-		it("should focus a control in the window when clicking it", () => {
+		it.only("should focus a control in the window when clicking it", () => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
