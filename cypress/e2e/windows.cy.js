@@ -389,7 +389,7 @@ describe('$Window Component', () => {
 				cy.get('#input').should('have.focus');
 				cy.get('body').click({ force: true });
 				cy.get('#input').should('not.have.focus');
-				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.body); });
+				cy.focused().should('match', 'body');
 				// refocusing logic should not override clicking a specific control
 				cy.get('#textarea').click();
 				cy.get('#textarea').should('have.focus');
@@ -412,14 +412,14 @@ describe('$Window Component', () => {
 				// cy.get('#disabled-button').click({ force: true });
 				cy.get('#disabled-button').trigger('pointerdown', { which: 1, force: true });
 				// cy.get('.window-content').should('have.focus');
-				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.querySelector('.window-content')); });
+				cy.focused().should('match', '.window-content');
 				cy.get('#enabled-button').click();
 				cy.get('#enabled-button').should('have.focus');
 				// cy.get('#disabled-button').click({ force: true });
 				cy.get('#disabled-button').trigger('pointerdown', { which: 1, force: true });
 				cy.get('#enabled-button').should('have.focus');
 				cy.get('body').click({ force: true });
-				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.body); });
+				cy.focused().should('match', 'body');
 				// cy.get('#disabled-button').click({ force: true });
 				cy.get('#disabled-button').trigger('pointerdown', { which: 1, force: true });
 				cy.get('#enabled-button').should('have.focus');
@@ -441,7 +441,7 @@ describe('$Window Component', () => {
 				cy.get('#close-popup').should('have.focus');
 				cy.get('.window-close-button').last().click();
 				// cy.get('#textarea').should('have.focus');
-				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.getElementById('textarea')); });
+				cy.focused().should('match', '#textarea');
 			});
 		});
 	});
