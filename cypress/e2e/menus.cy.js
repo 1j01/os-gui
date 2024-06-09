@@ -24,6 +24,18 @@ describe('MenuBar Component', () => {
 		cy.get('.menu-popup').should('not.be.visible');
 	});
 
+	it('should glide through menus (open menu on hover while another menu is open)', () => {
+		cy.get('.menu-button').first().trigger('pointerdown');
+		cy.get('.menu-popup:visible').contains('Open');
+		cy.get('.menu-button').eq(1).trigger('pointermove'); // I wonder if there's a reason it doesn't use pointerenter
+		cy.get('.menu-popup:visible').contains('Checkbox State');
+		// It should stay in gliding state even after the mouse button is released
+		cy.get('.menu-button').eq(1).trigger('pointerup');
+		cy.get('.menu-popup:visible').contains('Checkbox State'); // (should stay open btw)
+		cy.get('.menu-button').eq(2).trigger('pointermove');
+		cy.get('.menu-popup:visible').contains('Copy');
+	});
+
 	it('should open menus and activate menu items with access keys', () => {
 		cy.get('body').type('{alt}f');
 		cy.get('.menu-button').first().should('have.attr', 'aria-expanded', 'true');
