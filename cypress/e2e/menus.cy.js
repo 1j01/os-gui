@@ -113,10 +113,23 @@ describe('MenuBar Component', () => {
 	});
 
 	it('should exit one menu level when pressing Escape', () => {
-		// TODO: test with submenus
 		cy.get('.menu-button').first().click();
 		cy.get('.menu-popup').should('be.visible');
 		cy.get('body').type('{esc}');
 		cy.get('.menu-popup').should('not.be.visible');
+		// test with submenu
+		cy.get('.menu-button').eq(1).click();
+		cy.get('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
+		cy.then(() => {
+			expect(cy.$$('.menu-popup:visible').length).to.equal(2);
+		});
+		cy.get('body').type('{esc}');
+		cy.then(() => {
+			expect(cy.$$('.menu-popup:visible').length).to.equal(1);
+		});
+		cy.get('body').type('{esc}');
+		cy.then(() => {
+			expect(cy.$$('.menu-popup:visible').length).to.equal(0);
+		});
 	});
 });
