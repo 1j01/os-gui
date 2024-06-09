@@ -18,12 +18,11 @@
 	<!-- <script src="../../$Window.js"></script> -->
 	<!-- <script src="../../parse-theme.js"></script> -->
 	<script>
-		let nothingness_state = false;
-		let radio_state = "foo";
-
-		window.testState = {
+		const testState = window.testState = {
 			fileOpenTriggered: false,
 			disabledActionTriggered: false,
+			checkboxState: false,
+			radioState: "foo",
 		};
 
 		const sampleMenus = {
@@ -31,7 +30,7 @@
 				{
 					label: "&Open",
 					action: () => {
-						window.testState.fileOpenTriggered = true;
+						testState.fileOpenTriggered = true;
 					},
 					shortcutLabel: "Ctrl+O",
 					description: "Tests action triggering.",
@@ -46,14 +45,14 @@
 			],
 			"&View": [
 				{
-					label: "&Nothingness",
+					label: "Checkbox &State",
 					checkbox: {
-						check: () => nothingness_state,
+						check: () => testState.checkboxState,
 						toggle: () => {
-							nothingness_state = !nothingness_state;
+							testState.checkboxState = !testState.checkboxState;
 						}
 					},
-					description: "Tick a meaningless checkbox.",
+					description: "Tick a checkbox for testing.",
 				},
 				{
 					label: "&Physics",
@@ -73,7 +72,7 @@
 					description: "Contains a stupid physics joke.",
 				},
 				{
-					label: "&Checkboxes",
+					label: "&More Checkboxes",
 					submenu: new Array(100).fill(0).map((_, i) => ({
 						label: `Item ${i}`,
 						description: `Toggles item ${i}.`,
@@ -110,8 +109,8 @@
 									description: "Sets the radio state to \"baz\".",
 								},
 							],
-							getValue: () => radio_state,
-							setValue: (new_value) => { radio_state = new_value; },
+							getValue: () => testState.radioState,
+							setValue: (new_value) => { testState.radioState = new_value; },
 							ariaLabel: "Example radio group",
 						},
 					],
@@ -130,7 +129,7 @@
 					shortcutLabel: "Ctrl+V",
 					description: "This menu item is disabled.",
 					action: () => {
-						window.testState.disabledActionTriggered = true;
+						testState.disabledActionTriggered = true;
 					},
 				},
 			],

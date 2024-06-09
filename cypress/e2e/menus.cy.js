@@ -24,10 +24,45 @@ describe('MenuBar Component', () => {
 		cy.get('.menu-popup').should('not.be.visible');
 	});
 
-	it('should open menu when pressing access key shortcut', () => {
+	it('should open menus and activate menu items with access keys', () => {
 		cy.get('body').type('{alt}f');
 		cy.get('.menu-button').first().should('have.attr', 'aria-expanded', 'true');
-		// TODO: test triggering items with access keys, and cycling items with ambiguous access keys
+		// Menu item with action
+		cy.window().its('testState.fileOpenTriggered').should('be.false');
+		cy.get('body').type('o');
+		cy.window().its('testState.fileOpenTriggered').should('be.true');
+		// Menu should be closed after action is triggered
+		cy.get('.menu-button').first().should('have.attr', 'aria-expanded', 'false');
+		cy.get('.menu-button').eq(1).should('have.attr', 'aria-expanded', 'false');
+		// Checkbox menu item
+		cy.get('body').type('{alt}v');
+		cy.get('.menu-button').eq(1).should('have.attr', 'aria-expanded', 'true');
+		cy.window().its('testState.checkboxState').should('be.false');
+		cy.contains('Checkbox State').first().parent("[role='menuitemcheckbox']").should('have.attr', 'aria-checked', 'false');
+		cy.get('body').type('s');
+		cy.window().its('testState.checkboxState').should('be.true');
+		cy.contains('Checkbox State').first().parent("[role='menuitemcheckbox']").should('have.attr', 'aria-checked', 'true');
+		// Menu should be closed after checkbox is toggled
+		// TODO: match Windows behavior
+		// cy.get('.menu-button').first().should('have.attr', 'aria-expanded', 'false');
+		// cy.get('.menu-button').eq(1).should('have.attr', 'aria-expanded', 'false');
+		cy.get('body').type('{esc}');
+		// Submenu item
+		cy.get('body').type('{alt}v').type('m');
+		// Should cycle through items with ambiguous access keys,
+		// including menu items without defined access keys, which use the first letter of the label.
+		// TODO: make sure both implicit and explicit access keys are tested
+		// TODO: test that the items are not activated, only highlighted
+		cy.get('.menu-item.highlight').contains('Item 0');
+		cy.get('body').type('i');
+		cy.get('.menu-item.highlight').contains('Item 1');
+		cy.get('body').type('i');
+		cy.get('.menu-item.highlight').contains('Item 2');
+		// Should cycle back to the first item
+		cy.get('body').type(Array(100 - 2).fill('i').join(''));
+		cy.get('.menu-item.highlight').contains('Item 0');
+
+		// TODO: test also ambiguous top level menu access keys (would be really bad practice, but should probably still be supported)
 	});
 
 	it('should have correct ARIA attributes', () => {
@@ -71,6 +106,7 @@ describe('MenuBar Component', () => {
 	});
 
 	it('should trigger action on menu item click', () => {
+		cy.window().its('testState.fileOpenTriggered').should('be.false');
 		cy.get('.menu-button').first().click();
 		cy.get('.menu-popup .menu-item').first().click();
 		cy.window().its('testState.fileOpenTriggered').should('be.true');
