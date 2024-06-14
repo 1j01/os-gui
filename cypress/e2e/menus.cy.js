@@ -96,16 +96,43 @@ describe('MenuBar Component', () => {
 		menuItem.should('have.attr', 'aria-expanded', 'false');
 	});
 
-	it('should navigate menu using arrow keys', () => {
+	it('should navigate menus using arrow keys', () => {
+		// moving between items in the same menu
 		cy.get('.menu-button').first().click();
 		cy.get('.menu-button').first().type('{downarrow}');
-		cy.get('.menu-item').first().should('have.class', 'highlight');
+		cy.get('.menu-item:visible').first().should('have.class', 'highlight');
 		cy.get(':focus').type('{downarrow}');
-		cy.get('.menu-item').eq(1).should('have.class', 'highlight');
+		cy.get('.menu-item:visible').eq(1).should('have.class', 'highlight');
 		cy.get(':focus').type('{uparrow}');
-		cy.get('.menu-item').first().should('have.class', 'highlight');
-		// TODO: test wrapping, submenus (including RTL layout),
-		// moving between top level menus while open,
+		cy.get('.menu-item:visible').first().should('have.class', 'highlight');
+		// wrapping around within a menu
+		cy.get(':focus').type('{uparrow}');
+		cy.get('.menu-item:visible').last().should('have.class', 'highlight');
+		cy.get(':focus').type('{downarrow}');
+		cy.get('.menu-item:visible').first().should('have.class', 'highlight');
+		// moving between top level menus while open
+		// File menu should be open
+		cy.get('.menu-button').first().should('have.attr', 'aria-expanded', 'true');
+		cy.get('.menu-popup:visible').contains('Open');
+		cy.get(':focus').type('{rightarrow}');
+		// View menu should be open
+		cy.get('.menu-button').eq(1).should('have.attr', 'aria-expanded', 'true');
+		cy.get('.menu-popup:visible').contains('Checkbox State');
+		cy.get(':focus').type('{leftarrow}');
+		// File menu should be open
+		cy.get('.menu-button').first().should('have.attr', 'aria-expanded', 'true');
+		cy.get('.menu-popup:visible').contains('Open');
+		cy.get(':focus').type('{leftarrow}');
+		// cy.get('.menu-popup:visible').contains('Maximize'); // App menu (alt+space menu) would only apply if inside a window, and isn't implemented as of writing
+		// Edit menu should be open, wrapping around
+		cy.get('.menu-button').last().should('have.attr', 'aria-expanded', 'true');
+		cy.get('.menu-popup:visible').contains('Copy');
+		cy.get(':focus').type('{rightarrow}');
+		// File menu should be open, wrapping around
+		cy.get('.menu-button').first().should('have.attr', 'aria-expanded', 'true');
+		cy.get('.menu-popup:visible').contains('Open');
+
+		// TODO: test entering/exiting submenus with right/left (and left/right in RTL layout),
 		// moving between top level menus without opening them (after pressing Escape),
 		// enter, space
 	});
