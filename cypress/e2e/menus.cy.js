@@ -148,9 +148,55 @@ describe('MenuBar Component', () => {
 		cy.get('.menu-button').first().type('{uparrow}');
 		cy.get('.menu-popup:visible').should('exist');
 		cy.get('.menu-item:visible').first().should('have.class', 'highlight');
+	});
 
-		// TODO: test entering/exiting submenus with right/left (and left/right in RTL layout),
-		// enter, space
+	it('should enter/exit submenus using arrow keys', () => {
+		// test entering/exiting submenus with right/left
+		cy.get('.menu-button').eq(1).click();
+		cy.get(':focus').type('{downarrow}{downarrow}');
+		cy.get('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
+			.should('have.class', 'highlight')
+			.should('have.attr', 'aria-expanded', 'false');
+		cy.get(':focus').type('{rightarrow}');
+		cy.get('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
+			.should('have.class', 'highlight')
+			.should('have.attr', 'aria-expanded', 'true');
+		cy.then(() => {
+			expect(cy.$$('.menu-popup:visible').length).to.equal(2);
+		});
+		cy.get(':focus').type('{leftarrow}');
+		cy.get('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
+			.should('have.class', 'highlight')
+			.should('have.attr', 'aria-expanded', 'false');
+		cy.then(() => {
+			expect(cy.$$('.menu-popup:visible').length).to.equal(1);
+		});
+		// test reversed left/right interaction in RTL layout
+		cy.get(':focus').type('{esc}');
+		cy.document().then((doc) => {
+			doc.body.style.direction = 'rtl';
+		});
+		cy.get('.menu-button').eq(1).click();
+		cy.get(':focus').type('{downarrow}{downarrow}');
+		cy.get('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
+			.should('have.class', 'highlight')
+			.should('have.attr', 'aria-expanded', 'false');
+		cy.get(':focus').type('{leftarrow}');
+		cy.get('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
+			.should('have.class', 'highlight')
+			.should('have.attr', 'aria-expanded', 'true');
+		cy.then(() => {
+			expect(cy.$$('.menu-popup:visible').length).to.equal(2);
+		});
+		cy.get(':focus').type('{rightarrow}');
+		cy.get('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
+			.should('have.class', 'highlight')
+			.should('have.attr', 'aria-expanded', 'false');
+		cy.then(() => {
+			expect(cy.$$('.menu-popup:visible').length).to.equal(1);
+		});
+
+		// TODO: test moving to other menu if pressing in the direction opposite the submenu indicator arrow
 	});
 
 	it.skip('should (maybe) jump to first/last item using home/end keys (not actually supported in Windows)', () => {
@@ -168,6 +214,8 @@ describe('MenuBar Component', () => {
 		cy.get('.menu-popup').should('be.visible'); // Still open because the disabled item didn't trigger close
 		cy.window().its('testState.disabledActionTriggered').should('be.false');
 	});
+
+	// TODO: test activating items with enter/space
 
 	it('should trigger action on menu item click', () => {
 		cy.window().its('testState.fileOpenTriggered').should('be.false');
