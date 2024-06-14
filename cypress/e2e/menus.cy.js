@@ -104,9 +104,18 @@ describe('MenuBar Component', () => {
 		cy.get('.menu-item').eq(1).should('have.class', 'highlight');
 		cy.get(':focus').type('{uparrow}');
 		cy.get('.menu-item').first().should('have.class', 'highlight');
-		// TODO: test wrapping, submenus, moving between top level menus,
+		// TODO: test wrapping, submenus (including RTL layout),
+		// moving between top level menus while open,
 		// moving between top level menus without opening them (after pressing Escape),
-		// home/end keys, enter, space, etc.
+		// enter, space, alt to close all menus, etc.
+	});
+
+	it.skip('should (maybe) jump to first/last item using home/end keys (not actually supported in Windows)', () => {
+		cy.get('.menu-button').first().click();
+		cy.get('.menu-button').first().type('{end}');
+		cy.get('.menu-item').last().should('have.class', 'highlight');
+		cy.get('.menu-button').first().type('{home}');
+		cy.get('.menu-item').first().should('have.class', 'highlight');
 	});
 
 	// TODO: disable interacting with disabled items
