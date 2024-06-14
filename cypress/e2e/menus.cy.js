@@ -196,7 +196,7 @@ describe('MenuBar Component', () => {
 			expect(cy.$$('.menu-popup:visible').length).to.equal(1);
 		});
 
-		// TODO: test moving to other menu if pressing in the direction opposite the submenu indicator arrow
+		// TODO: test moving to adjacent menu if pressing in the direction opposite the submenu indicator arrow
 	});
 
 	it.skip('should (maybe) jump to first/last item using home/end keys (not actually supported in Windows)', () => {
@@ -215,13 +215,40 @@ describe('MenuBar Component', () => {
 		cy.window().its('testState.disabledActionTriggered').should('be.false');
 	});
 
-	// TODO: test activating items with enter/space
 
 	it('should trigger action on menu item click', () => {
 		cy.window().its('testState.fileOpenTriggered').should('be.false');
 		cy.get('.menu-button').first().click();
 		cy.get('.menu-popup .menu-item').first().click();
 		cy.window().its('testState.fileOpenTriggered').should('be.true');
+	});
+
+	it('should trigger action when pressing enter', () => {
+		cy.get('.menu-button').first().click();
+		cy.get(':focus').type('{downarrow}');
+		cy.get('.menu-popup:visible .menu-item').first().should('have.class', 'highlight');
+		cy.window().its('testState.fileOpenTriggered').should('be.false');
+		// cy.get(':focus').type('{enter}'); // menu doesn't receive focus currently?
+		cy.get('.menu-popup:visible .menu-item.highlight').type('{enter}', { force: true });
+		cy.window().its('testState.fileOpenTriggered').should('be.true');
+	});
+
+	it('should do nothing when pressing space', () => {
+		// cy.get('.menu-button').first().click();
+		// cy.get(':focus').type('{downarrow}');
+		cy.get('body').type('{alt}f');
+		cy.get('.menu-popup:visible .menu-item').first().should('have.class', 'highlight');
+		cy.get('.menu-popup:visible').first().should('have.focus');
+		cy.window().its('testState.fileOpenTriggered').should('be.false');
+		// Cypress was triggering a click command inside type(), and hiding it from the command log, invalidating the test by activating the menu item, unlike real world behavior.
+		// I thought it might be assuming it's a button and triggering a click to imitate the default action of buttons when pressing space, but it's not that.
+		// It was simply clicking before typing in order to "simulate typical user behavior",
+		// because it doesn't consider the menu item to be focused.
+		// cy.get('.menu-popup:visible .menu-item.highlight').type(' ', { force: true });
+		// Need to use the focused element instead of the highlighted one to avoid the click,
+		// and need to ensure the element receives focus beforehand with `should` (above) to avoid it failing to find anything focused here.
+		cy.get(':focus').type(' ', { force: true });
+		cy.window().its('testState.fileOpenTriggered').should('be.false');
 	});
 
 	it('should exit one menu level when pressing Escape', () => {
