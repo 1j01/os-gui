@@ -161,16 +161,12 @@ describe('MenuBar Component', () => {
 		cy.get('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
 			.should('have.class', 'highlight')
 			.should('have.attr', 'aria-expanded', 'true');
-		cy.then(() => {
-			expect(cy.$$('.menu-popup:visible').length).to.equal(2);
-		});
+		cy.get('.menu-popup:visible').should('have.length', 2);
 		cy.get(':focus').type('{leftarrow}');
 		cy.get('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
 			.should('have.class', 'highlight')
 			.should('have.attr', 'aria-expanded', 'false');
-		cy.then(() => {
-			expect(cy.$$('.menu-popup:visible').length).to.equal(1);
-		});
+		cy.get('.menu-popup:visible').should('have.length', 1);
 		// test reversed left/right interaction in RTL layout
 		cy.get(':focus').type('{esc}');
 		cy.document().then((doc) => {
@@ -185,16 +181,12 @@ describe('MenuBar Component', () => {
 		cy.get('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
 			.should('have.class', 'highlight')
 			.should('have.attr', 'aria-expanded', 'true');
-		cy.then(() => {
-			expect(cy.$$('.menu-popup:visible').length).to.equal(2);
-		});
+		cy.get('.menu-popup:visible').should('have.length', 2);
 		cy.get(':focus').type('{rightarrow}');
 		cy.get('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
 			.should('have.class', 'highlight')
 			.should('have.attr', 'aria-expanded', 'false');
-		cy.then(() => {
-			expect(cy.$$('.menu-popup:visible').length).to.equal(1);
-		});
+		cy.get('.menu-popup:visible').should('have.length', 1);
 
 		// TODO: test moving to adjacent menu if pressing in the direction opposite the submenu indicator arrow
 	});
@@ -256,17 +248,11 @@ describe('MenuBar Component', () => {
 		// test with submenu
 		cy.get('.menu-button').eq(1).click();
 		cy.get('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
-		cy.then(() => {
-			expect(cy.$$('.menu-popup:visible').length).to.equal(2);
-		});
+		cy.get('.menu-popup:visible').should('have.length', 2);
 		cy.get('body').type('{esc}');
-		cy.then(() => {
-			expect(cy.$$('.menu-popup:visible').length).to.equal(1);
-		});
+		cy.get('.menu-popup:visible').should('have.length', 1);
 		cy.get('body').type('{esc}');
-		cy.then(() => {
-			expect(cy.$$('.menu-popup:visible').length).to.equal(0);
-		});
+		cy.get('.menu-popup:visible').should('have.length', 0);
 	});
 
 	it('should close all menus when pressing Alt, and refocus the last focused control outside the menu bar', () => {
@@ -293,13 +279,9 @@ describe('MenuBar Component', () => {
 		// test with submenu
 		cy.get('.menu-button').eq(1).click();
 		cy.get('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
-		cy.then(() => {
-			expect(cy.$$('.menu-popup:visible').length).to.equal(2);
-		});
+		cy.get('.menu-popup:visible').should('have.length', 2);
 		cy.get('body').type('{alt}');
-		cy.then(() => {
-			expect(cy.$$('.menu-popup:visible').length).to.equal(0);
-		});
+		cy.get('.menu-popup:visible').should('have.length', 0);
 		cy.get('#focusable').should('have.focus');
 	});
 });
