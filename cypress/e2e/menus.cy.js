@@ -138,14 +138,14 @@ describe('MenuBar Component', () => {
 		cy.get(':focus').type('{rightarrow}');
 		cy.get('.menu-popup:visible').should('not.exist');
 		cy.get('.menu-button').eq(1).should('have.focus').should('have.attr', 'aria-expanded', 'false');
-		cy.get('.menu-button').first().type('{downarrow}');
+		cy.get(':focus').type('{downarrow}');
 		// opening menu from this state by pressing down arrow
 		cy.get('.menu-popup:visible').should('exist');
 		cy.get('.menu-item:visible').first().should('have.class', 'highlight');
 		// or up arrow (and yes, it should still be the first item, to match Windows 98's behavior)
 		cy.get('body').type('{esc}');
 		cy.get('.menu-popup:visible').should('not.exist');
-		cy.get('.menu-button').first().type('{uparrow}');
+		cy.get(':focus').type('{uparrow}');
 		cy.get('.menu-popup:visible').should('exist');
 		cy.get('.menu-item:visible').first().should('have.class', 'highlight');
 	});
@@ -201,9 +201,9 @@ describe('MenuBar Component', () => {
 
 	it.skip('should (maybe) jump to first/last item using home/end keys (not actually supported in Windows)', () => {
 		cy.get('.menu-button').first().click();
-		cy.get('.menu-button').first().type('{end}');
+		cy.get(':focus').type('{end}');
 		cy.get('.menu-item').last().should('have.class', 'highlight');
-		cy.get('.menu-button').first().type('{home}');
+		cy.get(':focus').type('{home}');
 		cy.get('.menu-item').first().should('have.class', 'highlight');
 	});
 
