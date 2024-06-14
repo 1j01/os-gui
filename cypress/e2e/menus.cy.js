@@ -154,11 +154,27 @@ describe('MenuBar Component', () => {
 		});
 	});
 
-	it('should close all menus when pressing Alt', () => {
+	it('should close all menus when pressing Alt, and refocus the last focused control outside the menu bar', () => {
+		cy.then(() => { // not technically needed since it's the first command
+			// cy.$$('<button id="focusable">Focus</button>').appendTo('body').focus(); // doesn't work, appends to the wrong document
+			// Cypress.$('<button id="focusable">Focus</button>').appendTo('body').focus(); // doesn't work, appends to the wrong document
+			Cypress.$('body').append('<button id="focusable">Focus</button>').find('#focusable').focus(); // works
+		});
+		// cy.document().then((doc) => { // works but verbose
+		// 	const button = doc.createElement('button');
+		// 	button.id = 'focusable';
+		// 	doc.body.appendChild(button);
+		// 	button.focus();
+		// 	button.textContent = 'Focus';
+		// });
+		cy.get('#focusable').should('have.focus');
+
 		cy.get('.menu-button').first().click();
 		cy.get('.menu-popup').should('be.visible');
+		cy.get('#focusable').should('not.have.focus');
 		cy.get('body').type('{alt}');
 		cy.get('.menu-popup').should('not.be.visible');
+		cy.get('#focusable').should('have.focus');
 		// test with submenu
 		cy.get('.menu-button').eq(1).click();
 		cy.get('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
@@ -169,5 +185,6 @@ describe('MenuBar Component', () => {
 		cy.then(() => {
 			expect(cy.$$('.menu-popup:visible').length).to.equal(0);
 		});
+		cy.get('#focusable').should('have.focus');
 	});
 });
