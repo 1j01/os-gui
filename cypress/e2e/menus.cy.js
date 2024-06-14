@@ -131,9 +131,25 @@ describe('MenuBar Component', () => {
 		// File menu should be open, wrapping around
 		cy.get('.menu-button').first().should('have.attr', 'aria-expanded', 'true');
 		cy.get('.menu-popup:visible').contains('Open');
+		// moving between top level menu buttons without opening menus (after pressing Escape)
+		cy.get('body').type('{esc}');
+		cy.get('.menu-popup:visible').should('not.exist');
+		cy.get('.menu-button').first().should('have.focus').should('have.attr', 'aria-expanded', 'false');
+		cy.get(':focus').type('{rightarrow}');
+		cy.get('.menu-popup:visible').should('not.exist');
+		cy.get('.menu-button').eq(1).should('have.focus').should('have.attr', 'aria-expanded', 'false');
+		cy.get('.menu-button').first().type('{downarrow}');
+		// opening menu from this state by pressing down arrow
+		cy.get('.menu-popup:visible').should('exist');
+		cy.get('.menu-item:visible').first().should('have.class', 'highlight');
+		// or up arrow (and yes, it should still be the first item, to match Windows 98's behavior)
+		cy.get('body').type('{esc}');
+		cy.get('.menu-popup:visible').should('not.exist');
+		cy.get('.menu-button').first().type('{uparrow}');
+		cy.get('.menu-popup:visible').should('exist');
+		cy.get('.menu-item:visible').first().should('have.class', 'highlight');
 
 		// TODO: test entering/exiting submenus with right/left (and left/right in RTL layout),
-		// moving between top level menus without opening them (after pressing Escape),
 		// enter, space
 	});
 
