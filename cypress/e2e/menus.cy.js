@@ -224,18 +224,15 @@ describe('MenuBar Component', () => {
 	});
 
 	it('should trigger action when pressing enter', () => {
-		cy.get('.menu-button').first().click();
-		cy.get(':focus').type('{downarrow}');
+		cy.get('body').type('{alt}f');
 		cy.get('.menu-popup:visible .menu-item').first().should('have.class', 'highlight');
+		cy.get('.menu-popup:visible').first().should('have.focus');
 		cy.window().its('testState.fileOpenTriggered').should('be.false');
-		// cy.get(':focus').type('{enter}'); // menu doesn't receive focus currently?
-		cy.get('.menu-popup:visible .menu-item.highlight').type('{enter}', { force: true });
+		cy.get(':focus').type('{enter}');
 		cy.window().its('testState.fileOpenTriggered').should('be.true');
 	});
 
 	it('should do nothing when pressing space', () => {
-		// cy.get('.menu-button').first().click();
-		// cy.get(':focus').type('{downarrow}');
 		cy.get('body').type('{alt}f');
 		cy.get('.menu-popup:visible .menu-item').first().should('have.class', 'highlight');
 		cy.get('.menu-popup:visible').first().should('have.focus');
@@ -247,7 +244,7 @@ describe('MenuBar Component', () => {
 		// cy.get('.menu-popup:visible .menu-item.highlight').type(' ', { force: true });
 		// Need to use the focused element instead of the highlighted one to avoid the click,
 		// and need to ensure the element receives focus beforehand with `should` (above) to avoid it failing to find anything focused here.
-		cy.get(':focus').type(' ', { force: true });
+		cy.get(':focus').type(' ');
 		cy.window().its('testState.fileOpenTriggered').should('be.false');
 	});
 
