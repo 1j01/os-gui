@@ -107,7 +107,7 @@ describe('MenuBar Component', () => {
 		// TODO: test wrapping, submenus (including RTL layout),
 		// moving between top level menus while open,
 		// moving between top level menus without opening them (after pressing Escape),
-		// enter, space, alt to close all menus, etc.
+		// enter, space
 	});
 
 	it.skip('should (maybe) jump to first/last item using home/end keys (not actually supported in Windows)', () => {
@@ -149,6 +149,23 @@ describe('MenuBar Component', () => {
 			expect(cy.$$('.menu-popup:visible').length).to.equal(1);
 		});
 		cy.get('body').type('{esc}');
+		cy.then(() => {
+			expect(cy.$$('.menu-popup:visible').length).to.equal(0);
+		});
+	});
+
+	it('should close all menus when pressing Alt', () => {
+		cy.get('.menu-button').first().click();
+		cy.get('.menu-popup').should('be.visible');
+		cy.get('body').type('{alt}');
+		cy.get('.menu-popup').should('not.be.visible');
+		// test with submenu
+		cy.get('.menu-button').eq(1).click();
+		cy.get('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
+		cy.then(() => {
+			expect(cy.$$('.menu-popup:visible').length).to.equal(2);
+		});
+		cy.get('body').type('{alt}');
 		cy.then(() => {
 			expect(cy.$$('.menu-popup:visible').length).to.equal(0);
 		});
