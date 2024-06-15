@@ -12,13 +12,17 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+Nothing yet.
+
+</details>
+
+## [0.7.3] - 2024-06-15
+
 ### Fixed
 
 - Fixed positioning of windows when minimized without a taskbar.
 - Fixed menu bar visibility when window is minimized without a taskbar. (It was typically offscreen, but you could reveal it by dragging the window.)
 - Closing a window now frees up its minimize slot at the bottom of the screen (if there's no taskbar). Previously only unminimizing did this.
-
-</details>
 
 ## [0.7.2] - 2024-05-29
 
@@ -345,7 +349,8 @@ see Changed
 - Window component is now an app window instead of a tool window, to aid reintegration with 98.js.org; jspaint will come later.
 - Window component is styled with `.os-window` now, altho it includes both classes `os-window` and `window`.
 
-[Unreleased]: https://github.com/1j01/os-gui/compare/v0.7.2...HEAD
+[Unreleased]: https://github.com/1j01/os-gui/compare/v0.7.3...HEAD
+[0.7.3]: https://github.com/1j01/os-gui/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/1j01/os-gui/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/1j01/os-gui/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/1j01/os-gui/compare/v0.6.0...v0.7.0
