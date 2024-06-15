@@ -114,54 +114,88 @@ function $Window(options = {}) {
 	// and validate options.
 
 	// WOW, this is ugly. It's kind of impressive, almost.
-	var $w = /** @type {OSGUI$Window} */(
-		$(
-			/** @type {HTMLElement & { $window: OSGUI$Window; }}*/(
-				/** @type {unknown} */(E("div"))
-			)
-		).addClass("window os-window").appendTo("body"));
+	/** @type {OSGUIWindow} */
+	var win = {};
 	// TODO: A $Window.fromElement (or similar) static method using a Map would be better for type checking.
-	$w.element = $w[0];
-	$w.element.$window = $w;
-	$w.element.id = `os-window-${Math.random().toString(36).substr(2, 9)}`;
-	$w.$titlebar = $(E("div")).addClass("window-titlebar").appendTo($w);
-	$w.$title_area = $(E("div")).addClass("window-title-area").appendTo($w.$titlebar);
-	$w.$title = $(E("span")).addClass("window-title").appendTo($w.$title_area);
+	// @ts-ignore
+	win.element = E("div");
+	/** @type {JQuery<HTMLElement>} */
+	var $window_element = $(win.element);
+
+	/** @type {OSGUI$Window} */
+	// @ts-ignore
+	var $win = new Proxy(win, {
+		get: function (_target, name) {
+			if (name in win) {
+				// @ts-ignore
+				return win[name];
+			} else if (name in $window_element) {
+				// Eventually will be deprecated in favor of win.element
+				// @ts-ignore
+				return $window_element[name];
+			} else {
+				console.warn("Unknown property", name);
+			}
+		},
+		set: function (_target, name, value) {
+			if (name in win) {
+				// @ts-ignore
+				win[name] = value;
+			} else if (name in $window_element) {
+				// Eventually will be deprecated in favor of win.element
+				// @ts-ignore
+				$window_element[name] = value;
+			} else {
+				console.warn("Unknown property", name);
+			}
+			return true;
+		}
+	});
+
+	win.element.$window = $win;
+	win.element.classList.add("window", "os-window");
+	win.element.id = `os-window-${Math.random().toString(36).substr(2, 9)}`;
+	
+	document.body.appendChild(win.element);
+
+	win.$titlebar = $(E("div")).addClass("window-titlebar").appendTo($window_element);
+	win.$title_area = $(E("div")).addClass("window-title-area").appendTo(win.$titlebar);
+	win.$title = $(E("span")).addClass("window-title").appendTo(win.$title_area);
 	if (options.toolWindow) {
 		options.minimizeButton = false;
 		options.maximizeButton = false;
 	}
 	if (options.minimizeButton !== false) {
-		$w.$minimize = $(E("button")).addClass("window-minimize-button window-action-minimize window-button").appendTo($w.$titlebar);
-		$w.$minimize.attr("aria-label", "Minimize window"); // @TODO: for taskbarless minimized windows, "restore"
-		$w.$minimize.append("<span class='window-button-icon'></span>");
+		win.$minimize = $(E("button")).addClass("window-minimize-button window-action-minimize window-button").appendTo(win.$titlebar);
+		win.$minimize.attr("aria-label", "Minimize window"); // @TODO: for taskbarless minimized windows, "restore"
+		win.$minimize.append("<span class='window-button-icon'></span>");
 	}
 	if (options.maximizeButton !== false) {
-		$w.$maximize = $(E("button")).addClass("window-maximize-button window-action-maximize window-button").appendTo($w.$titlebar);
-		$w.$maximize.attr("aria-label", "Maximize or restore window"); // @TODO: specific text for the state
+		win.$maximize = $(E("button")).addClass("window-maximize-button window-action-maximize window-button").appendTo(win.$titlebar);
+		win.$maximize.attr("aria-label", "Maximize or restore window"); // @TODO: specific text for the state
 		if (!options.resizable) {
-			$w.$maximize.prop("disabled", true);
+			win.$maximize.prop("disabled", true);
 		}
-		$w.$maximize.append("<span class='window-button-icon'></span>");
+		win.$maximize.append("<span class='window-button-icon'></span>");
 	}
 	if (options.closeButton !== false) {
-		$w.$x = $(E("button")).addClass("window-close-button window-action-close window-button").appendTo($w.$titlebar);
-		$w.$x.attr("aria-label", "Close window");
-		$w.$x.append("<span class='window-button-icon'></span>");
+		win.$x = $(E("button")).addClass("window-close-button window-action-close window-button").appendTo(win.$titlebar);
+		win.$x.attr("aria-label", "Close window");
+		win.$x.append("<span class='window-button-icon'></span>");
 	}
-	$w.$content = $(E("div")).addClass("window-content").appendTo($w);
-	$w.$content.attr("tabIndex", "-1");
-	$w.$content.css("outline", "none");
+	win.$content = $(E("div")).addClass("window-content").appendTo($window_element);
+	win.$content.attr("tabIndex", "-1");
+	win.$content.css("outline", "none");
 	if (options.toolWindow) {
-		$w.addClass("tool-window");
+		$window_element.addClass("tool-window");
 	}
 	if (options.parentWindow) {
-		options.parentWindow.addChildWindow($w);
+		options.parentWindow.addChildWindow($win);
 		// semantic parent logic is currently only suited for tool windows
 		// for dialog windows, it would make the dialog window not show as focused
 		// (alternatively, I could simply, when following the semantic parent chain, look for windows that are not tool windows)
 		if (options.toolWindow) {
-			$w.element.dataset.semanticParent = options.parentWindow.element.id;
+			win.element.dataset.semanticParent = options.parentWindow.element.id;
 		}
 	}
 
@@ -174,34 +208,34 @@ function $Window(options = {}) {
 		// @ts-ignore
 		if (typeof $Icon !== "undefined" && typeof TITLEBAR_ICON_SIZE !== "undefined") {
 			// @ts-ignore
-			$w.icon_name = options.icon;
+			win.icon_name = options.icon;
 			// @ts-ignore
-			$w.$icon = $Icon(options.icon, TITLEBAR_ICON_SIZE).prependTo($w.$titlebar);
+			win.$icon = $Icon(options.icon, TITLEBAR_ICON_SIZE).prependTo(win.$titlebar);
 		} else {
 			throw new Error("Use {icon: img_element} or {icons: {16: url_or_img_element}} options");
 		}
 	}
-	$w.icons = options.icons || {};
+	win.icons = options.icons || {};
 	let iconSize = 16;
-	$w.setTitlebarIconSize = function (target_icon_size) {
-		if ($w.icons) {
-			$w.$icon?.remove();
-			const iconNode = $w.getIconAtSize(target_icon_size);
-			$w.$icon = iconNode ? $(iconNode) : $();
-			$w.$icon.prependTo($w.$titlebar);
+	win.setTitlebarIconSize = function (target_icon_size) {
+		if (win.icons) {
+			win.$icon?.remove();
+			const iconNode = win.getIconAtSize(target_icon_size);
+			win.$icon = iconNode ? $(iconNode) : $();
+			win.$icon.prependTo(win.$titlebar);
 		}
 		iconSize = target_icon_size;
-		$w.trigger("icon-change");
+		$window_element.trigger("icon-change");
 	};
-	$w.getTitlebarIconSize = function () {
+	win.getTitlebarIconSize = function () {
 		return iconSize;
 	};
 	// @TODO: this could be a static method, like OSGUI.getIconAtSize(icons, targetSize)
-	$w.getIconAtSize = function (target_icon_size) {
+	win.getIconAtSize = function (target_icon_size) {
 		let icon_size;
-		if ($w.icons[target_icon_size]) {
+		if (win.icons[target_icon_size]) {
 			icon_size = target_icon_size;
-		} else if ($w.icons["any"]) {
+		} else if (win.icons["any"]) {
 			icon_size = "any";
 		} else {
 			// isFinite(parseFloat("123xyz")) // true
@@ -209,12 +243,12 @@ function $Window(options = {}) {
 			// isFinite(parseFloat(null)) // false
 			// isFinite(null) // true
 			// @ts-ignore
-			const sizes = Object.keys($w.icons).filter(size => isFinite(size) && isFinite(parseFloat(size)));
+			const sizes = Object.keys(win.icons).filter(size => isFinite(size) && isFinite(parseFloat(size)));
 			sizes.sort((a, b) => Math.abs(parseFloat(a) - target_icon_size) - Math.abs(parseFloat(b) - target_icon_size));
 			icon_size = sizes[0];
 		}
 		if (icon_size) {
-			const icon = $w.icons[icon_size];
+			const icon = win.icons[icon_size];
 			let icon_element;
 			if (typeof icon === "object" && "cloneNode" in icon) {
 				icon_element = icon.cloneNode(true);
@@ -243,37 +277,37 @@ function $Window(options = {}) {
 		return null;
 	};
 	// @TODO: automatically update icon size based on theme (with a CSS variable)
-	$w.setTitlebarIconSize(iconSize);
+	win.setTitlebarIconSize(iconSize);
 
-	$w.getIconName = () => {
+	win.getIconName = () => {
 		console.warn("DEPRECATED: use $w.icons object instead of $w.icon_name");
-		return $w.icon_name;
+		return win.icon_name;
 	};
-	$w.setIconByID = (icon_name) => {
+	win.setIconByID = (icon_name) => {
 		console.warn("DEPRECATED: use $w.setIcons(icons) instead of $w.setIconByID(icon_name)");
-		var old_$icon = $w.$icon;
+		var old_$icon = win.$icon;
 		// @ts-ignore
-		$w.$icon = $Icon(icon_name, TITLEBAR_ICON_SIZE);
-		old_$icon.replaceWith($w.$icon);
-		$w.icon_name = icon_name;
-		$w.task?.updateIcon();
-		$w.trigger("icon-change");
-		return $w;
+		win.$icon = $Icon(icon_name, TITLEBAR_ICON_SIZE);
+		old_$icon.replaceWith(win.$icon);
+		win.icon_name = icon_name;
+		win.task?.updateIcon();
+		$window_element.trigger("icon-change");
+		return win;
 	};
-	$w.setIcons = (icons) => {
-		$w.icons = icons;
-		$w.setTitlebarIconSize(iconSize);
-		$w.task?.updateIcon();
+	win.setIcons = (icons) => {
+		win.icons = icons;
+		win.setTitlebarIconSize(iconSize);
+		win.task?.updateIcon();
 		// icon-change already sent by setTitlebarIconSize
 	};
 
 	if ($component) {
-		$w.addClass("component-window");
+		$window_element.addClass("component-window");
 	}
 
 	setTimeout(() => {
 		if (get_direction() == "rtl") {
-			$w.addClass("rtl"); // for reversing the titlebar gradient
+			$window_element.addClass("rtl"); // for reversing the titlebar gradient
 		}
 	}, 0);
 
@@ -281,7 +315,7 @@ function $Window(options = {}) {
 	 * @returns {"ltr" | "rtl"} writing/layout direction
 	 */
 	function get_direction() {
-		return window.get_direction ? window.get_direction() : /** @type {"ltr" | "rtl"} */(getComputedStyle($w.element).direction);
+		return window.get_direction ? window.get_direction() : /** @type {"ltr" | "rtl"} */(getComputedStyle(win.element).direction);
 	}
 
 	// This is very silly, using jQuery's event handling to implement simpler event handling.
@@ -299,70 +333,70 @@ function $Window(options = {}) {
 			return dispose;
 		};
 	};
-	$w.onFocus = make_simple_listenable("focus");
-	$w.onBlur = make_simple_listenable("blur");
-	$w.onClosed = make_simple_listenable("closed");
+	win.onFocus = make_simple_listenable("focus");
+	win.onBlur = make_simple_listenable("blur");
+	win.onClosed = make_simple_listenable("closed");
 
 	/**
 	 * @param {{ innerWidth?: number, innerHeight?: number, outerWidth?: number, outerHeight?: number }} options
 	 */
-	$w.setDimensions = ({ innerWidth, innerHeight, outerWidth, outerHeight }) => {
+	win.setDimensions = ({ innerWidth, innerHeight, outerWidth, outerHeight }) => {
 		let width_from_frame, height_from_frame;
 		// It's good practice to make all measurements first, then update the DOM.
 		// Once you update the DOM, the browser has to recalculate layout, which can be slow.
 		if (innerWidth) {
-			width_from_frame = $w.outerWidth() - $w.$content.outerWidth();
+			width_from_frame = $window_element.outerWidth() - win.$content.outerWidth();
 		}
 		if (innerHeight) {
-			height_from_frame = $w.outerHeight() - $w.$content.outerHeight();
-			const $menu_bar = $w.$content.find(".menus"); // only if inside .content; might move to a slot outside .content later
+			height_from_frame = $window_element.outerHeight() - win.$content.outerHeight();
+			const $menu_bar = win.$content.find(".menus"); // only if inside .content; might move to a slot outside .content later
 			if ($menu_bar.length) {
 				// maybe this isn't technically part of the frame, per se? but it's part of the non-client area, which is what I technically mean.
 				height_from_frame += $menu_bar.outerHeight();
 			}
 		}
 		if (outerWidth) {
-			$w.outerWidth(outerWidth);
+			$window_element.outerWidth(outerWidth);
 		}
 		if (outerHeight) {
-			$w.outerHeight(outerHeight);
+			$window_element.outerHeight(outerHeight);
 		}
 		if (innerWidth) {
-			$w.outerWidth(innerWidth + width_from_frame);
+			$window_element.outerWidth(innerWidth + width_from_frame);
 		}
 		if (innerHeight) {
-			$w.outerHeight(innerHeight + height_from_frame);
+			$window_element.outerHeight(innerHeight + height_from_frame);
 		}
 	};
-	$w.setDimensions(options);
+	win.setDimensions(options);
 
 	/** @type {OSGUI$Window[]} */
 	let child_$windows = [];
-	$w.addChildWindow = ($child_window) => {
+	win.addChildWindow = ($child_window) => {
 		child_$windows.push($child_window);
 	};
 	const showAsFocused = () => {
-		if ($w.hasClass("focused")) {
+		if ($window_element.hasClass("focused")) {
 			return;
 		}
-		$w.addClass("focused");
+		$window_element.addClass("focused");
 		$event_target.triggerHandler("focus");
 	};
 	const stopShowingAsFocused = () => {
-		if (!$w.hasClass("focused")) {
+		if (!$window_element.hasClass("focused")) {
 			return;
 		}
-		$w.removeClass("focused");
+		$window_element.removeClass("focused");
 		$event_target.triggerHandler("blur");
 	};
-	$w.focus = () => {
+	win.focus = () => {
 		// showAsFocused();
-		$w.bringToFront();
+		win.bringToFront();
 		refocus();
 	};
-	$w.blur = () => {
+	win.blur = () => {
 		stopShowingAsFocused();
-		if (document.activeElement && document.activeElement.closest(".window") == $w.element) {
+		if (document.activeElement && document.activeElement.closest(".window") == win.element) {
 			document.activeElement.blur();
 		}
 	};
@@ -404,7 +438,7 @@ function $Window(options = {}) {
 		// avoiding refocus() which may interfere with drag operations in an iframe when focusing the iframe (e.g. clicking into Paint to draw or drag a sub-window).
 
 		// console.log("adding global focusin/focusout/blur/focus for window", $w.element.id);
-		const global_focus_update_handler = make_focus_in_out_handler($w.element, true); // must be $w and not $content so semantic parent chain works, with [data-semantic-parent] pointing to the window not the content
+		const global_focus_update_handler = make_focus_in_out_handler(win.element, true); // must be $w and not $content so semantic parent chain works, with [data-semantic-parent] pointing to the window not the content
 		window.addEventListener("focusin", global_focus_update_handler);
 		window.addEventListener("focusout", global_focus_update_handler);
 		window.addEventListener("blur", global_focus_update_handler);
@@ -475,7 +509,7 @@ function $Window(options = {}) {
 			}
 		}
 
-		observeIframes($w.$content[0]);
+		observeIframes(win.$content[0]);
 
 		/**
 		 * @param {Element} logical_container_el 
@@ -600,7 +634,7 @@ function $Window(options = {}) {
 					container_node.contains(newly_focused)
 				) {
 					showAsFocused();
-					$w.bringToFront();
+					win.bringToFront();
 					if (!is_root) {
 						// trigger focusin events for iframes
 						// @TODO: probably don't need showAsFocused() here since it'll be handled externally (on this simulated focusin),
@@ -625,17 +659,17 @@ function $Window(options = {}) {
 		// initial state is unfocused
 	}
 
-	$w.css("touch-action", "none");
+	$window_element.css("touch-action", "none");
 
 	/** @type {HTMLElement | null | undefined} */
 	let minimize_target_el = null; // taskbar button (optional)
-	$w.setMinimizeTarget = function (new_taskbar_button_el) {
+	win.setMinimizeTarget = function (new_taskbar_button_el) {
 		minimize_target_el = new_taskbar_button_el;
 	};
 
 	/** @type {{$task: JQuery<HTMLElement>} | undefined} */
 	let task;
-	Object.defineProperty($w, "task", {
+	Object.defineProperty(win, "task", {
 		get() {
 			return task;
 		},
@@ -647,19 +681,19 @@ function $Window(options = {}) {
 
 	/** @type {{ position: string; left: string; top: string; width: string; height: string; }} */
 	let before_minimize;
-	$w.minimize = () => {
+	win.minimize = () => {
 		minimize_target_el = minimize_target_el || task?.$task[0];
 		if (animating_titlebar) {
-			when_done_animating_titlebar.push($w.minimize);
+			when_done_animating_titlebar.push(win.minimize);
 			return;
 		}
-		if ($w.is(":visible")) {
-			if (minimize_target_el && !$w.hasClass("minimized-without-taskbar")) {
-				const before_rect = $w.$titlebar[0].getBoundingClientRect();
+		if ($window_element.is(":visible")) {
+			if (minimize_target_el && !$window_element.hasClass("minimized-without-taskbar")) {
+				const before_rect = win.$titlebar[0].getBoundingClientRect();
 				const after_rect = minimize_target_el.getBoundingClientRect();
-				$w.animateTitlebar(before_rect, after_rect, () => {
-					$w.hide();
-					$w.blur();
+				win.animateTitlebar(before_rect, after_rect, () => {
+					$window_element.hide();
+					win.blur();
 				});
 			} else {
 				// no taskbar
@@ -671,42 +705,42 @@ function $Window(options = {}) {
 
 				const to_width = 150;
 				const spacing = 10;
-				if ($w.hasClass("minimized-without-taskbar")) {
+				if ($window_element.hasClass("minimized-without-taskbar")) {
 					// unminimizing
-					minimize_slots[$w._minimize_slot_index] = null;
+					minimize_slots[win._minimize_slot_index] = null;
 				} else {
 					// minimizing
 					let i = 0;
 					while (minimize_slots[i]) {
 						i++;
 					}
-					$w._minimize_slot_index = i;
-					minimize_slots[i] = $w;
+					win._minimize_slot_index = i;
+					minimize_slots[i] = win;
 				}
-				const to_x = $w._minimize_slot_index * (to_width + spacing) + 10;
-				const titlebar_height = $w.$titlebar.outerHeight() ?? 0;
+				const to_x = win._minimize_slot_index * (to_width + spacing) + 10;
+				const titlebar_height = win.$titlebar.outerHeight() ?? 0;
 				/** @type {{ position: string; left: string; top: string; width: string; height: string; }} */
 				let before_unminimize;
 				const instantly_minimize = () => {
 					before_minimize = {
-						position: $w.css("position"),
-						left: $w.css("left"),
-						top: $w.css("top"),
-						width: $w.css("width"),
-						height: $w.css("height"),
+						position: $window_element.css("position"),
+						left: $window_element.css("left"),
+						top: $window_element.css("top"),
+						width: $window_element.css("width"),
+						height: $window_element.css("height"),
 					};
 
-					$w.addClass("minimized-without-taskbar");
-					if ($w.hasClass("maximized")) {
-						$w.removeClass("maximized");
-						$w.addClass("was-maximized");
-						$w.$maximize.removeClass("window-action-restore");
-						$w.$maximize.addClass("window-action-maximize");
+					$window_element.addClass("minimized-without-taskbar");
+					if ($window_element.hasClass("maximized")) {
+						$window_element.removeClass("maximized");
+						$window_element.addClass("was-maximized");
+						win.$maximize.removeClass("window-action-restore");
+						win.$maximize.addClass("window-action-maximize");
 					}
-					$w.$minimize.removeClass("window-action-minimize");
-					$w.$minimize.addClass("window-action-restore");
+					win.$minimize.removeClass("window-action-minimize");
+					win.$minimize.addClass("window-action-restore");
 					if (before_unminimize) {
-						$w.css({
+						$window_element.css({
 							position: before_unminimize.position,
 							left: before_unminimize.left,
 							top: before_unminimize.top,
@@ -714,7 +748,7 @@ function $Window(options = {}) {
 							height: before_unminimize.height,
 						});
 					} else {
-						$w.css({
+						$window_element.css({
 							position: "fixed",
 							top: `calc(100% - ${titlebar_height + 5}px)`,
 							left: `${to_x}px`,
@@ -725,25 +759,25 @@ function $Window(options = {}) {
 				};
 				const instantly_unminimize = () => {
 					before_unminimize = {
-						position: $w.css("position"),
-						left: $w.css("left"),
-						top: $w.css("top"),
-						width: $w.css("width"),
-						height: $w.css("height"),
+						position: $window_element.css("position"),
+						left: $window_element.css("left"),
+						top: $window_element.css("top"),
+						width: $window_element.css("width"),
+						height: $window_element.css("height"),
 					};
 
-					$w.removeClass("minimized-without-taskbar");
-					if ($w.hasClass("was-maximized")) {
-						$w.removeClass("was-maximized");
-						$w.addClass("maximized");
-						$w.$maximize.removeClass("window-action-maximize");
-						$w.$maximize.addClass("window-action-restore");
+					$window_element.removeClass("minimized-without-taskbar");
+					if ($window_element.hasClass("was-maximized")) {
+						$window_element.removeClass("was-maximized");
+						$window_element.addClass("maximized");
+						win.$maximize.removeClass("window-action-maximize");
+						win.$maximize.addClass("window-action-restore");
 					}
-					$w.$minimize.removeClass("window-action-restore");
-					$w.$minimize.addClass("window-action-minimize");
-					$w.css({ width: "", height: "" });
+					win.$minimize.removeClass("window-action-restore");
+					win.$minimize.addClass("window-action-minimize");
+					$window_element.css({ width: "", height: "" });
 					if (before_minimize) {
-						$w.css({
+						$window_element.css({
 							position: before_minimize.position,
 							left: before_minimize.left,
 							top: before_minimize.top,
@@ -753,81 +787,81 @@ function $Window(options = {}) {
 					}
 				};
 
-				const before_rect = $w.$titlebar[0].getBoundingClientRect();
+				const before_rect = win.$titlebar[0].getBoundingClientRect();
 				let after_rect;
-				$w.css("transform", "");
-				if ($w.hasClass("minimized-without-taskbar")) {
+				$window_element.css("transform", "");
+				if ($window_element.hasClass("minimized-without-taskbar")) {
 					instantly_unminimize();
-					after_rect = $w.$titlebar[0].getBoundingClientRect();
+					after_rect = win.$titlebar[0].getBoundingClientRect();
 					instantly_minimize();
 				} else {
 					instantly_minimize();
-					after_rect = $w.$titlebar[0].getBoundingClientRect();
+					after_rect = win.$titlebar[0].getBoundingClientRect();
 					instantly_unminimize();
 				}
-				$w.animateTitlebar(before_rect, after_rect, () => {
-					if ($w.hasClass("minimized-without-taskbar")) {
+				win.animateTitlebar(before_rect, after_rect, () => {
+					if ($window_element.hasClass("minimized-without-taskbar")) {
 						instantly_unminimize();
 					} else {
 						instantly_minimize();
-						$w.blur();
+						win.blur();
 					}
 				});
 			}
 		}
 	};
-	$w.unminimize = () => {
+	win.unminimize = () => {
 		if (animating_titlebar) {
-			when_done_animating_titlebar.push($w.unminimize);
+			when_done_animating_titlebar.push(win.unminimize);
 			return;
 		}
-		if ($w.hasClass("minimized-without-taskbar")) {
-			$w.minimize(); // handles unminimization from this state
+		if ($window_element.hasClass("minimized-without-taskbar")) {
+			win.minimize(); // handles unminimization from this state
 			return;
 		}
-		if ($w.is(":hidden")) {
+		if ($window_element.is(":hidden")) {
 			const before_rect = minimize_target_el.getBoundingClientRect();
-			$w.show();
-			const after_rect = $w.$titlebar[0].getBoundingClientRect();
-			$w.hide();
-			$w.animateTitlebar(before_rect, after_rect, () => {
-				$w.show();
-				$w.bringToFront();
-				$w.focus();
+			$window_element.show();
+			const after_rect = win.$titlebar[0].getBoundingClientRect();
+			$window_element.hide();
+			win.animateTitlebar(before_rect, after_rect, () => {
+				$window_element.show();
+				win.bringToFront();
+				win.focus();
 			});
 		}
 	};
 
 	/** @type {{ position: string; left: string; top: string; width: string; height: string; }} */
 	let before_maximize;
-	$w.maximize = () => {
+	win.maximize = () => {
 		if (!options.resizable) {
 			return;
 		}
 		if (animating_titlebar) {
-			when_done_animating_titlebar.push($w.maximize);
+			when_done_animating_titlebar.push(win.maximize);
 			return;
 		}
-		if ($w.hasClass("minimized-without-taskbar")) {
-			$w.minimize();
+		if ($window_element.hasClass("minimized-without-taskbar")) {
+			win.minimize();
 			return;
 		}
 
 		const instantly_maximize = () => {
 			before_maximize = {
-				position: $w.css("position"),
-				left: $w.css("left"),
-				top: $w.css("top"),
-				width: $w.css("width"),
-				height: $w.css("height"),
+				position: $window_element.css("position"),
+				left: $window_element.css("left"),
+				top: $window_element.css("top"),
+				width: $window_element.css("width"),
+				height: $window_element.css("height"),
 			};
 
-			$w.addClass("maximized");
+			$window_element.addClass("maximized");
 			const $taskbar = $(".taskbar");
 			const scrollbar_width = window.innerWidth - $(window).width();
 			const scrollbar_height = window.innerHeight - $(window).height();
 			const taskbar_height = $taskbar.length ? $taskbar.outerHeight() + 1 : 0;
-			$w.css({
+			$window_element.css({
 				position: "fixed",
 				top: 0,
 				left: 0,
@@ -836,10 +870,10 @@ function $Window(options = {}) {
 			});
 		};
 		const instantly_unmaximize = () => {
-			$w.removeClass("maximized");
-			$w.css({ width: "", height: "" });
+			$window_element.removeClass("maximized");
+			$window_element.css({ width: "", height: "" });
 			if (before_maximize) {
-				$w.css({
+				$window_element.css({
 					position: before_maximize.position,
 					left: before_maximize.left,
 					top: before_maximize.top,
@@ -849,50 +883,50 @@ function $Window(options = {}) {
 			}
 		};
 
-		const before_rect = $w.$titlebar[0].getBoundingClientRect();
+		const before_rect = win.$titlebar[0].getBoundingClientRect();
 		let after_rect;
-		$w.css("transform", "");
-		const restoring = $w.hasClass("maximized");
+		$window_element.css("transform", "");
+		const restoring = $window_element.hasClass("maximized");
 		if (restoring) {
 			instantly_unmaximize();
-			after_rect = $w.$titlebar[0].getBoundingClientRect();
+			after_rect = win.$titlebar[0].getBoundingClientRect();
 			instantly_maximize();
 		} else {
 			instantly_maximize();
-			after_rect = $w.$titlebar[0].getBoundingClientRect();
+			after_rect = win.$titlebar[0].getBoundingClientRect();
 			instantly_unmaximize();
 		}
-		$w.animateTitlebar(before_rect, after_rect, () => {
+		win.animateTitlebar(before_rect, after_rect, () => {
 			if (restoring) {
 				instantly_unmaximize(); // finalize in some way
-				$w.$maximize.removeClass("window-action-restore");
-				$w.$maximize.addClass("window-action-maximize");
+				win.$maximize.removeClass("window-action-restore");
+				win.$maximize.addClass("window-action-maximize");
 			} else {
 				instantly_maximize(); // finalize in some way
-				$w.$maximize.removeClass("window-action-maximize");
-				$w.$maximize.addClass("window-action-restore");
+				win.$maximize.removeClass("window-action-maximize");
+				win.$maximize.addClass("window-action-restore");
 			}
 		});
 	};
-	$w.restore = () => {
-		if ($w.is(".minimized-without-taskbar, .minimized")) {
-			$w.unminimize();
-		} else if ($w.is(".maximized")) {
-			$w.maximize(); // toggles maximization
+	win.restore = () => {
+		if ($window_element.is(".minimized-without-taskbar, .minimized")) {
+			win.unminimize();
+		} else if ($window_element.is(".maximized")) {
+			win.maximize(); // toggles maximization
 		}
 	};
 	// must not pass event to functions by accident; also methods may not be defined yet
-	$w.$minimize?.on("click", (e) => { $w.minimize(); });
-	$w.$maximize?.on("click", (e) => { $w.maximize(); });
-	$w.$x?.on("click", (e) => { $w.close(); });
-	$w.$title_area.on("dblclick", (e) => { $w.maximize(); });
+	win.$minimize?.on("click", (e) => { win.minimize(); });
+	win.$maximize?.on("click", (e) => { win.maximize(); });
+	win.$x?.on("click", (e) => { win.close(); });
+	win.$title_area.on("dblclick", (e) => { win.maximize(); });
 
-	$w.css({
+	$window_element.css({
 		position: "absolute",
 		zIndex: $Window.Z_INDEX++
 	});
-	$w.bringToFront = () => {
-		$w.css({
+	win.bringToFront = () => {
+		$window_element.css({
 			zIndex: $Window.Z_INDEX++
 		});
 		for (const $childWindow of child_$windows) {
@@ -903,7 +937,7 @@ function $Window(options = {}) {
 	// Keep track of last focused elements per container,
 	// where containers include:
 	// - window (global focus tracking)
-	// - $w.element (window-local, for restoring focus when refocusing window)
+	// - win.element (window-local, for restoring focus when refocusing window)
 	// - any iframes that are same-origin (for restoring focus when refocusing window)
 	// @TODO: should these be WeakMaps? probably.
 	// @TODO: share this Map between all windows? but clean it up when destroying windows? or would a WeakMap take care of that?
@@ -1053,8 +1087,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		debug_svg_by_container.clear();
 	};
 
-	const refocus = (container_el = $w.$content[0]) => {
-		const logical_container_el = container_el.matches(".window-content") ? $w.element : container_el;
+	const refocus = (container_el = win.$content[0]) => {
+		const logical_container_el = container_el.matches(".window-content") ? win.element : container_el;
 		const last_focus = last_focus_by_container.get(logical_container_el);
 		if (last_focus) {
 			last_focus.focus({ preventScroll: true });
@@ -1102,13 +1136,13 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		}
 	};
 
-	$w.on("refocus-window", () => {
+	$window_element.on("refocus-window", () => {
 		refocus();
 	});
 
 	// redundant events are for handling synthetic events,
 	// which may be sent individually, rather than in tandem
-	$w.on("pointerdown mousedown", handle_pointer_activation);
+	$window_element.on("pointerdown mousedown", handle_pointer_activation);
 	// Note that jQuery treats some events differently, and can't listen for some synthetic events
 	// but pointerdown and mousedown seem to be supported. That said, if you trigger() either,
 	// addEventListener() handlers will not be called. So if I remove the dependency on jQuery,
@@ -1125,7 +1159,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	/** @param {Event} event */
 	function handle_pointer_activation(event) {
 		// console.log("handle_pointer_activation", event.type, event.target);
-		$w.bringToFront();
+		win.bringToFront();
 		// Test cases where it should refocus the last focused control in the window:
 		// - Click in the blank space of the window
 		//   - Click in blank space again now that something's focused
@@ -1152,8 +1186,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
 		requestAnimationFrame(() => {
 			const last_focus_global = last_focus_by_container.get(window);
-			// const last_focus_in_window = last_focus_by_container.get($w.$content[0]);
-			// console.log("a tick after", event.type, { last_focus_in_window, last_focus_global, activeElement: document.activeElement, win_elem: $w.element });
+			// const last_focus_in_window = last_focus_by_container.get(win.$content[0]);
+			// console.log("a tick after", event.type, { last_focus_in_window, last_focus_global, activeElement: document.activeElement, win_elem: win.element });
 			// console.log("did focus change?", document.activeElement !== last_focus_global);
 
 			// If something programmatically got focus, don't refocus.
@@ -1162,7 +1196,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				// @ts-ignore (just in case)
 				document.activeElement !== document &&
 				document.activeElement !== document.body &&
-				document.activeElement !== $w.$content[0] &&
+				document.activeElement !== win.$content[0] &&
 				document.activeElement !== last_focus_global
 			) {
 				return;
@@ -1178,9 +1212,9 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			const target_style = getComputedStyle(event.target);
 			if (target_style.userSelect !== "none") {
 				// Immediately show the window as focused, just don't refocus a specific control.
-				$w.$content.focus();
+				win.$content.focus();
 
-				$w.one("pointerup pointercancel", () => {
+				$window_element.one("pointerup pointercancel", () => {
 					requestAnimationFrame(() => { // this seems to make it more reliable in regards to double clicking
 						if (!getSelection()?.toString().trim()) {
 							refocus();
@@ -1194,7 +1228,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		});
 	}
 
-	$w.on("keydown", (e) => {
+	$window_element.on("keydown", (e) => {
 		if (e.isDefaultPrevented()) {
 			return;
 		}
@@ -1206,7 +1240,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			// console.log("keydown in menus");
 			return;
 		}
-		const $buttons = $w.$content.find("button");
+		const $buttons = win.$content.find("button");
 		// XXX: Lying a little bit here, but TS seems confused otherwise, giving the type as JQueryStatic
 		const $focused = $(/** @type {HTMLElement} */(document.activeElement));
 		const focused_index = $buttons.index($focused);
@@ -1249,7 +1283,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				break;
 			case 9: { // Tab
 				// wrap around when tabbing through controls in a window
-				const $controls = find_tabstops($w.$content[0]);
+				const $controls = find_tabstops(win.$content[0]);
 				if ($controls.length > 0) {
 					const focused_control_index = $controls.index($focused);
 					if (e.shiftKey) {
@@ -1268,51 +1302,51 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			}
 			case 27: // Escape
 				// @TODO: make this optional, and probably default false
-				$w.close();
+				win.close();
 				break;
 		}
 	});
 
-	$w.applyBounds = () => {
+	win.applyBounds = () => {
 		// TODO: outerWidth vs width? not sure
 		const bound_width = Math.max(document.body.scrollWidth, innerWidth);
 		const bound_height = Math.max(document.body.scrollHeight, innerHeight);
-		$w.css({
-			left: Math.max(0, Math.min(bound_width - $w.width(), $w.position().left)),
-			top: Math.max(0, Math.min(bound_height - $w.height(), $w.position().top)),
+		$window_element.css({
+			left: Math.max(0, Math.min(bound_width - $window_element.width(), $window_element.position().left)),
+			top: Math.max(0, Math.min(bound_height - $window_element.height(), $window_element.position().top)),
 		});
 	};
 
-	$w.bringTitleBarInBounds = () => {
+	win.bringTitleBarInBounds = () => {
 		// Try to make the titlebar always accessible
 		const bound_width = Math.max(document.body.scrollWidth, innerWidth);
 		const bound_height = Math.max(document.body.scrollHeight, innerHeight);
 		const min_horizontal_pixels_on_screen = 40; // enough for space past a close button
-		$w.css({
+		$window_element.css({
 			left: Math.max(
-				min_horizontal_pixels_on_screen - $w.outerWidth(),
+				min_horizontal_pixels_on_screen - $window_element.outerWidth(),
 				Math.min(
 					bound_width - min_horizontal_pixels_on_screen,
-					$w.position().left
+					$window_element.position().left
 				)
 			),
 			top: Math.max(0, Math.min(
-				bound_height - $w.$titlebar.outerHeight() - 5,
-				$w.position().top
+				bound_height - win.$titlebar.outerHeight() - 5,
+				$window_element.position().top
 			)),
 		});
 	};
 
-	$w.center = () => {
-		$w.css({
-			left: (innerWidth - $w.width()) / 2 + window.scrollX,
-			top: (innerHeight - $w.height()) / 2 + window.scrollY,
+	win.center = () => {
+		$window_element.css({
+			left: (innerWidth - $window_element.width()) / 2 + window.scrollX,
+			top: (innerHeight - $window_element.height()) / 2 + window.scrollY,
 		});
-		$w.applyBounds();
+		win.applyBounds();
 	};
 
 
-	$G.on("resize", $w.bringTitleBarInBounds);
+	$G.on("resize", win.bringTitleBarInBounds);
 
 	/** @type {number} */
 	var drag_offset_x;
@@ -1337,16 +1371,16 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			drag_pointer_x = e.clientX ?? drag_pointer_x;
 			drag_pointer_y = e.clientY ?? drag_pointer_y;
 		}
-		$w.css({
+		$window_element.css({
 			left: drag_pointer_x + scrollX - drag_offset_x,
 			top: drag_pointer_y + scrollY - drag_offset_y,
 		});
 	};
-	$w.$titlebar.css("touch-action", "none");
-	$w.$titlebar.on("selectstart", (e) => { // preventing mousedown would break :active state, I'm not sure if just selectstart is enough...
+	win.$titlebar.css("touch-action", "none");
+	win.$titlebar.on("selectstart", (e) => { // preventing mousedown would break :active state, I'm not sure if just selectstart is enough...
 		e.preventDefault();
 	});
-	$w.$titlebar.on("mousedown", "button", (e) => {
+	win.$titlebar.on("mousedown", "button", (e) => {
 		// Prevent focus on titlebar buttons.
 		// This can break the :active state. In Firefox, a setTimeout before any focus() was enough,
 		// but now in Chrome 95, focus() breaks the :active state too, and setTimeout only delays the brokenness,
@@ -1378,20 +1412,20 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		$(button).on("mouseenter", on_mouse_enter);
 		$(button).on("mouseleave", on_mouse_leave);
 	});
-	$w.$titlebar.on("pointerdown", (e) => {
+	win.$titlebar.on("pointerdown", (e) => {
 		if ($(e.target).closest("button").length) {
 			return;
 		}
-		if ($w.hasClass("maximized")) {
+		if ($window_element.hasClass("maximized")) {
 			return;
 		}
 		const customEvent = $.Event("window-drag-start");
-		$w.trigger(customEvent);
+		$window_element.trigger(customEvent);
 		if (customEvent.isDefaultPrevented()) {
 			return; // allow custom drag behavior of component windows in jspaint (Tools / Colors)
 		}
-		drag_offset_x = e.clientX + scrollX - $w.position().left;
-		drag_offset_y = e.clientY + scrollY - $w.position().top;
+		drag_offset_x = e.clientX + scrollX - $window_element.position().left;
+		drag_offset_y = e.clientY + scrollY - $window_element.position().top;
 		drag_pointer_x = e.clientX;
 		drag_pointer_y = e.clientY;
 		drag_pointer_id = (e.pointerId ?? e.originalEvent?.pointerId); // originalEvent doesn't exist for triggerHandler()
@@ -1405,12 +1439,12 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		$G.off("pointermove", update_drag);
 		$G.off("scroll", update_drag);
 		$("body").removeClass("dragging");
-		// $w.applyBounds(); // Windows doesn't really try to keep windows on screen
+		// win.applyBounds(); // Windows doesn't really try to keep windows on screen
 		// but you also can't really drag off of the desktop, whereas here you can drag to way outside the web page.
-		$w.bringTitleBarInBounds();
+		win.bringTitleBarInBounds();
 		drag_pointer_id = -1; // prevent bringTitleBarInBounds from making the window go to top left when unminimizing window from taskbar after previously dragging it
 	});
-	$w.$titlebar.on("dblclick", (e) => {
+	win.$titlebar.on("dblclick", (e) => {
 		if ($component) {
 			$component.dock();
 		}
@@ -1440,7 +1474,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		handle_positions.forEach(([y_axis, x_axis]) => {
 			// const resizes_height = y_axis !== HANDLE_MIDDLE;
 			// const resizes_width = x_axis !== HANDLE_MIDDLE;
-			const $handle = $("<div>").addClass("handle").appendTo($w);
+			const $handle = $("<div>").addClass("handle").appendTo($window_element);
 
 			let cursor = "";
 			if (y_axis === HANDLE_TOP) { cursor += "n"; }
@@ -1452,10 +1486,10 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			// Note: MISNOMER: innerWidth() is less "inner" than width(), because it includes padding!
 			// Here's a little diagram of sorts:
 			// outerWidth(true): margin, [ outerWidth(): border, [ innerWidth(): padding, [ width(): content ] ] ]
-			const handle_thickness = ($w.outerWidth() - $w.width()) / 2; // padding + border
-			const border_width = ($w.outerWidth() - $w.innerWidth()) / 2; // border; need to outset the handles by this amount so they overlap the border + padding, and not the content
-			const window_frame_height = $w.outerHeight() - $w.$content.outerHeight(); // includes titlebar and borders, padding, but not content
-			const window_frame_width = $w.outerWidth() - $w.$content.outerWidth(); // includes borders, padding, but not content
+			const handle_thickness = ($window_element.outerWidth() - $window_element.width()) / 2; // padding + border
+			const border_width = ($window_element.outerWidth() - $window_element.innerWidth()) / 2; // border; need to outset the handles by this amount so they overlap the border + padding, and not the content
+			const window_frame_height = $window_element.outerHeight() - win.$content.outerHeight(); // includes titlebar and borders, padding, but not content
+			const window_frame_width = $window_element.outerWidth() - win.$content.outerWidth(); // includes borders, padding, but not content
 			$handle.css({
 				position: "absolute",
 				top: y_axis === HANDLE_TOP ? -border_width : y_axis === HANDLE_MIDDLE ? `calc(${handle_thickness}px - ${border_width}px)` : "",
@@ -1490,10 +1524,10 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				$G.on("pointerup pointercancel", end_resize);
 
 				rect = {
-					x: $w.position().left,
-					y: $w.position().top,
-					width: $w.outerWidth(),
-					height: $w.outerHeight(),
+					x: $window_element.position().left,
+					y: $window_element.position().top,
+					width: $window_element.outerWidth(),
+					height: $window_element.outerHeight(),
 				};
 
 				resize_offset_x = e.clientX + scrollX - rect.x - (x_axis === HANDLE_RIGHT ? rect.width : 0);
@@ -1525,7 +1559,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				$G.off("pointermove", handle_pointermove);
 				$("body").removeClass("dragging");
 				$G.off("pointerup pointercancel", end_resize);
-				$w.bringTitleBarInBounds();
+				win.bringTitleBarInBounds();
 			}
 			function update_resize() {
 				const mouse_x = resize_pointer_x + scrollX - resize_offset_x;
@@ -1577,25 +1611,25 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 					new_rect.y = Math.min(new_rect.y, rect.y + rect.height - new_rect.height);
 				}
 
-				$w.css({
+				$window_element.css({
 					top: new_rect.y,
 					left: new_rect.x,
 				});
-				$w.outerWidth(new_rect.width);
-				$w.outerHeight(new_rect.height);
+				$window_element.outerWidth(new_rect.width);
+				$window_element.outerHeight(new_rect.height);
 			}
 		});
 	}
 
-	$w.$Button = (text, handler) => {
+	win.$Button = (text, handler) => {
 		var $b = $(E("button"))
-			.appendTo($w.$content)
+			.appendTo(win.$content)
 			.text(text)
 			.on("click", () => {
 				if (handler) {
 					handler();
 				}
-				$w.close();
+				win.close();
 			});
 		return $b;
 	};
@@ -1606,24 +1640,24 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	 * }} titleMethodOverloads
 	*/
 	// https://github.com/Microsoft/TypeScript/issues/25590#issuecomment-968906682
-	$w.title = /** @type {titleMethodOverloads} */ ((title) => {
+	win.title = /** @type {titleMethodOverloads} */ ((title) => {
 		// title("") should clear the title
 		// title(5) should set the title to "5"
 		// title() should return the title
 		if (typeof title !== "undefined") {
-			$w.$title.text(title);
-			$w.trigger("title-change");
-			if ($w.task) {
-				$w.task.updateTitle();
+			win.$title.text(title);
+			$window_element.trigger("title-change");
+			if (win.task) {
+				win.task.updateTitle();
 			}
-			return $w;
+			return win;
 		} else {
-			return $w.$title.text();
+			return win.$title.text();
 		}
 	});
 
-	$w.getTitle = () => {
-		return $w.title();
+	win.getTitle = () => {
+		return win.title();
 	};
 	let animating_titlebar = false;
 	/**
@@ -1632,10 +1666,10 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	 * @type {(() => void)[]}
 	 */
 	let when_done_animating_titlebar = [];
-	$w.animateTitlebar = (from, to, callback = () => { }) => {
+	win.animateTitlebar = (from, to, callback = () => { }) => {
 		// flying titlebar animation
 		animating_titlebar = true;
-		const $eye_leader = $w.$titlebar.clone(true);
+		const $eye_leader = win.$titlebar.clone(true);
 		$eye_leader.find("button").remove();
 		$eye_leader.appendTo("body");
 		const duration_ms = $Window.OVERRIDE_TRANSITION_DURATION ?? 200; // TODO: how long?
@@ -1674,13 +1708,13 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		setTimeout(handle_transition_completion, duration_ms * 1.2);
 	};
 	/** @param {boolean} [force] */
-	$w.close = (force) => {
+	win.close = (force) => {
 		if (force && force !== true) {
 			throw new TypeError("force must be a boolean or undefined, not " + Object.prototype.toString.call(force));
 		}
 		if (!force) {
 			var e = $.Event("close");
-			$w.trigger(e);
+			$window_element.trigger(e);
 			if (e.isDefaultPrevented()) {
 				return;
 			}
@@ -1688,16 +1722,16 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		if ($component) {
 			$component.detach();
 		}
-		$w.closed = true;
-		minimize_slots[$w._minimize_slot_index] = null;
+		win.closed = true;
+		minimize_slots[win._minimize_slot_index] = null;
 
 		$event_target.triggerHandler("closed");
-		$w.trigger("closed");
+		$window_element.trigger("closed");
 		// TODO: change usages of "close" to "closed" where appropriate
 		// and probably rename the "close" event ("before[-]close"? "may-close"? "close-request"?)
 
 		// MUST be after any events are triggered!
-		$w.remove();
+		$window_element.remove();
 
 		// TODO: support modals, which should focus what was focused before the modal was opened.
 		// (Note: must consider the element being removed from the DOM, or hidden, or made un-focusable)
@@ -1710,36 +1744,36 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		// Cleanup
 		clean_up_debug_focus_tracking();
 	};
-	$w.closed = false;
+	win.closed = false;
 
 	/** @type {MenuBar | null} */
 	let current_menu_bar;
 	// @TODO: should this be like setMenus(menu_definitions)?
 	// It seems like setMenuBar(menu_bar) might be prone to bugs
 	// trying to set the same menu bar on multiple windows.
-	$w.setMenuBar = (menu_bar) => {
-		// $w.find(".menus").remove(); // ugly, if only because of the class name haha
+	win.setMenuBar = (menu_bar) => {
+		// win.find(".menus").remove(); // ugly, if only because of the class name haha
 		if (current_menu_bar) {
 			current_menu_bar.element.remove();
 		}
 		if (menu_bar) {
-			$w.$titlebar.after(menu_bar.element);
-			menu_bar.setKeyboardScope($w.element);
+			win.$titlebar.after(menu_bar.element);
+			menu_bar.setKeyboardScope(win.element);
 			current_menu_bar = menu_bar;
 		}
 	};
 
 	if (options.title) {
-		$w.title(options.title);
+		win.title(options.title);
 	}
 
 	if (!$component) {
-		$w.center();
+		win.center();
 	}
 
 	// mustHaveMethods($w, windowInterfaceMethods);
 
-	return $w;
+	return $win;
 }
 
 /**
