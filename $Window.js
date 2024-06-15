@@ -121,9 +121,9 @@ function $Window(options = {}) {
 			)
 		).addClass("window os-window").appendTo("body"));
 	// TODO: A $Window.fromElement (or similar) static method using a Map would be better for type checking.
-	$w[0].$window = $w;
 	$w.element = $w[0];
-	$w[0].id = `os-window-${Math.random().toString(36).substr(2, 9)}`;
+	$w.element.$window = $w;
+	$w.element.id = `os-window-${Math.random().toString(36).substr(2, 9)}`;
 	$w.$titlebar = $(E("div")).addClass("window-titlebar").appendTo($w);
 	$w.$title_area = $(E("div")).addClass("window-title-area").appendTo($w.$titlebar);
 	$w.$title = $(E("span")).addClass("window-title").appendTo($w.$title_area);
@@ -161,7 +161,7 @@ function $Window(options = {}) {
 		// for dialog windows, it would make the dialog window not show as focused
 		// (alternatively, I could simply, when following the semantic parent chain, look for windows that are not tool windows)
 		if (options.toolWindow) {
-			$w[0].dataset.semanticParent = options.parentWindow[0].id;
+			$w.element.dataset.semanticParent = options.parentWindow.element.id;
 		}
 	}
 
@@ -281,7 +281,7 @@ function $Window(options = {}) {
 	 * @returns {"ltr" | "rtl"} writing/layout direction
 	 */
 	function get_direction() {
-		return window.get_direction ? window.get_direction() : /** @type {"ltr" | "rtl"} */(getComputedStyle($w[0]).direction);
+		return window.get_direction ? window.get_direction() : /** @type {"ltr" | "rtl"} */(getComputedStyle($w.element).direction);
 	}
 
 	// This is very silly, using jQuery's event handling to implement simpler event handling.
@@ -362,7 +362,7 @@ function $Window(options = {}) {
 	};
 	$w.blur = () => {
 		stopShowingAsFocused();
-		if (document.activeElement && document.activeElement.closest(".window") == $w[0]) {
+		if (document.activeElement && document.activeElement.closest(".window") == $w.element) {
 			document.activeElement.blur();
 		}
 	};
@@ -375,7 +375,7 @@ function $Window(options = {}) {
 
 			// initial state
 			// might need a setTimeout, idk...
-			if (document.activeElement && document.activeElement.closest(".window") == options.parentWindow[0]) {
+			if (document.activeElement && document.activeElement.closest(".window") == options.parentWindow.element) {
 				showAsFocused();
 			}
 		} else {
@@ -403,8 +403,8 @@ function $Window(options = {}) {
 		// I may want to rely on that, or, I may want to remove that and set up a refocus chain directly instead,
 		// avoiding refocus() which may interfere with drag operations in an iframe when focusing the iframe (e.g. clicking into Paint to draw or drag a sub-window).
 
-		// console.log("adding global focusin/focusout/blur/focus for window", $w[0].id);
-		const global_focus_update_handler = make_focus_in_out_handler($w[0], true); // must be $w and not $content so semantic parent chain works, with [data-semantic-parent] pointing to the window not the content
+		// console.log("adding global focusin/focusout/blur/focus for window", $w.element.id);
+		const global_focus_update_handler = make_focus_in_out_handler($w.element, true); // must be $w and not $content so semantic parent chain works, with [data-semantic-parent] pointing to the window not the content
 		window.addEventListener("focusin", global_focus_update_handler);
 		window.addEventListener("focusout", global_focus_update_handler);
 		window.addEventListener("blur", global_focus_update_handler);
@@ -903,7 +903,7 @@ function $Window(options = {}) {
 	// Keep track of last focused elements per container,
 	// where containers include:
 	// - window (global focus tracking)
-	// - $w[0] (window-local, for restoring focus when refocusing window)
+	// - $w.element (window-local, for restoring focus when refocusing window)
 	// - any iframes that are same-origin (for restoring focus when refocusing window)
 	// @TODO: should these be WeakMaps? probably.
 	// @TODO: share this Map between all windows? but clean it up when destroying windows? or would a WeakMap take care of that?
@@ -1054,7 +1054,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	};
 
 	const refocus = (container_el = $w.$content[0]) => {
-		const logical_container_el = container_el.matches(".window-content") ? $w[0] : container_el;
+		const logical_container_el = container_el.matches(".window-content") ? $w.element : container_el;
 		const last_focus = last_focus_by_container.get(logical_container_el);
 		if (last_focus) {
 			last_focus.focus({ preventScroll: true });
@@ -1153,7 +1153,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		requestAnimationFrame(() => {
 			const last_focus_global = last_focus_by_container.get(window);
 			// const last_focus_in_window = last_focus_by_container.get($w.$content[0]);
-			// console.log("a tick after", event.type, { last_focus_in_window, last_focus_global, activeElement: document.activeElement, win_elem: $w[0] });
+			// console.log("a tick after", event.type, { last_focus_in_window, last_focus_global, activeElement: document.activeElement, win_elem: $w.element });
 			// console.log("did focus change?", document.activeElement !== last_focus_global);
 
 			// If something programmatically got focus, don't refocus.
@@ -1724,7 +1724,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		}
 		if (menu_bar) {
 			$w.$titlebar.after(menu_bar.element);
-			menu_bar.setKeyboardScope($w[0]);
+			menu_bar.setKeyboardScope($w.element);
 			current_menu_bar = menu_bar;
 		}
 	};

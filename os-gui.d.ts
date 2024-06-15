@@ -201,7 +201,7 @@ interface OSGUIWindow {
 	/**
 	 * The DOM element that represents the window.
 	 */
-	element: HTMLElement;
+	element: HTMLElement & { $window: OSGUI$Window; };
 
 	/**
 	 * Whether the window has been closed.
