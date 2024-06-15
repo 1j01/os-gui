@@ -6,9 +6,13 @@ describe('$Window Component', () => {
 		cy.viewport(300, 300);
 	});
 
-	// TODO: test menu bar in window; should be hidden when minimized (FIXME), and should be visible when restored; keyboard scope
-	// also focus management with iframes and setting z-index, tabstop wrapping...
-	// minimize() while minimized, maximize() while maximized, restore() while normal, close() after closing, etc.
+	// TODO: test focus management with iframes and setting z-index, tabstop wrapping...
+	// minimize() while minimized, maximize() while maximized, restore() while normal, close() after closing,
+	// minimize()/maximize()/restore() while dragging/resizing window,
+	// trying to drag/resize while minimize/maximize animation is in progress,
+	// trying to drag/resize while maximized (maybe already tested),
+	// queuing up multiple minimize/maximize/restore actions,
+	// other API methods/options.
 
 	it('should minimize to the bottom left by default', () => {
 		cy.window().then((win) => {
@@ -328,6 +332,85 @@ describe('$Window Component', () => {
 				expect($window.getIconAtSize(32)).to.be.null;
 				expect($window.getIconAtSize(17)).to.be.null;
 				expect($window.getIconAtSize(30)).to.be.null;
+			});
+		});
+	});
+
+	describe('setMenuBar', () => {
+		// FIXME: The menu bar is not hidden when minimized.
+		it.skip('should add menu bar, which is hidden when minimized', () => {
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+				});
+				const menu = new win.MenuBar({
+					"&File": [
+						{
+							label: "&Open",
+							action: () => {
+								alert("Open");
+							},
+						},
+						{
+							label: "&Close",
+							action: () => {
+								alert("Close");
+							},
+						},
+					],
+				});
+				$window.setMenuBar(menu);
+				cy.get('[role="menubar"]').should('be.visible');
+				cy.then(() => { $window.minimize(); });
+				
+				cy.get('.window-titlebar').should('have.length', 1); // wait for titlebar animation to finish
+				// move the window so the menu bar is visible if it's broken
+				cy.get('.window-titlebar').trigger('pointerdown', { which: 1 });
+				cy.get('.window-titlebar').trigger('pointermove', { clientX: 150, clientY: 150 });
+				cy.get('.window-titlebar').trigger('pointerup', { force: true });
+				// not a strong enough assertion, since it considers offscreen elements hidden
+				// (you can test with `Cypress.dom.isVisible(document.querySelector("[role=menubar]"))` in the console)
+				cy.get('[role="menubar"]').should('not.be.visible'); 
+				// stronger assertion
+				cy.get('[role="menubar"]').should('have.css', 'display', 'none');
+				cy.then(()=> { $window.restore(); });
+				cy.get('[role="menubar"]').should('be.visible');
+			});
+		});
+		it('should set up the correct keyboard scope', () => {
+			let activated_menu_item = false;
+			cy.window().then((win) => {
+				const $window = win.$Window({
+					title: 'Test Window',
+				});
+				$window.$content.append('<p>Click in the blank space of the window</p>');
+				const menu = new win.MenuBar({
+					"&Test": [
+						{
+							label: "&Activate Menu Item",
+							action: () => {
+								activated_menu_item = true;
+							},
+						},
+					],
+				});
+				$window.setMenuBar(menu);
+			});
+			// works while window is focused
+			cy.get('.window-content').click();
+			cy.get('body').type('{alt}t').type('{enter}');
+			// Can't use cy.wrap(activated_menu_item).should('be.true') because it would be synchronously accessing the value before commands are run
+			cy.then(() => {
+				expect(activated_menu_item).to.be.true;
+				activated_menu_item = false;
+				// @ts-ignore
+				document.activeElement.blur();
+			});
+			// does nothing while window is not focused
+			cy.get('body').click({ force: true });
+			cy.get('body').type('{alt}t').type('{enter}');
+			cy.then(() => {
+				expect(activated_menu_item).to.be.false;
 			});
 		});
 	});
