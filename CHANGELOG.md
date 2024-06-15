@@ -15,6 +15,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Fixed
 
 - Fixed positioning of windows when minimized without a taskbar.
+- Fixed menu bar visibility when window is minimized without a taskbar. (It was typically offscreen, but you could reveal it by dragging the window.)
 - Closing a window now frees up its minimize slot at the bottom of the screen (if there's no taskbar). Previously only unminimizing did this.
 
 </details>

@@ -337,8 +337,7 @@ describe('$Window Component', () => {
 	});
 
 	describe('setMenuBar', () => {
-		// FIXME: The menu bar is not hidden when minimized.
-		it.skip('should add menu bar, which is hidden when minimized', () => {
+		it('should add menu bar, which is hidden when minimized', () => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
