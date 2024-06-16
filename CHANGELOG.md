@@ -12,7 +12,11 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
-Nothing yet.
+### Changed
+
+- `$Window` function now returns a `Proxy` object, to aid with the transition away from jQuery.
+  - The API is the same, but I've begun to separate the jQuery out from the `OSGUIWindow` interface internally, by overlaying the methods/properties of a jQuery object onto an object satisfying the `OSGUIWindow` interface.
+  - Eventually, `OSGUIWindow` will become a class, and `$Window` will be deprecated/removed.
 
 </details>
 
