@@ -70,7 +70,7 @@
 		"live-server @NOTE 2": "I'd like to ignore *.map too, but I don't know how to get it to work cross-platform.",
 		"live-server @NOTE 3": "I'm not sure if I want coverage/ to be ignored, but I could make a separate script for live reloading the coverage report. That said, I might just use the live server built into VS Code for that.",
 		"live-server @NOTE 4": "It may be more reasonable to use a middleware for this logic, see https://github.com/tapio/live-server/issues/178#issuecomment-404471184",
-		"live-server": "live-server --ignore=node_modules/,.git/,.history/,.idea/,.vscode/,test/,coverage/,package.json,package-lock.json,README.md,LICENSE,CNAME,CHANGELOG.md,os-gui.d.ts,postcss.config.js,cspell.json,.gitignore,.gitattributes ."
+		"live-server": "live-server --ignore=node_modules/,.git/,.history/,.idea/,.vscode/,test/,coverage/,test-results/,playwright-report/,blob-report/,playwright/.cache/,package.json,package-lock.json,README.md,LICENSE,CNAME,CHANGELOG.md,os-gui.d.ts,postcss.config.js,cspell.json,.gitignore,.gitattributes ."
 	},
 	"devDependencies": {
 		"@cypress/code-coverage": "^3.12.39",
