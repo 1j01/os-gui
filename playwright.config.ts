@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'node:path';
 
 /**
  * Read environment variables from file.
@@ -20,7 +21,46 @@ export default defineConfig({
 	/* Opt out of parallel tests on CI. */
 	workers: process.env.CI ? 1 : undefined,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
-	reporter: 'html',
+	reporter: [
+		['list'],
+		[
+			// See https://github.com/bgotink/playwright-coverage
+			'@bgotink/playwright-coverage',
+				/** @type {import('@bgotink/playwright-coverage').CoverageReporterOptions} */ {
+				// Path to the root files should be resolved from, most likely your repository root
+				sourceRoot: __dirname,
+				// Files to ignore in coverage, useful
+				// - if you're testing the demo app of a component library and want to exclude the demo sources
+				// - or part of the code is generated
+				// - or if you're running into any of the other many reasons people have for excluding files
+				exclude: ['path/to/ignored/code/**'],
+				// Directory in which to write coverage reports
+				resultDir: path.join(__dirname, 'coverage/playwright'),
+				// Configure the reports to generate.
+				// The value is an array of istanbul reports, with optional configuration attached.
+				reports: [
+					// Create an HTML view at <resultDir>/index.html
+					['html'],
+					// Create <resultDir>/coverage.lcov for consumption by tooling
+					[
+						'lcovonly',
+						{
+							file: 'coverage.lcov',
+						},
+					],
+					// Log a coverage summary at the end of the test run
+					[
+						'text-summary',
+						{
+							file: null,
+						},
+					],
+				],
+				// Configure watermarks, see https://github.com/istanbuljs/nyc#high-and-low-watermarks
+				// watermarks: {},
+			},
+		],
+	],
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
 		/* Base URL to use in actions like `await page.goto('/')`. */

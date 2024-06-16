@@ -73,6 +73,7 @@
 		"live-server": "live-server --ignore=node_modules/,.git/,.history/,.idea/,.vscode/,test/,coverage/,test-results/,playwright-report/,blob-report/,playwright/.cache/,package.json,package-lock.json,README.md,LICENSE,CNAME,CHANGELOG.md,os-gui.d.ts,postcss.config.js,cspell.json,.gitignore,.gitattributes ."
 	},
 	"devDependencies": {
+		"@bgotink/playwright-coverage": "^0.2.2",
 		"@cypress/code-coverage": "^3.12.39",
 		"@playwright/test": "^1.44.1",
 		"@types/node": "^20.14.2",
