@@ -55,7 +55,7 @@
 	"types": "os-gui.d.ts",
 	"scripts": {
 		"pretest": "rimraf coverage/ .nyc_output/",
-		"test": "cypress run",
+		"test": "playwright test && cypress run",
 		"coverage @NOTE": "only unit test coverage is recorded currently; need more setup for instrumenting in-page code",
 		"coverage:verify": "npx nyc report --check-coverage true --lines 8",
 		"coverage:check-files": "check-coverage MenuBar.js && only-covered MenuBar.js",
