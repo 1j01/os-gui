@@ -6,7 +6,7 @@ describe('$Window Component', () => {
 		cy.viewport(300, 300);
 	});
 
-	// TODO: test focus management with iframes and setting z-index, tabstop wrapping...
+	// TODO: test focus management with iframes and setting z-index...
 	// minimize() while minimized, maximize() while maximized, restore() while normal, close() after closing,
 	// minimize()/maximize()/restore() while dragging/resizing window,
 	// trying to drag/resize while minimize/maximize animation is in progress,
@@ -361,7 +361,7 @@ describe('$Window Component', () => {
 				$window.setMenuBar(menu);
 				cy.get('[role="menubar"]').should('be.visible');
 				cy.then(() => { $window.minimize(); });
-				
+
 				cy.get('.window-titlebar').should('have.length', 1); // wait for titlebar animation to finish
 				// move the window so the menu bar is visible if it's broken
 				cy.get('.window-titlebar').trigger('pointerdown', { which: 1 });
@@ -369,10 +369,10 @@ describe('$Window Component', () => {
 				cy.get('.window-titlebar').trigger('pointerup', { force: true });
 				// not a strong enough assertion, since it considers offscreen elements hidden
 				// (you can test with `Cypress.dom.isVisible(document.querySelector("[role=menubar]"))` in the console)
-				cy.get('[role="menubar"]').should('not.be.visible'); 
+				cy.get('[role="menubar"]').should('not.be.visible');
 				// stronger assertion
 				cy.get('[role="menubar"]').should('have.css', 'display', 'none');
-				cy.then(()=> { $window.restore(); });
+				cy.then(() => { $window.restore(); });
 				cy.get('[role="menubar"]').should('be.visible');
 			});
 		});
@@ -524,6 +524,33 @@ describe('$Window Component', () => {
 				cy.get('.window-close-button').last().click();
 				// cy.get('#textarea').should('have.focus');
 				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.getElementById('textarea')); });
+			});
+		});
+		describe("tabstop wrapping", () => {
+			// TODO: test `<label>` surrounding or not surrounding `<input>` (do labels even factor in to tabstop wrapping?)
+			// test hidden controls, disabled controls
+			// test other controls from kitchen sink manual tests (test.js)
+			// TODO: can't actually test this because Cypress doesn't support pressing tab.
+			// I could use the cypress-real-events plugin, or perhaps switch to Playwright...
+			it.skip("should wrap around and focus the first/last control in the window when tabbing/shift+tabbing", () => {
+				cy.window().then((win) => {
+					const $window = win.$Window({
+						title: 'Tabstop Wrapping',
+					});
+					$window.$content.append('<p>Tabstop wrapping test</p><button id="button1">Button 1</button><button id="button2">Button 2</button><button id="button3">Button 3</button>');
+					cy.get('#button1').focus();
+					cy.get('#button1').should('have.focus');
+					cy.get('body').type('{tab}');
+					cy.get('#button2').should('have.focus');
+					cy.get('body').type('{tab}');
+					cy.get('#button3').should('have.focus');
+					cy.get('body').type('{tab}');
+					cy.get('#button1').should('have.focus');
+					cy.get('body').type('{shift}{tab}');
+					cy.get('#button3').should('have.focus');
+					cy.get('body').type('{shift}{tab}');
+					cy.get('#button2').should('have.focus');
+				});
 			});
 		});
 	});
