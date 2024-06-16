@@ -18,6 +18,12 @@ coverage/
 # Cypress generates screenshots when tests fail
 cypress/screenshots/
 
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 # Logs
 logs
 *.log

@@ -74,6 +74,8 @@
 	},
 	"devDependencies": {
 		"@cypress/code-coverage": "^3.12.39",
+		"@playwright/test": "^1.44.1",
+		"@types/node": "^20.14.2",
 		"autoprefixer": "10.3.3",
 		"babel-plugin-istanbul": "^6.1.1",
 		"check-code-coverage": "^1.10.5",
