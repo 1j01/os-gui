@@ -100,7 +100,7 @@ var $G = $(window);
 
 $Window.Z_INDEX = 5;
 
-/** @type {(OSGUI$Window | null)[]} */
+/** @type {(OSGUIWindow | null)[]} */
 var minimize_slots = []; // for if there's no taskbar
 
 // @TODO: make this a class,
