@@ -8,7 +8,7 @@ test.describe('tabstop wrapping', () => {
 	test('should wrap around and focus the first/last control in the window when tabbing/shift+tabbing', async ({ page }) => {
 		await page.setViewportSize({ width: 300, height: 300 });
 
-		const filePath = 'cypress/fixtures/window-test-page.html';
+		const filePath = __dirname + '/../cypress/fixtures/window-test-page.html';
 		await page.goto(pathToFileURL(filePath).href);
 
 		await page.evaluate(() => {
