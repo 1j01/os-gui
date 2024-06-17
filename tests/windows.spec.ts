@@ -207,10 +207,10 @@ test.describe('$Window Component', () => {
 		await leftHandle.dispatchEvent('pointermove', { clientX: leftHandlePos.x - 50, clientY: leftHandlePos.y - 50 });
 
 		const newRect = $window.element.getBoundingClientRect();
-		expect(newRect.left).FIXME_be_lessThan(rect.left);
-		expect(newRect.right).FIXME_be_closeTo(rect.right, 1);
-		expect(newRect.top).FIXME_be_closeTo(rect.top, 1);
-		expect(newRect.bottom).FIXME_be_closeTo(rect.bottom, 1);
+		expect(newRect.left).toBeLessThan(rect.left);
+		expect(newRect.right).toBeCloseTo(rect.right, 1);
+		expect(newRect.top).toBeCloseTo(rect.top, 1);
+		expect(newRect.bottom).toBeCloseTo(rect.bottom, 1);
 		await (leftHandle.dispatchEvent('pointerup'));
 
 		// TODO: test corner handles, default clamping, and `options.constrainRect` API clamping
@@ -458,7 +458,7 @@ test.describe('$Window Component', () => {
 			});
 			await expect(page.locator('.window')).not.toBeFocused();
 			await page.locator('.window-content').click();
-			await page.locator('.window-content').FIXME_should('have.focus');
+			await expect(page.locator('.window-content')).toBeFocused();
 
 		});
 		test("should focus the window when clicking on the title bar", async ({ page }) => {
@@ -470,7 +470,7 @@ test.describe('$Window Component', () => {
 			});
 			await expect(page.locator('.window')).not.toBeFocused();
 			await page.locator('.window-titlebar').click();
-			await page.locator('.window-content').FIXME_should('have.focus');
+			await expect(page.locator('.window-content')).toBeFocused();
 
 		});
 		test("should focus a control in the window when clicking it", async ({ page }) => {
@@ -482,14 +482,14 @@ test.describe('$Window Component', () => {
 			});
 			await expect(page.locator('#input')).not.toBeFocused();
 			await page.locator('#input').click();
-			await page.locator('#input').FIXME_should('have.focus');
+			await expect(page.locator('#input')).toBeFocused();
 			await page.locator('body').click();
 			await expect(page.locator('#input')).not.toBeFocused();
 			expect(document.activeElement).toBe(
 				document.body);
 			// refocusing logic should not override clicking a specific control
 			await page.locator('#textarea').click();
-			await page.locator('#textarea').FIXME_should('have.focus');
+			await expect(page.locator('#textarea')).toBeFocused();
 
 		});
 		// I think Cypress's focus simulation logic breaks these tests.
@@ -512,16 +512,16 @@ test.describe('$Window Component', () => {
 			// cy.get('.window-content').should('have.focus');
 			expect(document.activeElement).toBe(document.querySelector('.window-content'));
 			await page.locator('#enabled-button').click();
-			await page.locator('#enabled-button').FIXME_should('have.focus');
+			await expect(page.locator('#enabled-button')).toBeFocused();
 			// cy.get('#disabled-button').click({ force: true });
 			await page.locator('#disabled-button').dispatchEvent('pointerdown', { which: 1 });
-			await page.locator('#enabled-button').FIXME_should('have.focus');
+			await expect(page.locator('#enabled-button')).toBeFocused();
 			await page.locator('body').click();
 			expect(document.activeElement).toBe(
 				document.body);
 			// cy.get('#disabled-button').click({ force: true });
 			await page.locator('#disabled-button').dispatchEvent('pointerdown', { which: 1 });
-			await page.locator('#enabled-button').FIXME_should('have.focus');
+			await expect(page.locator('#enabled-button')).toBeFocused();
 		});
 		test.skip("should focus the last focused control in the window when closing another window that was focused", async ({ page }) => {
 			await page.evaluate(() => {
@@ -531,13 +531,13 @@ test.describe('$Window Component', () => {
 				$window.$content.append('<p>Window originally having focus <textarea id="textarea">Text area</textarea></p>');
 			});
 			await page.locator('#textarea').focus();
-			await page.locator('#textarea').FIXME_should('have.focus');
+			await expect(page.locator('#textarea')).toBeFocused();
 			const $window2 = $Window({
 				title: 'Popup Window'
 			});
 			$window2.$content.append('<p>Window taking focus temporarily</p><p><button id="close-popup">Close</button></p>');
 			await page.locator('#close-popup').focus();
-			await page.locator('#close-popup').FIXME_should('have.focus');
+			await expect(page.locator('#close-popup')).toBeFocused();
 			await page.locator('.window-close-button').last().click();
 			// cy.get('#textarea').should('have.focus');
 			expect(document.activeElement).toBe(document.getElementById('textarea'));
