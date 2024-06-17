@@ -132,92 +132,95 @@ test.describe('MenuBar Component', () => {
 	test('should navigate menus using arrow keys', async ({ page }) => {
 		// moving between items in the same menu
 		await page.locator('.menu-button').first().click();
-		await page.locator('.menu-button').first().type('{downarrow}');
-		await expect(page.locator('.menu-item:visible').first()).toHaveClass('highlight');
-		await page.locator(':focus').type('{downarrow}');
-		await expect(page.locator('.menu-item:visible').nth(1)).toHaveClass('highlight');
-		await page.locator(':focus').type('{uparrow}');
-		await expect(page.locator('.menu-item:visible').first()).toHaveClass('highlight');
+		await page.locator(':focus').press('ArrowDown');
+		await expect(page.locator('.menu-item:visible').first()).toHaveClass(/\bhighlight\b/);
+		await page.locator(':focus').press('ArrowDown');
+		await expect(page.locator('.menu-item:visible').nth(1)).toHaveClass(/\bhighlight\b/);
+		await page.locator(':focus').press('ArrowUp');
+		await expect(page.locator('.menu-item:visible').first()).toHaveClass(/\bhighlight\b/);
 		// wrapping around within a menu
-		await page.locator(':focus').type('{uparrow}');
-		await expect(page.locator('.menu-item:visible').last()).toHaveClass('highlight');
-		await page.locator(':focus').type('{downarrow}');
-		await expect(page.locator('.menu-item:visible').first()).toHaveClass('highlight');
+		await page.locator(':focus').press('ArrowUp');
+		await expect(page.locator('.menu-item:visible').last()).toHaveClass(/\bhighlight\b/);
+		await page.locator(':focus').press('ArrowDown');
+		await expect(page.locator('.menu-item:visible').first()).toHaveClass(/\bhighlight\b/);
 		// moving between top level menus while open
 		// File menu should be open
 		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'true');
-		await expect(page.locator('.menu-popup:visible')).toHaveText('Open');
-		await page.locator(':focus').type('{rightarrow}');
+		await expect(page.locator('.menu-popup:visible')).toContainText('Open');
+		await page.locator(':focus').press('ArrowRight');
 		// View menu should be open
 		await expect(page.locator('.menu-button').nth(1)).toHaveAttribute('aria-expanded', 'true');
-		await expect(page.locator('.menu-popup:visible')).toHaveText('Checkbox State');
-		await page.locator(':focus').type('{leftarrow}');
+		await expect(page.locator('.menu-popup:visible')).toContainText('Checkbox State');
+		await page.locator(':focus').press('ArrowLeft');
 		// File menu should be open
 		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'true');
-		await expect(page.locator('.menu-popup:visible')).toHaveText('Open');
-		await page.locator(':focus').type('{leftarrow}');
-		// expect( await page.locator('.menu-popup:visible')).toHaveText('Maximize'); // App menu (alt+space menu) would only apply if inside a window, and isn't implemented as of writing
+		await expect(page.locator('.menu-popup:visible')).toContainText('Open');
+		await page.locator(':focus').press('ArrowLeft');
+		// expect( await page.locator('.menu-popup:visible')).toContainText('Maximize'); // App menu (alt+space menu) would only apply if inside a window, and isn't implemented as of writing
 		// Edit menu should be open, wrapping around
 		await expect(page.locator('.menu-button').last()).toHaveAttribute('aria-expanded', 'true');
-		await expect(page.locator('.menu-popup:visible')).toHaveText('Copy');
-		await page.locator(':focus').type('{rightarrow}');
+		await expect(page.locator('.menu-popup:visible')).toContainText('Copy');
+		await page.locator(':focus').press('ArrowRight');
 		// File menu should be open, wrapping around
 		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'true');
-		await expect(page.locator('.menu-popup:visible')).toHaveText('Open');
+		await expect(page.locator('.menu-popup:visible')).toContainText('Open');
 		// moving between top level menu buttons without opening menus (after pressing Escape)
-		await page.locator('body').type('Escape');
-		await expect(page.locator('.menu-popup:visible')).not.toExist();
-		await expect(page.locator('.menu-button').first()).toHaveFocus().toHaveAttribute('aria-expanded', 'false');
-		await page.locator(':focus').type('{rightarrow}');
-		await expect(page.locator('.menu-popup:visible')).not.toExist();
-		await expect(page.locator('.menu-button').nth(1)).toHaveFocus().toHaveAttribute('aria-expanded', 'false');
-		await page.locator(':focus').type('{downarrow}');
+		await page.locator('body').press('Escape');
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(0);
+		await expect(page.locator('.menu-button').first()).toBeFocused();
+		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'false');
+		await page.locator(':focus').press('ArrowRight');
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(0);
+		await expect(page.locator('.menu-button').nth(1)).toBeFocused();
+		await expect(page.locator('.menu-button').nth(1)).toHaveAttribute('aria-expanded', 'false');
+		await page.locator(':focus').press('ArrowDown');
 		// opening menu from this state by pressing down arrow
-		await expect(page.locator('.menu-popup:visible')).toExist();
-		await expect(page.locator('.menu-item:visible').first()).toHaveClass('highlight');
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(1);
+		await expect(page.locator('.menu-item:visible').first()).toHaveClass(/\bhighlight\b/);
 		// or up arrow (and yes, it should still be the first item, to match Windows 98's behavior)
-		await page.locator('body').type('Escape');
-		await expect(page.locator('.menu-popup:visible')).not.toExist();
-		await page.locator(':focus').type('{uparrow}');
-		await expect(page.locator('.menu-popup:visible')).toExist();
-		await expect(page.locator('.menu-item:visible').first()).toHaveClass('highlight');
+		await page.locator('body').press('Escape');
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(0);
+		await page.locator(':focus').press('ArrowUp');
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(1);
+		await expect(page.locator('.menu-item:visible').first()).toHaveClass(/\bhighlight\b/);
 	});
 
 	test('should enter/exit submenus using arrow keys', async ({ page }) => {
 		// test entering/exiting submenus with right/left
 		await page.locator('.menu-button').nth(1).click();
-		await page.locator(':focus').type('{downarrow}{downarrow}');
+		await page.locator(':focus').press('ArrowDown');
+		await page.locator(':focus').press('ArrowDown');
 		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
-		await expect().toHaveClass('highlight')
+		await expect().toHaveClass(/\bhighlight\b/)
 		await expect().toHaveAttribute('aria-expanded', 'false');
-		await page.locator(':focus').type('{rightarrow}');
+		await page.locator(':focus').press('ArrowRight');
 		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
-		await expect().toHaveClass('highlight')
+		await expect().toHaveClass(/\bhighlight\b/)
 		await expect().toHaveAttribute('aria-expanded', 'true');
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
-		await page.locator(':focus').type('{leftarrow}');
+		await page.locator(':focus').press('ArrowLeft');
 		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
-		await expect().toHaveClass('highlight')
+		await expect().toHaveClass(/\bhighlight\b/)
 		await expect().toHaveAttribute('aria-expanded', 'false');
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 1);
 		// test reversed left/right interaction in RTL layout
-		await page.locator(':focus').type('Escape');
+		await page.locator(':focus').press('Escape');
 		await page.evaluate(() => {
 			document.body.style.direction = 'rtl';
 		});
 		await page.locator('.menu-button').nth(1).click();
-		await page.locator(':focus').type('{downarrow}{downarrow}');
+		await page.locator(':focus').press('ArrowDownArrowDown');
 		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
-		await expect().toHaveClass('highlight')
+		await expect().toHaveClass(/\bhighlight\b/)
 		await expect().toHaveAttribute('aria-expanded', 'false');
-		await page.locator(':focus').type('{leftarrow}');
+		await page.locator(':focus').press('ArrowLeft');
 		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
-		await expect().toHaveClass('highlight')
+		await expect().toHaveClass(/\bhighlight\b/)
 		await expect().toHaveAttribute('aria-expanded', 'true');
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
-		await page.locator(':focus').type('{rightarrow}');
+		await page.locator(':focus').press('ArrowRight');
 		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
-		await expect().toHaveClass('highlight')
+		await expect().toHaveClass(/\bhighlight\b/)
 		await expect().toHaveAttribute('aria-expanded', 'false');
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 1);
 
@@ -227,16 +230,16 @@ test.describe('MenuBar Component', () => {
 	test.skip('should (maybe) jump to first/last item using home/end keys (not actually supported in Windows)', async ({ page }) => {
 		await page.locator('.menu-button').first().click();
 		await page.locator(':focus').type('{end}');
-		await expect(page.locator('.menu-item').last()).toHaveClass('highlight');
+		await expect(page.locator('.menu-item').last()).toHaveClass(/\bhighlight\b/);
 		await page.locator(':focus').type('{home}');
-		await expect(page.locator('.menu-item').first()).toHaveClass('highlight');
+		await expect(page.locator('.menu-item').first()).toHaveClass(/\bhighlight\b/);
 	});
 
 	// TODO: disable interacting with disabled items
 	test.skip('should not interact with disabled menu items', async ({ page }) => {
 		await page.locator('.menu-button').last().click();
 		await page.locator('.menu-item[aria-disabled="true"]').click();
-		await expect(page.locator('.menu-popup')).should('be.visible'); // Still open because the disabled item didn't trigger close
+		await expect(page.locator('.menu-popup')).toBeVisible(); // Still open because the disabled item didn't trigger close
 		await expect(page.evaluate(() => testState.disabledActionTriggered)).toBe(false);
 	});
 
@@ -250,8 +253,8 @@ test.describe('MenuBar Component', () => {
 
 	test('should trigger action when pressing enter', async ({ page }) => {
 		await page.locator('body').type('Alt+KeyF');
-		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass('highlight');
-		await expect(page.locator('.menu-popup:visible').first()).toHaveFocus();
+		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass(/\bhighlight\b/);
+		await expect(page.locator('.menu-popup:visible').first()).toBeFocused();
 		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 		await page.locator(':focus').type('{enter}');
 		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(true);
@@ -259,8 +262,8 @@ test.describe('MenuBar Component', () => {
 
 	test('should do nothing when pressing space', async ({ page }) => {
 		await page.locator('body').type('Alt+KeyF');
-		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass('highlight');
-		await expect(page.locator('.menu-popup:visible').first()).toHaveFocus();
+		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass(/\bhighlight\b/);
+		await expect(page.locator('.menu-popup:visible').first()).toBeFocused();
 		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 		// Cypress was triggering a click command inside type(), and hiding it from the command log, invalidating the test by activating the menu item, unlike real world behavior.
 		// I thought it might be assuming it's a button and triggering a click to imitate the default action of buttons when pressing space, but it's not that.
@@ -275,16 +278,16 @@ test.describe('MenuBar Component', () => {
 
 	test('should exit one menu level when pressing Escape', async ({ page }) => {
 		await page.locator('.menu-button').first().click();
-		await expect(page.locator('.menu-popup')).should('be.visible');
-		await page.locator('body').type('Escape');
+		await expect(page.locator('.menu-popup')).toBeVisible();
+		await page.locator('body').press('Escape');
 		await expect(page.locator('.menu-popup')).should('not.be.visible');
 		// test with submenu
 		await page.locator('.menu-button').nth(1).click();
 		await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
-		await page.locator('body').type('Escape');
+		await page.locator('body').press('Escape');
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 1);
-		await page.locator('body').type('Escape');
+		await page.locator('body').press('Escape');
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 0);
 	});
 
@@ -297,20 +300,20 @@ test.describe('MenuBar Component', () => {
 			// button.focus();
 			// button.textContent = 'Focus';
 		});
-		await expect(page.locator('#focusable')).toHaveFocus();
+		await expect(page.locator('#focusable')).toBeFocused();
 
 		await page.locator('.menu-button').first().click();
-		await expect(page.locator('.menu-popup')).should('be.visible');
+		await expect(page.locator('.menu-popup')).toBeVisible();
 		await expect(page.locator('#focusable')).should('not.have.focus');
 		await page.locator('body').type('Alt+Key');
 		await expect(page.locator('.menu-popup')).should('not.be.visible');
-		await expect(page.locator('#focusable')).toHaveFocus();
+		await expect(page.locator('#focusable')).toBeFocused();
 		// test with submenu
 		await page.locator('.menu-button').nth(1).click();
 		await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
 		await page.locator('body').type('Alt+Key');
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 0);
-		await expect(page.locator('#focusable')).toHaveFocus();
+		await expect(page.locator('#focusable')).toBeFocused();
 	});
 });
