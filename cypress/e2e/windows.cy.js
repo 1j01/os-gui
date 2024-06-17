@@ -14,7 +14,7 @@ describe('$Window Component', () => {
 	// queuing up multiple minimize/maximize/restore actions,
 	// other API methods/options.
 
-	it('should minimize to the bottom left by default', () => {
+	it('should minimize to the bottom left by default (also, slots can be freed by close)', () => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Test Window',
@@ -50,7 +50,7 @@ describe('$Window Component', () => {
 		});
 	});
 
-	it('can be minimized/restored by clicking the minimize button', () => {
+	it('can be minimized/restored by clicking the minimize button (also, slots can be freed by restore)', () => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Test Window',
@@ -336,7 +336,7 @@ describe('$Window Component', () => {
 		});
 	});
 
-	describe('setMenuBar', () => {
+	describe('setMenuBar()', () => {
 		it('should add menu bar, which is hidden when minimized', () => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
