@@ -1,14 +1,12 @@
 import { expect, test } from '@playwright/test';
-
-/// <reference types="cypress" />
+import { pathToFileURL } from 'node:url';
 
 test.describe('$Window Component', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto(
-			'cypress/fixtures/window-test-page.html'); await page.setViewportSize({
-				width:
-					300, height: 300
-			});
+		await page.setViewportSize({ width: 300, height: 300 });
+
+		const filePath = __dirname + '/../cypress/fixtures/window-test-page.html';
+		await page.goto(pathToFileURL(filePath).href);
 	});
 
 	// TODO: test focus management with iframes and setting z-index...
