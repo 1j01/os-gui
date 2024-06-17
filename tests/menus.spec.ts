@@ -225,9 +225,9 @@ test.describe('MenuBar Component', () => {
 
 	test.skip('should (maybe) jump to first/last item using home/end keys (not actually supported in Windows)', async ({ page }) => {
 		await page.locator('.menu-button').first().click();
-		await page.locator(':focus').type('{end}');
+		await page.locator(':focus').press('End');
 		await expect(page.locator('.menu-item').last()).toHaveClass(/\bhighlight\b/);
-		await page.locator(':focus').type('{home}');
+		await page.locator(':focus').press('Home');
 		await expect(page.locator('.menu-item').first()).toHaveClass(/\bhighlight\b/);
 	});
 
@@ -248,16 +248,16 @@ test.describe('MenuBar Component', () => {
 	});
 
 	test('should trigger action when pressing enter', async ({ page }) => {
-		await page.locator('body').type('Alt+KeyF');
+		await page.locator('body').press('Alt+KeyF');
 		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass(/\bhighlight\b/);
 		await expect(page.locator('.menu-popup:visible').first()).toBeFocused();
 		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
-		await page.locator(':focus').type('{enter}');
+		await page.locator(':focus').press('Enter');
 		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(true);
 	});
 
 	test('should do nothing when pressing space', async ({ page }) => {
-		await page.locator('body').type('Alt+KeyF');
+		await page.locator('body').press('Alt+KeyF');
 		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass(/\bhighlight\b/);
 		await expect(page.locator('.menu-popup:visible').first()).toBeFocused();
 		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
@@ -265,10 +265,10 @@ test.describe('MenuBar Component', () => {
 		// I thought it might be assuming it's a button and triggering a click to imitate the default action of buttons when pressing space, but it's not that.
 		// It was simply clicking before typing in order to "simulate typical user behavior",
 		// because it doesn't consider the menu item to be focused.
-		// await page.locator('.menu-popup:visible .menu-item.highlight').type(' ', { force: true });
+		// await page.locator('.menu-popup:visible .menu-item.highlight').press(' ', { force: true });
 		// Need to use the focused element instead of the highlighted one to avoid the click,
 		// and need to ensure the element receives focus beforehand with `should` (above) to avoid it failing to find anything focused here.
-		await page.locator(':focus').type(' ');
+		await page.locator(':focus').press(' ');
 		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 	});
 
@@ -301,14 +301,14 @@ test.describe('MenuBar Component', () => {
 		await page.locator('.menu-button').first().click();
 		await expect(page.locator('.menu-popup')).toBeVisible();
 		await expect(page.locator('#focusable')).should('not.have.focus');
-		await page.locator('body').type('Alt+Key');
+		await page.locator('body').press('Alt+Key');
 		await expect(page.locator('.menu-popup')).should('not.be.visible');
 		await expect(page.locator('#focusable')).toBeFocused();
 		// test with submenu
 		await page.locator('.menu-button').nth(1).click();
 		await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
 		await expect(page.locator('.menu-popup:visible')).toHaveCount(2);
-		await page.locator('body').type('Alt+Key');
+		await page.locator('body').press('Alt+Key');
 		await expect(page.locator('.menu-popup:visible')).toHaveCount(0);
 		await expect(page.locator('#focusable')).toBeFocused();
 	});
