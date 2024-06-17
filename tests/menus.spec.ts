@@ -69,6 +69,7 @@ test.describe('MenuBar Component', () => {
 
 
 	test('should open menus and activate menu items with access keys', async ({ page }) => {
+		// See NOTE 2
 		await page.locator('body').press('Alt+KeyF');
 		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'true');
 		// Menu item with action
@@ -114,12 +115,14 @@ test.describe('MenuBar Component', () => {
 	// test radio buttons have role "menuitemradio" specifically etc.
 	// probably by just writing a test for the radio menu items
 	test.skip('should have correct ARIA attributes', async ({ page }) => {
+		// See NOTE 2
 		await page.getByText('File').click();
 		await expect(page.locator('.menu-button, .menu-item')).toHaveAttribute('role', /^(menuitem|menuitemcheckbox|menuitemradio)$/);
 		await expect(page.locator('.menu-popup')).toHaveAttribute('role', 'menu');
 	});
 
 	test('should open/close submenu on hover', async ({ page }) => {
+		// See NOTE 2
 		await page.locator('.menu-button').nth(1).click();
 		const menuItem = page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first();
 		const nextMenuItem = page.locator('.menu-popup .menu-item[aria-haspopup="true"] + .menu-item').first();
@@ -130,6 +133,7 @@ test.describe('MenuBar Component', () => {
 	});
 
 	test('should navigate menus using arrow keys', async ({ page }) => {
+		// See NOTE 2
 		// moving between items in the same menu
 		await page.locator('.menu-button').first().click();
 		await page.locator(':focus').press('ArrowDown');
@@ -186,6 +190,7 @@ test.describe('MenuBar Component', () => {
 	});
 
 	test('should enter/exit submenus using arrow keys', async ({ page }) => {
+		// See NOTE 2
 		// test entering/exiting submenus with right/left
 		await page.locator('.menu-button').nth(1).click();
 		await page.locator(':focus').press('ArrowDown');
@@ -224,6 +229,7 @@ test.describe('MenuBar Component', () => {
 	});
 
 	test.skip('should (maybe) jump to first/last item using home/end keys (not actually supported in Windows)', async ({ page }) => {
+		// See NOTE 2
 		await page.locator('.menu-button').first().click();
 		await page.locator(':focus').press('End');
 		await expect(page.locator('.menu-item').last()).toHaveClass(/\bhighlight\b/);
@@ -233,6 +239,7 @@ test.describe('MenuBar Component', () => {
 
 	// TODO: disable interacting with disabled items
 	test.skip('should not interact with disabled menu items', async ({ page }) => {
+		// See NOTE 2
 		await page.locator('.menu-button').last().click();
 		await page.locator('.menu-item[aria-disabled="true"]').click();
 		await expect(page.locator('.menu-popup')).toBeVisible(); // Still open because the disabled item didn't trigger close
@@ -241,6 +248,7 @@ test.describe('MenuBar Component', () => {
 
 
 	test('should trigger action on menu item click', async ({ page }) => {
+		// See NOTE 2
 		await expect(await page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 		await page.locator('.menu-button').first().click();
 		await page.locator('.menu-popup .menu-item').first().click();
@@ -248,6 +256,7 @@ test.describe('MenuBar Component', () => {
 	});
 
 	test('should trigger action when pressing enter', async ({ page }) => {
+		// See NOTE 2
 		await page.locator('body').press('Alt+KeyF');
 		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass(/\bhighlight\b/);
 		await expect(page.locator('.menu-popup:visible').first()).toBeFocused();
@@ -257,6 +266,7 @@ test.describe('MenuBar Component', () => {
 	});
 
 	test('should do nothing when pressing space', async ({ page }) => {
+		// See NOTE 2
 		await page.locator('body').press('Alt+KeyF');
 		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass(/\bhighlight\b/);
 		await expect(page.locator('.menu-popup:visible').first()).toBeFocused();
@@ -266,6 +276,7 @@ test.describe('MenuBar Component', () => {
 	});
 
 	test('should exit one menu level when pressing Escape', async ({ page }) => {
+		// See NOTE 2
 		await page.locator('.menu-button').first().click();
 		await expect(page.locator('.menu-popup:visible')).toHaveCount(1);
 		await page.locator('body').press('Escape');
@@ -281,7 +292,8 @@ test.describe('MenuBar Component', () => {
 	});
 
 	test('should close all menus when pressing Alt, and refocus the last focused control outside the menu bar', async ({ page }) => {
-		page.evaluate(() => {
+		// See NOTE 2
+		await page.evaluate(() => {
 			const button = document.createElement('button');
 			button.id = 'focusable';
 			document.body.appendChild(button);
