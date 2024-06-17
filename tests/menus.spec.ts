@@ -69,41 +69,42 @@ test.describe('MenuBar Component', () => {
 
 
 	test('should open menus and activate menu items with access keys', async ({ page }) => {
-		await page.locator('body').type('{alt}f');
+		await page.locator('body').press('Alt+KeyF');
 		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'true');
 		// Menu item with action
-		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
-		await page.locator('body').type('o');
-		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(true);
+		await expect(await page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
+		await page.locator('body').press('KeyO');
+		await expect(await page.evaluate(() => testState.fileOpenTriggered)).toBe(true);
 		// Menu should be closed after action is triggered
 		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'false');
 		await expect(page.locator('.menu-button').nth(1)).toHaveAttribute('aria-expanded', 'false');
 		// Checkbox menu item
-		await page.locator('body').type('{alt}v');
+		await page.locator('body').press('Alt+KeyV');
 		await expect(page.locator('.menu-button').nth(1)).toHaveAttribute('aria-expanded', 'true');
-		await expect(page.evaluate(() => testState.checkboxState)).toBe(false);
+		await expect(await page.evaluate(() => testState.checkboxState)).toBe(false);
 		await expect(page.getByText('Checkbox State').first().parent("[role='menuitemcheckbox']")).toHaveAttribute('aria-checked', 'false');
-		await page.locator('body').type('s');
-		await expect(page.evaluate(() => testState.checkboxState)).toBe(true);
+		await page.locator('body').press('KeyS');
+		await expect(await page.evaluate(() => testState.checkboxState)).toBe(true);
 		await expect(page.getByText('Checkbox State').first().parent("[role='menuitemcheckbox']")).toHaveAttribute('aria-checked', 'true');
 		// Menu should be closed after checkbox is toggled
 		// TODO: match Windows behavior
 		// await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'false');
 		// await expect(page.locator('.menu-button').nth(1)).toHaveAttribute('aria-expanded', 'false');
-		await page.locator('body').type('{esc}');
+		await page.locator('body').press('Escape');
 		// Submenu item
-		await page.locator('body').type('{alt}v').type('m');
+		await page.locator('body').press('Alt+KeyV');
+		await page.locator('body').press('KeyM')
 		// Should cycle through items with ambiguous access keys,
 		// including menu items without defined access keys, which use the first letter of the label.
 		// TODO: make sure both implicit and explicit access keys are tested
 		// TODO: test that the items are not activated, only highlighted
 		await expect(page.locator('.menu-item.highlight')).toHaveText('Item 0');
-		await page.locator('body').type('i');
+		await page.locator('body').press('KeyI');
 		await expect(page.locator('.menu-item.highlight')).toHaveText('Item 1');
-		await page.locator('body').type('i');
+		await page.locator('body').press('KeyI');
 		await expect(page.locator('.menu-item.highlight')).toHaveText('Item 2');
 		// Should cycle back to the first item
-		await page.locator('body').type(Array(100 - 2).fill('i').join(''));
+		await page.locator('body').pressSequentially(Array(100 - 2).fill('i').join(''));
 		await expect(page.locator('.menu-item.highlight')).toHaveText('Item 0');
 
 		// TODO: test also ambiguous top level menu access keys (would be really bad practice, but should probably still be supported)
@@ -160,7 +161,7 @@ test.describe('MenuBar Component', () => {
 		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'true');
 		await expect(page.locator('.menu-popup:visible')).toHaveText('Open');
 		// moving between top level menu buttons without opening menus (after pressing Escape)
-		await page.locator('body').type('{esc}');
+		await page.locator('body').type('Escape');
 		await expect(page.locator('.menu-popup:visible')).not.toExist();
 		await expect(page.locator('.menu-button').first()).toHaveFocus().toHaveAttribute('aria-expanded', 'false');
 		await page.locator(':focus').type('{rightarrow}');
@@ -171,7 +172,7 @@ test.describe('MenuBar Component', () => {
 		await expect(page.locator('.menu-popup:visible')).toExist();
 		await expect(page.locator('.menu-item:visible').first()).toHaveClass('highlight');
 		// or up arrow (and yes, it should still be the first item, to match Windows 98's behavior)
-		await page.locator('body').type('{esc}');
+		await page.locator('body').type('Escape');
 		await expect(page.locator('.menu-popup:visible')).not.toExist();
 		await page.locator(':focus').type('{uparrow}');
 		await expect(page.locator('.menu-popup:visible')).toExist();
@@ -196,7 +197,7 @@ test.describe('MenuBar Component', () => {
 		await expect().toHaveAttribute('aria-expanded', 'false');
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 1);
 		// test reversed left/right interaction in RTL layout
-		await page.locator(':focus').type('{esc}');
+		await page.locator(':focus').type('Escape');
 		await page.evaluate(() => {
 			document.body.style.direction = 'rtl';
 		});
@@ -244,7 +245,7 @@ test.describe('MenuBar Component', () => {
 	});
 
 	test('should trigger action when pressing enter', async ({ page }) => {
-		await page.locator('body').type('{alt}f');
+		await page.locator('body').type('Alt+KeyF');
 		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass('highlight');
 		await expect(page.locator('.menu-popup:visible').first()).toHaveFocus();
 		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
@@ -253,7 +254,7 @@ test.describe('MenuBar Component', () => {
 	});
 
 	test('should do nothing when pressing space', async ({ page }) => {
-		await page.locator('body').type('{alt}f');
+		await page.locator('body').type('Alt+KeyF');
 		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass('highlight');
 		await expect(page.locator('.menu-popup:visible').first()).toHaveFocus();
 		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
@@ -271,15 +272,15 @@ test.describe('MenuBar Component', () => {
 	test('should exit one menu level when pressing Escape', async ({ page }) => {
 		await page.locator('.menu-button').first().click();
 		await expect(page.locator('.menu-popup')).should('be.visible');
-		await page.locator('body').type('{esc}');
+		await page.locator('body').type('Escape');
 		await expect(page.locator('.menu-popup')).should('not.be.visible');
 		// test with submenu
 		await page.locator('.menu-button').nth(1).click();
 		await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
-		await page.locator('body').type('{esc}');
+		await page.locator('body').type('Escape');
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 1);
-		await page.locator('body').type('{esc}');
+		await page.locator('body').type('Escape');
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 0);
 	});
 
@@ -297,14 +298,14 @@ test.describe('MenuBar Component', () => {
 		await page.locator('.menu-button').first().click();
 		await expect(page.locator('.menu-popup')).should('be.visible');
 		await expect(page.locator('#focusable')).should('not.have.focus');
-		await page.locator('body').type('{alt}');
+		await page.locator('body').type('Alt+Key');
 		await expect(page.locator('.menu-popup')).should('not.be.visible');
 		await expect(page.locator('#focusable')).toHaveFocus();
 		// test with submenu
 		await page.locator('.menu-button').nth(1).click();
 		await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
-		await page.locator('body').type('{alt}');
+		await page.locator('body').type('Alt+Key');
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 0);
 		await expect(page.locator('#focusable')).toHaveFocus();
 	});
