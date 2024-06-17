@@ -261,22 +261,15 @@ test.describe('MenuBar Component', () => {
 		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass(/\bhighlight\b/);
 		await expect(page.locator('.menu-popup:visible').first()).toBeFocused();
 		await expect(await page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
-		// Cypress was triggering a click command inside type(), and hiding it from the command log, invalidating the test by activating the menu item, unlike real world behavior.
-		// I thought it might be assuming it's a button and triggering a click to imitate the default action of buttons when pressing space, but it's not that.
-		// It was simply clicking before typing in order to "simulate typical user behavior",
-		// because it doesn't consider the menu item to be focused.
-		// await page.locator('.menu-popup:visible .menu-item.highlight').press(' ', { force: true });
-		// Need to use the focused element instead of the highlighted one to avoid the click,
-		// and need to ensure the element receives focus beforehand with `should` (above) to avoid it failing to find anything focused here.
-		await page.locator(':focus').press(' ');
+		await page.locator('.menu-popup:focus').press('Space');
 		await expect(await page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 	});
 
 	test('should exit one menu level when pressing Escape', async ({ page }) => {
 		await page.locator('.menu-button').first().click();
-		await expect(page.locator('.menu-popup')).toBeVisible();
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(1);
 		await page.locator('body').press('Escape');
-		await expect(page.locator('.menu-popup')).should('not.be.visible');
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(0);
 		// test with submenu
 		await page.locator('.menu-button').nth(1).click();
 		await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
@@ -289,26 +282,25 @@ test.describe('MenuBar Component', () => {
 
 	test('should close all menus when pressing Alt, and refocus the last focused control outside the menu bar', async ({ page }) => {
 		page.evaluate(() => {
-			$('body').append('<button id="focusable">Focus</button>').find('#focusable').focus();
-			// const button = document.createElement('button');
-			// button.id = 'focusable';
-			// document.body.appendChild(button);
-			// button.focus();
-			// button.textContent = 'Focus';
+			const button = document.createElement('button');
+			button.id = 'focusable';
+			document.body.appendChild(button);
+			button.focus();
+			button.textContent = 'Focus';
 		});
 		await expect(page.locator('#focusable')).toBeFocused();
 
 		await page.locator('.menu-button').first().click();
-		await expect(page.locator('.menu-popup')).toBeVisible();
-		await expect(page.locator('#focusable')).should('not.have.focus');
-		await page.locator('body').press('Alt+Key');
-		await expect(page.locator('.menu-popup')).should('not.be.visible');
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(1);
+		await expect(page.locator('#focusable')).not.toBeFocused();
+		await page.locator('body').press('Alt');
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(0);
 		await expect(page.locator('#focusable')).toBeFocused();
 		// test with submenu
 		await page.locator('.menu-button').nth(1).click();
 		await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
 		await expect(page.locator('.menu-popup:visible')).toHaveCount(2);
-		await page.locator('body').press('Alt+Key');
+		await page.locator('body').press('Alt');
 		await expect(page.locator('.menu-popup:visible')).toHaveCount(0);
 		await expect(page.locator('#focusable')).toBeFocused();
 	});
