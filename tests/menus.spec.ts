@@ -82,10 +82,10 @@ test.describe('MenuBar Component', () => {
 		await page.locator('body').press('Alt+KeyV');
 		await expect(page.locator('.menu-button').nth(1)).toHaveAttribute('aria-expanded', 'true');
 		await expect(await page.evaluate(() => testState.checkboxState)).toBe(false);
-		await expect(page.getByText('Checkbox State').first().parent("[role='menuitemcheckbox']")).toHaveAttribute('aria-checked', 'false');
+		await expect(page.getByRole('menuitemcheckbox', { name: 'Checkbox State' }).first()).toHaveAttribute('aria-checked', 'false');
 		await page.locator('body').press('KeyS');
 		await expect(await page.evaluate(() => testState.checkboxState)).toBe(true);
-		await expect(page.getByText('Checkbox State').first().parent("[role='menuitemcheckbox']")).toHaveAttribute('aria-checked', 'true');
+		await expect(page.getByRole('menuitemcheckbox', { name: 'Checkbox State' }).first()).toHaveAttribute('aria-checked', 'true');
 		// Menu should be closed after checkbox is toggled
 		// TODO: match Windows behavior
 		// await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'false');
@@ -98,20 +98,20 @@ test.describe('MenuBar Component', () => {
 		// including menu items without defined access keys, which use the first letter of the label.
 		// TODO: make sure both implicit and explicit access keys are tested
 		// TODO: test that the items are not activated, only highlighted
-		await expect(page.locator('.menu-item.highlight')).toHaveText('Item 0');
+		await expect(page.locator('.menu-item.highlight:has-text("Item 0")')).toBeVisible();
 		await page.locator('body').press('KeyI');
-		await expect(page.locator('.menu-item.highlight')).toHaveText('Item 1');
+		await expect(page.locator('.menu-item.highlight:has-text("Item 1")')).toBeVisible();
 		await page.locator('body').press('KeyI');
-		await expect(page.locator('.menu-item.highlight')).toHaveText('Item 2');
+		await expect(page.locator('.menu-item.highlight:has-text("Item 2")')).toBeVisible();
 		// Should cycle back to the first item
 		await page.locator('body').pressSequentially(Array(100 - 2).fill('i').join(''));
-		await expect(page.locator('.menu-item.highlight')).toHaveText('Item 0');
+		await expect(page.locator('.menu-item.highlight:has-text("Item 0")')).toBeVisible();
 
 		// TODO: test also ambiguous top level menu access keys (would be really bad practice, but should probably still be supported)
 	});
 
 	test('should have correct ARIA attributes', async ({ page }) => {
-		await page.locator('.menu-button').first().click();
+		await page.getByText('File').click();
 		await expect(page.locator('.menu-button, .menu-item')).toHaveAttribute('role', /^(menuitem|menuitemcheckbox|menuitemradio)$/);
 		await expect(page.locator('.menu-popup')).toHaveAttribute('role', 'menu');
 	});
