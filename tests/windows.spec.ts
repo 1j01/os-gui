@@ -64,6 +64,7 @@ test.describe('$Window Component', () => {
 				minimizeButton: true,
 				closeButton: true
 			});
+			window.first_$window = $window;
 		});
 		await page.locator('.window-minimize-button').click();
 		// These exact values may not be perfectly accurate to Windows 98, but it's easier to test exact values than proximity.
@@ -85,7 +86,7 @@ test.describe('$Window Component', () => {
 				title: 'Test Window 3',
 				minimizeButton: true
 			});
-			$window.restore(); // free up slot (closing should also do this, tested elsewhere)
+			window.first_$window.restore(); // free up slot (closing should also do this, tested elsewhere)
 		});
 		await expect(page.locator('.window')).toHaveCount(3);
 		await page.locator('.window-minimize-button').last().click();
