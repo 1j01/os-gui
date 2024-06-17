@@ -107,8 +107,8 @@ test.describe('$Window Component', () => {
 		await page.locator('.window-titlebar').hover();
 		await page.mouse.down();
 		await page.mouse.move(0, 0);
-		await expect(page.locator('.window')).toHaveCSS('left', /^-?\d+px$/);
-		await expect(page.locator('.window')).toHaveCSS('top', /^-?\d+px$/);
+		await expect(page.locator('.window')).toHaveCSS('left', /^-?\d+(\.\d+)?px$/);
+		await expect(page.locator('.window')).toHaveCSS('top', /^-?\d+(\.\d+)?px$/);
 		await page.mouse.up();
 		// It should then snap such that you can still reach the title bar
 		// TODO: test horizontal clamping (vertical is easier since it should stop at zero, whereas horizontally it can go off screen _partially_)
