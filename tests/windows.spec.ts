@@ -105,10 +105,8 @@ test.describe('$Window Component', () => {
 		});
 		await page.locator('.window-titlebar').dispatchEvent('pointerdown', { which: 1 });
 		await page.locator('.window-titlebar').dispatchEvent('pointermove', { clientX: 0, clientY: 0 });
-		await expect(page.locator('.window')).toHaveCSS('left', /.*/);
-		await expect.poll(async () => page.locator('.window').evaluateAll((elements, match) => { const matches = new Set(document.querySelectorAll(match)); return !!elements.find((e) => matches.has(e)); }, /^-?\d+px$/)).toBeTruthy();
-		await expect(page.locator('.window')).toHaveCSS('top', /.*/);
-		await expect.poll(async () => page.locator('.window').evaluateAll((elements, match) => { const matches = new Set(document.querySelectorAll(match)); return !!elements.find((e) => matches.has(e)); }, /^-?\d+px$/)).toBeTruthy();
+		await expect(page.locator('.window')).toHaveCSS('left', /^-?\d+px$/);
+		await expect(page.locator('.window')).toHaveCSS('top', /^-?\d+px$/);
 		await page.locator('.window-titlebar').dispatchEvent('pointerup');
 		// It should then snap such that you can still reach the title bar
 		// TODO: test horizontal clamping (vertical is easier since it should stop at zero, whereas horizontally it can go off screen _partially_)
@@ -411,7 +409,7 @@ test.describe('$Window Component', () => {
 			await page.keyboard.up("Alt");
 			await page.locator('body').press("Enter");
 			// Can't use cy.wrap(activated_menu_item).should('be.true') because it would be synchronously accessing the value before commands are run
-			expect(activated_menu_item).toBeTruthy();
+			expect(activated_menu_item).toBe(true);
 			activated_menu_item = false;
 			// @ts-ignore
 			document.activeElement.blur();
@@ -422,7 +420,7 @@ test.describe('$Window Component', () => {
 			await page.locator('body').fill("t");
 			await page.keyboard.up("Alt");
 			await page.locator('body').press("Enter");
-			expect(activated_menu_item).FIXME_be_false();
+			expect(activated_menu_item).toBe(false);
 
 		});
 	});
@@ -458,7 +456,7 @@ test.describe('$Window Component', () => {
 				});
 				$window.$content.append('<p>Click in the blank space of the window</p>');
 			});
-			await page.locator('.window').FIXME_should('not.have.focus');
+			await expect(page.locator('.window')).not.toBeFocused();
 			await page.locator('.window-content').click();
 			await page.locator('.window-content').FIXME_should('have.focus');
 
@@ -470,7 +468,7 @@ test.describe('$Window Component', () => {
 				});
 				$window.$content.append('<p>Click on the title bar</p>');
 			});
-			await page.locator('.window').FIXME_should('not.have.focus');
+			await expect(page.locator('.window')).not.toBeFocused();
 			await page.locator('.window-titlebar').click();
 			await page.locator('.window-content').FIXME_should('have.focus');
 
@@ -482,11 +480,11 @@ test.describe('$Window Component', () => {
 				});
 				$window.$content.append('<form><input type="text" id="input" value="Click me"><textarea id="textarea">Text area</textarea></form>');
 			});
-			await page.locator('#input').FIXME_should('not.have.focus');
+			await expect(page.locator('#input')).not.toBeFocused();
 			await page.locator('#input').click();
 			await page.locator('#input').FIXME_should('have.focus');
 			await page.locator('body').click();
-			await page.locator('#input').FIXME_should('not.have.focus');
+			await expect(page.locator('#input')).not.toBeFocused();
 			expect(document.activeElement).toBe(
 				document.body);
 			// refocusing logic should not override clicking a specific control
