@@ -27,8 +27,8 @@ test.describe('$Window Component', () => {
 			});
 			$window.minimize();
 			// These exact values may not be perfectly accurate to Windows 98, but it's easier to test exact values than proximity.
-			cy.get('.window').should('have.css', 'bottom', '-3px'); // result of `calc(100% - ${titlebar_height + 5}px)`
-			cy.get('.window').should('have.css', 'left', '10px'); // hardcoded `spacing`
+			await expect(cy.get('.window')).should('have.css', 'bottom', '-3px'); // result of `calc(100% - ${titlebar_height + 5}px)`
+			await expect(cy.get('.window')).should('have.css', 'left', '10px'); // hardcoded `spacing`
 
 			cy.then(({ page }) => {
 				const $window2 = win.$Window({
@@ -36,8 +36,8 @@ test.describe('$Window Component', () => {
 					minimizeButton: true,
 				});
 				$window2.minimize();
-				cy.get('.window').last().should('have.css', 'bottom', '-3px');
-				cy.get('.window').last().should('have.css', 'left', '170px'); // result of `spacing` + `to_width` + `spacing`
+				await expect(cy.get('.window').last()).should('have.css', 'bottom', '-3px');
+				await expect(cy.get('.window').last()).should('have.css', 'left', '170px'); // result of `spacing` + `to_width` + `spacing`
 				cy.then(({ page }) => {
 					const $window3 = win.$Window({
 						title: 'Test Window 3',
@@ -45,9 +45,9 @@ test.describe('$Window Component', () => {
 					});
 					$window.close(); // free up slot (unminimizing should also do this, tested elsewhere)
 					$window3.minimize();
-					cy.get('.window').should('have.length', 2);
-					cy.get('.window').last().should('have.css', 'bottom', '-3px');
-					cy.get('.window').last().should('have.css', 'left', '10px');
+					await expect(cy.get('.window')).should('have.length', 2);
+					await expect(cy.get('.window').last()).should('have.css', 'bottom', '-3px');
+					await expect(cy.get('.window').last()).should('have.css', 'left', '10px');
 				});
 			});
 		});
@@ -63,8 +63,8 @@ test.describe('$Window Component', () => {
 			});
 			cy.get('.window-minimize-button').click();
 			// These exact values may not be perfectly accurate to Windows 98, but it's easier to test exact values than proximity.
-			cy.get('.window').should('have.css', 'bottom', '-3px'); // result of `calc(100% - ${titlebar_height + 5}px)`
-			cy.get('.window').should('have.css', 'left', '10px'); // hardcoded `spacing`
+			await expect(cy.get('.window')).should('have.css', 'bottom', '-3px'); // result of `calc(100% - ${titlebar_height + 5}px)`
+			await expect(cy.get('.window')).should('have.css', 'left', '10px'); // hardcoded `spacing`
 
 			cy.then(({ page }) => {
 				win.$Window({
@@ -72,18 +72,18 @@ test.describe('$Window Component', () => {
 					minimizeButton: true,
 				});
 				cy.get('.window-minimize-button').last().click();
-				cy.get('.window').last().should('have.css', 'bottom', '-3px');
-				cy.get('.window').last().should('have.css', 'left', '170px'); // result of `spacing` + `to_width` + `spacing`
+				await expect(cy.get('.window').last()).should('have.css', 'bottom', '-3px');
+				await expect(cy.get('.window').last()).should('have.css', 'left', '170px'); // result of `spacing` + `to_width` + `spacing`
 				cy.then(({ page }) => {
 					win.$Window({
 						title: 'Test Window 3',
 						minimizeButton: true,
 					});
 					$window.restore(); // free up slot (closing should also do this, tested elsewhere)
-					cy.get('.window').should('have.length', 3);
+					await expect(cy.get('.window')).should('have.length', 3);
 					cy.get('.window-minimize-button').last().click();
-					cy.get('.window').last().should('have.css', 'bottom', '-3px');
-					cy.get('.window').last().should('have.css', 'left', '10px');
+					await expect(cy.get('.window').last()).should('have.css', 'bottom', '-3px');
+					await expect(cy.get('.window').last()).should('have.css', 'left', '10px');
 				});
 			});
 		});
@@ -100,12 +100,12 @@ test.describe('$Window Component', () => {
 			$window.$content.append('<p>Drag me!</p>').css("padding", "30px");
 			cy.get('.window-titlebar').trigger('pointerdown', { which: 1 });
 			cy.get('.window-titlebar').trigger('pointermove', { clientX: 0, clientY: 0 });
-			cy.get('.window').should('have.css', 'left').and('match', /^-?\d+px$/);
-			cy.get('.window').should('have.css', 'top').and('match', /^-?\d+px$/);
+			await expect(cy.get('.window')).should('have.css', 'left').and('match', /^-?\d+px$/);
+			await expect(cy.get('.window')).should('have.css', 'top').and('match', /^-?\d+px$/);
 			cy.get('.window-titlebar').trigger('pointerup', { force: true });
 			// It should then snap such that you can still reach the title bar
 			// TODO: test horizontal clamping (vertical is easier since it should stop at zero, whereas horizontally it can go off screen _partially_)
-			cy.get('.window').should('have.css', 'top', '0px');
+			await expect(cy.get('.window')).should('have.css', 'top', '0px');
 		});
 	});
 
@@ -121,29 +121,29 @@ test.describe('$Window Component', () => {
 			$window.$content.append('<p>Titlebar double click maximization test window</p>').css("padding", "30px");
 			// Maximize
 			cy.get('.window-titlebar').dblclick();
-			cy.get('.window').should('have.css', 'top', '0px');
-			cy.get('.window').should('have.css', 'left', '0px');
+			await expect(cy.get('.window')).should('have.css', 'top', '0px');
+			await expect(cy.get('.window')).should('have.css', 'left', '0px');
 			// FIXME: weird scrollbar logic (the window itself is causing a scrollbar (though not when maximized) and it's reserving space for it.
 			// I could make it move the window offscreen to the left/top before detecting the scrollbar width, but that would only mitigate the issue.
 			// Is there a way I can make it account for the scrollbar dynamically, rather than detecting the scrollbar width at one point in time?
-			// cy.get('.window').should('have.css', 'width', '300px');
-			cy.get('.window').should('have.css', 'height', '300px');
+			await expect(// cy.get('.window')).should('have.css', 'width', '300px');
+				await expect(cy.get('.window')).should('have.css', 'height', '300px');
 
 			// Try dragging the maximized window
 			cy.get('.window-titlebar').trigger('pointerdown', { which: 1 });
 			cy.get('.window-titlebar').trigger('pointermove', { clientX: 50, clientY: 50 });
-			cy.get('.window').should('have.css', 'top', '0px');
-			cy.get('.window').should('have.css', 'left', '0px');
-			// cy.get('.window').should('have.css', 'width', '300px'); // see above
-			cy.get('.window').should('have.css', 'height', '300px');
+			await expect(cy.get('.window')).should('have.css', 'top', '0px');
+			await expect(cy.get('.window')).should('have.css', 'left', '0px');
+			await expect(// cy.get('.window')).should('have.css', 'width', '300px'); // see above
+				await expect(cy.get('.window')).should('have.css', 'height', '300px');
 
 			// Restore
 			// TODO: test rectangle matches original window rectangle
 			cy.get('.window-titlebar').dblclick();
-			cy.get('.window').should('not.have.css', 'top', '0px');
-			cy.get('.window').should('not.have.css', 'left', '0px');
-			cy.get('.window').should('not.have.css', 'width', '300px');
-			cy.get('.window').should('not.have.css', 'height', '300px');
+			await expect(cy.get('.window')).should('not.have.css', 'top', '0px');
+			await expect(cy.get('.window')).should('not.have.css', 'left', '0px');
+			await expect(cy.get('.window')).should('not.have.css', 'width', '300px');
+			await expect(cy.get('.window')).should('not.have.css', 'height', '300px');
 		});
 	});
 
@@ -157,21 +157,21 @@ test.describe('$Window Component', () => {
 				resizable: true,
 			});
 			$window.$content.append('<p>Maximize button test window</p>').css("padding", "30px");
-			cy.get('.window-maximize-button').should('have.class', 'window-action-maximize');
+			await expect(cy.get('.window-maximize-button')).should('have.class', 'window-action-maximize');
 			cy.get('.window-maximize-button').click();
-			cy.get('.window').should('have.css', 'top', '0px');
-			cy.get('.window').should('have.css', 'left', '0px');
-			// cy.get('.window').should('have.css', 'width', '300px'); // see above
-			cy.get('.window').should('have.css', 'height', '300px');
-			cy.get('.window-maximize-button').should('have.class', 'window-action-restore');
+			await expect(cy.get('.window')).should('have.css', 'top', '0px');
+			await expect(cy.get('.window')).should('have.css', 'left', '0px');
+			await expect(// cy.get('.window')).should('have.css', 'width', '300px'); // see above
+				await expect(cy.get('.window')).should('have.css', 'height', '300px');
+			await expect(cy.get('.window-maximize-button')).should('have.class', 'window-action-restore');
 
 			// Restore
 			cy.get('.window-maximize-button').click();
-			cy.get('.window').should('not.have.css', 'top', '0px');
-			cy.get('.window').should('not.have.css', 'left', '0px');
-			cy.get('.window').should('not.have.css', 'width', '300px');
-			cy.get('.window').should('not.have.css', 'height', '300px');
-			cy.get('.window-maximize-button').should('have.class', 'window-action-maximize');
+			await expect(cy.get('.window')).should('not.have.css', 'top', '0px');
+			await expect(cy.get('.window')).should('not.have.css', 'left', '0px');
+			await expect(cy.get('.window')).should('not.have.css', 'width', '300px');
+			await expect(cy.get('.window')).should('not.have.css', 'height', '300px');
+			await expect(cy.get('.window-maximize-button')).should('have.class', 'window-action-maximize');
 		});
 	});
 
@@ -182,7 +182,7 @@ test.describe('$Window Component', () => {
 			});
 			$window.$content.append('<p>Close me!</p>').css("padding", "30px");
 			cy.get('.window-close-button').click();
-			cy.get('.window').should('not.exist');
+			await expect(cy.get('.window')).should('not.exist');
 		});
 	});
 
@@ -218,16 +218,16 @@ test.describe('$Window Component', () => {
 				const $window = win.$Window({
 					title: 'Test Window',
 				});
-				cy.get('.window-title').should('have.text', 'Test Window');
+				await expect(cy.get('.window-title')).should('have.text', 'Test Window');
 				cy.then(({ page }) => {
 					$window.title('New Title');
 				});
-				cy.get('.window-title').should('have.text', 'New Title');
+				await expect(cy.get('.window-title')).should('have.text', 'New Title');
 				cy.then(({ page }) => {
 					// @ts-ignore
 					$window.title(420);
 				});
-				cy.get('.window-title').should('have.text', '420');
+				await expect(cy.get('.window-title')).should('have.text', '420');
 			});
 		});
 		test('should clear the title if given an empty string', ({ page }) => {
@@ -235,11 +235,11 @@ test.describe('$Window Component', () => {
 				const $window = win.$Window({
 					title: 'Test Window',
 				});
-				cy.get('.window-title').should('have.text', 'Test Window');
+				await expect(cy.get('.window-title')).should('have.text', 'Test Window');
 				cy.then(({ page }) => {
 					$window.title('');
 				});
-				cy.get('.window-title').should('have.text', '');
+				await expect(cy.get('.window-title')).should('have.text', '');
 			});
 		});
 		test('should return the current title if called without arguments', ({ page }) => {
@@ -362,21 +362,21 @@ test.describe('$Window Component', () => {
 					],
 				});
 				$window.setMenuBar(menu);
-				cy.get('[role="menubar"]').should('be.visible');
+				await expect(cy.get('[role="menubar"]')).should('be.visible');
 				cy.then(({ page }) => { $window.minimize(); });
 
-				cy.get('.window-titlebar').should('have.length', 1); // wait for titlebar animation to finish
+				await expect(cy.get('.window-titlebar')).should('have.length', 1); // wait for titlebar animation to finish
 				// move the window so the menu bar is visible if it's broken
 				cy.get('.window-titlebar').trigger('pointerdown', { which: 1 });
 				cy.get('.window-titlebar').trigger('pointermove', { clientX: 150, clientY: 150 });
 				cy.get('.window-titlebar').trigger('pointerup', { force: true });
 				// not a strong enough assertion, since it considers offscreen elements hidden
 				// (you can test with `Cypress.dom.isVisible(document.querySelector("[role=menubar]"))` in the console)
-				cy.get('[role="menubar"]').should('not.be.visible');
+				await expect(cy.get('[role="menubar"]')).should('not.be.visible');
 				// stronger assertion
-				cy.get('[role="menubar"]').should('have.css', 'display', 'none');
+				await expect(cy.get('[role="menubar"]')).should('have.css', 'display', 'none');
 				cy.then(({ page }) => { $window.restore(); });
-				cy.get('[role="menubar"]').should('be.visible');
+				await expect(cy.get('[role="menubar"]')).should('be.visible');
 			});
 		});
 		test('should set up the correct keyboard scope', ({ page }) => {
@@ -401,13 +401,13 @@ test.describe('$Window Component', () => {
 			// works while window is focused
 			cy.get('.window-content').click();
 			cy.get('body').type('{alt}t').type('{enter}');
-			// Can't use cy.wrap(activated_menu_item).should('be.true') because it would be synchronously accessing the value before commands are run
-			cy.then(({ page }) => {
-				expect(activated_menu_item).to.be.true;
-				activated_menu_item = false;
-				// @ts-ignore
-				document.activeElement.blur();
-			});
+			await expect(// Can't use cy.wrap(activated_menu_item)).should('be.true') because it would be synchronously accessing the value before commands are run
+				cy.then(({ page }) => {
+					expect(activated_menu_item).to.be.true;
+					activated_menu_item = false;
+					// @ts-ignore
+					document.activeElement.blur();
+				});
 			// does nothing while window is not focused
 			cy.get('body').click({ force: true });
 			cy.get('body').type('{alt}t').type('{enter}');
@@ -447,9 +447,9 @@ test.describe('$Window Component', () => {
 					title: 'Test Window',
 				});
 				$window.$content.append('<p>Click in the blank space of the window</p>');
-				cy.get('.window').should('not.have.focus');
+				await expect(cy.get('.window')).should('not.have.focus');
 				cy.get('.window-content').click();
-				cy.get('.window-content').should('have.focus');
+				await expect(cy.get('.window-content')).should('have.focus');
 			});
 		});
 		it("should focus the window when clicking on the title bar", ({ page }) => {
@@ -458,9 +458,9 @@ test.describe('$Window Component', () => {
 					title: 'Test Window',
 				});
 				$window.$content.append('<p>Click on the title bar</p>');
-				cy.get('.window').should('not.have.focus');
+				await expect(cy.get('.window')).should('not.have.focus');
 				cy.get('.window-titlebar').click();
-				cy.get('.window-content').should('have.focus');
+				await expect(cy.get('.window-content')).should('have.focus');
 			});
 		});
 		it("should focus a control in the window when clicking it", ({ page }) => {
@@ -469,15 +469,15 @@ test.describe('$Window Component', () => {
 					title: 'Test Window',
 				});
 				$window.$content.append('<form><input type="text" id="input" value="Click me"><textarea id="textarea">Text area</textarea></form>');
-				cy.get('#input').should('not.have.focus');
+				await expect(cy.get('#input')).should('not.have.focus');
 				cy.get('#input').click();
-				cy.get('#input').should('have.focus');
+				await expect(cy.get('#input')).should('have.focus');
 				cy.get('body').click({ force: true });
-				cy.get('#input').should('not.have.focus');
+				await expect(cy.get('#input')).should('not.have.focus');
 				cy.then(({ page }) => { expect(win.document.activeElement).to.equal(win.document.body); });
 				// refocusing logic should not override clicking a specific control
 				cy.get('#textarea').click();
-				cy.get('#textarea').should('have.focus');
+				await expect(cy.get('#textarea')).should('have.focus');
 			});
 		});
 		// I think Cypress's focus simulation logic breaks these tests.
@@ -496,18 +496,18 @@ test.describe('$Window Component', () => {
 				$window.$content.append('<button id="disabled-button" disabled>Can\'t click me</button><button id="enabled-button">Click me</button>');
 				// cy.get('#disabled-button').click({ force: true });
 				cy.get('#disabled-button').trigger('pointerdown', { which: 1, force: true });
-				// cy.get('.window-content').should('have.focus');
-				cy.then(({ page }) => { expect(win.document.activeElement).to.equal(win.document.querySelector('.window-content')); });
+				await expect(// cy.get('.window-content')).should('have.focus');
+					cy.then(({ page }) => { expect(win.document.activeElement).to.equal(win.document.querySelector('.window-content')); });
 				cy.get('#enabled-button').click();
-				cy.get('#enabled-button').should('have.focus');
+				await expect(cy.get('#enabled-button')).should('have.focus');
 				// cy.get('#disabled-button').click({ force: true });
 				cy.get('#disabled-button').trigger('pointerdown', { which: 1, force: true });
-				cy.get('#enabled-button').should('have.focus');
+				await expect(cy.get('#enabled-button')).should('have.focus');
 				cy.get('body').click({ force: true });
 				cy.then(({ page }) => { expect(win.document.activeElement).to.equal(win.document.body); });
 				// cy.get('#disabled-button').click({ force: true });
 				cy.get('#disabled-button').trigger('pointerdown', { which: 1, force: true });
-				cy.get('#enabled-button').should('have.focus');
+				await expect(cy.get('#enabled-button')).should('have.focus');
 			});
 		});
 		it.skip("should focus the last focused control in the window when closing another window that was focused", ({ page }) => {
@@ -517,16 +517,16 @@ test.describe('$Window Component', () => {
 				});
 				$window.$content.append('<p>Window originally having focus <textarea id="textarea">Text area</textarea></p>');
 				cy.get('#textarea').focus();
-				cy.get('#textarea').should('have.focus');
+				await expect(cy.get('#textarea')).should('have.focus');
 				const $window2 = win.$Window({
 					title: 'Popup Window',
 				});
 				$window2.$content.append('<p>Window taking focus temporarily</p><p><button id="close-popup">Close</button></p>');
 				cy.get('#close-popup').focus();
-				cy.get('#close-popup').should('have.focus');
+				await expect(cy.get('#close-popup')).should('have.focus');
 				cy.get('.window-close-button').last().click();
-				// cy.get('#textarea').should('have.focus');
-				cy.then(({ page }) => { expect(win.document.activeElement).to.equal(win.document.getElementById('textarea')); });
+				await expect(// cy.get('#textarea')).should('have.focus');
+					cy.then(({ page }) => { expect(win.document.activeElement).to.equal(win.document.getElementById('textarea')); });
 			});
 		});
 		describe("tabstop wrapping", ({ page }) => {
@@ -542,17 +542,17 @@ test.describe('$Window Component', () => {
 					});
 					$window.$content.append('<p>Tabstop wrapping test</p><button id="button1">Button 1</button><button id="button2">Button 2</button><button id="button3">Button 3</button>');
 					cy.get('#button1').focus();
-					cy.get('#button1').should('have.focus');
+					await expect(cy.get('#button1')).should('have.focus');
 					cy.get('body').type('{tab}');
-					cy.get('#button2').should('have.focus');
+					await expect(cy.get('#button2')).should('have.focus');
 					cy.get('body').type('{tab}');
-					cy.get('#button3').should('have.focus');
+					await expect(cy.get('#button3')).should('have.focus');
 					cy.get('body').type('{tab}');
-					cy.get('#button1').should('have.focus');
+					await expect(cy.get('#button1')).should('have.focus');
 					cy.get('body').type('{shift}{tab}');
-					cy.get('#button3').should('have.focus');
+					await expect(cy.get('#button3')).should('have.focus');
 					cy.get('body').type('{shift}{tab}');
-					cy.get('#button2').should('have.focus');
+					await expect(cy.get('#button2')).should('have.focus');
 				});
 			});
 		});
