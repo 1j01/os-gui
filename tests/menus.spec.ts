@@ -111,12 +111,8 @@ test.describe('MenuBar Component', () => {
 
 	test('should have correct ARIA attributes', async ({ page }) => {
 		await page.locator('.menu-button').first().click();
-		await page.locator('.menu-button, .menu-item').each(($el) => {
-			await expect(cy.wrap($el)).toHaveAttribute('role').and('match', /^(menuitem|menuitemcheckbox|menuitemradio)$/);
-		});
-		await page.locator('.menu-popup').each(($el) => {
-			await expect(cy.wrap($el)).toHaveAttribute('role', 'menu');
-		});
+		await expect(page.locator('.menu-button, .menu-item')).toHaveAttribute('role', /^(menuitem|menuitemcheckbox|menuitemradio)$/);
+		await expect(page.locator('.menu-popup')).toHaveAttribute('role', 'menu');
 	});
 
 	test('should open/close submenu on hover', async ({ page }) => {
@@ -201,8 +197,8 @@ test.describe('MenuBar Component', () => {
 		await expect(page.locator('.menu-popup:visible')).should('have.length', 1);
 		// test reversed left/right interaction in RTL layout
 		await page.locator(':focus').type('{esc}');
-		cy.document().then((doc) => {
-			doc.body.style.direction = 'rtl';
+		await page.evaluate(() => {
+			document.body.style.direction = 'rtl';
 		});
 		await page.locator('.menu-button').nth(1).click();
 		await page.locator(':focus').type('{downarrow}{downarrow}');
@@ -288,18 +284,14 @@ test.describe('MenuBar Component', () => {
 	});
 
 	test('should close all menus when pressing Alt, and refocus the last focused control outside the menu bar', async ({ page }) => {
-		cy.then(async ({ page }) => { // not technically needed since it's the first command
-			// cy.$$('<button id="focusable">Focus</button>').appendTo('body').focus(); // doesn't work, appends to the wrong document
-			// Cypress.$('<button id="focusable">Focus</button>').appendTo('body').focus(); // doesn't work, appends to the wrong document
-			Cypress.$('body').append('<button id="focusable">Focus</button>').find('#focusable').focus(); // works
+		page.evaluate(() => {
+			$('body').append('<button id="focusable">Focus</button>').find('#focusable').focus();
+			// const button = document.createElement('button');
+			// button.id = 'focusable';
+			// document.body.appendChild(button);
+			// button.focus();
+			// button.textContent = 'Focus';
 		});
-		// cy.document().then((doc) => { // works but verbose
-		// 	const button = doc.createElement('button');
-		// 	button.id = 'focusable';
-		// 	doc.body.appendChild(button);
-		// 	button.focus();
-		// 	button.textContent = 'Focus';
-		// });
 		await expect(page.locator('#focusable')).toHaveFocus();
 
 		await page.locator('.menu-button').first().click();
