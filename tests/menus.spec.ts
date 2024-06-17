@@ -190,39 +190,35 @@ test.describe('MenuBar Component', () => {
 		await page.locator('.menu-button').nth(1).click();
 		await page.locator(':focus').press('ArrowDown');
 		await page.locator(':focus').press('ArrowDown');
-		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
-		await expect().toHaveClass(/\bhighlight\b/)
-		await expect().toHaveAttribute('aria-expanded', 'false');
+		const menuItemWithSubmenu = await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first();
+		await expect(menuItemWithSubmenu).toHaveClass(/\bhighlight\b/)
+		await expect(menuItemWithSubmenu).toHaveAttribute('aria-expanded', 'false');
 		await page.locator(':focus').press('ArrowRight');
-		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
-		await expect().toHaveClass(/\bhighlight\b/)
-		await expect().toHaveAttribute('aria-expanded', 'true');
-		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
+		await expect(menuItemWithSubmenu).toHaveClass(/\bhighlight\b/)
+		await expect(menuItemWithSubmenu).toHaveAttribute('aria-expanded', 'true');
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(2);
 		await page.locator(':focus').press('ArrowLeft');
-		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
-		await expect().toHaveClass(/\bhighlight\b/)
-		await expect().toHaveAttribute('aria-expanded', 'false');
-		await expect(page.locator('.menu-popup:visible')).should('have.length', 1);
+		await expect(menuItemWithSubmenu).toHaveClass(/\bhighlight\b/)
+		await expect(menuItemWithSubmenu).toHaveAttribute('aria-expanded', 'false');
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(1);
 		// test reversed left/right interaction in RTL layout
 		await page.locator(':focus').press('Escape');
 		await page.evaluate(() => {
 			document.body.style.direction = 'rtl';
 		});
 		await page.locator('.menu-button').nth(1).click();
-		await page.locator(':focus').press('ArrowDownArrowDown');
-		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
-		await expect().toHaveClass(/\bhighlight\b/)
-		await expect().toHaveAttribute('aria-expanded', 'false');
+		await page.locator(':focus').press('ArrowDown');
+		await page.locator(':focus').press('ArrowDown');
+		await expect(menuItemWithSubmenu).toHaveClass(/\bhighlight\b/)
+		await expect(menuItemWithSubmenu).toHaveAttribute('aria-expanded', 'false');
 		await page.locator(':focus').press('ArrowLeft');
-		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
-		await expect().toHaveClass(/\bhighlight\b/)
-		await expect().toHaveAttribute('aria-expanded', 'true');
-		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
+		await expect(menuItemWithSubmenu).toHaveClass(/\bhighlight\b/)
+		await expect(menuItemWithSubmenu).toHaveAttribute('aria-expanded', 'true');
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(2);
 		await page.locator(':focus').press('ArrowRight');
-		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
-		await expect().toHaveClass(/\bhighlight\b/)
-		await expect().toHaveAttribute('aria-expanded', 'false');
-		await expect(page.locator('.menu-popup:visible')).should('have.length', 1);
+		await expect(menuItemWithSubmenu).toHaveClass(/\bhighlight\b/)
+		await expect(menuItemWithSubmenu).toHaveAttribute('aria-expanded', 'false');
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(1);
 
 		// TODO: test moving to adjacent menu if pressing in the direction opposite the submenu indicator arrow
 	});
@@ -284,11 +280,11 @@ test.describe('MenuBar Component', () => {
 		// test with submenu
 		await page.locator('.menu-button').nth(1).click();
 		await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
-		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(2);
 		await page.locator('body').press('Escape');
-		await expect(page.locator('.menu-popup:visible')).should('have.length', 1);
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(1);
 		await page.locator('body').press('Escape');
-		await expect(page.locator('.menu-popup:visible')).should('have.length', 0);
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(0);
 	});
 
 	test('should close all menus when pressing Alt, and refocus the last focused control outside the menu bar', async ({ page }) => {
@@ -311,9 +307,9 @@ test.describe('MenuBar Component', () => {
 		// test with submenu
 		await page.locator('.menu-button').nth(1).click();
 		await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
-		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(2);
 		await page.locator('body').type('Alt+Key');
-		await expect(page.locator('.menu-popup:visible')).should('have.length', 0);
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(0);
 		await expect(page.locator('#focusable')).toBeFocused();
 	});
 });
