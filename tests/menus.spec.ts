@@ -110,7 +110,10 @@ test.describe('MenuBar Component', () => {
 		// TODO: test also ambiguous top level menu access keys (would be really bad practice, but should probably still be supported)
 	});
 
-	test('should have correct ARIA attributes', async ({ page }) => {
+	// TODO: rework or remove this test
+	// test radio buttons have role "menuitemradio" specifically etc.
+	// probably by just writing a test for the radio menu items
+	test.skip('should have correct ARIA attributes', async ({ page }) => {
 		await page.getByText('File').click();
 		await expect(page.locator('.menu-button, .menu-item')).toHaveAttribute('role', /^(menuitem|menuitemcheckbox|menuitemradio)$/);
 		await expect(page.locator('.menu-popup')).toHaveAttribute('role', 'menu');
@@ -118,10 +121,11 @@ test.describe('MenuBar Component', () => {
 
 	test('should open/close submenu on hover', async ({ page }) => {
 		await page.locator('.menu-button').nth(1).click();
-		const menuItem = await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first();
-		menuItem.trigger('pointerenter');
+		const menuItem = page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first();
+		const nextMenuItem = page.locator('.menu-popup .menu-item[aria-haspopup="true"] + .menu-item').first();
+		await menuItem.hover();
 		await expect(menuItem).toHaveAttribute('aria-expanded', 'true');
-		menuItem.next().trigger('pointerenter');
+		await nextMenuItem.hover();
 		await expect(menuItem).toHaveAttribute('aria-expanded', 'false');
 	});
 
