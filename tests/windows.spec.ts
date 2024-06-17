@@ -204,23 +204,16 @@ test.describe('$Window Component', () => {
 			const leftHandlePos = { x: rect.left, y: rect.top + rect.height / 2 };
 			const leftHandle = document.elementFromPoint(leftHandlePos.x, leftHandlePos.y);
 		});
-		await (
-			leftHandle.dispatchEvent('pointerdown', { which: 1 }));
+		await (leftHandle.dispatchEvent('pointerdown', { which: 1 }));
 		// Try moving in both axes to test that only one direction is allowed
 		await leftHandle.dispatchEvent('pointermove', { clientX: leftHandlePos.x - 50, clientY: leftHandlePos.y - 50 });
 
 		const newRect = $window.element.getBoundingClientRect();
-		expect(
-			newRect.left).FIXME_be_lessThan(rect.left);
-		expect(
-			newRect.right).FIXME_be_closeTo(rect.right, 1);
-		expect(
-			newRect.top).FIXME_be_closeTo(rect.top, 1);
-		expect(
-			newRect.bottom).FIXME_be_closeTo(rect.bottom, 1);
-		await (
-
-			leftHandle.dispatchEvent('pointerup'));
+		expect(newRect.left).FIXME_be_lessThan(rect.left);
+		expect(newRect.right).FIXME_be_closeTo(rect.right, 1);
+		expect(newRect.top).FIXME_be_closeTo(rect.top, 1);
+		expect(newRect.bottom).FIXME_be_closeTo(rect.bottom, 1);
+		await (leftHandle.dispatchEvent('pointerup'));
 
 		// TODO: test corner handles, default clamping, and `options.constrainRect` API clamping
 	});
@@ -257,8 +250,7 @@ test.describe('$Window Component', () => {
 				const $window = $Window({
 					title: 'Test Window'
 				});
-				expect(
-					$window.title()).toBe('Test Window');
+				expect($window.title()).toBe('Test Window');
 			});
 		});
 	});
@@ -274,10 +266,8 @@ test.describe('$Window Component', () => {
 						any: new Text('any size placeholder')
 					}
 				});
-				expect(
-					$window.getIconAtSize(16)).toHaveProperty('textContent', '16x16 placeholder');
-				expect(
-					$window.getIconAtSize(32)).toHaveProperty('textContent', '32x32 placeholder');
+				expect($window.getIconAtSize(16)).toHaveProperty('textContent', '16x16 placeholder');
+				expect($window.getIconAtSize(32)).toHaveProperty('textContent', '32x32 placeholder');
 			});
 
 		});
@@ -290,14 +280,10 @@ test.describe('$Window Component', () => {
 						32: new Text('32x32 placeholder')
 					}
 				});
-				expect(
-					$window.getIconAtSize(0)).toHaveProperty('textContent', '16x16 placeholder');
-				expect(
-					$window.getIconAtSize(17)).toHaveProperty('textContent', '16x16 placeholder');
-				expect(
-					$window.getIconAtSize(30)).toHaveProperty('textContent', '32x32 placeholder');
-				expect(
-					$window.getIconAtSize(300)).toHaveProperty('textContent', '32x32 placeholder');
+				expect($window.getIconAtSize(0)).toHaveProperty('textContent', '16x16 placeholder');
+				expect($window.getIconAtSize(17)).toHaveProperty('textContent', '16x16 placeholder');
+				expect($window.getIconAtSize(30)).toHaveProperty('textContent', '32x32 placeholder');
+				expect($window.getIconAtSize(300)).toHaveProperty('textContent', '32x32 placeholder');
 			});
 		});
 		test('should return the "any" size icon if provided and none match exactly', async ({ page }) => {
@@ -310,12 +296,9 @@ test.describe('$Window Component', () => {
 						any: new Text('any size placeholder')
 					}
 				});
-				expect(
-					$window.getIconAtSize(17)).toHaveProperty('textContent', 'any size placeholder');
-				expect(
-					$window.getIconAtSize(30)).toHaveProperty('textContent', 'any size placeholder');
-				expect(
-					$window.getIconAtSize(32)).toHaveProperty('textContent', '32x32 placeholder');
+				expect($window.getIconAtSize(17)).toHaveProperty('textContent', 'any size placeholder');
+				expect($window.getIconAtSize(30)).toHaveProperty('textContent', 'any size placeholder');
+				expect($window.getIconAtSize(32)).toHaveProperty('textContent', '32x32 placeholder');
 			});
 
 		});
@@ -332,14 +315,10 @@ test.describe('$Window Component', () => {
 					32: new Text('32x32 placeholder'),
 					any: new Text('any size placeholder')
 				});
-				expect(
-					$window.getIconAtSize(16)).toHaveProperty('textContent', '16x16 placeholder');
-				expect(
-					$window.getIconAtSize(32)).toHaveProperty('textContent', '32x32 placeholder');
-				expect(
-					$window.getIconAtSize(17)).toHaveProperty('textContent', 'any size placeholder');
-				expect(
-					$window.getIconAtSize(30)).toHaveProperty('textContent', 'any size placeholder');
+				expect($window.getIconAtSize(16)).toHaveProperty('textContent', '16x16 placeholder');
+				expect($window.getIconAtSize(32)).toHaveProperty('textContent', '32x32 placeholder');
+				expect($window.getIconAtSize(17)).toHaveProperty('textContent', 'any size placeholder');
+				expect($window.getIconAtSize(30)).toHaveProperty('textContent', 'any size placeholder');
 			});
 
 			// It's actually not wrapped in an element, which is a little weird.
@@ -358,14 +337,10 @@ test.describe('$Window Component', () => {
 					}
 				});
 				$window.setIcons({});
-				expect(
-					$window.getIconAtSize(16)).toBeNull();
-				expect(
-					$window.getIconAtSize(32)).toBeNull();
-				expect(
-					$window.getIconAtSize(17)).toBeNull();
-				expect(
-					$window.getIconAtSize(30)).toBeNull();
+				expect($window.getIconAtSize(16)).toBeNull();
+				expect($window.getIconAtSize(32)).toBeNull();
+				expect($window.getIconAtSize(17)).toBeNull();
+				expect($window.getIconAtSize(30)).toBeNull();
 			});
 		});
 	});
@@ -436,8 +411,7 @@ test.describe('$Window Component', () => {
 			await page.keyboard.up("Alt");
 			await page.locator('body').press("Enter");
 			// Can't use cy.wrap(activated_menu_item).should('be.true') because it would be synchronously accessing the value before commands are run
-			expect(
-				activated_menu_item).toBeTruthy();
+			expect(activated_menu_item).toBeTruthy();
 			activated_menu_item = false;
 			// @ts-ignore
 			document.activeElement.blur();
@@ -448,9 +422,7 @@ test.describe('$Window Component', () => {
 			await page.locator('body').fill("t");
 			await page.keyboard.up("Alt");
 			await page.locator('body').press("Enter");
-			expect(
-
-				activated_menu_item).FIXME_be_false();
+			expect(activated_menu_item).FIXME_be_false();
 
 		});
 	});
