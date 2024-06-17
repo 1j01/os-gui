@@ -194,30 +194,30 @@ test.describe('$Window Component', () => {
 	});
 
 	test('can be resized horizontally by dragging the left edge', async ({ page }) => {
-		const originalRect = await page.evaluate(() => {
+		const leftHandlePos = await page.evaluate(() => {
 			const $window = $Window({
 				title: 'Resizable Window',
 				resizable: true
 			});
 			$window.$content.append('<p>Resize me!</p>').css("padding", "30px");
-			const originalRect = $window.element.getBoundingClientRect();
+			const rect = $window.element.getBoundingClientRect();
+			const leftHandlePos = { x: rect.left, y: rect.top + rect.height / 2 };
 			window.$window = $window;
-			return originalRect;
+			window.originalRect = rect;
+			return leftHandlePos;
 		});
-		const leftHandlePos = { x: originalRect.left, y: originalRect.top + originalRect.height / 2 };
-
 		await page.mouse.move(leftHandlePos.x, leftHandlePos.y);
 		await page.mouse.down();
 		// Try moving in both axes to test that only one direction is allowed
 		await page.mouse.move(leftHandlePos.x - 50, leftHandlePos.y);
 
-		const newRect = await page.evaluate(() =>
-			window.$window.element.getBoundingClientRect()
-		);
-		expect(newRect.left).toBeLessThan(originalRect.left);
-		expect(newRect.right).toBeCloseTo(originalRect.right, 1);
-		expect(newRect.top).toBeCloseTo(originalRect.top, 1);
-		expect(newRect.bottom).toBeCloseTo(originalRect.bottom, 1);
+		await page.evaluate(() => {
+			const newRect = window.$window.element.getBoundingClientRect();
+			expect(newRect.left).toBeLessThan(rect.left);
+			expect(newRect.right).toBeCloseTo(rect.right, 1);
+			expect(newRect.top).toBeCloseTo(rect.top, 1);
+			expect(newRect.bottom).toBeCloseTo(rect.bottom, 1);
+		});
 		await page.mouse.up();
 
 		// TODO: test corner handles, default clamping, and `options.constrainRect` API clamping
