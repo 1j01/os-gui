@@ -236,31 +236,31 @@ test.describe('MenuBar Component', () => {
 		await page.locator('.menu-button').last().click();
 		await page.locator('.menu-item[aria-disabled="true"]').click();
 		await expect(page.locator('.menu-popup')).toBeVisible(); // Still open because the disabled item didn't trigger close
-		await expect(page.evaluate(() => testState.disabledActionTriggered)).toBe(false);
+		await expect(await page.evaluate(() => testState.disabledActionTriggered)).toBe(false);
 	});
 
 
 	test('should trigger action on menu item click', async ({ page }) => {
-		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
+		await expect(await page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 		await page.locator('.menu-button').first().click();
 		await page.locator('.menu-popup .menu-item').first().click();
-		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(true);
+		await expect(await page.evaluate(() => testState.fileOpenTriggered)).toBe(true);
 	});
 
 	test('should trigger action when pressing enter', async ({ page }) => {
 		await page.locator('body').press('Alt+KeyF');
 		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass(/\bhighlight\b/);
 		await expect(page.locator('.menu-popup:visible').first()).toBeFocused();
-		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
+		await expect(await page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 		await page.locator(':focus').press('Enter');
-		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(true);
+		await expect(await page.evaluate(() => testState.fileOpenTriggered)).toBe(true);
 	});
 
 	test('should do nothing when pressing space', async ({ page }) => {
 		await page.locator('body').press('Alt+KeyF');
 		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass(/\bhighlight\b/);
 		await expect(page.locator('.menu-popup:visible').first()).toBeFocused();
-		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
+		await expect(await page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 		// Cypress was triggering a click command inside type(), and hiding it from the command log, invalidating the test by activating the menu item, unlike real world behavior.
 		// I thought it might be assuming it's a button and triggering a click to imitate the default action of buttons when pressing space, but it's not that.
 		// It was simply clicking before typing in order to "simulate typical user behavior",
@@ -269,7 +269,7 @@ test.describe('MenuBar Component', () => {
 		// Need to use the focused element instead of the highlighted one to avoid the click,
 		// and need to ensure the element receives focus beforehand with `should` (above) to avoid it failing to find anything focused here.
 		await page.locator(':focus').press(' ');
-		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
+		await expect(await page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 	});
 
 	test('should exit one menu level when pressing Escape', async ({ page }) => {
