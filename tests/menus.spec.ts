@@ -21,6 +21,14 @@ function getMenuPopup(page: Page, menuName: string) {
 // 	},
 // });
 
+// This only exists within the test page, i.e. page.evaluate,
+// but I doubt there's a good way to say something exists within page.evaluate calls only.
+declare const testState: {
+	fileOpenTriggered: boolean;
+	checkboxState: boolean;
+	disabledActionTriggered: boolean;
+};
+
 test.describe('MenuBar Component', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.setViewportSize({ width: 300, height: 300 });
@@ -64,20 +72,20 @@ test.describe('MenuBar Component', () => {
 		await page.locator('body').type('{alt}f');
 		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'true');
 		// Menu item with action
-		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.false');
+		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 		await page.locator('body').type('o');
-		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.true');
+		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(true);
 		// Menu should be closed after action is triggered
 		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'false');
 		await expect(page.locator('.menu-button').nth(1)).toHaveAttribute('aria-expanded', 'false');
 		// Checkbox menu item
 		await page.locator('body').type('{alt}v');
 		await expect(page.locator('.menu-button').nth(1)).toHaveAttribute('aria-expanded', 'true');
-		await expect(cy.window().its('testState.checkboxState')).should('be.false');
-		await expect(expect(cy).toHaveText('Checkbox State').first().parent("[role='menuitemcheckbox']")).toHaveAttribute('aria-checked', 'false');
+		await expect(page.evaluate(() => testState.checkboxState)).toBe(false);
+		await expect(page.getByText('Checkbox State').first().parent("[role='menuitemcheckbox']")).toHaveAttribute('aria-checked', 'false');
 		await page.locator('body').type('s');
-		await expect(cy.window().its('testState.checkboxState')).should('be.true');
-		await expect(expect(cy).toHaveText('Checkbox State').first().parent("[role='menuitemcheckbox']")).toHaveAttribute('aria-checked', 'true');
+		await expect(page.evaluate(() => testState.checkboxState)).toBe(true);
+		await expect(page.getByText('Checkbox State').first().parent("[role='menuitemcheckbox']")).toHaveAttribute('aria-checked', 'true');
 		// Menu should be closed after checkbox is toggled
 		// TODO: match Windows behavior
 		// await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'false');
@@ -228,31 +236,31 @@ test.describe('MenuBar Component', () => {
 		await page.locator('.menu-button').last().click();
 		await page.locator('.menu-item[aria-disabled="true"]').click();
 		await expect(page.locator('.menu-popup')).should('be.visible'); // Still open because the disabled item didn't trigger close
-		await expect(cy.window().its('testState.disabledActionTriggered')).should('be.false');
+		await expect(page.evaluate(() => testState.disabledActionTriggered)).toBe(false);
 	});
 
 
 	test('should trigger action on menu item click', async ({ page }) => {
-		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.false');
+		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 		await page.locator('.menu-button').first().click();
 		await page.locator('.menu-popup .menu-item').first().click();
-		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.true');
+		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(true);
 	});
 
 	test('should trigger action when pressing enter', async ({ page }) => {
 		await page.locator('body').type('{alt}f');
 		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass('highlight');
 		await expect(page.locator('.menu-popup:visible').first()).toHaveFocus();
-		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.false');
+		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 		await page.locator(':focus').type('{enter}');
-		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.true');
+		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(true);
 	});
 
 	test('should do nothing when pressing space', async ({ page }) => {
 		await page.locator('body').type('{alt}f');
 		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass('highlight');
 		await expect(page.locator('.menu-popup:visible').first()).toHaveFocus();
-		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.false');
+		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 		// Cypress was triggering a click command inside type(), and hiding it from the command log, invalidating the test by activating the menu item, unlike real world behavior.
 		// I thought it might be assuming it's a button and triggering a click to imitate the default action of buttons when pressing space, but it's not that.
 		// It was simply clicking before typing in order to "simulate typical user behavior",
@@ -261,7 +269,7 @@ test.describe('MenuBar Component', () => {
 		// Need to use the focused element instead of the highlighted one to avoid the click,
 		// and need to ensure the element receives focus beforehand with `should` (above) to avoid it failing to find anything focused here.
 		await page.locator(':focus').type(' ');
-		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.false');
+		await expect(page.evaluate(() => testState.fileOpenTriggered)).toBe(false);
 	});
 
 	test('should exit one menu level when pressing Escape', async ({ page }) => {
