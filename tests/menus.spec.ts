@@ -58,4 +58,254 @@ test.describe('MenuBar Component', () => {
 		await page.locator('.menu-button').nth(2).dispatchEvent('pointermove');
 		await expect(page.locator('.menu-popup:visible')).toContainText('Copy');
 	});
+
+
+	test('should open menus and activate menu items with access keys', async ({ page }) => {
+		await page.locator('body').type('{alt}f');
+		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'true');
+		// Menu item with action
+		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.false');
+		await page.locator('body').type('o');
+		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.true');
+		// Menu should be closed after action is triggered
+		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'false');
+		await expect(page.locator('.menu-button').nth(1)).toHaveAttribute('aria-expanded', 'false');
+		// Checkbox menu item
+		await page.locator('body').type('{alt}v');
+		await expect(page.locator('.menu-button').nth(1)).toHaveAttribute('aria-expanded', 'true');
+		await expect(cy.window().its('testState.checkboxState')).should('be.false');
+		await expect(expect(cy).toHaveText('Checkbox State').first().parent("[role='menuitemcheckbox']")).toHaveAttribute('aria-checked', 'false');
+		await page.locator('body').type('s');
+		await expect(cy.window().its('testState.checkboxState')).should('be.true');
+		await expect(expect(cy).toHaveText('Checkbox State').first().parent("[role='menuitemcheckbox']")).toHaveAttribute('aria-checked', 'true');
+		// Menu should be closed after checkbox is toggled
+		// TODO: match Windows behavior
+		// await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'false');
+		// await expect(page.locator('.menu-button').nth(1)).toHaveAttribute('aria-expanded', 'false');
+		await page.locator('body').type('{esc}');
+		// Submenu item
+		await page.locator('body').type('{alt}v').type('m');
+		// Should cycle through items with ambiguous access keys,
+		// including menu items without defined access keys, which use the first letter of the label.
+		// TODO: make sure both implicit and explicit access keys are tested
+		// TODO: test that the items are not activated, only highlighted
+		await expect(page.locator('.menu-item.highlight')).toHaveText('Item 0');
+		await page.locator('body').type('i');
+		await expect(page.locator('.menu-item.highlight')).toHaveText('Item 1');
+		await page.locator('body').type('i');
+		await expect(page.locator('.menu-item.highlight')).toHaveText('Item 2');
+		// Should cycle back to the first item
+		await page.locator('body').type(Array(100 - 2).fill('i').join(''));
+		await expect(page.locator('.menu-item.highlight')).toHaveText('Item 0');
+
+		// TODO: test also ambiguous top level menu access keys (would be really bad practice, but should probably still be supported)
+	});
+
+	test('should have correct ARIA attributes', async ({ page }) => {
+		await page.locator('.menu-button').first().click();
+		await page.locator('.menu-button, .menu-item').each(($el) => {
+			await expect(cy.wrap($el)).toHaveAttribute('role').and('match', /^(menuitem|menuitemcheckbox|menuitemradio)$/);
+		});
+		await page.locator('.menu-popup').each(($el) => {
+			await expect(cy.wrap($el)).toHaveAttribute('role', 'menu');
+		});
+	});
+
+	test('should open/close submenu on hover', async ({ page }) => {
+		await page.locator('.menu-button').nth(1).click();
+		const menuItem = await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first();
+		menuItem.trigger('pointerenter');
+		await expect(menuItem).toHaveAttribute('aria-expanded', 'true');
+		menuItem.next().trigger('pointerenter');
+		await expect(menuItem).toHaveAttribute('aria-expanded', 'false');
+	});
+
+	test('should navigate menus using arrow keys', async ({ page }) => {
+		// moving between items in the same menu
+		await page.locator('.menu-button').first().click();
+		await page.locator('.menu-button').first().type('{downarrow}');
+		await expect(page.locator('.menu-item:visible').first()).toHaveClass('highlight');
+		await page.locator(':focus').type('{downarrow}');
+		await expect(page.locator('.menu-item:visible').nth(1)).toHaveClass('highlight');
+		await page.locator(':focus').type('{uparrow}');
+		await expect(page.locator('.menu-item:visible').first()).toHaveClass('highlight');
+		// wrapping around within a menu
+		await page.locator(':focus').type('{uparrow}');
+		await expect(page.locator('.menu-item:visible').last()).toHaveClass('highlight');
+		await page.locator(':focus').type('{downarrow}');
+		await expect(page.locator('.menu-item:visible').first()).toHaveClass('highlight');
+		// moving between top level menus while open
+		// File menu should be open
+		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'true');
+		await expect(page.locator('.menu-popup:visible')).toHaveText('Open');
+		await page.locator(':focus').type('{rightarrow}');
+		// View menu should be open
+		await expect(page.locator('.menu-button').nth(1)).toHaveAttribute('aria-expanded', 'true');
+		await expect(page.locator('.menu-popup:visible')).toHaveText('Checkbox State');
+		await page.locator(':focus').type('{leftarrow}');
+		// File menu should be open
+		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'true');
+		await expect(page.locator('.menu-popup:visible')).toHaveText('Open');
+		await page.locator(':focus').type('{leftarrow}');
+		// expect( await page.locator('.menu-popup:visible')).toHaveText('Maximize'); // App menu (alt+space menu) would only apply if inside a window, and isn't implemented as of writing
+		// Edit menu should be open, wrapping around
+		await expect(page.locator('.menu-button').last()).toHaveAttribute('aria-expanded', 'true');
+		await expect(page.locator('.menu-popup:visible')).toHaveText('Copy');
+		await page.locator(':focus').type('{rightarrow}');
+		// File menu should be open, wrapping around
+		await expect(page.locator('.menu-button').first()).toHaveAttribute('aria-expanded', 'true');
+		await expect(page.locator('.menu-popup:visible')).toHaveText('Open');
+		// moving between top level menu buttons without opening menus (after pressing Escape)
+		await page.locator('body').type('{esc}');
+		await expect(page.locator('.menu-popup:visible')).not.toExist();
+		await expect(page.locator('.menu-button').first()).toHaveFocus().toHaveAttribute('aria-expanded', 'false');
+		await page.locator(':focus').type('{rightarrow}');
+		await expect(page.locator('.menu-popup:visible')).not.toExist();
+		await expect(page.locator('.menu-button').nth(1)).toHaveFocus().toHaveAttribute('aria-expanded', 'false');
+		await page.locator(':focus').type('{downarrow}');
+		// opening menu from this state by pressing down arrow
+		await expect(page.locator('.menu-popup:visible')).toExist();
+		await expect(page.locator('.menu-item:visible').first()).toHaveClass('highlight');
+		// or up arrow (and yes, it should still be the first item, to match Windows 98's behavior)
+		await page.locator('body').type('{esc}');
+		await expect(page.locator('.menu-popup:visible')).not.toExist();
+		await page.locator(':focus').type('{uparrow}');
+		await expect(page.locator('.menu-popup:visible')).toExist();
+		await expect(page.locator('.menu-item:visible').first()).toHaveClass('highlight');
+	});
+
+	test('should enter/exit submenus using arrow keys', async ({ page }) => {
+		// test entering/exiting submenus with right/left
+		await page.locator('.menu-button').nth(1).click();
+		await page.locator(':focus').type('{downarrow}{downarrow}');
+		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
+		await expect().toHaveClass('highlight')
+		await expect().toHaveAttribute('aria-expanded', 'false');
+		await page.locator(':focus').type('{rightarrow}');
+		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
+		await expect().toHaveClass('highlight')
+		await expect().toHaveAttribute('aria-expanded', 'true');
+		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
+		await page.locator(':focus').type('{leftarrow}');
+		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
+		await expect().toHaveClass('highlight')
+		await expect().toHaveAttribute('aria-expanded', 'false');
+		await expect(page.locator('.menu-popup:visible')).should('have.length', 1);
+		// test reversed left/right interaction in RTL layout
+		await page.locator(':focus').type('{esc}');
+		cy.document().then((doc) => {
+			doc.body.style.direction = 'rtl';
+		});
+		await page.locator('.menu-button').nth(1).click();
+		await page.locator(':focus').type('{downarrow}{downarrow}');
+		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
+		await expect().toHaveClass('highlight')
+		await expect().toHaveAttribute('aria-expanded', 'false');
+		await page.locator(':focus').type('{leftarrow}');
+		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
+		await expect().toHaveClass('highlight')
+		await expect().toHaveAttribute('aria-expanded', 'true');
+		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
+		await page.locator(':focus').type('{rightarrow}');
+		await page.locator('.menu-popup:visible .menu-item[aria-haspopup="true"]').first()
+		await expect().toHaveClass('highlight')
+		await expect().toHaveAttribute('aria-expanded', 'false');
+		await expect(page.locator('.menu-popup:visible')).should('have.length', 1);
+
+		// TODO: test moving to adjacent menu if pressing in the direction opposite the submenu indicator arrow
+	});
+
+	test.skip('should (maybe) jump to first/last item using home/end keys (not actually supported in Windows)', async ({ page }) => {
+		await page.locator('.menu-button').first().click();
+		await page.locator(':focus').type('{end}');
+		await expect(page.locator('.menu-item').last()).toHaveClass('highlight');
+		await page.locator(':focus').type('{home}');
+		await expect(page.locator('.menu-item').first()).toHaveClass('highlight');
+	});
+
+	// TODO: disable interacting with disabled items
+	test.skip('should not interact with disabled menu items', async ({ page }) => {
+		await page.locator('.menu-button').last().click();
+		await page.locator('.menu-item[aria-disabled="true"]').click();
+		await expect(page.locator('.menu-popup')).should('be.visible'); // Still open because the disabled item didn't trigger close
+		await expect(cy.window().its('testState.disabledActionTriggered')).should('be.false');
+	});
+
+
+	test('should trigger action on menu item click', async ({ page }) => {
+		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.false');
+		await page.locator('.menu-button').first().click();
+		await page.locator('.menu-popup .menu-item').first().click();
+		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.true');
+	});
+
+	test('should trigger action when pressing enter', async ({ page }) => {
+		await page.locator('body').type('{alt}f');
+		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass('highlight');
+		await expect(page.locator('.menu-popup:visible').first()).toHaveFocus();
+		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.false');
+		await page.locator(':focus').type('{enter}');
+		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.true');
+	});
+
+	test('should do nothing when pressing space', async ({ page }) => {
+		await page.locator('body').type('{alt}f');
+		await expect(page.locator('.menu-popup:visible .menu-item').first()).toHaveClass('highlight');
+		await expect(page.locator('.menu-popup:visible').first()).toHaveFocus();
+		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.false');
+		// Cypress was triggering a click command inside type(), and hiding it from the command log, invalidating the test by activating the menu item, unlike real world behavior.
+		// I thought it might be assuming it's a button and triggering a click to imitate the default action of buttons when pressing space, but it's not that.
+		// It was simply clicking before typing in order to "simulate typical user behavior",
+		// because it doesn't consider the menu item to be focused.
+		// await page.locator('.menu-popup:visible .menu-item.highlight').type(' ', { force: true });
+		// Need to use the focused element instead of the highlighted one to avoid the click,
+		// and need to ensure the element receives focus beforehand with `should` (above) to avoid it failing to find anything focused here.
+		await page.locator(':focus').type(' ');
+		await expect(cy.window().its('testState.fileOpenTriggered')).should('be.false');
+	});
+
+	test('should exit one menu level when pressing Escape', async ({ page }) => {
+		await page.locator('.menu-button').first().click();
+		await expect(page.locator('.menu-popup')).should('be.visible');
+		await page.locator('body').type('{esc}');
+		await expect(page.locator('.menu-popup')).should('not.be.visible');
+		// test with submenu
+		await page.locator('.menu-button').nth(1).click();
+		await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
+		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
+		await page.locator('body').type('{esc}');
+		await expect(page.locator('.menu-popup:visible')).should('have.length', 1);
+		await page.locator('body').type('{esc}');
+		await expect(page.locator('.menu-popup:visible')).should('have.length', 0);
+	});
+
+	test('should close all menus when pressing Alt, and refocus the last focused control outside the menu bar', async ({ page }) => {
+		cy.then(async ({ page }) => { // not technically needed since it's the first command
+			// cy.$$('<button id="focusable">Focus</button>').appendTo('body').focus(); // doesn't work, appends to the wrong document
+			// Cypress.$('<button id="focusable">Focus</button>').appendTo('body').focus(); // doesn't work, appends to the wrong document
+			Cypress.$('body').append('<button id="focusable">Focus</button>').find('#focusable').focus(); // works
+		});
+		// cy.document().then((doc) => { // works but verbose
+		// 	const button = doc.createElement('button');
+		// 	button.id = 'focusable';
+		// 	doc.body.appendChild(button);
+		// 	button.focus();
+		// 	button.textContent = 'Focus';
+		// });
+		await expect(page.locator('#focusable')).toHaveFocus();
+
+		await page.locator('.menu-button').first().click();
+		await expect(page.locator('.menu-popup')).should('be.visible');
+		await expect(page.locator('#focusable')).should('not.have.focus');
+		await page.locator('body').type('{alt}');
+		await expect(page.locator('.menu-popup')).should('not.be.visible');
+		await expect(page.locator('#focusable')).toHaveFocus();
+		// test with submenu
+		await page.locator('.menu-button').nth(1).click();
+		await page.locator('.menu-popup .menu-item[aria-haspopup="true"]').first().click();
+		await expect(page.locator('.menu-popup:visible')).should('have.length', 2);
+		await page.locator('body').type('{alt}');
+		await expect(page.locator('.menu-popup:visible')).should('have.length', 0);
+		await expect(page.locator('#focusable')).toHaveFocus();
+	});
 });
