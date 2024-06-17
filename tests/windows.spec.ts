@@ -104,11 +104,12 @@ test.describe('$Window Component', () => {
 			});
 			$window.$content.append('<p>Drag me!</p>').css("padding", "30px");
 		});
-		await page.locator('.window-titlebar').dispatchEvent('pointerdown', { which: 1 });
-		await page.locator('.window-titlebar').dispatchEvent('pointermove', { clientX: 0, clientY: 0 });
+		await page.locator('.window-titlebar').hover();
+		await page.mouse.down();
+		await page.mouse.move(0, 0);
 		await expect(page.locator('.window')).toHaveCSS('left', /^-?\d+px$/);
 		await expect(page.locator('.window')).toHaveCSS('top', /^-?\d+px$/);
-		await page.locator('.window-titlebar').dispatchEvent('pointerup');
+		await page.mouse.up();
 		// It should then snap such that you can still reach the title bar
 		// TODO: test horizontal clamping (vertical is easier since it should stop at zero, whereas horizontally it can go off screen _partially_)
 		await expect(page.locator('.window')).toHaveCSS('top', '0px');
