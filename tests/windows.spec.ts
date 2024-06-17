@@ -17,7 +17,7 @@ test.describe('$Window Component', () => {
 	// queuing up multiple minimize/maximize/restore actions,
 	// other API methods/options.
 
-	test('should minimize to the bottom left by default', async ({ page }) => {
+	test('should minimize to the bottom left by default (and slot is freed by close)', async ({ page }) => {
 		await page.evaluate(() => {
 			const $window = $Window({
 				title: 'Test Window',
@@ -56,7 +56,7 @@ test.describe('$Window Component', () => {
 		await expect(page.locator('.window').last()).toHaveCSS('left', '10px');
 	});
 
-	test('can be minimized/restored by clicking the minimize button', async ({ page }) => {
+	test('can be minimized/restored by clicking the minimize button (and slot is freed by restore)', async ({ page }) => {
 		await page.evaluate(() => {
 			const $window = $Window({
 				title: 'Test Window',
