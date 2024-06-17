@@ -17,7 +17,7 @@ test.describe('$Window Component', () => {
 	// queuing up multiple minimize/maximize/restore actions,
 	// other API methods/options.
 
-	test('should minimize to the bottom left by default', () => {
+	test('should minimize to the bottom left by default', ({ page }) => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Test Window',
@@ -30,7 +30,7 @@ test.describe('$Window Component', () => {
 			cy.get('.window').should('have.css', 'bottom', '-3px'); // result of `calc(100% - ${titlebar_height + 5}px)`
 			cy.get('.window').should('have.css', 'left', '10px'); // hardcoded `spacing`
 
-			cy.then(() => {
+			cy.then(({ page }) => {
 				const $window2 = win.$Window({
 					title: 'Test Window 2',
 					minimizeButton: true,
@@ -38,7 +38,7 @@ test.describe('$Window Component', () => {
 				$window2.minimize();
 				cy.get('.window').last().should('have.css', 'bottom', '-3px');
 				cy.get('.window').last().should('have.css', 'left', '170px'); // result of `spacing` + `to_width` + `spacing`
-				cy.then(() => {
+				cy.then(({ page }) => {
 					const $window3 = win.$Window({
 						title: 'Test Window 3',
 						minimizeButton: true,
@@ -53,7 +53,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	test('can be minimized/restored by clicking the minimize button', () => {
+	test('can be minimized/restored by clicking the minimize button', ({ page }) => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Test Window',
@@ -66,7 +66,7 @@ test.describe('$Window Component', () => {
 			cy.get('.window').should('have.css', 'bottom', '-3px'); // result of `calc(100% - ${titlebar_height + 5}px)`
 			cy.get('.window').should('have.css', 'left', '10px'); // hardcoded `spacing`
 
-			cy.then(() => {
+			cy.then(({ page }) => {
 				win.$Window({
 					title: 'Test Window 2',
 					minimizeButton: true,
@@ -74,7 +74,7 @@ test.describe('$Window Component', () => {
 				cy.get('.window-minimize-button').last().click();
 				cy.get('.window').last().should('have.css', 'bottom', '-3px');
 				cy.get('.window').last().should('have.css', 'left', '170px'); // result of `spacing` + `to_width` + `spacing`
-				cy.then(() => {
+				cy.then(({ page }) => {
 					win.$Window({
 						title: 'Test Window 3',
 						minimizeButton: true,
@@ -89,7 +89,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	test('can be dragged by the title bar', () => {
+	test('can be dragged by the title bar', ({ page }) => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Test Window',
@@ -109,7 +109,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	test('can be maximized/restored by double-clicking the title bar (and cannot be dragged while maximized)', () => {
+	test('can be maximized/restored by double-clicking the title bar (and cannot be dragged while maximized)', ({ page }) => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Double Click Me!',
@@ -147,7 +147,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	test('can be maximized/restored by clicking the maximize button', () => {
+	test('can be maximized/restored by clicking the maximize button', ({ page }) => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Maximize Me!',
@@ -175,7 +175,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	test('can be closed by clicking the close button', () => {
+	test('can be closed by clicking the close button', ({ page }) => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Close Me!',
@@ -186,7 +186,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	test('can be resized horizontally by dragging the left edge', () => {
+	test('can be resized horizontally by dragging the left edge', ({ page }) => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Resizable Window',
@@ -199,7 +199,7 @@ test.describe('$Window Component', () => {
 			cy.wrap(leftHandle).trigger('pointerdown', { which: 1 });
 			// Try moving in both axes to test that only one direction is allowed
 			cy.wrap(leftHandle).trigger('pointermove', { clientX: leftHandlePos.x - 50, clientY: leftHandlePos.y - 50 });
-			cy.then(() => {
+			cy.then(({ page }) => {
 				const newRect = $window.element.getBoundingClientRect();
 				expect(newRect.left).to.be.lessThan(rect.left);
 				expect(newRect.right).to.be.closeTo(rect.right, 1);
@@ -212,37 +212,37 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	describe('title()', () => {
-		test('should set the title of the window', () => {
+	describe('title()', ({ page }) => {
+		test('should set the title of the window', ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
 				});
 				cy.get('.window-title').should('have.text', 'Test Window');
-				cy.then(() => {
+				cy.then(({ page }) => {
 					$window.title('New Title');
 				});
 				cy.get('.window-title').should('have.text', 'New Title');
-				cy.then(() => {
+				cy.then(({ page }) => {
 					// @ts-ignore
 					$window.title(420);
 				});
 				cy.get('.window-title').should('have.text', '420');
 			});
 		});
-		test('should clear the title if given an empty string', () => {
+		test('should clear the title if given an empty string', ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
 				});
 				cy.get('.window-title').should('have.text', 'Test Window');
-				cy.then(() => {
+				cy.then(({ page }) => {
 					$window.title('');
 				});
 				cy.get('.window-title').should('have.text', '');
 			});
 		});
-		test('should return the current title if called without arguments', () => {
+		test('should return the current title if called without arguments', ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -252,8 +252,8 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	describe('getIconAtSize()', () => {
-		test('should return an icon of the requested size', () => {
+	describe('getIconAtSize()', ({ page }) => {
+		test('should return an icon of the requested size', ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -267,7 +267,7 @@ test.describe('$Window Component', () => {
 				expect($window.getIconAtSize(32)).to.have.property('textContent', '32x32 placeholder');
 			});
 		});
-		test('should return an icon of the closest size if none match and no "any" size is provided', () => {
+		test('should return an icon of the closest size if none match and no "any" size is provided', ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -282,7 +282,7 @@ test.describe('$Window Component', () => {
 				expect($window.getIconAtSize(300)).to.have.property('textContent', '32x32 placeholder');
 			});
 		});
-		test('should return the "any" size icon if provided and none match exactly', () => {
+		test('should return the "any" size icon if provided and none match exactly', ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -299,8 +299,8 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	describe('setIcons()', () => {
-		test('should set the icons of the window', () => {
+	describe('setIcons()', ({ page }) => {
+		test('should set the icons of the window', ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -320,7 +320,7 @@ test.describe('$Window Component', () => {
 				cy.get('.window').contains('16x16 placeholder');
 			});
 		});
-		test('should clear the icons if called with an empty object', () => {
+		test('should clear the icons if called with an empty object', ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -339,8 +339,8 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	describe('setMenuBar', () => {
-		test('should add menu bar, which is hidden when minimized', () => {
+	describe('setMenuBar', ({ page }) => {
+		test('should add menu bar, which is hidden when minimized', ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -349,13 +349,13 @@ test.describe('$Window Component', () => {
 					"&File": [
 						{
 							label: "&Open",
-							action: () => {
+							action: ({ page }) => {
 								alert("Open");
 							},
 						},
 						{
 							label: "&Close",
-							action: () => {
+							action: ({ page }) => {
 								alert("Close");
 							},
 						},
@@ -363,7 +363,7 @@ test.describe('$Window Component', () => {
 				});
 				$window.setMenuBar(menu);
 				cy.get('[role="menubar"]').should('be.visible');
-				cy.then(() => { $window.minimize(); });
+				cy.then(({ page }) => { $window.minimize(); });
 
 				cy.get('.window-titlebar').should('have.length', 1); // wait for titlebar animation to finish
 				// move the window so the menu bar is visible if it's broken
@@ -375,11 +375,11 @@ test.describe('$Window Component', () => {
 				cy.get('[role="menubar"]').should('not.be.visible');
 				// stronger assertion
 				cy.get('[role="menubar"]').should('have.css', 'display', 'none');
-				cy.then(() => { $window.restore(); });
+				cy.then(({ page }) => { $window.restore(); });
 				cy.get('[role="menubar"]').should('be.visible');
 			});
 		});
-		test('should set up the correct keyboard scope', () => {
+		test('should set up the correct keyboard scope', ({ page }) => {
 			let activated_menu_item = false;
 			cy.window().then((win) => {
 				const $window = win.$Window({
@@ -390,7 +390,7 @@ test.describe('$Window Component', () => {
 					"&Test": [
 						{
 							label: "&Activate Menu Item",
-							action: () => {
+							action: ({ page }) => {
 								activated_menu_item = true;
 							},
 						},
@@ -402,7 +402,7 @@ test.describe('$Window Component', () => {
 			cy.get('.window-content').click();
 			cy.get('body').type('{alt}t').type('{enter}');
 			// Can't use cy.wrap(activated_menu_item).should('be.true') because it would be synchronously accessing the value before commands are run
-			cy.then(() => {
+			cy.then(({ page }) => {
 				expect(activated_menu_item).to.be.true;
 				activated_menu_item = false;
 				// @ts-ignore
@@ -411,13 +411,13 @@ test.describe('$Window Component', () => {
 			// does nothing while window is not focused
 			cy.get('body').click({ force: true });
 			cy.get('body').type('{alt}t').type('{enter}');
-			cy.then(() => {
+			cy.then(({ page }) => {
 				expect(activated_menu_item).to.be.false;
 			});
 		});
 	});
 
-	describe("focus management", () => {
+	describe("focus management", ({ page }) => {
 		// Test cases where it should refocus the last focused control in the window:
 		// - Click in the blank space of the window
 		//   - Click in blank space again now that something's focused
@@ -441,7 +441,7 @@ test.describe('$Window Component', () => {
 		//     - Button that focuses a control in another window (e.g. Focus Other button in tests)
 		// - Trying to select text
 
-		it("should focus the window when clicking in the blank space of the window", () => {
+		it("should focus the window when clicking in the blank space of the window", ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -452,7 +452,7 @@ test.describe('$Window Component', () => {
 				cy.get('.window-content').should('have.focus');
 			});
 		});
-		it("should focus the window when clicking on the title bar", () => {
+		it("should focus the window when clicking on the title bar", ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -463,7 +463,7 @@ test.describe('$Window Component', () => {
 				cy.get('.window-content').should('have.focus');
 			});
 		});
-		it("should focus a control in the window when clicking it", () => {
+		it("should focus a control in the window when clicking it", ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -474,7 +474,7 @@ test.describe('$Window Component', () => {
 				cy.get('#input').should('have.focus');
 				cy.get('body').click({ force: true });
 				cy.get('#input').should('not.have.focus');
-				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.body); });
+				cy.then(({ page }) => { expect(win.document.activeElement).to.equal(win.document.body); });
 				// refocusing logic should not override clicking a specific control
 				cy.get('#textarea').click();
 				cy.get('#textarea').should('have.focus');
@@ -488,7 +488,7 @@ test.describe('$Window Component', () => {
 		// - The operating system's focus management (can largely ignore this)
 		// That said, I haven't digged into this beyond stepping in the debugger into "interceptFocus" from `cypress_runner.js`.
 		// I expected there would be problems with testing focus, but at least I got some tests working.
-		it.skip("should focus the last focused control in the window when clicking a disabled control", () => {
+		it.skip("should focus the last focused control in the window when clicking a disabled control", ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -497,20 +497,20 @@ test.describe('$Window Component', () => {
 				// cy.get('#disabled-button').click({ force: true });
 				cy.get('#disabled-button').trigger('pointerdown', { which: 1, force: true });
 				// cy.get('.window-content').should('have.focus');
-				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.querySelector('.window-content')); });
+				cy.then(({ page }) => { expect(win.document.activeElement).to.equal(win.document.querySelector('.window-content')); });
 				cy.get('#enabled-button').click();
 				cy.get('#enabled-button').should('have.focus');
 				// cy.get('#disabled-button').click({ force: true });
 				cy.get('#disabled-button').trigger('pointerdown', { which: 1, force: true });
 				cy.get('#enabled-button').should('have.focus');
 				cy.get('body').click({ force: true });
-				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.body); });
+				cy.then(({ page }) => { expect(win.document.activeElement).to.equal(win.document.body); });
 				// cy.get('#disabled-button').click({ force: true });
 				cy.get('#disabled-button').trigger('pointerdown', { which: 1, force: true });
 				cy.get('#enabled-button').should('have.focus');
 			});
 		});
-		it.skip("should focus the last focused control in the window when closing another window that was focused", () => {
+		it.skip("should focus the last focused control in the window when closing another window that was focused", ({ page }) => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Original Window',
@@ -526,16 +526,16 @@ test.describe('$Window Component', () => {
 				cy.get('#close-popup').should('have.focus');
 				cy.get('.window-close-button').last().click();
 				// cy.get('#textarea').should('have.focus');
-				cy.then(() => { expect(win.document.activeElement).to.equal(win.document.getElementById('textarea')); });
+				cy.then(({ page }) => { expect(win.document.activeElement).to.equal(win.document.getElementById('textarea')); });
 			});
 		});
-		describe("tabstop wrapping", () => {
+		describe("tabstop wrapping", ({ page }) => {
 			// TODO: test `<label>` surrounding or not surrounding `<input>` (do labels even factor in to tabstop wrapping?)
 			// test hidden controls, disabled controls
 			// test other controls from kitchen sink manual tests (test.js)
 			// TODO: can't actually test this because Cypress doesn't support pressing tab.
 			// I could use the cypress-real-events plugin, or perhaps switch to Playwright...
-			it.skip("should wrap around and focus the first/last control in the window when tabbing/shift+tabbing", () => {
+			it.skip("should wrap around and focus the first/last control in the window when tabbing/shift+tabbing", ({ page }) => {
 				cy.window().then((win) => {
 					const $window = win.$Window({
 						title: 'Tabstop Wrapping',
