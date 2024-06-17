@@ -17,7 +17,7 @@ test.describe('$Window Component', () => {
 	// queuing up multiple minimize/maximize/restore actions,
 	// other API methods/options.
 
-	it('should minimize to the bottom left by default', () => {
+	test('should minimize to the bottom left by default', () => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Test Window',
@@ -53,7 +53,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	it('can be minimized/restored by clicking the minimize button', () => {
+	test('can be minimized/restored by clicking the minimize button', () => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Test Window',
@@ -89,7 +89,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	it('can be dragged by the title bar', () => {
+	test('can be dragged by the title bar', () => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Test Window',
@@ -109,7 +109,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	it('can be maximized/restored by double-clicking the title bar (and cannot be dragged while maximized)', () => {
+	test('can be maximized/restored by double-clicking the title bar (and cannot be dragged while maximized)', () => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Double Click Me!',
@@ -147,7 +147,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	it('can be maximized/restored by clicking the maximize button', () => {
+	test('can be maximized/restored by clicking the maximize button', () => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Maximize Me!',
@@ -175,7 +175,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	it('can be closed by clicking the close button', () => {
+	test('can be closed by clicking the close button', () => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Close Me!',
@@ -186,7 +186,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	it('can be resized horizontally by dragging the left edge', () => {
+	test('can be resized horizontally by dragging the left edge', () => {
 		cy.window().then((win) => {
 			const $window = win.$Window({
 				title: 'Resizable Window',
@@ -213,7 +213,7 @@ test.describe('$Window Component', () => {
 	});
 
 	describe('title()', () => {
-		it('should set the title of the window', () => {
+		test('should set the title of the window', () => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -230,7 +230,7 @@ test.describe('$Window Component', () => {
 				cy.get('.window-title').should('have.text', '420');
 			});
 		});
-		it('should clear the title if given an empty string', () => {
+		test('should clear the title if given an empty string', () => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -242,7 +242,7 @@ test.describe('$Window Component', () => {
 				cy.get('.window-title').should('have.text', '');
 			});
 		});
-		it('should return the current title if called without arguments', () => {
+		test('should return the current title if called without arguments', () => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -253,7 +253,7 @@ test.describe('$Window Component', () => {
 	});
 
 	describe('getIconAtSize()', () => {
-		it('should return an icon of the requested size', () => {
+		test('should return an icon of the requested size', () => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -267,7 +267,7 @@ test.describe('$Window Component', () => {
 				expect($window.getIconAtSize(32)).to.have.property('textContent', '32x32 placeholder');
 			});
 		});
-		it('should return an icon of the closest size if none match and no "any" size is provided', () => {
+		test('should return an icon of the closest size if none match and no "any" size is provided', () => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -282,7 +282,7 @@ test.describe('$Window Component', () => {
 				expect($window.getIconAtSize(300)).to.have.property('textContent', '32x32 placeholder');
 			});
 		});
-		it('should return the "any" size icon if provided and none match exactly', () => {
+		test('should return the "any" size icon if provided and none match exactly', () => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -300,7 +300,7 @@ test.describe('$Window Component', () => {
 	});
 
 	describe('setIcons()', () => {
-		it('should set the icons of the window', () => {
+		test('should set the icons of the window', () => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -320,7 +320,7 @@ test.describe('$Window Component', () => {
 				cy.get('.window').contains('16x16 placeholder');
 			});
 		});
-		it('should clear the icons if called with an empty object', () => {
+		test('should clear the icons if called with an empty object', () => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -340,7 +340,7 @@ test.describe('$Window Component', () => {
 	});
 
 	describe('setMenuBar', () => {
-		it('should add menu bar, which is hidden when minimized', () => {
+		test('should add menu bar, which is hidden when minimized', () => {
 			cy.window().then((win) => {
 				const $window = win.$Window({
 					title: 'Test Window',
@@ -379,7 +379,7 @@ test.describe('$Window Component', () => {
 				cy.get('[role="menubar"]').should('be.visible');
 			});
 		});
-		it('should set up the correct keyboard scope', () => {
+		test('should set up the correct keyboard scope', () => {
 			let activated_menu_item = false;
 			cy.window().then((win) => {
 				const $window = win.$Window({
