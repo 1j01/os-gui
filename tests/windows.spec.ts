@@ -125,6 +125,9 @@ test.describe('$Window Component', () => {
 				resizable: true
 			});
 			$window.$content.append('<p>Titlebar double click maximization test window</p>').css("padding", "30px");
+			// Centering avoids a failure in webkit due to it automatically scrolling down
+			// presumably when clicking the first time, interrupting the double click.
+			$window.center();
 		});
 		// Maximize
 		await page.locator('.window-titlebar').dblclick();
