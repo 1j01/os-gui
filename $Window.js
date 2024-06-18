@@ -132,6 +132,11 @@ function $Window(options = {}) {
 			} else if (name in $window_element) {
 				// Eventually will be deprecated in favor of win.element
 				// @ts-ignore
+				if (typeof $window_element[name] === "function") {
+					// @ts-ignore
+					return $window_element[name].bind($window_element);
+				}
+				// @ts-ignore
 				return $window_element[name];
 			} else {
 				console.warn("Unknown property", name);
