@@ -139,7 +139,9 @@ function $Window(options = {}) {
 				// @ts-ignore
 				return $window_element[name];
 			} else {
-				console.warn("Unknown property", name);
+				// Allow duck typing, as, for instance, jQuery checks for `object.window`
+				// and arbitrarily added properties.
+				// console.trace("Unknown property", name);
 			}
 		},
 		set: function (_target, name, value) {
@@ -151,7 +153,8 @@ function $Window(options = {}) {
 				// @ts-ignore
 				$window_element[name] = value;
 			} else {
-				console.warn("Unknown property", name);
+				// Allow adding arbitrary properties (though it's not recommended).
+				// console.trace("Unknown property", name);
 			}
 			return true;
 		}
@@ -160,7 +163,7 @@ function $Window(options = {}) {
 	win.element.$window = $win;
 	win.element.classList.add("window", "os-window");
 	win.element.id = `os-window-${Math.random().toString(36).substr(2, 9)}`;
-	
+
 	document.body.appendChild(win.element);
 
 	win.$titlebar = $(E("div")).addClass("window-titlebar").appendTo($window_element);
