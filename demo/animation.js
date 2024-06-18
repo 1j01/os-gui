@@ -183,7 +183,7 @@ const animate = () => {
 		o.prev_x ??= o.x;
 		o.prev_y ??= o.y;
 		if (o.x !== o.prev_x || o.y !== o.prev_y) {
-			$window.find("img").css({
+			$window.$content.find("img").css({
 				transform: `rotate(${Math.atan2(o.y - o.lagged_y, o.x - o.lagged_x) * 180 / Math.PI + 90}deg)`,
 			});
 			o.lagged_x += (o.x - o.lagged_x) * 0.1;

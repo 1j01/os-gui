@@ -12,6 +12,11 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+### Deprecated
+
+- Accessing jQuery methods/properties on `$Window` instances is deprecated. Use the `element` property to access the underlying DOM element, and wrap it in a jQuery object if you wish to use jQuery methods.
+  - A deprecation notice will be logged each time a jQuery method or property is accessed on a `$Window` instance.
+
 ### Changed
 
 - `$Window` function now returns a `Proxy` object, to aid with the transition away from jQuery.

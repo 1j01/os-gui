@@ -355,7 +355,7 @@ $tool_window_1.$content.append(`
 	<input type="text" placeholder="Text input">
 	<button>Button</button>
 `);
-$main_test_window.on("close", (event) => {
+$($main_test_window.element).on("close", (event) => {
 	console.log("Main test window close event");
 	event.preventDefault();
 	const $confirm_window = new $Window({
@@ -399,7 +399,7 @@ const open_recursive_dialog = (/** @type {number} */ x, /** @type {number} */ y)
 	});
 };
 
-$main_test_window.find("#open-recursive-dialog").on("click", () => {
+$main_test_window.$content.find("#open-recursive-dialog").on("click", () => {
 	open_recursive_dialog(innerWidth / 2, innerHeight / 2);
 });
 
@@ -468,8 +468,8 @@ function test_tabstop_wrapping() {
 
 $main_test_window.center();
 $tool_window_1.css({
-	top: $main_test_window[0].offsetTop + $main_test_window[0].offsetHeight + 30,
-	left: $main_test_window[0].offsetLeft,
+	top: $main_test_window.element.offsetTop + $main_test_window.element.offsetHeight + 30,
+	left: $main_test_window.element.offsetLeft,
 });
 
 function test_selectable_text() {
@@ -510,7 +510,7 @@ function test_iframes() {
 	$iframe_test_window.$content.append(`
 		<iframe class="inset-deep"></iframe>
 	`);
-	$iframe_test_window.find("iframe").attr("srcdoc", `
+	$iframe_test_window.$content.find("iframe").attr("srcdoc", `
 		<p>This is an iframe test.</p>
 		<p>You should be able to focus controls, and restore focus when focusing the window.</p>
 		<p>Focus should be restored after selecting menu items.</p>
@@ -599,7 +599,7 @@ function test_triggering() {
 		},
 	});
 	/** @type {HTMLElement & { $window: OSGUI$Window }}} */
-	let target_window_el = $trigger_test_window[0];
+	let target_window_el = $trigger_test_window.element;
 	$trigger_test_window.$content.append(`
 		<p>
 			Target window: <b id="target-window-text" style="display: inline-block; width: 200px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; vertical-align: text-bottom;">
@@ -659,19 +659,19 @@ function test_triggering() {
 		}, "Select a target window for testing.");
 	});
 
-	$trigger_test_window.find("#test-delayed-focus").on("click", () => {
+	$trigger_test_window.$content.find("#test-delayed-focus").on("click", () => {
 		setTimeout(() => target_window_el.$window.focus(), delay);
 	});
-	$trigger_test_window.find("#test-delayed-close").on("click", () => {
+	$trigger_test_window.$content.find("#test-delayed-close").on("click", () => {
 		setTimeout(() => target_window_el.$window.close(), delay);
 	});
-	$trigger_test_window.find("#test-delayed-minimize").on("click", () => {
+	$trigger_test_window.$content.find("#test-delayed-minimize").on("click", () => {
 		setTimeout(() => target_window_el.$window.minimize(), delay);
 	});
-	$trigger_test_window.find("#test-delayed-maximize").on("click", () => {
+	$trigger_test_window.$content.find("#test-delayed-maximize").on("click", () => {
 		setTimeout(() => target_window_el.$window.maximize(), delay);
 	});
-	$trigger_test_window.find("#test-immediate-focus").on("click", () => {
+	$trigger_test_window.$content.find("#test-immediate-focus").on("click", () => {
 		target_window_el.$window.focus();
 	});
 
@@ -685,9 +685,9 @@ function test_triggering() {
 				).click(() => {
 					setTimeout(() => {
 						if (trigger_style === "jQuery") {
-							$trigger_test_window.find("p").trigger(event_type);
+							$trigger_test_window.$content.find("p").trigger(event_type);
 						} else {
-							$trigger_test_window.find("p")[0].dispatchEvent(new Event(event_type, {
+							$trigger_test_window.$content.find("p")[0].dispatchEvent(new Event(event_type, {
 								bubbles: true,
 								cancelable: true,
 							}));
@@ -765,7 +765,7 @@ function test_window_theme() {
 		theme_id = /** @type {ThemeID} */ (select.value);
 	});
 	$theme_test_window.$content.find("#theme-self").on("click", () => {
-		apply_theme_to_el($theme_test_window[0], theme_id);
+		apply_theme_to_el($theme_test_window.element, theme_id);
 	});
 	$theme_test_window.$content.find("#theme-other").on("click", () => {
 		pick_el(".os-window", (other_window_el) => {
@@ -888,12 +888,12 @@ function pick_el(selector, callback, message = "Select an element.") {
 	$overlay_message.appendTo(document.body);
 }
 
-$main_test_window.find("#test-iframes").on("click", test_iframes);
-$main_test_window.find("#test-icon-size").on("click", test_icon_sizes);
-$main_test_window.find("#test-theme").on("click", test_window_theme);
-$main_test_window.find("#test-tabstop-wrapping").on("click", test_tabstop_wrapping);
-$main_test_window.find("#test-selection").on("click", test_selectable_text);
-$main_test_window.find("#test-triggering").on("click", test_triggering);
+$main_test_window.$content.find("#test-iframes").on("click", test_iframes);
+$main_test_window.$content.find("#test-icon-size").on("click", test_icon_sizes);
+$main_test_window.$content.find("#test-theme").on("click", test_window_theme);
+$main_test_window.$content.find("#test-tabstop-wrapping").on("click", test_tabstop_wrapping);
+$main_test_window.$content.find("#test-selection").on("click", test_selectable_text);
+$main_test_window.$content.find("#test-triggering").on("click", test_triggering);
 
 const window_themes = {
 	"windows-default": {
