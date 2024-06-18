@@ -18,7 +18,7 @@ test.describe('$Window Component', () => {
 	// other API methods/options.
 
 	test('should minimize to the bottom left by default (also, slots can be freed by close)', async ({ page }) => {
-		await page.evaluate(() => {
+		const h$window = await page.evaluateHandle(() => {
 			const $window = $Window({
 				title: 'Test Window',
 				maximizeButton: true,
@@ -26,7 +26,7 @@ test.describe('$Window Component', () => {
 				closeButton: true
 			});
 			$window.minimize();
-			window.first_$window = $window; // TODO: try out page.evaluateHandle
+			return $window;
 		});
 		// These exact values may not be perfectly accurate to Windows 98, but it's easier to test exact values than proximity.
 		await expect(page.locator('.window')).toHaveCSS('bottom', '-3px'); // result of `calc(100% - ${titlebar_height + 5}px)`
@@ -43,12 +43,17 @@ test.describe('$Window Component', () => {
 		await expect(page.locator('.window').last()).toHaveCSS('bottom', '-3px');
 		await expect(page.locator('.window').last()).toHaveCSS('left', '170px'); // result of `spacing` + `to_width` + `spacing`
 
-		await page.evaluate(() => {
+		const h$window3 = await page.evaluateHandle(() => {
 			const $window3 = $Window({
 				title: 'Test Window 3',
 				minimizeButton: true
 			});
-			window.first_$window.close(); // free up slot (unminimizing should also do this, tested elsewhere)
+			return $window3;
+		});
+		await h$window.evaluate(($window) => {
+			$window.close(); // free up slot (unminimizing should also do this, tested elsewhere)
+		});
+		await h$window3.evaluate(($window3) => {
 			$window3.minimize();
 		});
 		await expect(page.locator('.window')).toHaveCount(2);
@@ -57,14 +62,14 @@ test.describe('$Window Component', () => {
 	});
 
 	test('can be minimized/restored by clicking the minimize button (also, slots can be freed by restore)', async ({ page }) => {
-		await page.evaluate(() => {
+		const h$window = await page.evaluateHandle(() => {
 			const $window = $Window({
 				title: 'Test Window',
 				maximizeButton: true,
 				minimizeButton: true,
 				closeButton: true
 			});
-			window.first_$window = $window;
+			return $window;
 		});
 		await page.locator('.window-minimize-button').click();
 		// These exact values may not be perfectly accurate to Windows 98, but it's easier to test exact values than proximity.
@@ -86,7 +91,9 @@ test.describe('$Window Component', () => {
 				title: 'Test Window 3',
 				minimizeButton: true
 			});
-			window.first_$window.restore(); // free up slot (closing should also do this, tested elsewhere)
+		});
+		await h$window.evaluate(($window) => {
+			$window.restore(); // free up slot (closing should also do this, tested elsewhere)
 		});
 		await expect(page.locator('.window')).toHaveCount(3);
 		await page.locator('.window-minimize-button').last().click();
@@ -198,16 +205,17 @@ test.describe('$Window Component', () => {
 	});
 
 	test('can be resized horizontally by dragging the left edge', async ({ page }) => {
-		const originalRect = await page.evaluate(() => {
+		const h$window = await page.evaluateHandle(() => {
 			const $window = $Window({
 				title: 'Resizable Window',
 				resizable: true
 			});
 			$window.$content.append('<p>Resize me!</p>').css("padding", "30px");
-			const originalRect = $window.element.getBoundingClientRect();
-			window.$window = $window;
-			return originalRect;
+			return $window;
 		});
+		const originalRect = await h$window.evaluate(($window) =>
+			$window.element.getBoundingClientRect()
+		);
 		// TODO: use https://playwright.dev/docs/api/class-locator#locator-bounding-box
 		const leftHandlePos = { x: originalRect.left, y: originalRect.top + originalRect.height / 2 };
 
@@ -216,8 +224,8 @@ test.describe('$Window Component', () => {
 		// Try moving in both axes to test that only one direction is allowed
 		await page.mouse.move(leftHandlePos.x - 50, leftHandlePos.y);
 
-		const newRect = await page.evaluate(() =>
-			window.$window.element.getBoundingClientRect()
+		const newRect = await h$window.evaluate(($window) =>
+			$window.element.getBoundingClientRect()
 		);
 		expect(newRect.left).toBeLessThan(originalRect.left);
 
@@ -236,36 +244,34 @@ test.describe('$Window Component', () => {
 
 	test.describe('title()', () => {
 		test('should set the title of the window', async ({ page }) => {
-			await page.evaluate(() => {
-				const $window = $Window({
+			const h$window = await page.evaluateHandle(() =>
+				$Window({
 					title: 'Test Window'
-				});
-				window.$window = $window;
-			});
+				})
+			);
 			await expect(page.locator('.window-title')).toHaveText('Test Window');
 
-			await page.evaluate(() => {
-				window.$window.title('New Title');
+			await h$window.evaluate(($window) => {
+				$window.title('New Title');
 			});
 			await expect(page.locator('.window-title')).toHaveText('New Title');
 
-			await page.evaluate(() => {
+			await h$window.evaluate(($window) => {
 				// @ts-ignore
-				window.$window.title(420);
+				$window.title(420);
 			});
 			await expect(page.locator('.window-title')).toHaveText('420');
 		});
 		test('should clear the title if given an empty string', async ({ page }) => {
-			await page.evaluate(() => {
-				const $window = $Window({
+			const h$window = await page.evaluateHandle(() =>
+				$Window({
 					title: 'Test Window'
-				});
-				window.$window = $window;
-			});
+				})
+			);
 			await expect(page.locator('.window-title')).toHaveText('Test Window');
 
-			await page.evaluate(() => {
-				window.$window.title('');
+			await h$window.evaluate(($window) => {
+				$window.title('');
 			});
 			await expect(page.locator('.window-title')).toHaveText('');
 		});
@@ -395,7 +401,7 @@ test.describe('$Window Component', () => {
 
 	test.describe('setMenuBar', () => {
 		test('should add menu bar, which is hidden when minimized', async ({ page }) => {
-			await page.evaluate(() => {
+			const h$window = await page.evaluateHandle(() => {
 				const $window = $Window({
 					title: 'Test Window'
 				});
@@ -416,11 +422,11 @@ test.describe('$Window Component', () => {
 					],
 				});
 				$window.setMenuBar(menu);
-				window.$window = $window;
+				return $window;
 			});
 			await expect(page.locator('[role="menubar"]')).toBeVisible();
-			await page.evaluate(() => {
-				window.$window.minimize();
+			await h$window.evaluate(($window) => {
+				$window.minimize();
 			});
 			await expect(page.locator('.window-titlebar')).toHaveCount(1); // wait for titlebar animation to finish
 			// move the window so the menu bar is visible if it's broken
@@ -432,14 +438,14 @@ test.describe('$Window Component', () => {
 			// Playwright might not behave the same with `.not.toBeVisible`,
 			// but here's a stronger assertion anyway.
 			await expect(page.locator('[role="menubar"]')).toHaveCSS('display', 'none');
-			await page.evaluate(() => {
-				window.$window.restore();
+			await h$window.evaluate(($window) => {
+				$window.restore();
 			});
 			await expect(page.locator('[role="menubar"]')).toBeVisible();
 		});
 		test('should set up the correct keyboard scope', async ({ page }) => {
-			await page.evaluate(() => {
-				window.activated_menu_item = false;
+			const hTestState = await page.evaluateHandle(() => {
+				const testState = { activatedMenuItem: false };
 				const $window = $Window({
 					title: 'Test Window'
 				});
@@ -449,21 +455,22 @@ test.describe('$Window Component', () => {
 						{
 							label: "&Activate Menu Item",
 							action: () => {
-								window.activated_menu_item = true;
+								testState.activatedMenuItem = true;
 							}
 						}
 					],
 				});
 				$window.setMenuBar(menu);
+				return testState;
 			});
 
 			// works while window is focused
 			await page.locator('.window-content').click();
 			await page.keyboard.press("Alt+T");
 			await page.keyboard.press("Enter");
-			await expect(await page.evaluate('activated_menu_item')).toBe(true);
-			await page.evaluate(() => {
-				window.activated_menu_item = false;
+			await expect(await hTestState.evaluate((testState) => testState.activatedMenuItem)).toBe(true);
+			hTestState.evaluate((testState) => {
+				testState.activatedMenuItem = false;
 				// @ts-ignore
 				document.activeElement.blur();
 			});
@@ -472,7 +479,7 @@ test.describe('$Window Component', () => {
 			// await page.locator('body').click(); // using blur() above
 			await page.keyboard.press("Alt+T");
 			await page.keyboard.press("Enter");
-			await expect(await page.evaluate('activated_menu_item')).toBe(false);
+			await expect(await hTestState.evaluate((testState) => testState.activatedMenuItem)).toBe(false);
 		});
 	});
 
