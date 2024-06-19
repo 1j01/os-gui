@@ -249,7 +249,17 @@ interface OSGUIWindow {
  * 
  * This was a bad design decision.
  */
-type OSGUI$Window = OSGUIWindow & $WindowDeprecatedJQueryPart;
+type OSGUI$Window = OSGUIWindow & HardDeprecate<$WindowDeprecatedJQueryPart>;
+
+// There doesn't seem to be any intrinsic in TypeScript to mark something as deprecated, it's JSDoc-only.
+// This maps the properties of a type to `never`, making accessing them an error.
+type HardDeprecate<T> = {
+	// JSDoc `@deprecated` doesn't seem to have an effect here, but interestingly,
+	// with this approach it does combine jQuery docs with deprecation notices that I add specifically,
+	// in the hover-over tooltip in VS Code.
+	// Without `HardDeprecate`, it shows fuller jQuery JSDocs, without my deprecation messages, only linking to where I use `@deprecated`.
+	[P in keyof T]: never;
+};
 
 interface $WindowDeprecatedJQueryPart extends JQuery<HTMLElement & { $window: OSGUI$Window }> {
 	/**
