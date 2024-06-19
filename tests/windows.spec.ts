@@ -485,85 +485,130 @@ test.describe('$Window Component', () => {
 
 	test.describe("setDimensions", () => {
 		test('should handle various combinations of left/width/right for positioning/sizing', async ({ page }) => {
-			const testDataKeys = ["initialLeft", "initialWidth", "initialRight", "paramLeft", "paramWidth", "paramRight", "resultLeft", "resultWidth", "resultRight", "notes"];
-			const testData = [
+			interface TestCase {
+				initialLeft: number | "unset";
+				initialWidth: number | "unset";
+				initialRight: number | "unset";
+				paramLeft: number | "unset";
+				paramWidth: number | "unset";
+				paramRight: number | "unset";
+				resultLeft: number | "unset" | "invalid";
+				resultWidth: number | "unset" | "invalid";
+				resultRight: number | "unset" | "invalid";
+				notes?: string;
+			}
+			// const testDataKeys = ["initialLeft", "initialWidth", "initialRight", "paramLeft", "paramWidth", "paramRight", "resultLeft", "resultWidth", "resultRight", "notes"] as const;
+
+			// https://stackoverflow.com/questions/55522477/typescript-create-tuple-from-interface
+			// overcomplicated but imo test code is allowed to be ugly
+			type Lookup<T, K> = K extends keyof T ? T[K] : never;
+			type TupleFromInterface<T, K extends Array<keyof T>> = { [I in keyof K]: Lookup<T, K[I]> }
+			type TestCaseTuple = TupleFromInterface<TestCase, ["initialLeft", "initialWidth", "initialRight", "paramLeft", "paramWidth", "paramRight", "resultLeft", "resultWidth", "resultRight", "notes"]>;
+			// type TestCaseTuple = TupleFromInterface<TestCase, typeof testDataKeys>; // doesn't work
+
+			const _ = "unset";
+			const testData: TestCaseTuple[] = [
 				// https://docs.google.com/spreadsheets/d/1IyTPBGrqFgw16CqB6tlzEDhLv5j56RIAkztt-X4Nrzs/edit?usp=sharing
 				// Initial left, Initial width, Initial right, Param left, Param width, Param right, Result left, Result width, Result right, Notes
-				// 0 means unset
-				[_, _, _, _, _, _, "invalid", "invalid", "invalid",],
-				[1, _, _, _, _, _, "invalid", "invalid", "invalid",],
-				[_, 1, _, _, _, _, "invalid", "invalid", "invalid",],
-				[1, 1, _, _, _, _, "invalid", "invalid", "invalid",],
-				[_, _, 1, _, _, _, "invalid", "invalid", "invalid",],
-				[1, _, 1, _, _, _, "invalid", "invalid", "invalid",],
-				[_, 1, 1, _, _, _, "invalid", "invalid", "invalid",],
-				[1, 1, 1, _, _, _, "invalid", "invalid", "invalid",],
-				[_, _, _, 2, _, _, 2, _, _,],
-				[1, _, _, 2, _, _, 2, _, _,],
-				[_, 1, _, 2, _, _, 2, 1, _,],
-				[1, 1, _, 2, _, _, 2, 1, _,],
-				[_, _, 1, 2, _, _, 2, _, 1,],
-				[1, _, 1, 2, _, _, 2, _, 1,],
-				[_, 1, 1, 2, _, _, 2, 1, _,],
-				[1, 1, 1, 2, _, _, 2, 1, _,],
-				[_, _, _, _, 2, _, _, 2, _,],
-				[1, _, _, _, 2, _, 1, 2, _,],
-				[_, 1, _, _, 2, _, _, 2, _,],
-				[1, 1, _, _, 2, _, 1, 2, _,],
-				[_, _, 1, _, 2, _, _, 2, 1,],
+				[_, _, _, _, _, _, "invalid", "invalid", "invalid", ""],
+				[1, _, _, _, _, _, "invalid", "invalid", "invalid", ""],
+				[_, 1, _, _, _, _, "invalid", "invalid", "invalid", ""],
+				[1, 1, _, _, _, _, "invalid", "invalid", "invalid", ""],
+				[_, _, 1, _, _, _, "invalid", "invalid", "invalid", ""],
+				[1, _, 1, _, _, _, "invalid", "invalid", "invalid", ""],
+				[_, 1, 1, _, _, _, "invalid", "invalid", "invalid", ""],
+				[1, 1, 1, _, _, _, "invalid", "invalid", "invalid", ""],
+				[_, _, _, 2, _, _, 2, _, _, ""],
+				[1, _, _, 2, _, _, 2, _, _, ""],
+				[_, 1, _, 2, _, _, 2, 1, _, ""],
+				[1, 1, _, 2, _, _, 2, 1, _, ""],
+				[_, _, 1, 2, _, _, 2, _, 1, ""],
+				[1, _, 1, 2, _, _, 2, _, 1, ""],
+				[_, 1, 1, 2, _, _, 2, 1, _, ""],
+				[1, 1, 1, 2, _, _, 2, 1, _, ""],
+				[_, _, _, _, 2, _, _, 2, _, ""],
+				[1, _, _, _, 2, _, 1, 2, _, ""],
+				[_, 1, _, _, 2, _, _, 2, _, ""],
+				[1, 1, _, _, 2, _, 1, 2, _, ""],
+				[_, _, 1, _, 2, _, _, 2, 1, ""],
 				[1, _, 1, _, 2, _, 1, 2, _, "Favoring left"],
-				[_, 1, 1, _, 2, _, _, 2, 1,],
+				[_, 1, 1, _, 2, _, _, 2, 1, ""],
 				[1, 1, 1, _, 2, _, 1, 2, _, "Favoring left"],
-				[_, _, _, 2, 2, _, 2, 2, _,],
-				[1, _, _, 2, 2, _, 2, 2, _,],
-				[_, 1, _, 2, 2, _, 2, 2, _,],
-				[1, 1, _, 2, 2, _, 2, 2, _,],
-				[_, _, 1, 2, 2, _, 2, 2, _,],
-				[1, _, 1, 2, 2, _, 2, 2, _,],
-				[_, 1, 1, 2, 2, _, 2, 2, _,],
-				[1, 1, 1, 2, 2, _, 2, 2, _,],
-				[_, _, _, _, _, 2, _, _, 2,],
-				[1, _, _, _, _, 2, 1, _, 2,],
-				[_, 1, _, _, _, 2, _, 1, 2,],
-				[1, 1, _, _, _, 2, _, 1, 2,],
-				[_, _, 1, _, _, 2, _, _, 2,],
-				[1, _, 1, _, _, 2, 1, _, 2,],
-				[_, 1, 1, _, _, 2, _, 1, 2,],
-				[1, 1, 1, _, _, 2, _, 1, 2,],
-				[_, _, _, 2, _, 2, 2, _, 2,],
-				[1, _, _, 2, _, 2, 2, _, 2,],
-				[_, 1, _, 2, _, 2, 2, _, 2,],
-				[1, 1, _, 2, _, 2, 2, _, 2,],
-				[_, _, 1, 2, _, 2, 2, _, 2,],
-				[1, _, 1, 2, _, 2, 2, _, 2,],
-				[_, 1, 1, 2, _, 2, 2, _, 2,],
-				[1, 1, 1, 2, _, 2, 2, _, 2,],
-				[_, _, _, _, 2, 2, _, 2, 2,],
-				[1, _, _, _, 2, 2, _, 2, 2,],
-				[_, 1, _, _, 2, 2, _, 2, 2,],
-				[1, 1, _, _, 2, 2, _, 2, 2,],
-				[_, _, 1, _, 2, 2, _, 2, 2,],
-				[1, _, 1, _, 2, 2, _, 2, 2,],
-				[_, 1, 1, _, 2, 2, _, 2, 2,],
-				[1, 1, 1, _, 2, 2, _, 2, 2,],
-				[_, _, _, 2, 2, 2, "invalid", "invalid", "invalid",],
-				[1, _, _, 2, 2, 2, "invalid", "invalid", "invalid",],
-				[_, 1, _, 2, 2, 2, "invalid", "invalid", "invalid",],
-				[1, 1, _, 2, 2, 2, "invalid", "invalid", "invalid",],
-				[_, _, 1, 2, 2, 2, "invalid", "invalid", "invalid",],
-				[1, _, 1, 2, 2, 2, "invalid", "invalid", "invalid",],
-				[_, 1, 1, 2, 2, 2, "invalid", "invalid", "invalid",],
-				[1, 1, 1, 2, 2, 2, "invalid", "invalid", "invalid",],
+				[_, _, _, 2, 2, _, 2, 2, _, ""],
+				[1, _, _, 2, 2, _, 2, 2, _, ""],
+				[_, 1, _, 2, 2, _, 2, 2, _, ""],
+				[1, 1, _, 2, 2, _, 2, 2, _, ""],
+				[_, _, 1, 2, 2, _, 2, 2, _, ""],
+				[1, _, 1, 2, 2, _, 2, 2, _, ""],
+				[_, 1, 1, 2, 2, _, 2, 2, _, ""],
+				[1, 1, 1, 2, 2, _, 2, 2, _, ""],
+				[_, _, _, _, _, 2, _, _, 2, ""],
+				[1, _, _, _, _, 2, 1, _, 2, ""],
+				[_, 1, _, _, _, 2, _, 1, 2, ""],
+				[1, 1, _, _, _, 2, _, 1, 2, ""],
+				[_, _, 1, _, _, 2, _, _, 2, ""],
+				[1, _, 1, _, _, 2, 1, _, 2, ""],
+				[_, 1, 1, _, _, 2, _, 1, 2, ""],
+				[1, 1, 1, _, _, 2, _, 1, 2, ""],
+				[_, _, _, 2, _, 2, 2, _, 2, ""],
+				[1, _, _, 2, _, 2, 2, _, 2, ""],
+				[_, 1, _, 2, _, 2, 2, _, 2, ""],
+				[1, 1, _, 2, _, 2, 2, _, 2, ""],
+				[_, _, 1, 2, _, 2, 2, _, 2, ""],
+				[1, _, 1, 2, _, 2, 2, _, 2, ""],
+				[_, 1, 1, 2, _, 2, 2, _, 2, ""],
+				[1, 1, 1, 2, _, 2, 2, _, 2, ""],
+				[_, _, _, _, 2, 2, _, 2, 2, ""],
+				[1, _, _, _, 2, 2, _, 2, 2, ""],
+				[_, 1, _, _, 2, 2, _, 2, 2, ""],
+				[1, 1, _, _, 2, 2, _, 2, 2, ""],
+				[_, _, 1, _, 2, 2, _, 2, 2, ""],
+				[1, _, 1, _, 2, 2, _, 2, 2, ""],
+				[_, 1, 1, _, 2, 2, _, 2, 2, ""],
+				[1, 1, 1, _, 2, 2, _, 2, 2, ""],
+				[_, _, _, 2, 2, 2, "invalid", "invalid", "invalid", ""],
+				[1, _, _, 2, 2, 2, "invalid", "invalid", "invalid", ""],
+				[_, 1, _, 2, 2, 2, "invalid", "invalid", "invalid", ""],
+				[1, 1, _, 2, 2, 2, "invalid", "invalid", "invalid", ""],
+				[_, _, 1, 2, 2, 2, "invalid", "invalid", "invalid", ""],
+				[1, _, 1, 2, 2, 2, "invalid", "invalid", "invalid", ""],
+				[_, 1, 1, 2, 2, 2, "invalid", "invalid", "invalid", ""],
+				[1, 1, 1, 2, 2, 2, "invalid", "invalid", "invalid", ""],
 			];
+			const testCases: TestCase[] = testData.map((data) => {
+				// const test: Partial<TestCase> = {};
+				// for (let i = 0; i < testDataKeys.length; i++) {
+				// 	test[testDataKeys[i]] = data[i];
+				// }
+				// return test as TestCase;
+				const [initialLeft, initialWidth, initialRight, paramLeft, paramWidth, paramRight, resultLeft, resultWidth, resultRight, notes] = data;
+				const testCase: TestCase = { initialLeft, initialWidth, initialRight, paramLeft, paramWidth, paramRight, resultLeft, resultWidth, resultRight, notes };
+				return testCase;
+			});
 			const h$window = await page.evaluateHandle(() => {
 				const $window = $Window({
 					title: 'Test Window'
 				});
-				// $window.setDimensions({
 				return $window;
 			});
-			await expect(page.locator('.window')).toHaveCSS('width', '400px');
-			await expect(page.locator('.window')).toHaveCSS('height', '300px');
+			for (const testCase of testCases) {
+				await h$window.evaluate(($window, { initialLeft, initialWidth, initialRight }) => {
+					$window.element.style.left = initialLeft === "unset" ? "" : initialLeft + "px";
+					$window.element.style.width = initialWidth === "unset" ? "" : initialWidth + "px";
+					$window.element.style.right = initialRight === "unset" ? "" : initialRight + "px";
+				}, testCase);
+				await h$window.evaluate(($window, { paramLeft, paramWidth, paramRight }) => {
+					$window.setDimensions({
+						left: paramLeft === "unset" ? undefined : paramLeft,
+						outerWidth: paramWidth === "unset" ? undefined : paramWidth,
+						right: paramRight === "unset" ? undefined : paramRight
+					});
+				}, testCase);
+				const { resultLeft, resultWidth, resultRight } = testCase;
+				await expect(h$window.evaluate(($window) => $window.element.style.left)).toBe(resultLeft === "invalid" ? "" : resultLeft + "px");
+				await expect(h$window.evaluate(($window) => $window.element.style.width)).toBe(resultWidth === "invalid" ? "" : resultWidth + "px");
+				await expect(h$window.evaluate(($window) => $window.element.style.right)).toBe(resultRight === "invalid" ? "" : resultRight + "px");
+			}
 		});
 		test('should be limited by minimum inner width and height options', async ({ page }) => {
 			const h$window = await page.evaluateHandle(() => {
