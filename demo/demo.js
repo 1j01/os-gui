@@ -169,12 +169,12 @@ $(() => {
 	const $tool_window_2 = new $Window({ title: "Tool Window", toolWindow: true, parentWindow: $app_window_2 });
 	$tool_window_2.$content.text("This tool window is a child of the app window.");
 	fake_closing($tool_window_2);
-	$app_window_2.on("closed", () => {
+	$($app_window_2.element).on("closed", () => {
 		$tool_window_2.close();
 	});
 
 	const $app_window_3 = new $Window({ title: "Right-To-Left Example", resizable: true });
-	$app_window_3.css("direction", "rtl");
+	$($app_window_3.element).css("direction", "rtl");
 	$app_window_3.setMenuBar(new MenuBar(demo_menus));
 	$app_window_3.$content.css({
 		padding: 0,
@@ -220,7 +220,7 @@ $(() => {
 
 			if (!old_offset || new_offset.top !== old_offset.top || new_offset.left !== old_offset.left) {
 				$window.restore(); // in case it was minimized or maximized
-				$window.css({
+				$($window.element).css({
 					left: new_offset.left,
 					top: new_offset.top,
 					width: "",
@@ -239,23 +239,23 @@ $(() => {
 	 * @param {OSGUI$Window} $window
 	 */
 	function fake_closing($window) {
-		$window.on("close", (event) => {
+		$($window.element).on("close", (event) => {
 			event.preventDefault();
-			$window.triggerHandler("closed");
+			$($window.element).triggerHandler("closed");
 			$window.closed = true;
-			$window.hide();
+			$($window.element).hide();
 			setTimeout(() => {
 				// Restore position
 				const $positioning_el = $windows_and_$positioners.find(([$other_window]) => $window === $other_window)[1];
 				$window.restore(); // in case it was minimized or maximized (TODO: avoid animation, which can cause incorrect positioning)
-				$window.css({
+				$($window.element).css({
 					left: $positioning_el.offset().left,
 					top: $positioning_el.offset().top,
 					width: "",
 					height: "",
 				});
 				// Fade back in
-				$window.fadeIn();
+				$($window.element).fadeIn();
 				// Ta-da! It was there all along!
 				$window.closed = false;
 			}, 1000);

@@ -83,7 +83,7 @@ for (let i = 0; i < n_objects; ++i) {
 }
 const animate = () => {
 	requestAnimationFrame(animate);
-	$mothership.css("z-index", 0); // stay under the other windows, for this animation
+	$($mothership.element).css("z-index", 0); // stay under the other windows, for this animation
 	const motherRect = $mothership.$content[0].getBoundingClientRect();
 	for (let i = 0; i < objects.length; i++) {
 		const o = objects[i];
@@ -115,10 +115,10 @@ const animate = () => {
 				o.velocityY += (o.y - o2.y) * 0.1 / dist;
 			}
 		}
-		const x = pause_checkbox.checked ? ~~$window.offset().left : ~~o.x;
-		const y = pause_checkbox.checked ? ~~$window.offset().top : ~~o.y;
-		const width = ~~$window.outerWidth();
-		const height = ~~$window.outerHeight();
+		const x = pause_checkbox.checked ? ~~$($window.element).offset().left : ~~o.x;
+		const y = pause_checkbox.checked ? ~~$($window.element).offset().top : ~~o.y;
+		const width = ~~$($window.element).outerWidth();
+		const height = ~~$($window.element).outerHeight();
 		const containedByMothership = (
 			motherRect.left < x && motherRect.left + motherRect.width > x + width &&
 			motherRect.top < y && motherRect.top + motherRect.height > y + height
@@ -129,8 +129,8 @@ const animate = () => {
 				if (otherObject === o) {
 					return true;
 				}
-				const otherRect = otherObject.$window[0].getBoundingClientRect();
-				const ourRect = $window[0].getBoundingClientRect();
+				const otherRect = otherObject.$window.element.getBoundingClientRect();
+				const ourRect = $window.element.getBoundingClientRect();
 				return (
 					// The objects must either not be overlapping...
 					otherRect.left > ourRect.left + ourRect.width ||
@@ -158,17 +158,17 @@ const animate = () => {
 			o.crossedDuringThisContainment = false;
 		}
 		if (pause_checkbox.checked) {
-			o.x = $window.offset().left;
-			o.y = $window.offset().top;
+			o.x = $($window.element).offset().left;
+			o.y = $($window.element).offset().top;
 		} else {
-			$window.css({
+			$($window.element).css({
 				left: x,
 				top: y,
 				// width: width,
 				// height: height,
 			});
 		}
-		$window.css({
+		$($window.element).css({
 			zIndex: o.z,
 			clipPath: o.clipping ? `polygon(
 				${motherRect.left - x}px ${motherRect.top - y}px,
@@ -183,7 +183,7 @@ const animate = () => {
 		o.prev_x ??= o.x;
 		o.prev_y ??= o.y;
 		if (o.x !== o.prev_x || o.y !== o.prev_y) {
-			$window.find("img").css({
+			$window.$content.find("img").css({
 				transform: `rotate(${Math.atan2(o.y - o.lagged_y, o.x - o.lagged_x) * 180 / Math.PI + 90}deg)`,
 			});
 			o.lagged_x += (o.x - o.lagged_x) * 0.1;

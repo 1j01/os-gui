@@ -153,7 +153,7 @@ By default, the scope is `window` (global), for the case of a single-page applic
 If you are putting the menu bar in a window, you should call this with the window's element:
 
 ```js
-menu_bar.setKeyboardScope($window[0]);
+menu_bar.setKeyboardScope($window.element);
 ```
 or better yet,
 ```js
@@ -597,17 +597,19 @@ Use `$window.getIconAtSize(size)` to get an appropriate icon.
 
 Other than `center()`, there is no API specifically for positioning windows.
 
-You can use `$window.css({ top: "500px", left: "500px" })` to set the position of the window. This is a [jQuery method](https://api.jquery.com/css/).
+You can use `$($window.element).css({ top: "500px", left: "500px" })` to set the position of the window with [jQuery's `css()` method](https://api.jquery.com/css/), or else use:
+```js
+$window.element.style.top = "500px";
+$window.element.style.left = "500px";
+```
 
 You can also set `position` to `fixed` or `absolute` to position the window relative to the viewport or the nearest positioned ancestor, respectively.
 
 If you want to position a window relative to another window, you can use `$otherWindow.element.getBoundingClientRect()` to get the bounding rectangle of the other window, and then use that to position the window. This is a [built-in DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect). For example:
 ```js
 const otherRect = $otherWindow.element.getBoundingClientRect();
-$window.css({
-	top: otherRect.top + "px",
-	left: (otherRect.right + 10) + "px",
-});
+$window.element.top = `${otherRect.top}px`;
+$window.element.left = `${otherRect.right + 10}px`;
 ```
 
 #### Notes:
