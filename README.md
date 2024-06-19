@@ -440,11 +440,15 @@ Repositions the window so that the title bar is within the bounds of the page, s
 
 Brings the window to the front by setting its `z-index` to larger than any `z-index` yet used by the windowing system.
 
-#### `setDimensions({ innerWidth, innerHeight, outerWidth, outerHeight })`
+#### `setDimensions({ innerWidth, innerHeight, outerWidth, outerHeight, left, top, right, bottom, position })`
 
-Sets the size of the window. Pass `{ innerWidth, innerHeight }` to specify the size in terms of the window content, or `{ outerWidth, outerHeight }` to specify the size including the window frame.
+Sets the size and/or position of the window.
 
-*(This may be expanded in the future to allow setting the position as well...)*
+Pass `{ innerWidth, innerHeight }` to specify the size in terms of the window content, or `{ outerWidth, outerHeight }` to specify the size including the window frame.
+
+Pass `{ left, top }` to specify the position of the window.
+
+You can also constr
 
 #### `setIcons(icons)`
 
