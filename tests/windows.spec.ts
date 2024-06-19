@@ -483,6 +483,126 @@ test.describe('$Window Component', () => {
 		});
 	});
 
+	test.describe("setDimensions", () => {
+		test('should handle various combinations of left/width/right for positioning/sizing', async ({ page }) => {
+			const testDataKeys = ["initialLeft", "initialWidth", "initialRight", "paramLeft", "paramWidth", "paramRight", "resultLeft", "resultWidth", "resultRight", "notes"];
+			const testData = [
+				// https://docs.google.com/spreadsheets/d/1IyTPBGrqFgw16CqB6tlzEDhLv5j56RIAkztt-X4Nrzs/edit?usp=sharing
+				// Initial left, Initial width, Initial right, Param left, Param width, Param right, Result left, Result width, Result right, Notes
+				// 0 means unset
+				[_, _, _, _, _, _, "invalid", "invalid", "invalid",],
+				[1, _, _, _, _, _, "invalid", "invalid", "invalid",],
+				[_, 1, _, _, _, _, "invalid", "invalid", "invalid",],
+				[1, 1, _, _, _, _, "invalid", "invalid", "invalid",],
+				[_, _, 1, _, _, _, "invalid", "invalid", "invalid",],
+				[1, _, 1, _, _, _, "invalid", "invalid", "invalid",],
+				[_, 1, 1, _, _, _, "invalid", "invalid", "invalid",],
+				[1, 1, 1, _, _, _, "invalid", "invalid", "invalid",],
+				[_, _, _, 2, _, _, 2, _, _,],
+				[1, _, _, 2, _, _, 2, _, _,],
+				[_, 1, _, 2, _, _, 2, 1, _,],
+				[1, 1, _, 2, _, _, 2, 1, _,],
+				[_, _, 1, 2, _, _, 2, _, 1,],
+				[1, _, 1, 2, _, _, 2, _, 1,],
+				[_, 1, 1, 2, _, _, 2, 1, _,],
+				[1, 1, 1, 2, _, _, 2, 1, _,],
+				[_, _, _, _, 2, _, _, 2, _,],
+				[1, _, _, _, 2, _, 1, 2, _,],
+				[_, 1, _, _, 2, _, _, 2, _,],
+				[1, 1, _, _, 2, _, 1, 2, _,],
+				[_, _, 1, _, 2, _, _, 2, 1,],
+				[1, _, 1, _, 2, _, 1, 2, _, "Favoring left"],
+				[_, 1, 1, _, 2, _, _, 2, 1,],
+				[1, 1, 1, _, 2, _, 1, 2, _, "Favoring left"],
+				[_, _, _, 2, 2, _, 2, 2, _,],
+				[1, _, _, 2, 2, _, 2, 2, _,],
+				[_, 1, _, 2, 2, _, 2, 2, _,],
+				[1, 1, _, 2, 2, _, 2, 2, _,],
+				[_, _, 1, 2, 2, _, 2, 2, _,],
+				[1, _, 1, 2, 2, _, 2, 2, _,],
+				[_, 1, 1, 2, 2, _, 2, 2, _,],
+				[1, 1, 1, 2, 2, _, 2, 2, _,],
+				[_, _, _, _, _, 2, _, _, 2,],
+				[1, _, _, _, _, 2, 1, _, 2,],
+				[_, 1, _, _, _, 2, _, 1, 2,],
+				[1, 1, _, _, _, 2, _, 1, 2,],
+				[_, _, 1, _, _, 2, _, _, 2,],
+				[1, _, 1, _, _, 2, 1, _, 2,],
+				[_, 1, 1, _, _, 2, _, 1, 2,],
+				[1, 1, 1, _, _, 2, _, 1, 2,],
+				[_, _, _, 2, _, 2, 2, _, 2,],
+				[1, _, _, 2, _, 2, 2, _, 2,],
+				[_, 1, _, 2, _, 2, 2, _, 2,],
+				[1, 1, _, 2, _, 2, 2, _, 2,],
+				[_, _, 1, 2, _, 2, 2, _, 2,],
+				[1, _, 1, 2, _, 2, 2, _, 2,],
+				[_, 1, 1, 2, _, 2, 2, _, 2,],
+				[1, 1, 1, 2, _, 2, 2, _, 2,],
+				[_, _, _, _, 2, 2, _, 2, 2,],
+				[1, _, _, _, 2, 2, _, 2, 2,],
+				[_, 1, _, _, 2, 2, _, 2, 2,],
+				[1, 1, _, _, 2, 2, _, 2, 2,],
+				[_, _, 1, _, 2, 2, _, 2, 2,],
+				[1, _, 1, _, 2, 2, _, 2, 2,],
+				[_, 1, 1, _, 2, 2, _, 2, 2,],
+				[1, 1, 1, _, 2, 2, _, 2, 2,],
+				[_, _, _, 2, 2, 2, "invalid", "invalid", "invalid",],
+				[1, _, _, 2, 2, 2, "invalid", "invalid", "invalid",],
+				[_, 1, _, 2, 2, 2, "invalid", "invalid", "invalid",],
+				[1, 1, _, 2, 2, 2, "invalid", "invalid", "invalid",],
+				[_, _, 1, 2, 2, 2, "invalid", "invalid", "invalid",],
+				[1, _, 1, 2, 2, 2, "invalid", "invalid", "invalid",],
+				[_, 1, 1, 2, 2, 2, "invalid", "invalid", "invalid",],
+				[1, 1, 1, 2, 2, 2, "invalid", "invalid", "invalid",],
+			];
+			const h$window = await page.evaluateHandle(() => {
+				const $window = $Window({
+					title: 'Test Window'
+				});
+				// $window.setDimensions({
+				return $window;
+			});
+			await expect(page.locator('.window')).toHaveCSS('width', '400px');
+			await expect(page.locator('.window')).toHaveCSS('height', '300px');
+		});
+		test('should be limited by minimum inner width and height options', async ({ page }) => {
+			const h$window = await page.evaluateHandle(() => {
+				const $window = $Window({
+					title: 'Test Window',
+					minInnerWidth: 200,
+					minInnerHeight: 150,
+				});
+				$window.setDimensions({ innerWidth: 2000, innerHeight: 1500 });
+				return $window;
+			});
+			await expect(page.locator('.window-content')).toHaveCSS('width', '2000px');
+			await expect(page.locator('.window-content')).toHaveCSS('height', '1500px');
+			await h$window.evaluate(($window) => {
+				$window.setDimensions({ innerWidth: 100, innerHeight: 100 });
+			});
+			await expect(page.locator('.window-content')).toHaveCSS('width', '200px');
+			await expect(page.locator('.window-content')).toHaveCSS('height', '150px');
+		});
+		test('should be limited by minimum outer width and height options', async ({ page }) => {
+			const h$window = await page.evaluateHandle(() => {
+				const $window = $Window({
+					title: 'Test Window',
+					minOuterWidth: 200,
+					minOuterHeight: 150,
+				});
+				$window.setDimensions({ outerWidth: 2000, outerHeight: 1500 });
+				return $window;
+			});
+			await expect(page.locator('.window')).toHaveCSS('width', '2000px');
+			await expect(page.locator('.window')).toHaveCSS('height', '1500px');
+			await h$window.evaluate(($window) => {
+				$window.setDimensions({ outerWidth: 100, outerHeight: 100 });
+			});
+			await expect(page.locator('.window')).toHaveCSS('width', '200px');
+			await expect(page.locator('.window')).toHaveCSS('height', '150px');
+		});
+	});
+
 	test.describe("focus management", () => {
 		// Test cases where it should refocus the last focused control in the window:
 		// - Click in the blank space of the window
