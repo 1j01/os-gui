@@ -249,7 +249,45 @@ interface OSGUIWindow {
  * 
  * This was a bad design decision.
  */
-type OSGUI$Window = JQuery<HTMLElement & { $window: OSGUI$Window }> & OSGUIWindow;
+type OSGUI$Window = OSGUIWindow & $WindowDeprecatedJQueryPart;
+
+interface $WindowDeprecatedJQueryPart extends JQuery<HTMLElement & { $window: OSGUI$Window }> {
+	/**
+	 * @deprecated Use `$win.element` instead.
+	 */
+	get: JQuery<HTMLElement>["get"];
+	/**
+	 * @deprecated Use `$win.element` instead.
+	 */
+	first: JQuery<HTMLElement>["first"];
+	/**
+	 * @deprecated Use `$win.element` instead.
+	 */
+	last: JQuery<HTMLElement>["last"];
+	/**
+	 * @deprecated Use `$win.element` instead.
+	 */
+	toArray: JQuery<HTMLElement>["toArray"];
+	/**
+	 * @deprecated Use `$win.element` instead.
+	 */
+	0: HTMLElement;
+	/**
+	 * @deprecated Use `$win.$content.find` instead of `$win.find`, if possible; otherwise use `$($win.element).find` for a direct equivalent.
+	 */
+	find: JQuery<HTMLElement>["find"];
+	/**
+	 * @deprecated Use `$($win.element).css` instead, or `$win.element.style.foo = "bar";`
+	 * In the future there may be a `$win.setPosition` helper to compliment `$win.setDimensions`, or else
+	 * `$win.setDimensions` may be extended to support positioning.
+	 */
+	css: JQuery<HTMLElement>["css"];
+	/**
+	 * @deprecated Use `$($win.element).on` instead, or, experimentally, `$win.onClosed`, `$win.onBlur`, `$win.onFocus`, etc. for specific events.
+	 */
+	on: JQuery<HTMLElement>["on"];
+}
+
 
 /**
  * A window with a form, for some kinds of dialogs.

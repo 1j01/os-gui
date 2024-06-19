@@ -103,6 +103,18 @@ $Window.Z_INDEX = 5;
 /** @type {(OSGUIWindow | null)[]} */
 var minimize_slots = []; // for if there's no taskbar
 
+function formatPropertyAccess(/** @type {string | symbol} */ prop) {
+	if (typeof prop === "symbol") {
+		return `[${String(prop)}]`;
+	} else if (/^\d+$/.test(prop)) {
+		return `[${prop}]`;
+	} else if (/^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(prop)) {
+		return `.${prop}`;
+	} else {
+		return `[${JSON.stringify(prop)}]`;
+	}
+}
+
 // @TODO: make this a class,
 // instead of a weird pseudo-class
 /**
@@ -130,7 +142,19 @@ function $Window(options = {}) {
 				// @ts-ignore
 				return win[name];
 			} else if (name in $window_element) {
-				// Eventually will be deprecated in favor of win.element
+				// @ts-ignore
+				if (/^0$/.test(name)) {
+					console.trace(`DEPRECATED: use $window.element instead of $window[0].`);
+				// @ts-ignore
+				} else if (/^first|last|get$/.test(name)) {
+					// Assuming 0 will be the argument since a $Window shouldn't have multiple elements.
+					console.trace(`DEPRECATED: use $window.element instead of $window${formatPropertyAccess(name)}(0).`);
+				} else if (name === "find") {
+					console.trace(`DEPRECATED: use $window.$content.find instead of $window.find, if possible; otherwise use $($window.element).find for a direct equivalent.`);
+				} else {
+					const accessor = formatPropertyAccess(name);
+					console.trace(`DEPRECATED: use $($window.element)${accessor} instead of $window${accessor} directly. Eventually jQuery will be removed from the library.`);
+				}
 				// @ts-ignore
 				if (typeof $window_element[name] === "function") {
 					// @ts-ignore
@@ -149,7 +173,8 @@ function $Window(options = {}) {
 				// @ts-ignore
 				win[name] = value;
 			} else if (name in $window_element) {
-				// Eventually will be deprecated in favor of win.element
+				const accessor = formatPropertyAccess(name);
+				console.trace(`DEPRECATED: use $($window.element)${accessor} instead of $window${accessor} directly.`);
 				// @ts-ignore
 				$window_element[name] = value;
 			} else {
