@@ -142,19 +142,23 @@ interface OSGUIWindow {
 	 */
 	private onFocus(listener: () => void): () => void;
 
-
 	/**
 	 * Calls the listener when the window (visually?) loses focus.
 	 * Returns a function to remove the listener.
 	 */
 	private onBlur(listener: () => void): () => void;
 
-
 	/**
 	 * Calls the listener when the window is closed (after the close event is emitted, and if it wasn't prevented).
 	 * Returns a function to remove the listener.
 	 */
 	private onClosed(listener: () => void): () => void;
+
+	/**
+	 * Calls the listener before a window is closed, and allows preventing the window from closing.
+	 * Returns a function to remove the listener.
+	 */
+	private onBeforeClose(listener: (event: { preventDefault: () => void }) => void): () => void;
 
 	/**
 	 * *jQuery object.*  
@@ -293,7 +297,7 @@ interface $WindowDeprecatedJQueryPart extends Omit<JQuery<HTMLElement & { $windo
 	 */
 	css: JQuery<HTMLElement>["css"];
 	/**
-	 * @deprecated Use `$($win.element).on` instead, or, experimentally, `$win.onClosed`, `$win.onBlur`, `$win.onFocus`, etc. for specific events.
+	 * @deprecated Use `$($win.element).on` instead, or, experimentally, `$win.onClosed`, `$win.onBeforeClose`, `$win.onBlur`, `$win.onFocus`, etc. for specific events.
 	 */
 	on: JQuery<HTMLElement>["on"];
 }

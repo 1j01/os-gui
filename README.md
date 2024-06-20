@@ -511,6 +511,12 @@ EXPERIMENTAL: potential new API for events
 
 Calls the listener when the window is closed (after the close event is emitted, and if it wasn't prevented).
 
+#### `onBeforeClose(listener)`
+
+EXPERIMENTAL: potential new API for events
+
+Calls the listener before the window is closed. If the listener calls `event.preventDefault()`, the window will not be closed.
+
 #### `closed`
 
 Whether the window has been closed.

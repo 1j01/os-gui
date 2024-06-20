@@ -24,6 +24,10 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - The API is the same, but I've begun to separate the jQuery out from the `OSGUIWindow` interface internally, by overlaying the methods/properties of a jQuery object onto an object satisfying the `OSGUIWindow` interface.
   - Eventually, `OSGUIWindow` will become a class, and `$Window` will be deprecated/removed.
 
+### Added
+
+- `$Window` method `onBeforeClose(listener)` for setting a callback to run before the window is closed. The listener is passed an object with `preventDefault` which can stop the window from closing.
+
 </details>
 
 ## [0.7.3] - 2024-06-15

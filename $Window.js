@@ -388,8 +388,10 @@ function $Window(options = {}) {
 	const [onBlur, dispatch_blur] = make_simple_listenable("blur");
 	/** @type {[typeof win.onClosed, () => void]} */
 	const [onClosed, dispatch_closed] = make_simple_listenable("closed");
+	/** @type {[typeof win.onBeforeClose, (event: {preventDefault: () => void}) => void]} */
+	const [onBeforeClose, dispatch_before_close] = make_simple_listenable("close");
 
-	Object.assign(win, { onFocus, onBlur, onClosed });
+	Object.assign(win, { onFocus, onBlur, onClosed, onBeforeClose });
 
 	/**
 	 * @param {{ innerWidth?: number, innerHeight?: number, outerWidth?: number, outerHeight?: number }} options
@@ -1767,6 +1769,14 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			throw new TypeError("force must be a boolean or undefined, not " + Object.prototype.toString.call(force));
 		}
 		if (!force) {
+			let prevented = false;
+			dispatch_before_close({
+				preventDefault: () => { prevented = true; }
+			});
+			if (prevented) {
+				return;
+			}
+			// legacy
 			var e = $.Event("close");
 			$window_element.trigger(e);
 			if (e.isDefaultPrevented()) {
