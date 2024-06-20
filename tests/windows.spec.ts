@@ -476,6 +476,73 @@ test.describe('$Window Component', () => {
 		});
 	});
 
+	test.describe('setTitlebarIconSize()', () => {
+		test('should pick the icon size used in the titlebar', async ({ page }) => {
+			const h$window = await page.evaluateHandle(() => {
+				const $window = $Window({
+					title: 'Test Window',
+					icons: {
+						16: new Text('16x16 placeholder'),
+						32: new Text('32x32 placeholder'),
+						any: new Text('any size placeholder'),
+					},
+				});
+				return $window;
+			});
+			await expect(page.locator('.window').getByText(/16x16 placeholder/)).toBeVisible();
+			await h$window.evaluate(($window) => {
+				$window.setTitlebarIconSize(32);
+			});
+			await expect(page.locator('.window').getByText(/32x32 placeholder/)).toBeVisible();
+			await h$window.evaluate(($window) => {
+				$window.setTitlebarIconSize(128);
+			});
+			await expect(page.locator('.window').getByText(/any size placeholder/)).toBeVisible();
+		});
+		test('should dispatch icon-change event', async ({ page }) => {
+			let logs: ConsoleMessage[] = [];
+			page.on('console', msg => {
+				logs.push(msg);
+			});
+
+			const iconChangeEvents = await page.evaluate(async () => {
+				const $window = $Window({
+					title: 'Test Window',
+					icons: {
+						16: new Text('16x16 placeholder'),
+						32: new Text('32x32 placeholder'),
+						any: new Text('any size placeholder'),
+					},
+				});
+				let a = 0, b = 0, c = 0, d = 0;
+				// legacy jQuery event
+				$($window.element).on('icon-change', () => {
+					a++;
+				});
+				// legacy jQuery event with deprecated jQuery inheritance
+				// @ts-ignore
+				$window.on('icon-change', () => {
+					b++;
+				});
+				// native browser event (not supported)
+				$window.element.addEventListener('icon-change', () => {
+					c++;
+				});
+				// new minimalist event system (TODO)
+				// $window.onIconChanged(() => {
+				// 	d++;
+				// });
+				$window.setTitlebarIconSize(16);
+				await new Promise((resolve) => setTimeout(resolve, 50));
+				return { a, b, c, d };
+			});
+			expect(iconChangeEvents).toEqual({ a: 1, b: 1, c: 0, d: 0 });
+			expect(logs).toHaveLength(1);
+			expect(logs[0].text()).toBe("DEPRECATED: use $($window.element).on instead of $window.on directly. Eventually jQuery will be removed from the library.");
+			expect(logs[0].type()).toBe('trace');
+		});
+	});
+
 	test.describe('setMenuBar()', () => {
 		test('should add menu bar, which is hidden when minimized', async ({ page }) => {
 			const h$window = await page.evaluateHandle(() => {
