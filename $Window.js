@@ -352,14 +352,15 @@ function $Window(options = {}) {
 	}
 
 	/**
+	 * @template E
 	 * @param {string} name
-	 * @returns {[(callback: () => void) => (() => void), () => void]} [add_listener, trigger]
+	 * @returns {[(callback: (event: E) => void) => (() => void), (event: E) => void]} [add_listener, trigger]
 	 */
 	const make_simple_listenable = (name) => {
-		/** @type {(() => void)[]} */
+		/** @type {((event: E) => void)[]} */
 		let event_handlers = [];
 
-		const add_listener = (/** @type {() => void} */ callback) => {
+		const add_listener = (/** @type {(event: E) => void} */ callback) => {
 			event_handlers.push(callback);
 			
 			const dispose = () => {
@@ -368,17 +369,23 @@ function $Window(options = {}) {
 			
 			return dispose;
 		};
-		const trigger = () => {
+		
+		/**
+		 * @param {E} event
+		 */
+		const trigger = (event) => {
 			for (const handler of event_handlers) {
-				handler();
+				handler(event);
 			}
 		};
 		// return Object.assign(add_listener, { trigger });
 		return [add_listener, trigger];
 	};
-
+	/** @type {[typeof win.onFocus, (event: never) => void]} */
 	const [onFocus, dispatch_focus] = make_simple_listenable("focus");
+	/** @type {[typeof win.onBlur, (event: never) => void]} */
 	const [onBlur, dispatch_blur] = make_simple_listenable("blur");
+	/** @type {[typeof win.onClosed, (event: never) => void]} */
 	const [onClosed, dispatch_closed] = make_simple_listenable("closed");
 
 	Object.assign(win, { onFocus, onBlur, onClosed });
