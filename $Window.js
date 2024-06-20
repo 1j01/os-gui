@@ -351,35 +351,37 @@ function $Window(options = {}) {
 		return window.get_direction ? window.get_direction() : /** @type {"ltr" | "rtl"} */(getComputedStyle(win.element).direction);
 	}
 
-	/** @type {Record<string, (() => void)[]>} */
-	const event_handlers = {};
+	/**
+	 * @param {string} name
+	 * @returns {[(callback: () => void) => (() => void), () => void]} [add_listener, trigger]
+	 */
+	const make_simple_listenable = (name) => {
+		/** @type {(() => void)[]} */
+		let event_handlers = [];
 
-	const make_simple_listenable = (/** @type {string} */ name) => {
-		return (/** @type {() => void} */ callback) => {
-			if (!event_handlers[name]) {
-				event_handlers[name] = [];
-			}
-			event_handlers[name].push(callback);
+		const add_listener = (/** @type {() => void} */ callback) => {
+			event_handlers.push(callback);
 			
 			const dispose = () => {
-				event_handlers[name] = event_handlers[name].filter(handler => handler !== callback);
+				event_handlers = event_handlers.filter(handler => handler !== callback);
 			};
 			
 			return dispose;
 		};
-	};
-
-	const trigger_simple_listeners = (/** @type {string} */ name) => {
-		if (event_handlers[name]) {
-			for (const handler of event_handlers[name]) {
+		const trigger = () => {
+			for (const handler of event_handlers) {
 				handler();
 			}
-		}
+		};
+		// return Object.assign(add_listener, { trigger });
+		return [add_listener, trigger];
 	};
 
-	win.onFocus = make_simple_listenable("focus");
-	win.onBlur = make_simple_listenable("blur");
-	win.onClosed = make_simple_listenable("closed");
+	const [onFocus, dispatch_focus] = make_simple_listenable("focus");
+	const [onBlur, dispatch_blur] = make_simple_listenable("blur");
+	const [onClosed, dispatch_closed] = make_simple_listenable("closed");
+
+	Object.assign(win, { onFocus, onBlur, onClosed });
 
 	/**
 	 * @param {{ innerWidth?: number, innerHeight?: number, outerWidth?: number, outerHeight?: number }} options
@@ -424,14 +426,14 @@ function $Window(options = {}) {
 			return;
 		}
 		$window_element.addClass("focused");
-		trigger_simple_listeners("focus");
+		dispatch_focus();
 	};
 	const stopShowingAsFocused = () => {
 		if (!$window_element.hasClass("focused")) {
 			return;
 		}
 		$window_element.removeClass("focused");
-		trigger_simple_listeners("blur");
+		dispatch_blur();
 	};
 	win.focus = () => {
 		// showAsFocused();
@@ -1769,7 +1771,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		win.closed = true;
 		minimize_slots[win._minimize_slot_index] = null;
 
-		trigger_simple_listeners("closed");
+		dispatch_closed();
 		$window_element.trigger("closed");
 		// TODO: change usages of "close" to "closed" where appropriate
 		// and probably rename the "close" event ("before[-]close"? "may-close"? "close-request"?)
