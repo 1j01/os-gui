@@ -284,6 +284,43 @@ test.describe('$Window Component', () => {
 			});
 			expect(title).toBe('Test Window');
 		});
+		test('should dispatch title-change event', async ({ page }) => {
+			let logs: ConsoleMessage[] = [];
+			page.on('console', msg => {
+				logs.push(msg);
+			});
+
+			const titleChangeEvents = await page.evaluate(async () => {
+				const $window = $Window({
+					title: 'Test Window'
+				});
+				let a = 0, b = 0, c = 0, d = 0;
+				// legacy jQuery event
+				$($window.element).on('title-change', () => {
+					a++;
+				});
+				// legacy jQuery event with deprecated jQuery inheritance
+				// @ts-ignore
+				$window.on('title-change', () => {
+					b++;
+				});
+				// native browser event (not supported)
+				$window.element.addEventListener('title-change', () => {
+					c++;
+				});
+				// new minimalist event system (TODO)
+				// $window.onTitleChanged(() => {
+				// 	d++;
+				// });
+				$window.title('Best Window');
+				await new Promise((resolve) => setTimeout(resolve, 50));
+				return { a, b, c, d };
+			});
+			expect(titleChangeEvents).toEqual({ a: 1, b: 1, c: 0, d: 0 });
+			expect(logs).toHaveLength(1);
+			expect(logs[0].text()).toBe("DEPRECATED: use $($window.element).on instead of $window.on directly. Eventually jQuery will be removed from the library.");
+			expect(logs[0].type()).toBe('trace');
+		});
 	});
 
 	test.describe('getIconAtSize()', () => {
