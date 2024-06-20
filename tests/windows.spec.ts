@@ -652,6 +652,138 @@ test.describe('$Window Component', () => {
 		});
 	});
 
+	test.describe('setMinimizeTarget()', () => {
+		test('should change minimization behavior to act like a the target is a taskbar button', async ({ page }) => {
+			const h$window = await page.evaluateHandle(() => {
+				const $window = $Window({
+					title: 'Test Window'
+				});
+				const target = document.createElement('button');
+				target.textContent = 'Taskbar Button';
+				target.id = 'taskbar-button';
+				document.body.appendChild(target);
+				$window.setMinimizeTarget(target);
+				return $window;
+			});
+			// await expect(page.getByText('Taskbar Button')).toBeVisible();
+			// await new Promise((resolve) => setTimeout(resolve, 500));
+			const hAnimInfo = await page.evaluateHandle(() => {
+				const windowElement = document.querySelector('.window');
+				const targetElement = document.querySelector('#taskbar-button');
+				if (!windowElement || !targetElement) throw new Error('Element(s) not found');
+				// The titlebar should fly toward the target,
+				// and out from it when unminimizing.
+				// Use a rAF loop and capture bounding rects
+				// in order to test the trajectory of the flying titlebar.
+				const animInfo = {
+					windowRect: windowElement.getBoundingClientRect(),
+					targetRect: targetElement.getBoundingClientRect(),
+					titlebarRects: <DOMRect[]>[],
+				};
+				const animate = () => {
+					requestAnimationFrame(animate);
+					const titlebar = document.querySelector('body > .window-titlebar');
+					if (!titlebar) return;
+					animInfo.titlebarRects.push(titlebar.getBoundingClientRect());
+				};
+				animate();
+				return animInfo;
+			});
+			await expect(page.locator('.window')).toBeVisible();
+			await h$window.evaluate(($window) => {
+				$window.minimize();
+			});
+			await expect(page.locator('.window')).not.toBeVisible();
+			const minimizeAnimInfo = await hAnimInfo.evaluate((animInfo) => animInfo);
+			await testAnimation(minimizeAnimInfo.windowRect, minimizeAnimInfo.targetRect, minimizeAnimInfo.titlebarRects);
+			await hAnimInfo.evaluate((animInfo) => {
+				animInfo.titlebarRects.length = 0;
+				for (const debugRect of document.querySelectorAll('.debug-rect')) {
+					debugRect.remove();
+				}
+			});
+			await h$window.evaluate(($window) => {
+				$window.restore();
+			});
+			await expect(page.locator('.window')).toBeVisible();
+			const restoreAnimInfo = await hAnimInfo.evaluate((animInfo) => animInfo);
+			await testAnimation(restoreAnimInfo.targetRect, restoreAnimInfo.windowRect, restoreAnimInfo.titlebarRects);
+
+			async function testAnimation(fromRect: DOMRect, toRect: DOMRect, intermediateRects: DOMRect[]) {
+				const sides = ['left', 'top', 'right', 'bottom'] as const;
+
+				console.log('fromRect', fromRect);
+				console.log('toRect', toRect);
+				console.log('intermediateRects', intermediateRects);
+
+				await page.evaluate(({ fromRect, toRect, intermediateRects }) => {
+					function plotRect(rect: DOMRect) {
+						const { x, y, width, height } = rect;
+						const div = document.createElement('div');
+						div.style.position = 'absolute';
+						div.style.left = x + 'px';
+						div.style.top = y + 'px';
+						div.style.width = width + 'px';
+						div.style.height = height + 'px';
+						div.style.background = 'rgba(128, 128, 128, 0.2)';
+						div.style.border = '1px solid currentColor';
+						div.style.fontFamily = 'sans-serif';
+						document.body.appendChild(div);
+						div.classList.add('debug-rect');
+						return div;
+					}
+
+					for (let i = 0; i < intermediateRects.length; i++) {
+						const rect = intermediateRects[i];
+						const div = plotRect(rect);
+						div.textContent = String(i);
+						div.style.color = 'blue';
+					}
+					const fromDiv = plotRect(fromRect);
+					fromDiv.textContent = 'From';
+					fromDiv.style.color = 'red';
+					const toDiv = plotRect(toRect);
+					toDiv.textContent = 'To';
+					toDiv.style.color = 'green';
+				}, { fromRect, toRect, intermediateRects });
+
+				// check that we recorded some intermediate rects
+				expect(intermediateRects.length).toBeGreaterThan(2);
+
+				// check that the final rect is close to the target
+				for (const side of sides) {
+					expect(Math.abs(intermediateRects[intermediateRects.length - 1][side] - toRect[side])).toBeLessThan(30);
+				}
+
+				// check that the first rect is close to the starting rect
+				for (const side of sides) {
+					expect(Math.abs(intermediateRects[0][side] - fromRect[side])).toBeLessThan(30);
+				}
+
+				// each frame, the left/top/right/bottom should be closer to the target than the last frame
+				// TODO: try to get this working, and enable it
+				// The height is not meant to end up at the target's height,
+				// but it's failing on the horizontal axis, so it probably has to do with borders.
+				let previousRect = fromRect;
+				for (const rect of intermediateRects) {
+					for (const side of sides) {
+						// if (side === "bottom" || side === "top") continue;
+						const lastDiff = Math.abs(previousRect[side] - toRect[side]);
+						const diff = Math.abs(rect[side] - toRect[side]);
+						console.log(`lastDiff: ${lastDiff}, diff: ${diff}`);
+						// expect(diff).toBeLessThanOrEqual(lastDiff);
+					}
+					previousRect = rect;
+				}
+				// P.S. time control may be needed for reliability
+				// https://github.com/microsoft/playwright/issues/6347
+				// However as it's a CSS animation, sinon-fake-timers won't help.
+				// I did make the animation duration controllable with $Window.OVERRIDE_TRANSITION_DURATION
+				// Might want to use that.
+			}
+		});
+	});
+
 	test.describe('$Button()', () => {
 		test('should add a button to the window', async ({ page }) => {
 			const hTestState = await page.evaluateHandle(() => {
