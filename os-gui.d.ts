@@ -261,7 +261,7 @@ type HardDeprecate<T> = {
 	[P in keyof T]: never;
 };
 
-interface $WindowDeprecatedJQueryPart extends JQuery<HTMLElement & { $window: OSGUI$Window }> {
+interface $WindowDeprecatedJQueryPart extends Omit<JQuery<HTMLElement & { $window: OSGUI$Window }>, keyof OSGUIWindow> {
 	/**
 	 * @deprecated Use `$win.element` instead.
 	 */
