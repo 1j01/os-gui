@@ -147,9 +147,9 @@ test.describe('$Window Component', () => {
 		await expect(page.locator('.window')).toHaveCSS('height', '300px');
 
 		// Try dragging the maximized window
-		// TODO: use `page.mouse` and such instead of `dispatchEvent`
-		await page.locator('.window-titlebar').dispatchEvent('pointerdown', { which: 1 });
-		await page.locator('.window-titlebar').dispatchEvent('pointermove', { clientX: 50, clientY: 50 });
+		await page.locator('.window-titlebar').hover();
+		await page.mouse.down();
+		await page.mouse.move(50, 50);
 		await expect(page.locator('.window')).toHaveCSS('top', '0px');
 		await expect(page.locator('.window')).toHaveCSS('left', '0px');
 		// await expect(page.locator('.window')).toHaveCSS('width', '300px'); // see above
@@ -599,9 +599,10 @@ test.describe('$Window Component', () => {
 			});
 			await expect(page.locator('.window-titlebar')).toHaveCount(1); // wait for titlebar animation to finish
 			// move the window so the menu bar is visible if it's broken
-			await page.locator('.window-titlebar').dispatchEvent('pointerdown', { which: 1 });
-			await page.locator('.window-titlebar').dispatchEvent('pointermove', { clientX: 150, clientY: 150 });
-			await page.locator('.window-titlebar').dispatchEvent('pointerup');
+			await page.locator('.window-titlebar').hover();
+			await page.mouse.down();
+			await page.mouse.move(150, 150);
+			await page.mouse.up();
 			// In Cypress, `.should('not.be.visible')` was not a strong enough assertion, since it considered offscreen elements hidden.
 			await expect(page.locator('[role="menubar"]')).not.toBeVisible();
 			// Playwright might not behave the same with `.not.toBeVisible`,
