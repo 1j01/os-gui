@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { ConsoleMessage, expect, test } from '@playwright/test';
 import { pathToFileURL } from 'node:url';
 
 test.describe('$Window Component', () => {
@@ -395,6 +395,47 @@ test.describe('$Window Component', () => {
 			for (const [codeSnippet, [actual, expected]] of Object.entries(results)) {
 				expect(actual, { message: `Expected ${codeSnippet} to be ${JSON.stringify(expected)} but got ${JSON.stringify(actual)}` }).toBe(expected);
 			}
+		});
+		test('should dispatch icon-change event', async ({ page }) => {
+			let logs: ConsoleMessage[] = [];
+			page.on('console', msg => {
+				logs.push(msg);
+			});
+
+			const iconChangeEvents = await page.evaluate(async () => {
+				const $window = $Window({
+					title: 'Test Window'
+				});
+				let a = 0, b = 0, c = 0, d = 0;
+				// legacy jQuery event
+				$($window.element).on('icon-change', () => {
+					a++;
+				});
+				// legacy jQuery event with deprecated jQuery inheritance
+				// @ts-ignore
+				$window.on('icon-change', () => {
+					b++;
+				});
+				// native browser event (not supported)
+				$window.element.addEventListener('icon-change', () => {
+					c++;
+				});
+				// new minimalist event system (TODO)
+				// $window.onIconChanged(() => {
+				// 	d++;
+				// });
+				$window.setIcons({
+					16: new Text('16x16 placeholder'),
+					32: new Text('32x32 placeholder'),
+					any: new Text('any size placeholder')
+				});
+				await new Promise((resolve) => setTimeout(resolve, 50));
+				return { a, b, c, d };
+			});
+			expect(iconChangeEvents).toEqual({ a: 1, b: 1, c: 0, d: 0 });
+			expect(logs).toHaveLength(1);
+			expect(logs[0].text()).toBe("DEPRECATED: use $($window.element).on instead of $window.on directly. Eventually jQuery will be removed from the library.");
+			expect(logs[0].type()).toBe('trace');
 		});
 	});
 
