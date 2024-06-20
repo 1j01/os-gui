@@ -476,7 +476,7 @@ test.describe('$Window Component', () => {
 		});
 	});
 
-	test.describe('setMenuBar', () => {
+	test.describe('setMenuBar()', () => {
 		test('should add menu bar, which is hidden when minimized', async ({ page }) => {
 			const h$window = await page.evaluateHandle(() => {
 				const $window = $Window({
