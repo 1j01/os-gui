@@ -372,8 +372,7 @@ test.describe('$Window Component', () => {
 
 			// It's actually not wrapped in an element, which is a little weird.
 			// If you pass it a text node, it's added directly to the titlebar.
-			await expect(page.locator('.window').getByText(/16x16 placeholder/).first()).toBeVisible();
-
+			await expect(page.locator('.window').getByText(/16x16 placeholder/)).toBeVisible();
 		});
 		test('should clear the icons if called with an empty object', async ({ page }) => {
 			const results = await page.evaluate(() => {
