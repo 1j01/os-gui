@@ -1154,7 +1154,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			return;
 		}
 		if (options.toolWindow && options.parentWindow) {
-			options.parentWindow.triggerHandler("refocus-window");
+			$(options.parentWindow.element).triggerHandler("refocus-window");
 			return;
 		}
 		container_el.focus({ preventScroll: true });
