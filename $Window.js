@@ -751,6 +751,7 @@ function $Window(options = {}) {
 					$window_element.hide();
 					win.blur();
 				});
+				$window_element.addClass("minimized");
 			} else {
 				// no taskbar
 

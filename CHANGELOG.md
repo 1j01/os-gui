@@ -12,6 +12,10 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 		Click to see more.
 	</summary>
 
+### Fixed
+
+- Fixed restoring from minimized state with `win.restore()`, when a taskbar. (The minimize button was not broken, as it used `minimize()` to restore the window, which currently toggles the minimized state.)
+
 ### Deprecated
 
 - Accessing jQuery methods/properties on `$Window` instances is deprecated. Use the `element` property to access the underlying DOM element, and wrap it in a jQuery object if you wish to use jQuery methods.
@@ -27,6 +31,7 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Added
 
 - `$Window` method `onBeforeClose(listener)` for setting a callback to run before the window is closed. The listener is passed an object with `preventDefault` which can stop the window from closing.
+- A window element will have a CSS class `minimized` when minimized, if `setMinimizeTarget` was called before minimizing.
 
 </details>
 
