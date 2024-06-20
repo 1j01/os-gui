@@ -543,6 +543,31 @@ test.describe('$Window Component', () => {
 		});
 	});
 
+	test.describe('getTitlebarIconSize()', () => {
+		test('should return the icon size used in the titlebar', async ({ page }) => {
+			const h$window = await page.evaluateHandle(() => {
+				const $window = $Window({
+					title: 'Test Window',
+					icons: {
+						16: new Text('16x16 placeholder'),
+						32: new Text('32x32 placeholder'),
+						any: new Text('any size placeholder'),
+					},
+				});
+				return $window;
+			});
+			expect(await h$window.evaluate(($window) =>
+				$window.getTitlebarIconSize()
+			)).toBe(16);
+			await h$window.evaluate(($window) => {
+				$window.setTitlebarIconSize(48);
+			});
+			expect(await h$window.evaluate(($window) =>
+				$window.getTitlebarIconSize()
+			)).toBe(48);
+		});
+	});
+
 	test.describe('setMenuBar()', () => {
 		test('should add menu bar, which is hidden when minimized', async ({ page }) => {
 			const h$window = await page.evaluateHandle(() => {
