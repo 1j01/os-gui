@@ -315,7 +315,7 @@ interface OSGUIFormWindow extends OSGUIWindow {
  * 
  * This was a bad design decision.
  */
-type OSGUI$FormWindow = JQuery<HTMLElement & { $window: OSGUI$FormWindow }> & OSGUIFormWindow;
+type OSGUI$FormWindow = OSGUIFormWindow & HardDeprecate<$WindowDeprecatedJQueryPart>;
 
 /**
  * Creates a new window.
