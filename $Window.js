@@ -351,21 +351,32 @@ function $Window(options = {}) {
 		return window.get_direction ? window.get_direction() : /** @type {"ltr" | "rtl"} */(getComputedStyle(win.element).direction);
 	}
 
-	// This is very silly, using jQuery's event handling to implement simpler event handling.
-	// But I'll implement it in a non-silly way at least when I remove jQuery. Maybe sooner.
-	const $event_target = $({});
+	/** @type {Record<string, (() => void)[]>} */
+	const event_handlers = {};
+
 	const make_simple_listenable = (/** @type {string} */ name) => {
 		return (/** @type {() => void} */ callback) => {
-			const fn = () => {
-				callback();
-			};
-			$event_target.on(name, fn);
+			if (!event_handlers[name]) {
+				event_handlers[name] = [];
+			}
+			event_handlers[name].push(callback);
+			
 			const dispose = () => {
-				$event_target.off(name, fn);
+				event_handlers[name] = event_handlers[name].filter(handler => handler !== callback);
 			};
+			
 			return dispose;
 		};
 	};
+
+	const trigger_simple_listeners = (/** @type {string} */ name) => {
+		if (event_handlers[name]) {
+			for (const handler of event_handlers[name]) {
+				handler();
+			}
+		}
+	};
+
 	win.onFocus = make_simple_listenable("focus");
 	win.onBlur = make_simple_listenable("blur");
 	win.onClosed = make_simple_listenable("closed");
@@ -413,14 +424,14 @@ function $Window(options = {}) {
 			return;
 		}
 		$window_element.addClass("focused");
-		$event_target.triggerHandler("focus");
+		trigger_simple_listeners("focus");
 	};
 	const stopShowingAsFocused = () => {
 		if (!$window_element.hasClass("focused")) {
 			return;
 		}
 		$window_element.removeClass("focused");
-		$event_target.triggerHandler("blur");
+		trigger_simple_listeners("blur");
 	};
 	win.focus = () => {
 		// showAsFocused();
@@ -1758,7 +1769,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		win.closed = true;
 		minimize_slots[win._minimize_slot_index] = null;
 
-		$event_target.triggerHandler("closed");
+		trigger_simple_listeners("closed");
 		$window_element.trigger("closed");
 		// TODO: change usages of "close" to "closed" where appropriate
 		// and probably rename the "close" event ("before[-]close"? "may-close"? "close-request"?)
