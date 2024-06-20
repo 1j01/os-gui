@@ -362,14 +362,14 @@ function $Window(options = {}) {
 
 		const add_listener = (/** @type {(...args: ArgsType) => void} */ callback) => {
 			event_handlers.push(callback);
-			
+
 			const dispose = () => {
 				event_handlers = event_handlers.filter(handler => handler !== callback);
 			};
-			
+
 			return dispose;
 		};
-		
+
 		/**
 		 * @param {ArgsType} args
 		 */
@@ -381,6 +381,7 @@ function $Window(options = {}) {
 		// return Object.assign(add_listener, { trigger });
 		return [add_listener, trigger];
 	};
+
 	/** @type {[typeof win.onFocus, () => void]} */
 	const [onFocus, dispatch_focus] = make_simple_listenable("focus");
 	/** @type {[typeof win.onBlur, () => void]} */
