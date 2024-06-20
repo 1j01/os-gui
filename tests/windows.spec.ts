@@ -663,6 +663,9 @@ test.describe('$Window Component', () => {
 				target.id = 'taskbar-button';
 				document.body.appendChild(target);
 				$window.setMinimizeTarget(target);
+
+				$Window.OVERRIDE_TRANSITION_DURATION = 4000; // increase duration for reliability
+
 				return $window;
 			});
 			// await expect(page.getByText('Taskbar Button')).toBeVisible();
@@ -712,9 +715,9 @@ test.describe('$Window Component', () => {
 			async function testAnimation(fromRect: DOMRect, toRect: DOMRect, intermediateRects: DOMRect[]) {
 				const sides = ['left', 'top', 'right', 'bottom'] as const;
 
-				console.log('fromRect', fromRect);
-				console.log('toRect', toRect);
-				console.log('intermediateRects', intermediateRects);
+				// console.log('fromRect', fromRect);
+				// console.log('toRect', toRect);
+				// console.log('intermediateRects', intermediateRects);
 
 				await page.evaluate(({ fromRect, toRect, intermediateRects }) => {
 					function plotRect(rect: DOMRect) {
@@ -761,25 +764,23 @@ test.describe('$Window Component', () => {
 				}
 
 				// each frame, the left/top/right/bottom should be closer to the target than the last frame
-				// TODO: try to get this working, and enable it
-				// The height is not meant to end up at the target's height,
-				// but it's failing on the horizontal axis, so it probably has to do with borders.
-				let previousRect = fromRect;
-				for (const rect of intermediateRects) {
+				// Note: The titlebar is not necessarily meant to stretch to match the height of the target.
+				// Also, I'm not really considering how borders play into this.
+				// But with a little margin of error, I've got it passing.
+				// That said, a margin of error could allow it to move backwards, so it's not the most robust test.
+				// But then again, if it starts where it should and ends where it should, and doesn't move too much
+				// in each increment, that implies it's moving in the right direction.
+				for (let i = 1; i < intermediateRects.length; i++) {
+					const previousRect = intermediateRects[i - 1];
+					const rect = intermediateRects[i];
 					for (const side of sides) {
 						// if (side === "bottom" || side === "top") continue;
 						const lastDiff = Math.abs(previousRect[side] - toRect[side]);
 						const diff = Math.abs(rect[side] - toRect[side]);
-						console.log(`lastDiff: ${lastDiff}, diff: ${diff}`);
-						// expect(diff).toBeLessThanOrEqual(lastDiff);
+						// console.log(`i: ${i}, lastDiff: ${lastDiff}, diff: ${diff}`);
+						expect(diff).toBeLessThan(lastDiff + 2);
 					}
-					previousRect = rect;
 				}
-				// P.S. time control may be needed for reliability
-				// https://github.com/microsoft/playwright/issues/6347
-				// However as it's a CSS animation, sinon-fake-timers won't help.
-				// I did make the animation duration controllable with $Window.OVERRIDE_TRANSITION_DURATION
-				// Might want to use that.
 			}
 		});
 	});
