@@ -652,6 +652,28 @@ test.describe('$Window Component', () => {
 		});
 	});
 
+	test.describe('$Button()', () => {
+		test('should add a button to the window', async ({ page }) => {
+			const hTestState = await page.evaluateHandle(() => {
+				const testState = { buttonClicks: 0, buttonText: '' };
+				const $window = $Window({
+					title: 'Test Window'
+				});
+				const $button = $window.$Button('Click me', () => {
+					testState.buttonClicks++;
+				});
+				testState.buttonText = $button.text();
+				return testState;
+			});
+			await expect(page.getByText('Click me')).toBeVisible();
+			await page.getByText('Click me').click();
+			await expect(await hTestState.evaluate((testState) => testState)).toStrictEqual({
+				buttonClicks: 1,
+				buttonText: 'Click me',
+			});
+		});
+	});
+
 	test.describe("focus management", () => {
 		// Test cases where it should refocus the last focused control in the window:
 		// - Click in the blank space of the window
