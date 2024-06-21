@@ -832,6 +832,17 @@ test.describe('$Window Component', () => {
 		//     - Button that focuses a control in another window (e.g. Focus Other button in tests)
 		// - Trying to select text
 
+		test.beforeEach(async ({ page }) => {
+			await page.evaluate(() => {
+				// Enable fancy SVG-based focus visualization
+				// Note that this visualizes the "last focused control" state, a hierarchy of focus remembered per window/iframe.
+				// This may be misleading!
+				// TODO: visualize the current focus state, a single element per frame, and clearly delineate memory from reality,
+				// possibly with a legend.
+				$Window.DEBUG_FOCUS = true;
+			});
+		});
+
 		test("should focus the window when clicking in the blank space of the window", async ({ page }) => {
 			await page.evaluate(() => {
 				const $window = $Window({
