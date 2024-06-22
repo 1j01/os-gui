@@ -1,5 +1,30 @@
 ((exports) => {
 
+const deprecatedEvents = {
+	// "window-drag-start": "onBeforeDrag", // TODO: implement
+	// "title-change": "onTitleChanged", // TODO: implement
+	// "icon-change": "onIconChanged", // TODO: implement
+	"close": "onBeforeClose",
+	"closed": "onClosed",
+};
+// @ts-ignore (not part of the public jQuery API)
+const originalAdd = jQuery.event.add;
+// @ts-ignore (not part of the public jQuery API, but I'm taking care that it shouldn't break if the signature changes)
+jQuery.event.add = function (elem, types, ...otherArgs) {
+	if (typeof types === "string") {
+		for (const type of types.split(" ")) {
+			// Don't warn about native "close" event of <dialog> elements
+			if (type in deprecatedEvents && $(elem).is(".window")) {
+				const replacementMethod = deprecatedEvents[/** @type {keyof typeof deprecatedEvents} */(type)];
+				if (replacementMethod) {
+					console.trace(`DEPRECATED: use $window.${replacementMethod}(listener) instead of adding a jQuery event listener for "${types}"`);
+				}
+			}
+		}
+	}
+	originalAdd(elem, types, ...otherArgs);
+};
+
 // TODO: E\("([a-z]+)"\) -> "<$1>" or get rid of jQuery as a dependency
 
 const E = document.createElement.bind(document);

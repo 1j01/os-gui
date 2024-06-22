@@ -21,6 +21,8 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Accessing jQuery methods/properties on `$Window` instances is deprecated. Use the `element` property to access the underlying DOM element, and wrap it in a jQuery object if you wish to use jQuery methods.
   - A deprecation notice will be logged each time a jQuery method or property is accessed on a `$Window` instance, with a stack trace. In some cases, it will recommend a specific alternative.
   - In TypeScript definitions, the jQuery methods and properties are mapped to `never`, with some common methods/properties given special deprecation notices.
+- jQuery events on `$Window` instances are deprecated. Use the `onBeforeClose` and `onClosed` methods to add event listeners.
+  - A deprecation notice will be logged when a listener is added using jQuery's `.on()` method, along with a stack trace, and the appropriate method to use instead.
 
 ### Changed
 
