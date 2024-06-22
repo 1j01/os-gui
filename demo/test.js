@@ -379,7 +379,7 @@ $($main_test_window).on("closed", () => {
 	console.log("Main test window closed");
 	$tool_window_1.close();
 });
-const open_recursive_dialog = (/** @type {number} */ x, /** @type {number} */ y) => {
+const open_recursive_dialog = (/** @type {number} */ x, /** @type {number} */ y, /** @type {boolean} */ from_drag = false) => {
 	const $w = $Window({
 		title: "Recursive Dialog", resizable: false, maximizeButton: false, minimizeButton: false,
 		icons: {
@@ -387,7 +387,7 @@ const open_recursive_dialog = (/** @type {number} */ x, /** @type {number} */ y)
 			16: "https://win98icons.alexmeub.com/icons/png/appwizard-1.png",
 		},
 	});
-	$w.$content.html("<p>I want more. More!</p>");
+	$w.$content.html(from_drag ? "<p>Ugh, what a drag!</p>" : "<p>I want more. More!</p>");
 	$w.$Button("Recurse", () => {
 		open_recursive_dialog(x - 90, y + 100);
 		open_recursive_dialog(x + 90, y + 100);
@@ -396,6 +396,9 @@ const open_recursive_dialog = (/** @type {number} */ x, /** @type {number} */ y)
 	$($w.element).css({
 		left: x,
 		top: y
+	});
+	$w.onBeforeDrag(() => {
+		open_recursive_dialog($w.offset().left, $w.offset().top, true);
 	});
 };
 
