@@ -1232,9 +1232,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	// Assumption: focusin comes after pointerdown/mousedown
 	// This is probably guaranteed, because you can prevent the default of focusing from pointerdown/mousedown
 	$G.on("focusin", (e) => {
-		if (e.target instanceof Window) {
-			throw new Error("The spec says 'The event target MUST be the element which received focus.' https://www.w3.org/TR/2024/WD-uievents-20240622/#focusin");
-		}
+		// The spec says "The event target MUST be the element which received focus." https://www.w3.org/TR/2024/WD-uievents-20240622/#focusin
+		// but it can also be the Window object!
 		last_focus_by_container.set(window, e.target);
 		// debug_focus_tracking(document, window, e.target);
 	});
