@@ -517,6 +517,11 @@ EXPERIMENTAL: potential new API for events
 
 Calls the listener before the window is closed. If the listener calls `event.preventDefault()`, the window will not be closed.
 
+This is useful for confirming with the user before closing a window, for example.  
+`$window.close(true)` can then be used to bypass this event (and the confirmation) when the window should really be closed.
+
+If you're not going to prevent closing the window, you should probably use the `closed` event instead, since, hypothetically, another listener could prevent closing *after* your listener, leading to premature cleanup.
+
 #### `closed`
 
 Whether the window has been closed.
