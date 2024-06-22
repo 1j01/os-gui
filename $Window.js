@@ -1825,7 +1825,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		$window_element.remove();
 
 		// TODO: support modals, which should focus what was focused before the modal was opened.
-		// (Note: must consider the element being removed from the DOM, or hidden, or made un-focusable)
+		// (Note: must consider the element being removed from the DOM, or hidden, or made un-focusable. For consistency, should probably just check if it's in the set of elements considered tabbable... although perhaps with special logic for radio groups?)
 		// (Also: modals should steal focus / be brought to the front when focusing the parent window, and the parent window's content should be inert/uninteractive)
 
 		// Focus next-topmost window
