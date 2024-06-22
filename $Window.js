@@ -415,8 +415,10 @@ function $Window(options = {}) {
 	const [onClosed, dispatch_closed] = make_simple_listenable("closed");
 	/** @type {[typeof win.onBeforeClose, (event: {preventDefault: () => void}) => void]} */
 	const [onBeforeClose, dispatch_before_close] = make_simple_listenable("close");
+	/** @type {[typeof win.onBeforeDrag, (event: {preventDefault: () => void}) => void]} */
+	const [onBeforeDrag, dispatch_before_drag] = make_simple_listenable("window-drag-start");
 
-	Object.assign(win, { onFocus, onBlur, onClosed, onBeforeClose });
+	Object.assign(win, { onFocus, onBlur, onClosed, onBeforeClose, onBeforeDrag });
 
 	/**
 	 * @param {{ innerWidth?: number, innerHeight?: number, outerWidth?: number, outerHeight?: number }} options
@@ -1526,11 +1528,23 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		if ($window_element.hasClass("maximized")) {
 			return;
 		}
+
+		// Allow overriding drag behavior for component windows in jspaint (Tools / Colors windows)
+		// new event system
+		let prevented = false;
+		dispatch_before_drag({
+			preventDefault: () => { prevented = true; }
+		});
+		if (prevented) {
+			return;
+		}
+		// legacy jQuery event
 		const customEvent = $.Event("window-drag-start");
 		$window_element.trigger(customEvent);
 		if (customEvent.isDefaultPrevented()) {
-			return; // allow custom drag behavior of component windows in jspaint (Tools / Colors)
+			return;
 		}
+
 		drag_offset_x = e.clientX + scrollX - $window_element.position().left;
 		drag_offset_y = e.clientY + scrollY - $window_element.position().top;
 		drag_pointer_x = e.clientX;

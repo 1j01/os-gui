@@ -522,6 +522,15 @@ This is useful for confirming with the user before closing a window, for example
 
 If you're not going to prevent closing the window, you should probably use the `closed` event instead, since, hypothetically, another listener could prevent closing *after* your listener, leading to premature cleanup.
 
+
+#### `onBeforeDrag(listener)`
+
+EXPERIMENTAL: potential new API for events
+
+Calls the listener before the window is dragged by the titlebar. If the listener calls `event.preventDefault()`, the drag will be prevented.
+
+This allows overriding the drag behavior of the Colors and Tools windows in JS Paint.
+
 #### `closed`
 
 Whether the window has been closed.

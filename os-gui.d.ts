@@ -161,6 +161,12 @@ interface OSGUIWindow {
 	private onBeforeClose(listener: (event: { preventDefault: () => void }) => void): () => void;
 
 	/**
+	 * Calls the listener before a window is dragged by its titlebar, and allows preventing the drag.
+	 * Returns a function to remove the listener.
+	 */
+	private onBeforeDrag(listener: (event: { preventDefault: () => void }) => void): () => void;
+
+	/**
 	 * *jQuery object.*  
 	 * Where you can append contents to the window.
 	 */
