@@ -895,8 +895,12 @@ test.describe('$Window Component', () => {
 
 				document.body.style.minHeight = "10px"; // avoid failing to click on "invisible" body
 			});
+			await new Promise((resolve) => setTimeout(resolve, 500)); // wait for window to be ready? for webkit
 			// await page.locator('#disabled-button').click({ force: true });
-			await page.locator('#disabled-button').dispatchEvent('pointerdown', { which: 1 });
+			// await page.locator('#disabled-button').dispatchEvent('pointerdown', { which: 1 });
+			await page.locator('#disabled-button').hover();
+			await page.mouse.down();
+			await page.mouse.up();
 			// await expect(page.locator('.window-content')).toBeFocused();
 			// expect(page.locator(':focus')).toMatchLocator???(page.locator('.window-content'));
 			// await expect(page.locator(':focus')).toHaveClass('window-content'); // finally a way for it to tell me the active element on failure... but not as general as I would like
@@ -907,14 +911,14 @@ test.describe('$Window Component', () => {
 			await expect(page.locator('#enabled-button')).toBeFocused();
 			await page.locator('#enabled-button').click();
 			await expect(page.locator('#enabled-button')).toBeFocused();
-			// await page.locator('#disabled-button').click({ force: true });
-			await page.locator('#disabled-button').dispatchEvent('pointerdown', { which: 1 });
+			await page.locator('#disabled-button').click({ force: true });
+			// await page.locator('#disabled-button').dispatchEvent('pointerdown', { which: 1 });
 			await expect(page.locator('#enabled-button')).toBeFocused();
 			await page.locator('body').click();
 			await expect(page.locator('body')).toBeFocused();
 			// expect(page.locator(':focus')).toMatchLocator???(page.locator('body'));
-			// await page.locator('#disabled-button').click({ force: true });
-			await page.locator('#disabled-button').dispatchEvent('pointerdown', { which: 1 });
+			await page.locator('#disabled-button').click({ force: true });
+			// await page.locator('#disabled-button').dispatchEvent('pointerdown', { which: 1 });
 			await expect(page.locator('#enabled-button')).toBeFocused();
 		});
 		test("should focus the last focused control in the window when closing another window that was focused", async ({ page }) => {
