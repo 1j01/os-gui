@@ -836,10 +836,6 @@ test.describe('$Window Component', () => {
 		test.beforeEach(async ({ page }) => {
 			await page.evaluate(() => {
 				// Enable fancy SVG-based focus visualization
-				// Note that this visualizes the "last focused control" state, a hierarchy of focus remembered per window/iframe.
-				// This may be misleading!
-				// TODO: visualize the current focus state, a single element per frame, and clearly delineate memory from reality,
-				// possibly with a legend.
 				$Window.DEBUG_FOCUS = true;
 			});
 		});
