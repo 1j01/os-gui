@@ -568,7 +568,7 @@ function $Window(options = {}) {
 		observeIframes(win.$content[0]);
 
 		/**
-		 * @param {Element} logical_container_el 
+		 * @param {HTMLElement} logical_container_el 
 		 * @param {boolean} is_root 
 		 * @returns {(event: FocusEvent | null) => void}
 		 */
@@ -998,12 +998,35 @@ function $Window(options = {}) {
 	// - any iframes that are same-origin (for restoring focus when refocusing window)
 	// @TODO: should these be WeakMaps? probably.
 	// @TODO: share this Map between all windows? but clean it up when destroying windows? or would a WeakMap take care of that?
-	var last_focus_by_container = new Map(); // element to restore focus to, by container
-	var focus_update_handlers_by_container = new Map(); // event handlers by container; note use as a flag to avoid adding multiple handlers
-	var debug_svg_by_container = new Map(); // visualization
-	/** @type {SVGSVGElement[]} */
-	var debug_svgs_in_window = []; // visualization
-	var warned_iframes = new WeakSet(); // prevent spamming console
+	
+	/** @typedef {HTMLElement | Window} FocusTrackingContainer */
+	/** @typedef {SVGSVGElement & { _container_el: HTMLElement; _descendant_el: HTMLElement; _is_root: boolean; }} FocusTrackingSVG */
+	
+	/**
+	 * element to restore focus to, by container
+	 * @type {Map<FocusTrackingContainer, HTMLElement>}
+	 */
+	var last_focus_by_container = new Map();
+	/**
+	 * event handlers by container; note use as a flag to avoid adding multiple handlers 
+	 * @type {Map<FocusTrackingContainer, (event: FocusEvent | null) => void>}
+	 */
+	var focus_update_handlers_by_container = new Map();
+	/**
+	 * for visualization
+	 * @type {Map<FocusTrackingContainer, FocusTrackingSVG>}
+	 */
+	var debug_svg_by_container = new Map();
+	/**
+	 * for visualization
+	 * @type {FocusTrackingSVG[]}
+	 */
+	var debug_svgs_in_window = [];
+	/**
+	 * prevent spamming console
+	 * @type {WeakSet<HTMLIFrameElement>}
+	 */
+	var warned_iframes = new WeakSet();
 
 	/**
 	 * @param {HTMLIFrameElement} iframe 
@@ -1042,8 +1065,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 
 	/**
 	 * @param {Document} document 
-	 * @param {Element} container_el 
-	 * @param {Element} descendant_el 
+	 * @param {HTMLElement} container_el 
+	 * @param {HTMLElement} descendant_el 
 	 * @param {boolean} is_root 
 	 */
 	const debug_focus_tracking = (document, container_el, descendant_el, is_root) => {
@@ -1052,7 +1075,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		}
 		let svg = debug_svg_by_container.get(container_el);
 		if (!svg) {
-			svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+			svg = /** @type {FocusTrackingSVG} */(document.createElementNS("http://www.w3.org/2000/svg", "svg"));
 			svg.style.position = "fixed";
 			svg.style.top = "0";
 			svg.style.left = "0";
@@ -1070,7 +1093,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		svg._is_root = is_root;
 		animate_debug_focus_tracking();
 	};
-	/** @param {SVGSVGElement} svg */
+	/** @param {FocusTrackingSVG} svg */
 	const update_debug_focus_tracking = (svg) => {
 		const container_el = svg._container_el;
 		const descendant_el = svg._descendant_el;
@@ -1084,10 +1107,10 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		// draw rectangles with labels
 		for (const rect of [descendant_rect, container_rect]) {
 			const rect_el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-			rect_el.setAttribute("x", rect.left);
-			rect_el.setAttribute("y", rect.top);
-			rect_el.setAttribute("width", rect.width);
-			rect_el.setAttribute("height", rect.height);
+			rect_el.setAttribute("x", `${rect.left}`);
+			rect_el.setAttribute("y", `${rect.top}`);
+			rect_el.setAttribute("width", `${rect.width}`);
+			rect_el.setAttribute("height", `${rect.height}`);
 			rect_el.setAttribute("stroke", rect === descendant_rect ? "#f44" : "#f44");
 			rect_el.setAttribute("stroke-width", "2");
 			rect_el.setAttribute("fill", "none");
@@ -1096,8 +1119,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			}
 			svg.appendChild(rect_el);
 			const text_el = document.createElementNS("http://www.w3.org/2000/svg", "text");
-			text_el.setAttribute("x", rect.left);
-			text_el.setAttribute("y", rect.top + (rect === descendant_rect ? 20 : 0)); // align container text on outside, descendant text on inside
+			text_el.setAttribute("x", `${rect.left}`);
+			text_el.setAttribute("y", `${rect.top + (rect === descendant_rect ? 20 : 0)}`); // align container text on outside, descendant text on inside
 			text_el.setAttribute("fill", rect === descendant_rect ? "#f44" : "aqua");
 			text_el.setAttribute("font-size", "20");
 			text_el.style.textShadow = "1px 1px 1px black, 0 0 10px black";
@@ -1113,10 +1136,10 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		];
 		for (const line of lines) {
 			const line_el = document.createElementNS("http://www.w3.org/2000/svg", "line");
-			line_el.setAttribute("x1", line[0]);
-			line_el.setAttribute("y1", line[1]);
-			line_el.setAttribute("x2", line[2]);
-			line_el.setAttribute("y2", line[3]);
+			line_el.setAttribute("x1", `${line[0]}`);
+			line_el.setAttribute("y1", `${line[1]}`);
+			line_el.setAttribute("x2", `${line[2]}`);
+			line_el.setAttribute("y2", `${line[3]}`);
 			line_el.setAttribute("stroke", "green");
 			line_el.setAttribute("stroke-width", "2");
 			svg.appendChild(line_el);
@@ -1153,7 +1176,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 				try {
 					refocus(last_focus);
 				} catch (e) {
-					warn_iframe_access(last_focus, e);
+					warn_iframe_access(/** @type {HTMLIFrameElement} */(last_focus), e);
 				}
 			}
 			return;
@@ -1209,6 +1232,9 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	// Assumption: focusin comes after pointerdown/mousedown
 	// This is probably guaranteed, because you can prevent the default of focusing from pointerdown/mousedown
 	$G.on("focusin", (e) => {
+		if (e.target instanceof Window) {
+			throw new Error("The spec says 'The event target MUST be the element which received focus.' https://www.w3.org/TR/2024/WD-uievents-20240622/#focusin");
+		}
 		last_focus_by_container.set(window, e.target);
 		// debug_focus_tracking(document, window, e.target);
 	});

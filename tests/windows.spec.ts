@@ -15,7 +15,8 @@ test.describe('$Window Component', () => {
 	// trying to drag/resize while minimize/maximize animation is in progress,
 	// trying to drag/resize while maximized (maybe already tested),
 	// queuing up multiple minimize/maximize/restore actions,
-	// other API methods/options.
+	// center()/applyBounds()/bringTitleBarInBounds()/setDimensions()/maximize() while hidden (such as when minimized to taskbar) (supposedly jQuery measurements will return undefined),
+	// and any remaining API methods/options.
 
 	test('should minimize to the bottom left by default (also, slots can be freed by close)', async ({ page }) => {
 		const h$window = await page.evaluateHandle(() => {
