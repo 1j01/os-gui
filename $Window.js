@@ -1,11 +1,13 @@
 ((exports) => {
 
 const deprecatedEvents = {
-	// "window-drag-start": "onBeforeDrag", // TODO: implement
+	"window-drag-start": "onBeforeDrag",
 	// "title-change": "onTitleChanged", // TODO: implement
 	// "icon-change": "onIconChanged", // TODO: implement
 	"close": "onBeforeClose",
 	"closed": "onClosed",
+	"window-focus": "onFocus", // never recommended
+	"window-blur": "onBlur", // never recommended
 };
 // @ts-ignore (not part of the public jQuery API)
 const originalAdd = jQuery.event.add;
@@ -1854,8 +1856,6 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		minimize_slots[win._minimize_slot_index] = null;
 
 		dispatch_closed();
-		// TODO: change usages of "close" to "closed" where appropriate
-		// and probably rename the "close" event ("before[-]close"? "may-close"? "close-request"?)
 
 		// MUST be after any events are triggered!
 		$window_element.remove();
