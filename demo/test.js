@@ -387,7 +387,26 @@ const open_recursive_dialog = (/** @type {number} */ x, /** @type {number} */ y,
 			16: "https://win98icons.alexmeub.com/icons/png/appwizard-1.png",
 		},
 	});
-	$w.$content.html(from_drag ? "<p>Ugh, what a drag!</p>" : "<p>I want more. More!</p>");
+	const messages = from_drag ? [
+		"Ugh, what a drag!",
+		"I can't believe you've dragged me into this mess.",
+		"These jokes are really dragging on, aren't they?",
+		// spell-checker: disable
+		"Beware: Here be draggin's.",
+		// spell-checker: enable
+	] : [
+		"I want more. More!",
+		"The meek shall inherit the earth.",
+		"Are you sure you want to recurse?",
+		"🎶 Spiraling out of control, and deeper down the rabbit hole... 🎶",
+		// spell-checker: disable
+		"Recursion is the best kind of cursion.", // this one is from the AI autocomplete, don't blame me
+		// spell-checker: enable
+		"It seems I've been inflicted with a terrible curse... a recurse!",
+		"Putting the 'di-' in dialog! Because 'di-' means two... get it? Two dialogs?",
+		"Putting the 'mess' in 'message box'!",
+	];
+	$w.$content.html(`<p>${messages[Math.floor(Math.random() * messages.length)]}</p>`);
 	$w.$Button("Recurse", () => {
 		open_recursive_dialog(x - 90, y + 100);
 		open_recursive_dialog(x + 90, y + 100);
@@ -398,8 +417,14 @@ const open_recursive_dialog = (/** @type {number} */ x, /** @type {number} */ y,
 		top: y
 	});
 	$w.onBeforeDrag(() => {
-		open_recursive_dialog($w.offset().left, $w.offset().top, true);
+		const offset = $($w.element).offset();
+		const $recursed = open_recursive_dialog(offset.left, offset.top, true);
+		// ensure it's hidden behind the dragged window
+		if ($recursed.element.offsetWidth > $w.element.offsetWidth) {
+			$recursed.$content.find("p").text("Ugh, what a drag!");
+		}
 	});
+	return $w;
 };
 
 $main_test_window.$content.find("#open-recursive-dialog").on("click", () => {
