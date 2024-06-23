@@ -64,6 +64,14 @@ function is_iframe(node) {
 }
 
 /**
+ * @param {Node} node
+ * @returns {node is HTMLInputElement}
+ */
+function is_input(node) {
+	return node.nodeName.toLowerCase() === "input";
+}
+
+/**
  * @param {Element} container_el
  * @returns {JQuery<HTMLElement>}
  */
@@ -105,21 +113,15 @@ function find_tabstops(container_el) {
 	/** @type {HTMLElement[]} */
 	const to_skip = [];
 	for (const el of $controls.toArray()) {
-		// @ts-ignore
-		if (el.nodeName.toLowerCase() === "input" && el.type === "radio") {
-			// @ts-ignore
+		if (is_input(el) && el.type === "radio") {
 			if (radios[el.name]) {
-				// @ts-ignore
 				if (el.checked) {
-					// @ts-ignore
 					to_skip.push(radios[el.name]);
-					// @ts-ignore
 					radios[el.name] = el;
 				} else {
 					to_skip.push(el);
 				}
 			} else {
-				// @ts-ignore
 				radios[el.name] = el;
 			}
 		}
