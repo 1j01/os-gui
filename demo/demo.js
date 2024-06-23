@@ -246,11 +246,13 @@ $(() => {
 			$($window.element).hide();
 			setTimeout(() => {
 				// Restore position
-				const $positioning_el = $windows_and_$positioners.find(([$other_window]) => $window === $other_window)[1];
+				const $positioning_el = $windows_and_$positioners.find(([$other_window]) => $window === $other_window)?.[1];
+				const offset = $positioning_el?.offset();
+				if (!offset) { return console.error("Could not find positioning element for window", $window); }
 				$window.restore(); // in case it was minimized or maximized (TODO: avoid animation, which can cause incorrect positioning)
 				$($window.element).css({
-					left: $positioning_el.offset().left,
-					top: $positioning_el.offset().top,
+					left: offset.left,
+					top: offset.top,
 					width: "",
 					height: "",
 				});

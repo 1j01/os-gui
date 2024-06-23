@@ -3,7 +3,10 @@ const rtl_checkbox_maybe = document.getElementById('rtl-checkbox');
 const debug_focus_checkbox_maybe = document.getElementById('debug-focus-checkbox');
 const override_transition_duration_checkbox_maybe = document.getElementById('override-transition-duration-checkbox');
 const taskbar_checkbox_maybe = document.getElementById('taskbar-checkbox');
-if (!full_height_checkbox_maybe || !rtl_checkbox_maybe || !debug_focus_checkbox_maybe || !override_transition_duration_checkbox_maybe || !taskbar_checkbox_maybe) {
+const taskbar_like = document.getElementById("no-focus");
+const no_focus_button = document.getElementById("no-focus-button");
+const taskbar_button_like = document.getElementById("minimize-target");
+if (!full_height_checkbox_maybe || !rtl_checkbox_maybe || !debug_focus_checkbox_maybe || !override_transition_duration_checkbox_maybe || !taskbar_checkbox_maybe || !taskbar_like || !no_focus_button || !taskbar_button_like) {
 	throw new Error("Missing checkbox(es)");
 }
 if (!(full_height_checkbox_maybe instanceof HTMLInputElement) || !(rtl_checkbox_maybe instanceof HTMLInputElement) || !(debug_focus_checkbox_maybe instanceof HTMLInputElement) || !(override_transition_duration_checkbox_maybe instanceof HTMLInputElement) || !(taskbar_checkbox_maybe instanceof HTMLInputElement)) {
@@ -55,15 +58,14 @@ update_debug_focus();
 update_override_animation_duration();
 setInterval(update_taskbar, 200); // for new windows
 
-document.getElementById("no-focus").addEventListener("mousedown", function (e) {
+taskbar_like.addEventListener("mousedown", function (e) {
 	e.preventDefault();
 });
-document.getElementById("no-focus-button").addEventListener("click", function (e) {
+no_focus_button.addEventListener("click", function (e) {
 	if (!(e.target instanceof HTMLElement)) { throw new Error("Unexpected type for event target"); }
 	e.target.textContent = "Clicked Button";
 });
-
-document.getElementById("minimize-target").addEventListener("click", function (e) {
+taskbar_button_like.addEventListener("click", function (e) {
 	for (const window_el of document.querySelectorAll(".os-window")) {
 		// @ts-ignore (TODO: A $Window.fromElement (or similar) static method using a Map would be better)
 		// (or something like $Window.allWindows)
@@ -418,6 +420,7 @@ const open_recursive_dialog = (/** @type {number} */ x, /** @type {number} */ y,
 	});
 	$w.onBeforeDrag(() => {
 		const offset = $($w.element).offset();
+		if (!offset) { throw new Error(`Unexpected ${offset} offset`); }
 		const $recursed = open_recursive_dialog(offset.left, offset.top, true);
 		// ensure it's hidden behind the dragged window
 		if ($recursed.element.offsetWidth > $w.element.offsetWidth) {
@@ -589,7 +592,11 @@ function test_icon_sizes() {
 	`);
 	$icon_test_window.$content.find("#any-size").on("change", (e) => {
 		if (!(e.target instanceof HTMLInputElement)) { throw new Error("Unexpected type for event target"); }
-		$icon_test_window.icons.any = e.target.checked ? emoji_el : null;
+		if (e.target.checked) {
+			$icon_test_window.icons.any = emoji_el;
+		} else {
+			delete $icon_test_window.icons.any;
+		}
 	});
 	for (const size of [8, 16, 24, 32, 48, 64, 128]) {
 		const initially_selected = $icon_test_window.getTitlebarIconSize() === size;
@@ -604,7 +611,7 @@ function test_icon_sizes() {
 			});
 			emoji_el.style.fontSize = `${size * 0.9}px`; // before setTitlebarIconSize() which clones it
 			$icon_test_window.setTitlebarIconSize(size);
-			$icon_test_window.$content.find("button.selected").removeClass("selected").attr("aria-pressed", false);
+			$icon_test_window.$content.find("button.selected").removeClass("selected").attr("aria-pressed", "false");
 			$button.addClass("selected").attr("aria-pressed", "true");
 		});
 	}
@@ -682,8 +689,9 @@ function test_triggering() {
 
 	$trigger_test_window.$content.find("#pick-target-window-button").click(() => {
 		pick_el(".os-window", (window_el) => {
-			target_window_el = window_el;
-			$trigger_test_window.$content.find("#target-window-text").text(window_el.querySelector(".window-title").textContent);
+			if (!window_el) { return console.log("No window picked"); }
+			target_window_el = /** @type {HTMLElement & { $window: OSGUI$Window; }} */(window_el);
+			$trigger_test_window.$content.find("#target-window-text").text(window_el.querySelector(".window-title")?.textContent ?? "Untitled???");
 		}, "Select a target window for testing.");
 	});
 

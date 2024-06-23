@@ -61,8 +61,8 @@ for (let i = 0; i < n_objects; ++i) {
 			})
 			.on("load", () => {
 				$window.$content.css({
-					minWidth: Math.max($window.$content.width(), $window.$content.height()),
-					minHeight: Math.max($window.$content.width(), $window.$content.height()),
+					minWidth: Math.max($window.$content.width() ?? 0, $window.$content.height() ?? 0),
+					minHeight: Math.max($window.$content.width() ?? 0, $window.$content.height() ?? 0),
 					display: "flex",
 				});
 			})
@@ -115,10 +115,10 @@ const animate = () => {
 				o.velocityY += (o.y - o2.y) * 0.1 / dist;
 			}
 		}
-		const x = pause_checkbox.checked ? ~~$($window.element).offset().left : ~~o.x;
-		const y = pause_checkbox.checked ? ~~$($window.element).offset().top : ~~o.y;
-		const width = ~~$($window.element).outerWidth();
-		const height = ~~$($window.element).outerHeight();
+		const x = pause_checkbox.checked ? ~~($($window.element).offset()?.left ?? 0) : ~~o.x;
+		const y = pause_checkbox.checked ? ~~($($window.element).offset()?.top ?? 0) : ~~o.y;
+		const width = ~~($($window.element).outerWidth() ?? 0);
+		const height = ~~($($window.element).outerHeight() ?? 0);
 		const containedByMothership = (
 			motherRect.left < x && motherRect.left + motherRect.width > x + width &&
 			motherRect.top < y && motherRect.top + motherRect.height > y + height
@@ -158,8 +158,8 @@ const animate = () => {
 			o.crossedDuringThisContainment = false;
 		}
 		if (pause_checkbox.checked) {
-			o.x = $($window.element).offset().left;
-			o.y = $($window.element).offset().top;
+			o.x = $($window.element).offset()?.left ?? 0;
+			o.y = $($window.element).offset()?.top ?? 0;
 		} else {
 			$($window.element).css({
 				left: x,
