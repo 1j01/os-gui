@@ -390,10 +390,10 @@ function $Window(options = {}) {
 
 	/**
 	 * @template {any[]} ArgsType
-	 * @param {string} name
-	 * @returns {[(callback: (...args: ArgsType) => void) => (() => void), (...args: ArgsType) => void]} [add_listener, trigger]
+	 * @param {string} legacy_event_name
+	 * @returns {[(callback: (...args: ArgsType) => void) => (() => void), (...args: ArgsType) => JQuery.Event]} [add_listener, trigger]
 	 */
-	const make_simple_listenable = (name) => {
+	const make_simple_listenable = (legacy_event_name) => {
 		/** @type {((...args: ArgsType) => void)[]} */
 		let event_handlers = [];
 
@@ -409,25 +409,28 @@ function $Window(options = {}) {
 
 		/**
 		 * @param {ArgsType} args
+		 * @returns {JQuery.Event}
 		 */
 		const trigger = (...args) => {
 			for (const handler of event_handlers) {
 				handler(...args);
 			}
+			const legacy_event = jQuery.Event(legacy_event_name);
+			$window_element.trigger(legacy_event);
+			return legacy_event;
 		};
-		// return Object.assign(add_listener, { trigger });
 		return [add_listener, trigger];
 	};
 
-	/** @type {[typeof win.onFocus, () => void]} */
-	const [onFocus, dispatch_focus] = make_simple_listenable("focus");
-	/** @type {[typeof win.onBlur, () => void]} */
-	const [onBlur, dispatch_blur] = make_simple_listenable("blur");
-	/** @type {[typeof win.onClosed, () => void]} */
+	/** @type {[typeof win.onFocus, () => JQuery.Event]} */
+	const [onFocus, dispatch_focus] = make_simple_listenable("window-focus");
+	/** @type {[typeof win.onBlur, () => JQuery.Event]} */
+	const [onBlur, dispatch_blur] = make_simple_listenable("window-blur");
+	/** @type {[typeof win.onClosed, () => JQuery.Event]} */
 	const [onClosed, dispatch_closed] = make_simple_listenable("closed");
-	/** @type {[typeof win.onBeforeClose, (event: {preventDefault: () => void}) => void]} */
+	/** @type {[typeof win.onBeforeClose, (event: {preventDefault: () => void}) => JQuery.Event]} */
 	const [onBeforeClose, dispatch_before_close] = make_simple_listenable("close");
-	/** @type {[typeof win.onBeforeDrag, (event: {preventDefault: () => void}) => void]} */
+	/** @type {[typeof win.onBeforeDrag, (event: {preventDefault: () => void}) => JQuery.Event]} */
 	const [onBeforeDrag, dispatch_before_drag] = make_simple_listenable("window-drag-start");
 
 	Object.assign(win, { onFocus, onBlur, onClosed, onBeforeClose, onBeforeDrag });
@@ -1540,21 +1543,13 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		}
 
 		// Allow overriding drag behavior for component windows in jspaint (Tools / Colors windows)
-		// new event system
 		let prevented = false;
-		dispatch_before_drag({
+		const legacy_event = dispatch_before_drag({
 			preventDefault: () => { prevented = true; }
 		});
-		if (prevented) {
+		if (prevented || legacy_event.isDefaultPrevented()) {
 			return;
 		}
-		// legacy jQuery event
-		const customEvent = $.Event("window-drag-start");
-		$window_element.trigger(customEvent);
-		if (customEvent.isDefaultPrevented()) {
-			return;
-		}
-
 		drag_offset_x = e.clientX + scrollX - $window_element.position().left;
 		drag_offset_y = e.clientY + scrollY - $window_element.position().top;
 		drag_pointer_x = e.clientX;
@@ -1845,16 +1840,10 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		}
 		if (!force) {
 			let prevented = false;
-			dispatch_before_close({
+			const legacy_event = dispatch_before_close({
 				preventDefault: () => { prevented = true; }
 			});
-			if (prevented) {
-				return;
-			}
-			// legacy
-			var e = $.Event("close");
-			$window_element.trigger(e);
-			if (e.isDefaultPrevented()) {
+			if (prevented || legacy_event.isDefaultPrevented()) {
 				return;
 			}
 		}
@@ -1865,7 +1854,6 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		minimize_slots[win._minimize_slot_index] = null;
 
 		dispatch_closed();
-		$window_element.trigger("closed");
 		// TODO: change usages of "close" to "closed" where appropriate
 		// and probably rename the "close" event ("before[-]close"? "may-close"? "close-request"?)
 
