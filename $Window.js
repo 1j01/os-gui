@@ -54,6 +54,16 @@ function element_to_string(element) {
 }
 
 /**
+ * @param {Node | Window} node
+ * @returns {node is HTMLIFrameElement}
+ */
+function is_iframe(node) {
+	// return node.tagName == "IFRAME"; // not ideal since it would check for a global named "tagName" in the case of the Window object
+	// return node instanceof HTMLIFrameElement; // not safe across iframe contexts, since each iframe has its own window.HTMLIFrameElement
+	return node instanceof node.ownerDocument.defaultView.HTMLIFrameElement;
+}
+
+/**
  * @param {Element} container_el
  * @returns {JQuery<HTMLElement>}
  */
@@ -576,9 +586,7 @@ function $Window(options = {}) {
 			const observer = new MutationObserver((mutations) => {
 				for (const mutation of mutations) {
 					for (const node of mutation.addedNodes) {
-						// @ts-ignore (this will ignore text nodes and such just fine)
-						if (node.tagName == "IFRAME") {
-							// @ts-ignore (not using instanceof for type narrowing, since this needs to work with across iframe contexts)
+						if (is_iframe(node)) {
 							setupIframe(node);
 						}
 					}
@@ -604,11 +612,10 @@ function $Window(options = {}) {
 			// container_node is not a parameter here because it can change over time, may be an empty document before the iframe is loaded.
 
 			return function handle_focus_in_out(event) {
-				// @ts-ignore (not using instanceof for type narrowing, since this needs to work with across iframe contexts)
-				const container_node = logical_container_el.tagName == "IFRAME" ? logical_container_el.contentDocument : logical_container_el;
+				const container_node = is_iframe(logical_container_el) ? logical_container_el.contentDocument : logical_container_el;
 				const document = container_node.ownerDocument ?? container_node;
 				// is this equivalent?
-				// const document = logical_container_el.tagName == "IFRAME" ? logical_container_el.contentDocument : logical_container_el.ownerDocument;
+				// const document = is_iframe(logical_container_el) ? logical_container_el.contentDocument : logical_container_el.ownerDocument;
 
 				// console.log(`handling ${event.type} for container`, container_el);
 				let newly_focused = event ? (event.type === "focusout" || event.type === "blur") ? event.relatedTarget : event.target : document.activeElement;
@@ -621,7 +628,7 @@ function $Window(options = {}) {
 				// Iframes are stingy about focus events, so we need to check if focus is actually within an iframe.
 				if (
 					document.activeElement &&
-					document.activeElement.tagName === "IFRAME" &&
+					is_iframe(document.activeElement) &&
 					(event?.type === "focusout" || event?.type === "blur") &&
 					!newly_focused // doesn't exist for security reasons in this case
 				) {
@@ -656,7 +663,7 @@ function $Window(options = {}) {
 
 				if (
 					!outside_or_at_exactly &&
-					newly_focused.tagName === "IFRAME"
+					is_iframe(newly_focused)
 				) {
 					const iframe = newly_focused;
 					// console.log("iframe", iframe, onfocusin_by_container.has(iframe));
@@ -1198,8 +1205,9 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		const logical_container_el = container_el.matches(".window-content") ? win.element : container_el;
 		const last_focus = last_focus_by_container.get(logical_container_el);
 		if (last_focus) {
+			// If `last_focus` is a `Window`, what will happen / should happen?
 			last_focus.focus({ preventScroll: true });
-			if (last_focus.tagName === "IFRAME") {
+			if (is_iframe(last_focus)) {
 				try {
 					refocus(last_focus);
 				} catch (e) {
@@ -1215,8 +1223,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			return;
 		}
 		if ($tabstops.length) {
-			if ($tabstops[0].tagName === "IFRAME") {
-				const iframe = /** @type {HTMLIFrameElement} */ ($tabstops[0]);
+			if (is_iframe($tabstops[0])) {
+				const iframe = $tabstops[0];
 				try {
 					refocus(iframe); // not .contentDocument.body because we want the container tracked by last_focus_by_container
 				} catch (e) {
@@ -1232,8 +1240,8 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 			return;
 		}
 		container_el.focus({ preventScroll: true });
-		if (container_el.tagName === "IFRAME") {
-			const iframe = /** @type {HTMLIFrameElement} */ (container_el);
+		if (is_iframe(container_el)) {
+			const iframe = container_el;
 			try {
 				// @ts-ignore
 				refocus(iframe.contentDocument.body);
@@ -1505,7 +1513,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		const release = (event) => {
 			// blur is just to handle the edge case of alt+tabbing/ctrl+tabbing away
 			if (event && event.type === "blur") {
-				// if (document.activeElement?.tagName === "IFRAME") {
+				// if (is_iframe(document.activeElement)) {
 				if (document.hasFocus()) {
 					return; // the window isn't really blurred; an iframe got focus
 				}
