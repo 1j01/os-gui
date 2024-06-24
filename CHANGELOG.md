@@ -32,8 +32,16 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
-- `$Window` method `onBeforeClose(listener)` for setting a callback to run before the window is closed. The listener is passed an object with `preventDefault` which can stop the window from closing.
-- `$Window` method `onBeforeDrag(listener)` for setting a callback to run before the window is dragged. The listener is passed an object with `preventDefault` which can stop the drag.
+- A simplified event system for `$Window` instances, independent of jQuery. Each of these methods returns a function that removes the listener.
+  - `$Window` method `onFocus(listener)`
+  - `$Window` method `onBlur(listener)`
+  - `$Window` method `onIconChange(listener)`
+  - `$Window` method `onTitleChange(listener)`
+  - `$Window` method `onClosed(listener)`
+  - `$Window` method `onBeforeClose(listener)`
+    - The listener is passed an object with `preventDefault` which can stop the window from closing.
+  - `$Window` method `onBeforeDrag(listener)`
+    - The listener is passed an object with `preventDefault` which can prevent the drag.
 - A window element will have a CSS class `minimized` when minimized, if `setMinimizeTarget` was called before minimizing.
 
 </details>
