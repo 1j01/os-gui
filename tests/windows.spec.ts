@@ -318,9 +318,13 @@ test.describe('$Window Component', () => {
 				return { a, b, c, d };
 			});
 			expect(titleChangeEvents).toEqual({ a: 1, b: 1, c: 0, d: 0 });
-			expect(logs).toHaveLength(1);
-			expect(logs[0].text()).toBe("DEPRECATED: use $($window.element).on instead of $window.on directly. Eventually jQuery will be removed from the library.");
+			expect(logs).toHaveLength(3);
+			expect(logs[0].text()).toBe("DEPRECATED: use $window.onTitleChange(listener) instead of adding a jQuery event listener for \"title-change\"");
 			expect(logs[0].type()).toBe('trace');
+			expect(logs[1].text()).toBe("DEPRECATED: use $($window.element).on instead of $window.on directly. Eventually jQuery will be removed from the library.");
+			expect(logs[1].type()).toBe('trace');
+			expect(logs[2].text()).toBe("DEPRECATED: use $window.onTitleChange(listener) instead of adding a jQuery event listener for \"title-change\"");
+			expect(logs[2].type()).toBe('trace');
 		});
 	});
 
@@ -471,9 +475,13 @@ test.describe('$Window Component', () => {
 				return { a, b, c, d };
 			});
 			expect(iconChangeEvents).toEqual({ a: 1, b: 1, c: 0, d: 0 });
-			expect(logs).toHaveLength(1);
-			expect(logs[0].text()).toBe("DEPRECATED: use $($window.element).on instead of $window.on directly. Eventually jQuery will be removed from the library.");
+			expect(logs).toHaveLength(3);
+			expect(logs[0].text()).toBe("DEPRECATED: use $window.onIconChange(listener) instead of adding a jQuery event listener for \"icon-change\"");
 			expect(logs[0].type()).toBe('trace');
+			expect(logs[1].text()).toBe("DEPRECATED: use $($window.element).on instead of $window.on directly. Eventually jQuery will be removed from the library.");
+			expect(logs[1].type()).toBe('trace');
+			expect(logs[2].text()).toBe("DEPRECATED: use $window.onIconChange(listener) instead of adding a jQuery event listener for \"icon-change\"");
+			expect(logs[2].type()).toBe('trace');
 		});
 	});
 
@@ -538,9 +546,13 @@ test.describe('$Window Component', () => {
 				return { a, b, c, d };
 			});
 			expect(iconChangeEvents).toEqual({ a: 1, b: 1, c: 0, d: 0 });
-			expect(logs).toHaveLength(1);
-			expect(logs[0].text()).toBe("DEPRECATED: use $($window.element).on instead of $window.on directly. Eventually jQuery will be removed from the library.");
+			expect(logs).toHaveLength(3);
+			expect(logs[0].text()).toBe("DEPRECATED: use $window.onIconChange(listener) instead of adding a jQuery event listener for \"icon-change\"");
 			expect(logs[0].type()).toBe('trace');
+			expect(logs[1].text()).toBe("DEPRECATED: use $($window.element).on instead of $window.on directly. Eventually jQuery will be removed from the library.");
+			expect(logs[1].type()).toBe('trace');
+			expect(logs[2].text()).toBe("DEPRECATED: use $window.onIconChange(listener) instead of adding a jQuery event listener for \"icon-change\"");
+			expect(logs[2].type()).toBe('trace');
 		});
 	});
 
