@@ -140,31 +140,31 @@ interface OSGUIWindow {
 	 * Calls the listener when the window is (visually?) focused.
 	 * Returns a function to remove the listener.
 	 */
-	private onFocus(listener: () => void): () => void;
+	onFocus(listener: () => void): () => void;
 
 	/**
 	 * Calls the listener when the window (visually?) loses focus.
 	 * Returns a function to remove the listener.
 	 */
-	private onBlur(listener: () => void): () => void;
+	onBlur(listener: () => void): () => void;
 
 	/**
 	 * Calls the listener when the window is closed (after the close event is emitted, and if it wasn't prevented).
 	 * Returns a function to remove the listener.
 	 */
-	private onClosed(listener: () => void): () => void;
+	onClosed(listener: () => void): () => void;
 
 	/**
 	 * Calls the listener before a window is closed, and allows preventing the window from closing.
 	 * Returns a function to remove the listener.
 	 */
-	private onBeforeClose(listener: (event: { preventDefault: () => void }) => void): () => void;
+	onBeforeClose(listener: (event: { preventDefault: () => void }) => void): () => void;
 
 	/**
 	 * Calls the listener before a window is dragged by its titlebar, and allows preventing the drag.
 	 * Returns a function to remove the listener.
 	 */
-	private onBeforeDrag(listener: (event: { preventDefault: () => void }) => void): () => void;
+	onBeforeDrag(listener: (event: { preventDefault: () => void }) => void): () => void;
 
 	/**
 	 * *jQuery object.*  

@@ -495,41 +495,40 @@ This is used internally when you set `options.parentWindow` when creating a wind
 
 #### `onFocus(listener)`
 
-EXPERIMENTAL: This is a potential new API for events when dependency on jQuery is removed.Not available for all events. Inspired by Webamp's API which is probably inspired by React's API.
-
 Calls the listener when the window is (visually?) focused.
+
+Returns a function to remove the listener.
 
 #### `onBlur(listener)`
 
-EXPERIMENTAL: potential new API for events
-
 Calls the listener when the window (visually?) loses focus.
+
+Returns a function to remove the listener.
 
 #### `onClosed(listener)`
 
-EXPERIMENTAL: potential new API for events
-
 Calls the listener when the window is closed (after the close event is emitted, and if it wasn't prevented).
+
+Returns a function to remove the listener.
 
 #### `onBeforeClose(listener)`
 
-EXPERIMENTAL: potential new API for events
-
 Calls the listener before the window is closed. If the listener calls `event.preventDefault()`, the window will not be closed.
 
-This is useful for confirming with the user before closing a window, for example.  
+Returns a function to remove the listener.
+
+This event is useful for confirming with the user before closing a window, for example.  
 `$window.close(true)` can then be used to bypass this event (and the confirmation) when the window should really be closed.
 
 If you're not going to prevent closing the window, you should probably use the `closed` event instead, since, hypothetically, another listener could prevent closing *after* your listener, leading to premature cleanup.
 
-
 #### `onBeforeDrag(listener)`
-
-EXPERIMENTAL: potential new API for events
 
 Calls the listener before the window is dragged by the titlebar. If the listener calls `event.preventDefault()`, the drag will be prevented.
 
-This allows overriding the drag behavior of the Colors and Tools windows in JS Paint.
+Returns a function to remove the listener.
+
+This event allows overriding the drag behavior of the Colors and Tools windows in JS Paint.
 
 #### `closed`
 
