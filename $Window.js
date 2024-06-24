@@ -395,7 +395,7 @@ function $Window(options = {}) {
 	 * @param {string} legacy_event_name
 	 * @returns {[(callback: (...args: ArgsType) => void) => (() => void), (...args: ArgsType) => JQuery.Event]} [add_listener, trigger]
 	 */
-	const make_simple_listenable = (legacy_event_name) => {
+	const make_listenable = (legacy_event_name) => {
 		/** @type {((...args: ArgsType) => void)[]} */
 		let event_handlers = [];
 
@@ -425,15 +425,15 @@ function $Window(options = {}) {
 	};
 
 	/** @type {[typeof win.onFocus, () => JQuery.Event]} */
-	const [onFocus, dispatch_focus] = make_simple_listenable("window-focus");
+	const [onFocus, dispatch_focus] = make_listenable("window-focus");
 	/** @type {[typeof win.onBlur, () => JQuery.Event]} */
-	const [onBlur, dispatch_blur] = make_simple_listenable("window-blur");
+	const [onBlur, dispatch_blur] = make_listenable("window-blur");
 	/** @type {[typeof win.onClosed, () => JQuery.Event]} */
-	const [onClosed, dispatch_closed] = make_simple_listenable("closed");
+	const [onClosed, dispatch_closed] = make_listenable("closed");
 	/** @type {[typeof win.onBeforeClose, (event: {preventDefault: () => void}) => JQuery.Event]} */
-	const [onBeforeClose, dispatch_before_close] = make_simple_listenable("close");
+	const [onBeforeClose, dispatch_before_close] = make_listenable("close");
 	/** @type {[typeof win.onBeforeDrag, (event: {preventDefault: () => void}) => JQuery.Event]} */
-	const [onBeforeDrag, dispatch_before_drag] = make_simple_listenable("window-drag-start");
+	const [onBeforeDrag, dispatch_before_drag] = make_listenable("window-drag-start");
 
 	Object.assign(win, { onFocus, onBlur, onClosed, onBeforeClose, onBeforeDrag });
 
