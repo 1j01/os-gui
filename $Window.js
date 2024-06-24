@@ -289,6 +289,60 @@ function $Window(options = {}) {
 	}
 	win.icons = options.icons || {};
 	let iconSize = 16;
+
+
+	/**
+	 * @template {any[]} ArgsType
+	 * @param {string} legacy_event_name
+	 * @returns {[(callback: (...args: ArgsType) => void) => (() => void), (...args: ArgsType) => JQuery.Event]} [add_listener, trigger]
+	 */
+	const make_listenable = (legacy_event_name) => {
+		/** @type {((...args: ArgsType) => void)[]} */
+		let event_handlers = [];
+
+		const add_listener = (/** @type {(...args: ArgsType) => void} */ callback) => {
+			event_handlers.push(callback);
+
+			const dispose = () => {
+				event_handlers = event_handlers.filter(handler => handler !== callback);
+			};
+
+			return dispose;
+		};
+
+		/**
+		 * @param {ArgsType} args
+		 * @returns {JQuery.Event}
+		 */
+		const trigger = (...args) => {
+			for (const handler of event_handlers) {
+				handler(...args);
+			}
+			const legacy_event = jQuery.Event(legacy_event_name);
+			$window_element.trigger(legacy_event);
+			return legacy_event;
+		};
+		return [add_listener, trigger];
+	};
+
+	/** @type {[typeof win.onFocus, () => JQuery.Event]} */
+	const [onFocus, dispatch_focus] = make_listenable("window-focus");
+	/** @type {[typeof win.onBlur, () => JQuery.Event]} */
+	const [onBlur, dispatch_blur] = make_listenable("window-blur");
+	/** @type {[typeof win.onClosed, () => JQuery.Event]} */
+	const [onClosed, dispatch_closed] = make_listenable("closed");
+	/** @type {[typeof win.onBeforeClose, (event: {preventDefault: () => void}) => JQuery.Event]} */
+	const [onBeforeClose, dispatch_before_close] = make_listenable("close");
+	/** @type {[typeof win.onBeforeDrag, (event: {preventDefault: () => void}) => JQuery.Event]} */
+	const [onBeforeDrag, dispatch_before_drag] = make_listenable("window-drag-start");
+	/** @type {[typeof win.onTitleChange, () => JQuery.Event]} */
+	const [onTitleChange, dispatch_title_changed] = make_listenable("title-change");
+	/** @type {[typeof win.onIconChange, () => JQuery.Event]} */
+	const [onIconChange, dispatch_icon_changed] = make_listenable("icon-change");
+
+	Object.assign(win, { onFocus, onBlur, onClosed, onBeforeClose, onBeforeDrag, onTitleChange, onIconChange });
+
+
 	win.setTitlebarIconSize = function (target_icon_size) {
 		if (win.icons) {
 			win.$icon?.remove();
@@ -389,57 +443,6 @@ function $Window(options = {}) {
 	function get_direction() {
 		return window.get_direction ? window.get_direction() : /** @type {"ltr" | "rtl"} */(getComputedStyle(win.element).direction);
 	}
-
-	/**
-	 * @template {any[]} ArgsType
-	 * @param {string} legacy_event_name
-	 * @returns {[(callback: (...args: ArgsType) => void) => (() => void), (...args: ArgsType) => JQuery.Event]} [add_listener, trigger]
-	 */
-	const make_listenable = (legacy_event_name) => {
-		/** @type {((...args: ArgsType) => void)[]} */
-		let event_handlers = [];
-
-		const add_listener = (/** @type {(...args: ArgsType) => void} */ callback) => {
-			event_handlers.push(callback);
-
-			const dispose = () => {
-				event_handlers = event_handlers.filter(handler => handler !== callback);
-			};
-
-			return dispose;
-		};
-
-		/**
-		 * @param {ArgsType} args
-		 * @returns {JQuery.Event}
-		 */
-		const trigger = (...args) => {
-			for (const handler of event_handlers) {
-				handler(...args);
-			}
-			const legacy_event = jQuery.Event(legacy_event_name);
-			$window_element.trigger(legacy_event);
-			return legacy_event;
-		};
-		return [add_listener, trigger];
-	};
-
-	/** @type {[typeof win.onFocus, () => JQuery.Event]} */
-	const [onFocus, dispatch_focus] = make_listenable("window-focus");
-	/** @type {[typeof win.onBlur, () => JQuery.Event]} */
-	const [onBlur, dispatch_blur] = make_listenable("window-blur");
-	/** @type {[typeof win.onClosed, () => JQuery.Event]} */
-	const [onClosed, dispatch_closed] = make_listenable("closed");
-	/** @type {[typeof win.onBeforeClose, (event: {preventDefault: () => void}) => JQuery.Event]} */
-	const [onBeforeClose, dispatch_before_close] = make_listenable("close");
-	/** @type {[typeof win.onBeforeDrag, (event: {preventDefault: () => void}) => JQuery.Event]} */
-	const [onBeforeDrag, dispatch_before_drag] = make_listenable("window-drag-start");
-	/** @type {[typeof win.onTitleChange, () => JQuery.Event]} */
-	const [onTitleChange, dispatch_title_changed] = make_listenable("title-change");
-	/** @type {[typeof win.onIconChange, () => JQuery.Event]} */
-	const [onIconChange, dispatch_icon_changed] = make_listenable("icon-change");
-
-	Object.assign(win, { onFocus, onBlur, onClosed, onBeforeClose, onBeforeDrag, onTitleChange, onIconChange });
 
 	/**
 	 * @param {{ innerWidth?: number, innerHeight?: number, outerWidth?: number, outerHeight?: number }} options
