@@ -39,6 +39,41 @@ test.describe('$Window Component', () => {
 	// center()/applyBounds()/bringTitleBarInBounds()/setDimensions()/maximize() while hidden (such as when minimized to taskbar) (supposedly jQuery measurements will return undefined),
 	// and any remaining API methods/options.
 
+	test('elements', async ({ page }) => {
+		const hElements = await page.evaluateHandle(() => {
+			const $window = $Window({
+				title: 'Test Window',
+				icons: {
+					16: new Text('(an icon)'),
+				},
+			});
+			$window.$content.append('<p>Test Window Content</p>');
+			return $window.elements;
+		});
+		const elements = await hElements.jsonValue();
+		expect(elements).toHaveProperty('content');
+		expect(elements).toHaveProperty('title');
+		expect(elements).toHaveProperty('titlebar');
+		expect(elements).toHaveProperty('minimizeButton');
+		expect(elements).toHaveProperty('maximizeButton');
+		expect(elements).toHaveProperty('closeButton');
+		// expect(elements).toHaveProperty('window'); // exposed as $window.element, not sure of the value of an alias
+		// expect(elements).toHaveProperty('icon'); // currently there is no icon element, just the node you provide
+		// expect(elements).toHaveProperty('menuBar'); // not exposed, and might be better as `win.menuBar.element` or `win.getMenuBar().element`
+
+		// Not sure of a good way to test aspects of the elements from `$window.elements`, so I'm just querying for them separately.
+		// It's unlikely they would become dissociated from the elements with the respective classes.
+		// Hm, I could use a snapshot test to test the full DOM structure...
+
+		await expect(await page.locator('.window-content')).toHaveText('Test Window Content');
+		await expect(await page.locator('.window-title')).toHaveText('Test Window');
+		await expect(await page.locator('.window-titlebar')).toHaveText('(an icon)Test Window');
+		// TODO: accessible labels of titlebar buttons should change based on window state
+		await expect(await page.locator('.window-minimize-button')).toHaveAccessibleName('Minimize window');
+		await expect(await page.locator('.window-maximize-button')).toHaveAccessibleName('Maximize or restore window');
+		await expect(await page.locator('.window-close-button')).toHaveAccessibleName('Close window');
+	});
+
 	test('should minimize to the bottom left by default (also, slots can be freed by close)', async ({ page }) => {
 		const h$window = await page.evaluateHandle(() => {
 			const $window = $Window({
