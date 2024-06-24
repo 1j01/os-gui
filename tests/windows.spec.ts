@@ -243,6 +243,64 @@ test.describe('$Window Component', () => {
 		// TODO: test corner handles, default clamping, and `options.constrainRect` API clamping
 	});
 
+	test.describe('close()', () => {
+		test('should remove the window from the DOM and set `closed` to true', async ({ page }) => {
+			const h$window = await page.evaluateHandle(() => {
+				const $window = $Window({
+					title: 'Close Me!'
+				});
+				$window.$content.append('<p>Close me!</p>').css("padding", "30px");
+				return $window;
+			});
+			await expect(page.locator('.window')).toHaveCount(1);
+			const closed = await h$window.evaluate(($window) => {
+				$window.close();
+				return $window.closed;
+			});
+			await expect(page.locator('.window')).toHaveCount(0);
+			expect(closed).toBe(true);
+		});
+		test('should be preventable with onBeforeClose', async ({ page }) => {
+			const h$window = await page.evaluateHandle(() => {
+				const $window = $Window({
+					title: 'Close Me!'
+				});
+				$window.$content.append('<p>Close me!</p>').css("padding", "30px");
+				$window.onBeforeClose((event) => {
+					event.preventDefault();
+				});
+				return $window;
+			});
+			await expect(page.locator('.window')).toHaveCount(1);
+			const closed = await h$window.evaluate(($window) => {
+				$window.close();
+				return $window.closed;
+			});
+			await expect(page.locator('.window')).toHaveCount(1);
+			expect(closed).toBe(false);
+		});
+		test('should NOT be preventable with onBeforeClose if force is passed as true', async ({ page }) => {
+			const h$window = await page.evaluateHandle(() => {
+				const $window = $Window({
+					title: 'Close Me!'
+				});
+				$window.$content.append('<p>Close me!</p>').css("padding", "30px");
+				$window.onBeforeClose((event) => {
+					event.preventDefault();
+					throw new Error("This should not be triggered");
+				});
+				return $window;
+			});
+			await expect(page.locator('.window')).toHaveCount(1);
+			const closed = await h$window.evaluate(($window) => {
+				$window.close(true);
+				return $window.closed;
+			});
+			await expect(page.locator('.window')).toHaveCount(0);
+			expect(closed).toBe(true);
+		});
+	});
+
 	test.describe('title()', () => {
 		test('should set the title of the window', async ({ page }) => {
 			const h$window = await page.evaluateHandle(() =>
