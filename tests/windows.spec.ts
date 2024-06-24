@@ -40,7 +40,7 @@ test.describe('$Window Component', () => {
 	// and any remaining API methods/options.
 
 	test('elements', async ({ page }) => {
-		const hElements = await page.evaluateHandle(() => {
+		const elementKeys = await page.evaluate(() => {
 			const $window = $Window({
 				title: 'Test Window',
 				icons: {
@@ -48,18 +48,20 @@ test.describe('$Window Component', () => {
 				},
 			});
 			$window.$content.append('<p>Test Window Content</p>');
-			return $window.elements;
+			return Object.keys($window.elements);
 		});
-		const elements = await hElements.jsonValue();
-		expect(elements).toHaveProperty('content');
-		expect(elements).toHaveProperty('title');
-		expect(elements).toHaveProperty('titlebar');
-		expect(elements).toHaveProperty('minimizeButton');
-		expect(elements).toHaveProperty('maximizeButton');
-		expect(elements).toHaveProperty('closeButton');
-		// expect(elements).toHaveProperty('window'); // exposed as $window.element, not sure of the value of an alias
-		// expect(elements).toHaveProperty('icon'); // currently there is no icon element, just the node you provide
-		// expect(elements).toHaveProperty('menuBar'); // not exposed, and might be better as `win.menuBar.element` or `win.getMenuBar().element`
+		expect(new Set(elementKeys)).toEqual(new Set([
+			'content',
+			'title',
+			'titlebar',
+			'_title_area',
+			'minimizeButton',
+			'maximizeButton',
+			'closeButton',
+			// 'window', // exposed as $window.element, not sure of the value of an alias
+			// 'icon', // currently there is no icon element, just the node you provide
+			// 'menuBar', // not exposed, and might be better as `win.menuBar.element` or `win.getMenuBar().element`
+		]));
 
 		// Not sure of a good way to test aspects of the elements from `$window.elements`, so I'm just querying for them separately.
 		// It's unlikely they would become dissociated from the elements with the respective classes.
