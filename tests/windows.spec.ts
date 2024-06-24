@@ -1,5 +1,26 @@
-import { ConsoleMessage, expect, test } from '@playwright/test';
+import { ConsoleMessage, MatcherReturnType, expect as expectBase, test } from '@playwright/test';
 import { pathToFileURL } from 'node:url';
+
+const expect = expectBase.extend({
+	/**
+	 * Expects the received number to be within +/- `range` of the expected number.
+	 * This is distinct from `toBeCloseTo` which use a number of decimal digits.
+	 */
+	toBeCloseToRange(received: number, expected: number, range: number): MatcherReturnType {
+		const pass = Math.abs(received - expected) <= range;
+		if (pass) {
+			return {
+				message: () => `expected ${received} not to be within range ${range} of ${expected}`,
+				pass: true,
+			};
+		} else {
+			return {
+				message: () => `expected ${received} to be within range ${range} of ${expected}`,
+				pass: false,
+			};
+		}
+	},
+});
 
 test.describe('$Window Component', () => {
 	test.beforeEach(async ({ page }) => {
@@ -233,14 +254,9 @@ test.describe('$Window Component', () => {
 		);
 		expect(newRect.left).toBeLessThan(originalRect.left);
 
-		// `toBeCloseTo` doesn't work like mocha's `to.be.closeTo`  
-		// With `to.be.closeTo`, I can specify a range of 1 easily and naturally, very useful for pixel values.  
-		// With `toBeCloseTo`, it uses the "number of digits" instead... can I specify a negative "number of decimal digits after the decimal point"?  
-		// I can, but `-1` gives a range of `5` instead of `1`...
-		// TODO: use `toBeLessThan` and `toBeGreaterThan` for a range of 1 
-		expect(newRect.right).toBeCloseTo(originalRect.right, -1);
-		expect(newRect.top).toBeCloseTo(originalRect.top, -1);
-		expect(newRect.bottom).toBeCloseTo(originalRect.bottom, -1);
+		expect(newRect.right).toBeCloseToRange(originalRect.right, 1);
+		expect(newRect.top).toBeCloseToRange(originalRect.top, 1);
+		expect(newRect.bottom).toBeCloseToRange(originalRect.bottom, 1);
 		await page.mouse.up();
 
 		// TODO: test corner handles, default clamping, and `options.constrainRect` API clamping
