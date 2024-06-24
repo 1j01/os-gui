@@ -367,15 +367,15 @@ test.describe('$Window Component', () => {
 				$window.element.addEventListener('title-change', () => {
 					c++;
 				});
-				// new minimalist event system (TODO)
-				// $window.onTitleChanged(() => {
-				// 	d++;
-				// });
+				// new minimalist event system
+				$window.onTitleChange(() => {
+					d++;
+				});
 				$window.title('Best Window');
 				await new Promise((resolve) => setTimeout(resolve, 50));
 				return { a, b, c, d };
 			});
-			expect(titleChangeEvents).toEqual({ a: 1, b: 1, c: 0, d: 0 });
+			expect(titleChangeEvents).toEqual({ a: 1, b: 1, c: 0, d: 1 });
 			expect(logs).toHaveLength(3);
 			expect(logs[0].text()).toBe("DEPRECATED: use $window.onTitleChange(listener) instead of adding a jQuery event listener for \"title-change\"");
 			expect(logs[0].type()).toBe('trace');
@@ -520,10 +520,10 @@ test.describe('$Window Component', () => {
 				$window.element.addEventListener('icon-change', () => {
 					c++;
 				});
-				// new minimalist event system (TODO)
-				// $window.onIconChanged(() => {
-				// 	d++;
-				// });
+				// new minimalist event system
+				$window.onIconChange(() => {
+					d++;
+				});
 				$window.setIcons({
 					16: new Text('16x16 placeholder'),
 					32: new Text('32x32 placeholder'),
@@ -532,7 +532,7 @@ test.describe('$Window Component', () => {
 				await new Promise((resolve) => setTimeout(resolve, 50));
 				return { a, b, c, d };
 			});
-			expect(iconChangeEvents).toEqual({ a: 1, b: 1, c: 0, d: 0 });
+			expect(iconChangeEvents).toEqual({ a: 1, b: 1, c: 0, d: 1 });
 			expect(logs).toHaveLength(3);
 			expect(logs[0].text()).toBe("DEPRECATED: use $window.onIconChange(listener) instead of adding a jQuery event listener for \"icon-change\"");
 			expect(logs[0].type()).toBe('trace');
@@ -595,15 +595,15 @@ test.describe('$Window Component', () => {
 				$window.element.addEventListener('icon-change', () => {
 					c++;
 				});
-				// new minimalist event system (TODO)
-				// $window.onIconChanged(() => {
-				// 	d++;
-				// });
+				// new minimalist event system
+				$window.onIconChange(() => {
+					d++;
+				});
 				$window.setTitlebarIconSize(16);
 				await new Promise((resolve) => setTimeout(resolve, 50));
 				return { a, b, c, d };
 			});
-			expect(iconChangeEvents).toEqual({ a: 1, b: 1, c: 0, d: 0 });
+			expect(iconChangeEvents).toEqual({ a: 1, b: 1, c: 0, d: 1 });
 			expect(logs).toHaveLength(3);
 			expect(logs[0].text()).toBe("DEPRECATED: use $window.onIconChange(listener) instead of adding a jQuery event listener for \"icon-change\"");
 			expect(logs[0].type()).toBe('trace');
