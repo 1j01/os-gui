@@ -638,10 +638,6 @@ The titlebar icon.
 
 The DOM element that represents the window.
 
-#### Event: `closed`
-
-Whether the window has been closed.
-
 #### Event: `close`
 
 Can be used to prevent closing a window, with `event.preventDefault()`.
