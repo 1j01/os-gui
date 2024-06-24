@@ -1269,6 +1269,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 	// but pointerdown and mousedown seem to be supported. That said, if you trigger() either,
 	// addEventListener() handlers will not be called. So if I remove the dependency on jQuery,
 	// it will not be possible to listen for some .trigger() events.
+	// That said, I could continue to support jQuery by checking if jQuery is present and using it conditionally.
 	// https://jsfiddle.net/1j01/ndvwts9y/1/
 
 	// Assumption: focusin comes after pointerdown/mousedown
