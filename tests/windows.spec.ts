@@ -137,6 +137,7 @@ test.describe('$Window Component', () => {
 			// presumably when clicking the first time, interrupting the double click.
 			$window.center();
 		});
+		const originalRect = await page.locator('.window').boundingBox();
 		// Maximize
 		await page.locator('.window-titlebar').dblclick();
 		await expect(page.locator('.window')).toHaveCSS('top', '0px');
@@ -157,13 +158,15 @@ test.describe('$Window Component', () => {
 		await expect(page.locator('.window')).toHaveCSS('height', '300px');
 
 		// Restore
-		// TODO: test rectangle matches original window rectangle
 		await page.locator('.window-titlebar').dblclick();
+		// weak (negative) assertion
 		await expect(page.locator('.window')).not.toHaveCSS('top', '0px');
 		await expect(page.locator('.window')).not.toHaveCSS('left', '0px');
 		await expect(page.locator('.window')).not.toHaveCSS('width', '300px');
 		await expect(page.locator('.window')).not.toHaveCSS('height', '300px');
-
+		// strong assertion: rectangle should match original window rectangle
+		const restoredRect = await page.locator('.window').boundingBox();
+		expect(restoredRect).toEqual(originalRect);
 	});
 
 	test('can be maximized/restored by clicking the maximize button', async ({ page }) => {
