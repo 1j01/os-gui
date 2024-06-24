@@ -640,22 +640,32 @@ The DOM element that represents the window.
 
 #### Event: `close`
 
+DEPRECATED: Use the `onBeforeClose` method instead.
+
 Can be used to prevent closing a window, with `event.preventDefault()`.
 Since there could be multiple listeners, and another listener could prevent closing, if you want to detect when the window is actually closed, use the `closed` event.
 
 #### Event: `closed`
 
+DEPRECATED: Use the `onClosed` method instead.
+
 This event is emitted when the window is closed. It cannot be prevented.
 
 #### Event: `window-drag-start`
+
+DEPRECATED: Use the `onBeforeDrag` method instead.
 
 Can be used to prevent dragging a window, with `event.preventDefault()`.
 
 #### Event: `title-change`
 
+DEPRECATED: Use the `onTitleChange` method instead.
+
 Can be used to update a taskbar button's label.
 
 #### Event: `icon-change`
+
+DEPRECATED: Use the `onIconChange` method instead.
 
 Can be used to update a taskbar button's icon.
 Use `$window.getIconAtSize(size)` to get an appropriate icon.
