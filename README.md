@@ -530,6 +530,23 @@ Returns a function to remove the listener.
 
 This event allows overriding the drag behavior of the Colors and Tools windows in JS Paint.
 
+#### `onTitleChange(listener)`
+
+Calls the listener when the window's title changes.
+
+Returns a function to remove the listener.
+
+This event can be used to update a taskbar button's label.
+
+#### `onIconChange(listener)`
+
+Calls the listener when the window's icon changes.
+
+Returns a function to remove the listener.
+
+This event can be used to update a taskbar button's icon.
+Use `$window.getIconAtSize(size)` to get an appropriate icon.
+
 #### `closed`
 
 Whether the window has been closed.

@@ -167,6 +167,18 @@ interface OSGUIWindow {
 	onBeforeDrag(listener: (event: { preventDefault: () => void }) => void): () => void;
 
 	/**
+	 * Calls the listener when the title is changed.
+	 * Returns a function to remove the listener.
+	 */
+	onTitleChange(listener: () => void): () => void;
+
+	/**
+	 * Calls the listener when the icon is changed.
+	 * Returns a function to remove the listener.
+	 */
+	onIconChange(listener: () => void): () => void;
+
+	/**
 	 * *jQuery object.*  
 	 * Where you can append contents to the window.
 	 */

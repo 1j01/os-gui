@@ -2,8 +2,8 @@
 
 const deprecatedEvents = {
 	"window-drag-start": "onBeforeDrag",
-	// "title-change": "onTitleChanged", // TODO: implement
-	// "icon-change": "onIconChanged", // TODO: implement
+	"title-change": "onTitleChange",
+	"icon-change": "onIconChange",
 	"close": "onBeforeClose",
 	"closed": "onClosed",
 	"window-focus": "onFocus", // never recommended
@@ -297,7 +297,7 @@ function $Window(options = {}) {
 			win.$icon.prependTo(win.$titlebar);
 		}
 		iconSize = target_icon_size;
-		$window_element.trigger("icon-change");
+		dispatch_icon_changed();
 	};
 	win.getTitlebarIconSize = function () {
 		return iconSize;
@@ -363,14 +363,14 @@ function $Window(options = {}) {
 		old_$icon.replaceWith(win.$icon);
 		win.icon_name = icon_name;
 		win.task?.updateIcon();
-		$window_element.trigger("icon-change");
+		dispatch_icon_changed();
 		return win;
 	};
 	win.setIcons = (icons) => {
 		win.icons = icons;
 		win.setTitlebarIconSize(iconSize);
 		win.task?.updateIcon();
-		// icon-change already sent by setTitlebarIconSize
+		// dispatch_icon_changed already called by setTitlebarIconSize
 	};
 
 	if ($component) {
@@ -434,8 +434,12 @@ function $Window(options = {}) {
 	const [onBeforeClose, dispatch_before_close] = make_listenable("close");
 	/** @type {[typeof win.onBeforeDrag, (event: {preventDefault: () => void}) => JQuery.Event]} */
 	const [onBeforeDrag, dispatch_before_drag] = make_listenable("window-drag-start");
+	/** @type {[typeof win.onTitleChange, () => JQuery.Event]} */
+	const [onTitleChange, dispatch_title_changed] = make_listenable("title-change");
+	/** @type {[typeof win.onIconChange, () => JQuery.Event]} */
+	const [onIconChange, dispatch_icon_changed] = make_listenable("icon-change");
 
-	Object.assign(win, { onFocus, onBlur, onClosed, onBeforeClose, onBeforeDrag });
+	Object.assign(win, { onFocus, onBlur, onClosed, onBeforeClose, onBeforeDrag, onTitleChange, onIconChange });
 
 	/**
 	 * @param {{ innerWidth?: number, innerHeight?: number, outerWidth?: number, outerHeight?: number }} options
@@ -1775,7 +1779,7 @@ You can also disable this warning by passing {iframes: {ignoreCrossOrigin: true}
 		// title() should return the title
 		if (typeof title !== "undefined") {
 			win.$title.text(title);
-			$window_element.trigger("title-change");
+			dispatch_title_changed();
 			if (win.task) {
 				win.task.updateTitle();
 			}
