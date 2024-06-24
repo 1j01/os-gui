@@ -555,6 +555,41 @@ Whether the window has been closed.
 
 The icons of the window at different sizes, as set by `options.icons` or `setIcons()`.
 
+#### `elements`
+
+An object containing references to the window's elements.
+
+##### `content` (HTMLElement)
+
+The window's content area.
+
+##### `titlebar` (HTMLElement)
+
+The window's titlebar, including the title, window buttons, and possibly an icon.
+
+##### ` _title_area` (HTMLElement)
+
+A wrapper element around the title.
+
+PRIVATE: Don't use this. Use `elements.titlebar` or `elements.title` instead, if possible.
+
+##### `title` (HTMLElement)
+
+The window's title.
+
+##### `closeButton` (HTMLButtonElement)
+
+The window's close button.
+
+##### `minimizeButton` (HTMLButtonElement)
+
+The window's minimize button.
+
+##### `maximizeButton` (HTMLButtonElement)
+
+The window's maximize button.
+
+
 #### `$content`
 
 *jQuery object.*  

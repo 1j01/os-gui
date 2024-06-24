@@ -32,6 +32,13 @@ The API is unstable, and [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- `$Window` property `elements` for accessing the different parts of the window, without jQuery.
+	- `content`: The window's content area.
+	- `titlebar`: The window's titlebar, including the title, window buttons, and possibly an icon.
+	- `title`: The window's title.
+	- `closeButton`: The window's close button.
+	- `minimizeButton`: The window's minimize button.
+	- `maximizeButton`: The window's maximize button.
 - A simplified event system for `$Window` instances, independent of jQuery. Each of these methods returns a function that removes the listener.
   - `$Window` method `onFocus(listener)`
   - `$Window` method `onBlur(listener)`

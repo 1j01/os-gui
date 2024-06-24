@@ -230,20 +230,30 @@ function $Window(options = {}) {
 
 	document.body.appendChild(win.element);
 
-	win.$titlebar = $(E("div")).addClass("window-titlebar").appendTo($window_element);
-	win.$title_area = $(E("div")).addClass("window-title-area").appendTo(win.$titlebar);
-	win.$title = $(E("span")).addClass("window-title").appendTo(win.$title_area);
+	win.elements = {
+		titlebar: E("div"),
+		_title_area: E("div"),
+		title: E("span"),
+		minimizeButton: E("button"),
+		maximizeButton: E("button"),
+		closeButton: E("button"),
+		content: E("div"),
+	};
+	
+	win.$titlebar = $(win.elements.titlebar).addClass("window-titlebar").appendTo($window_element);
+	win.$title_area = $(win.elements._title_area).addClass("window-title-area").appendTo(win.$titlebar);
+	win.$title = $(win.elements.title).addClass("window-title").appendTo(win.$title_area);
 	if (options.toolWindow) {
 		options.minimizeButton = false;
 		options.maximizeButton = false;
 	}
 	if (options.minimizeButton !== false) {
-		win.$minimize = $(E("button")).addClass("window-minimize-button window-action-minimize window-button").appendTo(win.$titlebar);
+		win.$minimize = $(win.elements.minimizeButton).addClass("window-minimize-button window-action-minimize window-button").appendTo(win.$titlebar);
 		win.$minimize.attr("aria-label", "Minimize window"); // @TODO: for taskbarless minimized windows, "restore"
 		win.$minimize.append("<span class='window-button-icon'></span>");
 	}
 	if (options.maximizeButton !== false) {
-		win.$maximize = $(E("button")).addClass("window-maximize-button window-action-maximize window-button").appendTo(win.$titlebar);
+		win.$maximize = $(win.elements.maximizeButton).addClass("window-maximize-button window-action-maximize window-button").appendTo(win.$titlebar);
 		win.$maximize.attr("aria-label", "Maximize or restore window"); // @TODO: specific text for the state
 		if (!options.resizable) {
 			win.$maximize.prop("disabled", true);
@@ -251,11 +261,11 @@ function $Window(options = {}) {
 		win.$maximize.append("<span class='window-button-icon'></span>");
 	}
 	if (options.closeButton !== false) {
-		win.$x = $(E("button")).addClass("window-close-button window-action-close window-button").appendTo(win.$titlebar);
+		win.$x = $(win.elements.closeButton).addClass("window-close-button window-action-close window-button").appendTo(win.$titlebar);
 		win.$x.attr("aria-label", "Close window");
 		win.$x.append("<span class='window-button-icon'></span>");
 	}
-	win.$content = $(E("div")).addClass("window-content").appendTo($window_element);
+	win.$content = $(win.elements.content).addClass("window-content").appendTo($window_element);
 	win.$content.attr("tabIndex", "-1");
 	win.$content.css("outline", "none");
 	if (options.toolWindow) {

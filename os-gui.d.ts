@@ -226,6 +226,41 @@ interface OSGUIWindow {
 	element: HTMLElement & { $window: OSGUI$Window; };
 
 	/**
+	 * Other DOM elements, for different parts of the window.
+	 */
+	elements: {
+		/**
+		 * The window's content area.
+		 */
+		content: HTMLElement;
+		/**
+		 * The window's titlebar, including the title, window buttons, and possibly an icon.
+		 */
+		titlebar: HTMLElement;
+		/**
+		 * A wrapper element around the title.
+		 * @deprecated Use `elements.titlebar` or `elements.title` instead, if possible.
+		 */
+		private _title_area: HTMLElement;
+		/**
+		 * The window's title.
+		 */
+		title: HTMLElement;
+		/**
+		 * The window's close button.
+		 */
+		closeButton: HTMLButtonElement;
+		/**
+		 * The window's minimize button.
+		 */
+		minimizeButton: HTMLButtonElement;
+		/**
+		 * The window's maximize button.
+		 */
+		maximizeButton: HTMLButtonElement;
+	};
+
+	/**
 	 * Whether the window has been closed.
 	 */
 	closed: boolean;
