@@ -316,4 +316,53 @@ test.describe('MenuBar Component', () => {
 		await expect(page.locator('.menu-popup:visible')).toHaveCount(0);
 		await expect(page.locator('#focusable')).toBeFocused();
 	});
+
+	test('should handle scrolling when menus do not fit on the screen', async ({ page }) => {
+		// "WebKit on Windows has a minimal viewport of 250x240." So we can't use `page.setViewportSize` freely to test this.
+		// We could use an iframe, or other sort of container element, but that's more work.
+		// Add CSS to scale the menus, similarly to how JS Paint does with Extras > Enlarge UI enabled.
+		await page.evaluate(() => {
+			const style = document.createElement('style');
+			style.textContent = `
+				.menus *,
+				.menu-popup * {
+					font-size: 50px;
+					line-height: 50px;
+				}
+				.menu-button {
+					height: 3rem;
+				}
+			`;
+			document.head.appendChild(style);
+		});
+		await page.getByRole('menuitem', { name: 'View' }).click();
+		await page.getByText('More Checkboxes').click();
+		await expect(page.locator('.menu-popup:visible')).toHaveCount(2);
+		// Test that the menu's bottom is at the bottom of the screen, and not going past it.
+		// Otherwise we might just scroll the whole page automatically to click the item.
+		await expect(await page.evaluate(() => {
+			const menu = [...document.querySelectorAll('.menu-popup')].filter(menu => menu.textContent!.includes('Item 99'))[0];
+			const rect = menu!.getBoundingClientRect();
+			return Math.abs(rect.bottom - window.innerHeight);
+		})).toBeLessThanOrEqual(2);
+		// Test that the last menu item is offscreen
+		await expect(await page.evaluate(() => {
+			const menu = [...document.querySelectorAll('.menu-popup')].filter(menu => menu.textContent!.includes('Item 99'))[0];
+			const item = menu.querySelector('.menu-item:last-child');
+			const rect = item!.getBoundingClientRect();
+			return rect.top - window.innerHeight;
+		})).toBeGreaterThan(100);
+
+		// Test that you can scroll down to it
+		// await page.locator('.menu-popup:visible .menu-item').last().scrollIntoViewIfNeeded();
+		await page.getByText('Item 99').click();
+		// TODO: Test that you can scroll down to it with touch specifically
+
+		// TODO: test horizontal behavior
+		// TODO: test BOTH top level and second level menus, as they have different positioning behavior
+		// I just don't have a top level menu with a lot of items in the test page right now.
+		// And I might be relying too much on the specific set of existing menus so I'm worried about breaking tests,
+		// although obviously I'll be able to see which tests fail.
+		// That said, I wouldn't be able to see if tests start to pass meaninglessly.
+	});
 });
