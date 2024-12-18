@@ -768,7 +768,13 @@ function MenuBar(menus) {
 						let submenu_popup_rect = submenu_popup_el.getBoundingClientRect();
 						submenu_popup_el.style.position = "absolute";
 						submenu_popup_el.style.left = `${(get_direction() === "rtl" ? rect.left - submenu_popup_rect.width : rect.right) + window.scrollX}px`;
+						// TODO: the menu should go up if it would make room for more items (limited to the top of the screen of course)
+						// First it should try anchoring the top of the menu to the top of the parent menu item
+						// Then it should try anchoring the bottom of the menu to the bottom of the parent menu item
+						// Then it should place it at the bottom of the screen
 						submenu_popup_el.style.top = `${rect.top + window.scrollY}px`;
+						submenu_popup_el.style.maxHeight = `calc(100vh - ${rect.top + window.scrollY}px)`;
+						submenu_popup_el.style.overflowY = "auto";
 
 						submenu_popup_rect = submenu_popup_el.getBoundingClientRect();
 						// This is surely not the cleanest way of doing this,
