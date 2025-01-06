@@ -307,14 +307,14 @@ function $Window(options = {}) {
 	 * @returns {[(callback: (...args: ArgsType) => void) => (() => void), (...args: ArgsType) => JQuery.Event]} [add_listener, trigger]
 	 */
 	const make_listenable = (legacy_event_name) => {
-		/** @type {((...args: ArgsType) => void)[]} */
-		let event_handlers = [];
+		/** @type {Set<((...args: ArgsType) => void)>} */
+		let event_handlers = new Set();
 
 		const add_listener = (/** @type {(...args: ArgsType) => void} */ callback) => {
-			event_handlers.push(callback);
+			event_handlers.add(callback);
 
 			const dispose = () => {
-				event_handlers = event_handlers.filter(handler => handler !== callback);
+				event_handlers.delete(callback);
 			};
 
 			return dispose;
